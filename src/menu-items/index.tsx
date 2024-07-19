@@ -12,6 +12,7 @@ import {
   UploadOutlined,
   DragOutlined,
   GlobalOutlined,
+  TableOutlined
 } from '@ant-design/icons';
 
 const icons = {
@@ -27,11 +28,12 @@ const icons = {
   UploadOutlined,
   DragOutlined,
   GlobalOutlined,
+  TableOutlined
 };
 
 // ==============================|| MENU ITEMS ||============================== //
-const dashboard = {
-  id: 'group-dashboard',
+const radiator = {
+  id: 'group-radiator',
   title: 'Navigation',
   type: 'group',
   children: [
@@ -39,92 +41,31 @@ const dashboard = {
       id: 'dashboard',
       title: 'Dashboard',
       type: 'item',
-      url: '/dashboard',
+      url: '/',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     },
     {
-      id: 'tickets',
-      title: 'Tickets',
+      id: 'ventures',
+      title: 'Ventures',
       type: 'item',
-      url: '/tickets',
+      url: '/ventures',
       icon: icons.FileOutlined,
       breadcrumbs: false
     },
     {
-      id: 'tickets-grid',
-      title: 'Advanced Tickets Table',
+      id: 'contributors',
+      title: 'Contributors',
       type: 'item',
-      url: '/tickets-grid',
-      icon: icons.FileExclamationOutlined,
+      url: '/contributors',
+      icon: icons.FileOutlined,
       breadcrumbs: false
     }
   ]
 }
 
-const pages = {
-  id: 'example',
-  title: 'Examples',
-  type: 'group',
-  children: [
-    {
-      id: 'login1',
-      title: 'Login',
-      type: 'item',
-      url: '/login',
-      icon: icons.LoginOutlined
-    },
-    {
-      id: '404',
-      title: '404',
-      type: 'item',
-      url: '/404',
-      icon: icons.ExclamationOutlined
-    },
-    {
-      id: 'sample-page',
-      title: 'Sample Page',
-      type: 'item',
-      url: '/sample-page',
-      icon: icons.ChromeOutlined
-    },
-    {
-      id: 'privacy-page',
-      title: 'Privacy Page',
-      type: 'item',
-      url: '/privacy',
-      icon: icons.EyeInvisibleOutlined,
-      breadcrumbs: false
-    },
-    {
-      id: 'upload-page',
-      title: 'Upload Page',
-      type: 'item',
-      url: '/upload',
-      icon: icons.UploadOutlined,
-      breadcrumbs: false
-    },
-     {
-      id: 'drag-drop-page',
-      title: 'Drag Drop Page',
-      type: 'item',
-      url: '/drag-drop',
-      icon: icons.DragOutlined,
-      breadcrumbs: false
-    },
-    {
-      id: 'map-example-page',
-      title: 'Map Example Page',
-      type: 'item',
-      url: '/map-example',
-      icon: icons.GlobalOutlined,
-      breadcrumbs: false
-    }
-  ]
-};
-
 const menuItems = {
-  items: [dashboard, pages]
+  items: [radiator]
 };
 
 export default menuItems;

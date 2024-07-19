@@ -12,9 +12,6 @@ module.exports = {
     '*.test.ts',
     '*.test.tsx',
     // From template
-    'src/pages/dashboard',
-    'src/pages/components-overview',
-    'src/components/@extended'
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],

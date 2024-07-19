@@ -4,11 +4,11 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 // material-ui
-import { Box, Toolbar, useMediaQuery } from '@mui/material';
+import { Box, LinearProgress, Toolbar, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 // project import
@@ -24,7 +24,23 @@ import { DrawerOpenContext } from '../../components/contexts/DrawerOpenContext';
 import { RefreshContextProvider } from '../../components/contexts/RefreshContext';
 import { UserContext } from '../../components/contexts/UserContext';
 import { authService } from '../../services/authService';
+import { LoadingContext, LoadingContextProvider } from '../../components/contexts/LoadingContext';
 
+
+const LoadingIndicator = () => {
+  const { loading } = useContext(LoadingContext);
+
+  // creating an overlay effect
+  return (loading &&
+    <Box sx={{
+      zIndex: 2,
+      position: 'fixed',
+      width: '100%'
+    }}>
+      <LinearProgress color="success" />
+    </Box>
+  )
+}
 // ==============================|| MAIN LAYOUT ||============================== //
 
 
@@ -59,21 +75,24 @@ const MainLayout: React.FC = () => {
   return (
     <UserContext.Provider value={{ user, setUser }} >
       {user &&
-        <DrawerOpenContext.Provider value={{ drawerOpen, setDrawerOpen }} >
-          <RefreshContextProvider >
-            <ScrollTop>
-              <Box sx={{ display: 'flex', width: '100%' }}>
-                <Header open={drawerOpen} handleDrawerToggle={handleDrawerToggle} />
-                <Drawer open={drawerOpen} handleDrawerToggle={handleDrawerToggle} />
-                <Box component="main" sx={{ width: '100%', flexGrow: 1, p: { xs: 2, sm: 3 } }}>
-                  <Toolbar />
-                  <Breadcrumbs navigation={navigation} title />
-                  <Outlet />
+        <LoadingContextProvider>
+          <DrawerOpenContext.Provider value={{ drawerOpen, setDrawerOpen }} >
+            <RefreshContextProvider >
+              <ScrollTop>
+                <Box sx={{ display: 'flex', width: '100%' }}>
+                  <Header open={drawerOpen} handleDrawerToggle={handleDrawerToggle} />
+                  <Drawer open={drawerOpen} handleDrawerToggle={handleDrawerToggle} />
+                  <Box component="main" sx={{ width: '100%', flexGrow: 1, p: { xs: 2, sm: 3 } }}>
+                    <LoadingIndicator />
+                    <Toolbar />
+                    <Breadcrumbs navigation={navigation} title />
+                    <Outlet />
+                  </Box>
                 </Box>
-              </Box>
-            </ScrollTop>
-          </RefreshContextProvider>
-        </DrawerOpenContext.Provider>
+              </ScrollTop>
+            </RefreshContextProvider>
+          </DrawerOpenContext.Provider>
+        </LoadingContextProvider>
       }
     </UserContext.Provider>
   );

@@ -2,14 +2,14 @@ import Airtable, { FieldSet, Records } from 'airtable';
 import { airtableClient } from './airtableClient';
 
 class AirtableService {
+    base: Airtable.Base = airtableClient.base(import.meta.env.VITE_AIRTABLE_PM_BASE_ID_DAS);
 
     async getTableRecords(
         tableId: string,
         maxRecords?: number,
         filterByFormula?: string
     ): Promise<Records<FieldSet>> {
-        const base: Airtable.Base = airtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS);
-        const table = base(tableId);
+        const table = this.base(tableId);
         try {
             const records = await table
                 .select({
@@ -22,6 +22,20 @@ class AirtableService {
             console.error(error);
             throw error;
         }
+    }
+
+    async getRecord(
+        tableId: string,
+        recordId: string
+    ): Promise<any> {
+        return this.base(tableId).find(recordId);
+    }
+
+    async createRecord(
+        tableId: string,
+        record: any
+    ): Promise<any> {
+        return this.base(tableId).create(record);
     }
 }
 

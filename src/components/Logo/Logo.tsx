@@ -7,7 +7,7 @@
 // material-ui
 
 
-import logo from '/src/assets/images/logo-dark.png';
+import logo from '/src/assets/images/logo-light-icon.svg';
 
 
 // ==============================|| LOGO SVG ||============================== //
