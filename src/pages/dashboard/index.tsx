@@ -21,13 +21,11 @@ import {
 // project import
 import AnalyticEcommerce from '../../components/cards/statistics/AnalyticEcommerce';
 import IncomeAreaChart from './IncomeAreaChart';
-import MonthlyBarChart from './MonthlyBarChart';
 import ReportAreaChart from './ReportAreaChart';
 import SalesColumnChart from './SalesColumnChart';
 
 // assets
 import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 import MainCard from '../../components/MainCard';
 import avatar1 from '/src/assets/images/users/avatar-1.png';
 import avatar2 from '/src/assets/images/users/avatar-2.png';
@@ -73,7 +71,7 @@ const DashboardDefault = () => {
   const [value, setValue] = useState('today');
   const [slot, setSlot] = useState('week');
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>

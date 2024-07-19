@@ -19,11 +19,10 @@ import { Box, Card, CardContent } from '@mui/material';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../components/contexts/UserContext';
-import { SprintProps } from '../../services/dasVentureService';
-import { dasTaskService } from '../../services/dasTaskService';
+import { useEffect, useState } from 'react';
 import SortableItem from '../../components/SortableItem';
+import { dasTaskService } from '../../services/dasTaskService';
+import { SprintProps } from '../../services/dasVentureService';
 
 export const STATUSES = [
     "Not Started",
@@ -80,10 +79,10 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
 };
 
 const SprintBoard: React.FC<SprintProps> = ({ sprint }) => {
-    const { user } = useContext(UserContext);
+    // const { user } = useContext(UserContext);
     const [tasks, setTasks] = useState<any[]>([]);
     const [activeTask, setActiveTask] = useState<any>();
-    const [changes, setChanges] = useState<Record<string, unknown>>({});
+    // const [changes, setChanges] = useState<Record<string, unknown>>({});
 
     useEffect(() => {
         if (sprint) {
@@ -157,6 +156,7 @@ const SprintBoard: React.FC<SprintProps> = ({ sprint }) => {
     };
 
     const handleDragEnd = ({ active, over }: DragEndEvent) => {
+        console.log(active, over)
         // const activeContainer = findBoardSectionContainer(
         //     boardSections!,
         //     active.id as number

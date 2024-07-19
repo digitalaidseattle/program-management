@@ -16,7 +16,7 @@ import EpicDialog from "./EpicDialog";
 
 
 export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
-    const { refresh, setRefresh } = useContext(RefreshContext);
+    const { refresh } = useContext(RefreshContext);
     const [items, setItems] = useState<TreeViewBaseItem[]>([]);
     const [showEpicDialog, setShowEpicDialog] = useState<boolean>(false);
 
@@ -74,21 +74,21 @@ export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
         }
     };
 
-    const addEpic = () => {
-        // Validate epic number?
-        const epic = {
-            "Epic Name": "New Epic",
-            "Epic Number": 1,
-            "Status": "Not Started",
-            "Project": [venture.id],
-            "Description": "map visualization for past hospitals",
-        }
-        ventureService.addEpic(epic)
-            .then(e => {
-                console.log(e)
-                setRefresh(0)
-            })
-    };
+    // const addEpic = () => {
+    //     // Validate epic number?
+    //     const epic = {
+    //         "Epic Name": "New Epic",
+    //         "Epic Number": 1,
+    //         "Status": "Not Started",
+    //         "Project": [venture.id],
+    //         "Description": "map visualization for past hospitals",
+    //     }
+    //     ventureService.addEpic(epic)
+    //         .then(e => {
+    //             console.log(e)
+    //             setRefresh(0)
+    //         })
+    // };
 
     return (
         <>
@@ -114,6 +114,7 @@ export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
                     setShowEpicDialog(false)
                 }}
                 handleError={function (err: Error): void {
+                    console.error(err)
                     setShowEpicDialog(false)
                     throw new Error("Function not implemented.");
                 }} />

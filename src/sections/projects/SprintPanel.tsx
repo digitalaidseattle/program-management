@@ -7,35 +7,35 @@
  */
 
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { ButtonGroup, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { ButtonGroup, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { ventureService, VentureProps } from "../../services/dasVentureService";
-import MainCard from "../../components/MainCard";
+import { VentureProps, ventureService } from "../../services/dasVentureService";
 import SprintBoard from "./SprintBoard";
-type SprintCardProps = {
-    sprint: any,
-};
 
-const SprintCard: React.FC<SprintCardProps> = ({ sprint }) => (
-    <MainCard contentSX={{ p: 2.25 }}>
-        <Stack spacing={0.5}>
-            <Typography variant="h4">
-                {sprint.name}
-            </Typography>
-            <Grid container alignItems="center">
-                <Grid item>
-                    <Typography variant="h4" color="textSecondary">
-                        {sprint.startDate} - {sprint.endDate}
-                    </Typography>
-                    <Typography variant="h6" color="textSecondary">
-                        {sprint.goal}
-                    </Typography>
-                </Grid>
-            </Grid>
-        </Stack>
-    </MainCard>
-);
+// type SprintCardProps = {
+//     sprint: any,
+// };
+
+// const SprintCard: React.FC<SprintCardProps> = ({ sprint }) => (
+//     <MainCard contentSX={{ p: 2.25 }}>
+//         <Stack spacing={0.5}>
+//             <Typography variant="h4">
+//                 {sprint.name}
+//             </Typography>
+//             <Grid container alignItems="center">
+//                 <Grid item>
+//                     <Typography variant="h4" color="textSecondary">
+//                         {sprint.startDate} - {sprint.endDate}
+//                     </Typography>
+//                     <Typography variant="h6" color="textSecondary">
+//                         {sprint.goal}
+//                     </Typography>
+//                 </Grid>
+//             </Grid>
+//         </Stack>
+//     </MainCard>
+// );
 
 export const SprintPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
