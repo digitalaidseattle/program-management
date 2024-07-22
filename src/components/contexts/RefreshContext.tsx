@@ -29,11 +29,12 @@ export const RefreshContext = createContext<RefreshContextType>({
 });
 
 export const RefreshContextProvider = (props: { children: ReactNode }) => {
+    const interval = 1000 * 100;
     const [refresh, setRefresh] = useState(Date.now());
     // Polling, 75% think it is worthwhile
     useInterval(() => {
         setRefresh(Date.now());
-    }, 1000 * 10);
+    }, interval);
 
     return (
         <RefreshContext.Provider value={{ refresh, setRefresh }}>

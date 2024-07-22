@@ -19,13 +19,13 @@ class DASEpicService {
     getById = async (id: string): Promise<any> => {
         return airtableService.getRecord(EPIC_TABLE, id)
             .then(r => {
-                console.log('task', r)
                 return {
                     id: r.id,
                     name: r.fields['Name'],
                     description: r.fields['Description'],
                     status: r.fields['Task Status'],
                     assignee: r.fields['Task Assignee'],
+                    startDate: r.fiels['Start Date']
                 } as any
             })
     }
