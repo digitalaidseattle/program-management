@@ -3,10 +3,8 @@
 import {
   Card,
   CardMedia,
-  Grid,
   Stack,
-  Typography,
-  useTheme
+  Typography
 } from '@mui/material';
 
 // project import
@@ -19,20 +17,20 @@ import { projectService } from '../../services/projectService';
 
 
 const VentureCard: React.FC<VentureProps> = ({ venture }) => {
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const navigate = useNavigate();
-  let main;
-  switch (venture.status) {
-    case 'Active':
-      main = theme.palette.success.light;
-      break;
-    case 'Under evaluation':
-      main = theme.palette.warning.light;
-      break;
-    default:
-      main = theme.palette.primary.main;
-  }
+  // let main;
+  // switch (venture.status) {
+  //   case 'Active':
+  //     main = theme.palette.success.light;
+  //     break;
+  //   case 'Under evaluation':
+  //     main = theme.palette.warning.light;
+  //     break;
+  //   default:
+  //     main = theme.palette.primary.main;
+  // }
 
   console.log(venture)
 

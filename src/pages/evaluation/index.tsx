@@ -2,7 +2,6 @@
 // material-ui
 import {
   Box,
-  Stack,
   Tab,
   Tabs,
   Typography
@@ -13,8 +12,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
-import { projectService } from '../../services/projectService';
 import { dasTaskGroupService } from '../../services/dasTaskGroupService';
+import { projectService } from '../../services/projectService';
 import { InfoPanel } from './InfoPanel';
 import { StaffingPanel } from './staffingPanel';
 import { TasksPanel } from './tasksPanel';

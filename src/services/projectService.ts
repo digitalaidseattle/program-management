@@ -14,8 +14,6 @@ const FEATURE_TABLE = 'tblS6QtkKlKLKThO0';
 const STORY_TABLE = 'tblyWQ2L5enBia3ew';
 const TASK_TABLE = 'tbl9Ttk2DUsAP2iDx';
 
-const MAX_RECORDS = 100;
-const FILTER = ``
 
 type VentureProps = {
     venture: any,

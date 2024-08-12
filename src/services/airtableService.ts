@@ -1,7 +1,6 @@
 import Airtable, { FieldSet, Records } from 'airtable';
 import { dasAirtableClient, pmAirtableClient } from './airtableClient';
 import { QueryModel } from './supabaseClient';
-import { loggingService } from './loggingService';
 
 
 class AirtableService {

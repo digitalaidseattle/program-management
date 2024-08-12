@@ -17,7 +17,6 @@ import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
 import MainCard from '../../components/MainCard';
 import { VentureProps, ventureService } from '../../services/dasVentureService';
-import { projectService } from '../../services/projectService';
 import VenturesTable from './VenturesTable';
 
 

@@ -16,7 +16,8 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     return (
         <Stack spacing={2}>
             <Stack direction="row" spacing={2}>
-                <Typography fontWeight={600}>Staffing: </Typography>
+                <Typography fontWeight={600}>Staffing for: </Typography>
+                <Typography> {venture.title}</Typography>
             </Stack>
         </Stack>
     )

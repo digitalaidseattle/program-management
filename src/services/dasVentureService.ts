@@ -5,10 +5,9 @@
  *
  */
 
-import { dasAirtableService, pmAirtableService } from "./airtableService";
+import { pmAirtableService } from "./airtableService";
 
 
-const VENTURE_TABLE='tblRpJek5SjacLaen';
 const PROJECT_TABLE = 'tblFeZtplagoFIQBs';
 const EPIC_TABLE = 'tblrCoHnjUwyC2kwq';
 const CONTRIBUTOR_TABLE = 'tblOhMRP0MpMXzmjy';
@@ -180,3 +179,4 @@ class DASVentureService {
 const ventureService = new DASVentureService()
 export { ventureService };
 export type { SprintProps, VentureProps };
+

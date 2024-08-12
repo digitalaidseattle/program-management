@@ -26,7 +26,6 @@ import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
 import { dasVolunteerService, Volunteer } from '../../services/dasVolunteerService';
 import { QueryModel } from '../../services/supabaseClient';
-import useAppConstants from '../../services/useAppConstants';
 
 // ==============================|| Tickets Grid ||============================== //
 
@@ -71,7 +70,7 @@ export default function ContributorTable() {
     const apiRef = useGridApiRef();
     const { setLoading } = useContext(LoadingContext);
     const { refresh } = useContext(RefreshContext);
-    const { data: statuses } = useAppConstants('STATUS')
+    // const { data: statuses } = useAppConstants('STATUS')
 
     useEffect(() => {
         setRowCountState((prevRowCountState: number) =>
