@@ -1,8 +1,48 @@
 import Airtable, { FieldSet, Records } from 'airtable';
-import { airtableClient } from './airtableClient';
+import { dasAirtableClient, pmAirtableClient } from './airtableClient';
+import { QueryModel } from './supabaseClient';
+import { loggingService } from './loggingService';
+
 
 class AirtableService {
-    base: Airtable.Base = airtableClient.base(import.meta.env.VITE_AIRTABLE_PM_BASE_ID_DAS);
+    base: Airtable.Base;
+
+    public constructor(airTableBase: Airtable.Base) {
+        this.base = airTableBase
+    }
+
+    async query(tableId: string, queryModel: QueryModel): Promise<Records<FieldSet>> {
+        const table = this.base(tableId);
+        const params = {
+            offset: queryModel.page,
+            maxRecords: queryModel.pageSize,
+            sortBy: {
+                field: queryModel.sortField,
+                direction: queryModel.sortDirection
+            }
+        }
+        return table
+            .select(params)
+            .all();
+    }
+
+    async getAll(
+        tableId: string,
+        filterByFormula?: string
+    ): Promise<Records<FieldSet>> {
+        const table = this.base(tableId);
+        let all = [] as Records<FieldSet>;
+        await table
+            .select({filterByFormula: filterByFormula, })
+            .eachPage(
+                (records, fetchNextPage) => {
+                    // REVIEW not sure this is recursing past 100 records
+                    all = [...all, ...records];
+                    fetchNextPage();
+                })
+        console.log('done out', all)
+        return all;
+    }
 
     async getTableRecords(
         tableId: string,
@@ -23,6 +63,15 @@ class AirtableService {
             throw error;
         }
     }
+    // look into this
+    // table.select({
+    //     filterByFormula: `FIND('Important', {Tags})`,
+    // }).eachPage((records, fetchNextPage) => {
+    //     records.forEach(record => {
+    //         console.log(record.fields);
+    //     });
+    //     fetchNextPage();
+    // });
 
     async getRecord(
         tableId: string,
@@ -39,6 +88,7 @@ class AirtableService {
     }
 }
 
-const airtableService = new AirtableService();
+const dasAirtableService = new AirtableService(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS));
+const pmAirtableService = new AirtableService(pmAirtableClient.base(import.meta.env.VITE_AIRTABLE_PM_BASE_ID_DAS));
 
-export { airtableService } 
+export { dasAirtableService, pmAirtableService };

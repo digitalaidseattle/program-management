@@ -6,6 +6,8 @@
  */
 import Airtable from 'airtable';
 
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_PM_ANON_KEY })
+const dasAirtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
-export { airtableClient };
+const pmAirtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_PM_ANON_KEY })
+
+export { dasAirtableClient, pmAirtableClient };

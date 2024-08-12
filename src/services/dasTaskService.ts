@@ -5,14 +5,14 @@
  *
  */
 
-import { airtableService } from "./airtableService";
+import { pmAirtableService } from "./airtableService";
 
 const TASK_TABLE = 'tbl9Ttk2DUsAP2iDx';
 
 class DASTaskService {
 
     getById = async (id: string): Promise<any> => {
-        return airtableService.getRecord(TASK_TABLE, id)
+        return pmAirtableService.getRecord(TASK_TABLE, id)
             .then(r => {
                 console.log('task', r)
                 return {

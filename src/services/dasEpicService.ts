@@ -5,19 +5,19 @@
  *
  */
 
-import { airtableService } from "./airtableService";
+import { pmAirtableService } from "./airtableService";
 
 const EPIC_TABLE = 'tblrCoHnjUwyC2kwq';
 
 class DASEpicService {
 
     create = async (epic: any): Promise<any[]> => {
-        return airtableService.createRecord(EPIC_TABLE, epic)
+        return pmAirtableService.createRecord(EPIC_TABLE, epic)
             .then(resp => resp)
     }
 
     getById = async (id: string): Promise<any> => {
-        return airtableService.getRecord(EPIC_TABLE, id)
+        return pmAirtableService.getRecord(EPIC_TABLE, id)
             .then(r => {
                 return {
                     id: r.id,

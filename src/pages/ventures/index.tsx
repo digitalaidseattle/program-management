@@ -12,11 +12,12 @@ import {
 
 // project import
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
-import { ventureService, VentureProps } from '../../services/dasVentureService';
 import MainCard from '../../components/MainCard';
-import { useNavigate } from 'react-router';
+import { VentureProps, ventureService } from '../../services/dasVentureService';
+import { projectService } from '../../services/projectService';
 import VenturesTable from './VenturesTable';
 
 
@@ -95,7 +96,7 @@ const VenturesPage = () => {
     const { children, value, index, ...other } = props;
 
     return (
-      <div
+      <Box
         role="tabpanel"
         hidden={value !== index}
         id={`simple-tabpanel-${index}`}
@@ -104,10 +105,10 @@ const VenturesPage = () => {
       >
         {value === index && (
           <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+            {children}
           </Box>
         )}
-      </div>
+      </Box>
     );
   }
 

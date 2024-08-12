@@ -5,6 +5,8 @@ import Login from './authentication/Login';
 import ContributorsPage from './contributors';
 import DashboardDefault from './dashboard';
 import Page404 from './error/404';
+import EvaluationPage from './evaluation';
+import EvaluationsPage from './evaluations';
 import VenturePage from './venture';
 import VenturesPage from './ventures';
 
@@ -32,6 +34,15 @@ const routes = [
       {
         path: "contributors",
         element: <ContributorsPage />,
+      },
+      {
+        path: "evaluations",
+        element: <EvaluationsPage />,
+      }
+      ,
+      {
+        path: "evaluation/:id",
+        element: <EvaluationPage />,
       }
     ]
   },

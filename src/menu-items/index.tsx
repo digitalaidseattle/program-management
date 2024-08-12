@@ -54,6 +54,14 @@ const radiator = {
       breadcrumbs: false
     },
     {
+      id: 'evaluations',
+      title: 'Evaluation',
+      type: 'item',
+      url: '/evaluations',
+      icon: icons.QuestionOutlined,
+      breadcrumbs: false
+    },
+    {
       id: 'contributors',
       title: 'Contributors',
       type: 'item',

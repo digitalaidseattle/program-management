@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import {
@@ -20,17 +20,19 @@ import {
 
 // project import
 import AnalyticEcommerce from '../../components/cards/statistics/AnalyticEcommerce';
-import IncomeAreaChart from './IncomeAreaChart';
-import ReportAreaChart from './ReportAreaChart';
 import SalesColumnChart from './SalesColumnChart';
 
 // assets
 import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
+import ReactApexChart from 'react-apexcharts';
 import MainCard from '../../components/MainCard';
+import { ventureService } from '../../services/dasVentureService';
+import { dasVolunteerService } from '../../services/dasVolunteerService';
 import avatar1 from '/src/assets/images/users/avatar-1.png';
 import avatar2 from '/src/assets/images/users/avatar-2.png';
 import avatar3 from '/src/assets/images/users/avatar-3.png';
 import avatar4 from '/src/assets/images/users/avatar-4.png';
+import { projectService } from '../../services/projectService';
 
 // avatar style
 const avatarSX = {
@@ -64,14 +66,89 @@ const status = [
     label: 'This Year'
   }
 ];
+// const navigate = useNavigate();
+
+const VentureChart = () => {
+  const ventureOptions = {
+    dataLabels: {
+      enabled: true
+    },
+    labels: [
+      "Submitted by Partner",
+      "Ready for consideration",
+      "Under evaluation",
+      "Active",
+      "Declined",
+      "Paused"
+    ]
+  };
+
+  const [ventureCounts, setVentureCounts] = useState<number[]>([14, 3, 0, 2, 3, 4]);
+
+  useEffect(() => {
+    projectService.getAll()
+      .then((ventures: any) => {
+        console.log('ventures', ventures)
+        setVentureCounts(
+          [
+            ventures.filter((v: any) => v.status === "Submitted by Partner").length,
+            ventures.filter((v: any) => v.status === "Ready for consideration").length,
+            ventures.filter((v: any) => v.status === "Under evaluation").length,
+            ventures.filter((v: any) => v.status === "Active").length,
+            ventures.filter((v: any) => v.status === "Declined").length,
+            ventures.filter((v: any) => v.status === "Paused").length
+          ]
+        )
+      })
+      .catch(err => console.error('ERROR', err));
+
+
+  }, []);
+  return <ReactApexChart options={ventureOptions} series={ventureCounts} type="pie" height={300} />
+
+}
+
+const ContributorChart = () => {
+  const options: any = {
+    dataLabels: {
+      enabled: true,
+      formatter(_value: any, opts: any) {
+        const name = opts.w.globals.labels[opts.seriesIndex]
+        const count = opts.w.globals.series[opts.seriesIndex]
+        return [name, count]
+      }
+    },
+    labels: [
+      "Active",
+      "Not so active"
+    ],
+    legend: {
+      show: false
+    }
+  };
+
+  const [counts, setCounts] = useState<number[]>([]);
+
+  useEffect(() => {
+    dasVolunteerService.getAll()
+      .then(volunteers => {
+        const contributors = volunteers.filter((v: any) => v.affliation ? v.affliation.includes('Contributor') : false)
+        setCounts(
+          [
+            contributors.filter((v: any) => v.status ? v.status.includes('Active') : false).length,
+            contributors.filter((v: any) => v.status ? !v.status.includes('Active') : true).length,
+          ]
+        )
+      });
+  }, []);
+  return <ReactApexChart options={options} series={counts} type="pie" height={300} />
+
+}
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const DashboardDefault = () => {
   const [value, setValue] = useState('today');
-  const [slot, setSlot] = useState('week');
-
-  // const navigate = useNavigate();
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -96,62 +173,29 @@ const DashboardDefault = () => {
 
       {/* row 2 */}
 
-      <Grid item xs={12} md={7} lg={8}>
+      <Grid item xs={12} md={6} lg={6}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">Unique Visitor</Typography>
-          </Grid>
-          <Grid item>
-            <Stack direction="row" alignItems="center" spacing={0}>
-              <Button
-                size="small"
-                onClick={() => setSlot('month')}
-                color={slot === 'month' ? 'primary' : 'secondary'}
-                variant={slot === 'month' ? 'outlined' : 'text'}
-              >
-                Month
-              </Button>
-              <Button
-                size="small"
-                onClick={() => setSlot('week')}
-                color={slot === 'week' ? 'primary' : 'secondary'}
-                variant={slot === 'week' ? 'outlined' : 'text'}
-              >
-                Week
-              </Button>
-            </Stack>
+            <Typography variant="h5">Venture Status</Typography>
           </Grid>
         </Grid>
         <MainCard content={false} sx={{ mt: 1.5 }}>
           <Box sx={{ pt: 1, pr: 2 }}>
-            <IncomeAreaChart slot={slot} />
+            <VentureChart />
           </Box>
         </MainCard>
       </Grid>
 
-      <Grid item xs={12} md={5} lg={4}>
+      <Grid item xs={12} md={6} lg={6}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">Analytics Report</Typography>
+            <Typography variant="h5">Contributor Status</Typography>
           </Grid>
-          <Grid item />
         </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 } }}>
-            <ListItemButton divider>
-              <ListItemText primary="Company Finance Growth" />
-              <Typography variant="h5">+45.14%</Typography>
-            </ListItemButton>
-            <ListItemButton divider>
-              <ListItemText primary="Company Expenses Ratio" />
-              <Typography variant="h5">0.58%</Typography>
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemText primary="Business Risk Cases" />
-              <Typography variant="h5">Low</Typography>
-            </ListItemButton>
-          </List>
-          <ReportAreaChart />
+        <MainCard content={false} sx={{ mt: 1.5 }}>
+          <Box sx={{ pt: 1, pr: 2 }}>
+            <ContributorChart />
+          </Box>
         </MainCard>
       </Grid>
 
