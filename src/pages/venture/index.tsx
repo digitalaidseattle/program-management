@@ -17,6 +17,7 @@ import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { ventureService } from '../../services/dasVentureService';
 import { EpicPanel } from '../../sections/projects/EpicPanel';
 import { SprintPanel } from '../../sections/projects/SprintPanel';
+import { TabPanel } from '../../components/TabPanel';
 
 type ContributorCardProps = {
   contributor: any,
@@ -42,32 +43,6 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor }) => (
   </MainCard>
 );
 
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Box
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
-    </Box>
-  );
-}
 
 const VenturePage = () => {
   const { id } = useParams();
@@ -123,17 +98,17 @@ const VenturePage = () => {
           <Tab label="Contributors" {...a11yProps(2)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={tabIndex} index={0}>
+      <TabPanel value={tabIndex} index={0}>
         {venture && <SprintPanel venture={venture} />}
-      </CustomTabPanel>
-      <CustomTabPanel value={tabIndex} index={1}>
+      </TabPanel>
+      <TabPanel value={tabIndex} index={1}>
         {venture && <EpicPanel venture={venture} />}
-      </CustomTabPanel>
-      <CustomTabPanel value={tabIndex} index={2}>
+      </TabPanel>
+      <TabPanel value={tabIndex} index={2}>
         <Stack gap={'0.5rem'}>
           {venture && venture.contributors.map((c: any) => <ContributorCard key={c.id} contributor={c} />)}
         </Stack>
-      </CustomTabPanel>
+      </TabPanel>
     </>
   );
 };
