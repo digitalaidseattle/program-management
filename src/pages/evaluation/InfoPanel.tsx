@@ -6,12 +6,11 @@
  *
  */
 
-import { IconButton, Stack, TextField, Typography } from "@mui/material";
-import { VentureProps } from "../../services/dasVentureService";
-import { useContext, useEffect, useState } from "react";
 import { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, } from "@ant-design/icons";
+import { IconButton, Stack, TextField, Typography } from "@mui/material";
+import { useContext, useState } from "react";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
-import { dasAirtableService } from "../../services/airtableService";
+import { VentureProps } from "../../services/dasVentureService";
 import { projectService } from "../../services/projectService";
 
 type EditBlockProps = {

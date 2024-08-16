@@ -130,10 +130,10 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
             <TaskDialog
                 open={showEditTask}
                 task={selectedTask}
-                handleSuccess={function (resp: Task | null): void {
+                handleSuccess={function (): void {
                     setShowEditTask(false)
                 }}
-                handleError={function (err: Error): void {
+                handleError={function (): void {
                     throw new Error("Function not implemented.");
                 }} />
         </>

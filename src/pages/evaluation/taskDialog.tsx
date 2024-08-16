@@ -4,7 +4,7 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useContext, useState } from 'react';
+import React from 'react';
 
 // material-ui
 import {
@@ -22,7 +22,6 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { UserContext } from '../../components/contexts/UserContext';
 import { Task } from '../../services/dasTaskGroupService';
 import useAppConstants from '../../services/useAppConstants';
 
@@ -32,11 +31,11 @@ interface TaskDialogProps {
     handleSuccess: (resp: Task | null) => void,
     handleError: (err: Error) => void
 }
-const TaskDialog: React.FC<TaskDialogProps> = ({ open, task, handleSuccess, handleError }) => {
+const TaskDialog: React.FC<TaskDialogProps> = ({ open, task, handleSuccess }) => {
 
-    const { user } = useContext(UserContext)
+    // const { user } = useContext(UserContext)
     const { data: sources } = useAppConstants('TASK-STATUS');
-    const [status, setStatus] = useState("inbox");
+    // const [setStatus] = useState<string>("inbox");
 
     const iconBackColorOpen = 'grey.300';
     const iconBackColor = 'grey.100';
@@ -49,8 +48,7 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, task, handleSuccess, hand
             component: 'form',
             onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                 event.preventDefault();
-                const formData = new FormData(event.currentTarget);
-                const formJson = Object.fromEntries(formData.entries());
+                // const formData = new FormData(event.currentTarget);
                 // Review: as unknown as Ticket
                 // ticketService.create(user!, formJson as unknown as Ticket)
                 //     .then((resp: Ticket) => handleSuccess(resp))
@@ -75,7 +73,7 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, task, handleSuccess, hand
                                 value={task.status}
                                 label="Status"
                                 fullWidth
-                                onChange={(event) => setStatus(event.target.value)}                    >
+                            >
                                 {sources.map((s, idx: number) => <MenuItem key={idx} value={s.value}>{s.label}</MenuItem>)}
                             </Select>
                         </FormControl>
