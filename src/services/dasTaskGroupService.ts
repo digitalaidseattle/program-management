@@ -30,7 +30,7 @@ class DASTaskGroupService {
             .then(records => {
                 return records
                     .map(record => {
-                        console.log('getTasks', record.fields)
+                        // console.log('getTasks', record.fields)
                         return {
                             id: record.id,
                             title: record.fields['The request'],
@@ -56,7 +56,9 @@ class DASTaskGroupService {
                     taskIds: r.fields["Tasks"],
                     driveUrl: r.fields["Drive URL"],
                     requestDetails: r.fields["Request details"],
+                    weeklyStatusSummary: r.fields["Weekly Status Summary"],
                 }
+                console.log('taskGroup', taskGroup)
                 return this.getTasks(taskGroup)
                     .then(tds => Object.assign(taskGroup, { tasks: tds }))
 

@@ -76,13 +76,9 @@ class ProjectService {
     }
 
     update = async (venture: any, changes: any): Promise<any> => {
-        console.log(venture, changes)
         return dasAirtableService.update(VENTURES_TABLE, venture.id, changes)
-            .then(r => {
-                console.log('rrr', r)
-                this.airtableTransform(r.fields)
-            })
-            .catch(err => console.error('error', err) )
+            .then(r => this.airtableTransform(r.fields))
+            .catch(err => console.error('error', err))
     }
 
 
@@ -90,7 +86,6 @@ class ProjectService {
         return pmAirtableService.createRecord(EPIC_TABLE, epic)
             .then(resp => resp)
     }
-
 
     getEpics = async (project: any): Promise<any> => {
         return Promise.all(project.epicIds

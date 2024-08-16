@@ -17,33 +17,7 @@ import { projectService } from '../../services/projectService';
 import { InfoPanel } from './InfoPanel';
 import { StaffingPanel } from './staffingPanel';
 import { TasksPanel } from './tasksPanel';
-
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Box
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
-    </Box>
-  );
-}
+import { TabPanel } from '../../components/TabPanel';
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);
@@ -88,15 +62,15 @@ const EvaluationPage = () => {
           <Tab label="Staffing" {...a11yProps(2)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={tabIndex} index={0}>
+      <TabPanel value={tabIndex} index={0}>
         <InfoPanel venture={venture} />
-      </CustomTabPanel>
-      <CustomTabPanel value={tabIndex} index={1}>
+      </TabPanel>
+      <TabPanel value={tabIndex} index={1}>
         <TasksPanel venture={venture} />
-      </CustomTabPanel>
-      <CustomTabPanel value={tabIndex} index={2}>
+      </TabPanel>
+      <TabPanel value={tabIndex} index={2}>
         <StaffingPanel venture={venture} />
-      </CustomTabPanel>
+      </TabPanel>
     </>
 
 
