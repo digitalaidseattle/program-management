@@ -10,24 +10,38 @@ import { dasAirtableService } from "./airtableService";
 const TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
 const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
 
+type Task = {
+    id: string;
+    title: string;
+    phase: number;
+    requestDetails: string;
+    driId: string;
+    driEmail: string;
+    status: string;
+}
 class DASTaskGroupService {
     getTasks = async (taskGroup: any): Promise<any> => {
- 
+
         // REVIEW This should work, but doesn't
         // const FILTER = `FIND('${taskGroup.id}', ARRAYJOIN({Task Group}))`;
-        const FILTER = `OR(${taskGroup.taskIds.map((tid:any) => `'${tid}' = {UID}`).join(', ')})`;
+        const FILTER = `OR(${taskGroup.taskIds.map((tid: any) => `'${tid}' = {UID}`).join(', ')})`;
         return dasAirtableService
             .getAll(TASK_DETAIL_TABLE, FILTER)
             .then(records => {
                 return records
                     .map(record => {
-                        // console.log('getTasks', record.fields)
+                        console.log('getTasks', record.fields)
                         return {
                             id: record.id,
-                            phase: record.fields['Phase'],
+                            title: record.fields['The request'],
+                            phase: Number.parseInt(record.fields['Phase'] as string),
                             requestDetails: record.fields['Request Details'],
-                        }
+                            driId: record.fields['DRI'],
+                            driEmail: record.fields['DRI Email'],
+                            status: record.fields['Status']
+                        } as Task
                     })
+                    .sort((t1, t2) => t1.phase - t2.phase)
             })
     }
 
@@ -53,3 +67,4 @@ class DASTaskGroupService {
 
 const dasTaskGroupService = new DASTaskGroupService()
 export { dasTaskGroupService };
+export type { Task }

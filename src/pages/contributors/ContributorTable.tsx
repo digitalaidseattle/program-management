@@ -50,7 +50,7 @@ const getColumns = (): GridColDef[] => {
             width: 140,
         },
         {
-            field: 'ventrueDate',
+            field: 'ventureDate',
             headerName: 'Venture Date',
             width: 140,
         }
@@ -66,19 +66,11 @@ export default function ContributorTable() {
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
     const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>();
     const [pageInfo, setPageInfo] = useState<PageInfo<Volunteer>>({ rows: [], totalRowCount: 0 });
-    const [rowCountState, setRowCountState] = useState(pageInfo?.totalRowCount || 0,);
     const apiRef = useGridApiRef();
     const { setLoading } = useContext(LoadingContext);
     const { refresh } = useContext(RefreshContext);
     // const { data: statuses } = useAppConstants('STATUS')
 
-    useEffect(() => {
-        setRowCountState((prevRowCountState: number) =>
-            pageInfo?.totalRowCount !== undefined
-                ? pageInfo?.totalRowCount
-                : prevRowCountState,
-        );
-    }, [pageInfo?.totalRowCount, setRowCountState]);
 
 
     useEffect(() => {
@@ -140,7 +132,7 @@ export default function ContributorTable() {
 
                 paginationMode='server'
                 paginationModel={paginationModel}
-                rowCount={rowCountState}
+                rowCount={pageInfo.totalRowCount}
                 onPaginationModelChange={setPaginationModel}
 
                 sortingMode='server'

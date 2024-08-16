@@ -28,7 +28,7 @@ type SprintProps = {
 }
 
 class DASVentureService {
-    
+
     addEpic = async (epic: any): Promise<any[]> => {
         return pmAirtableService.createRecord(EPIC_TABLE, epic)
             .then(resp => resp)

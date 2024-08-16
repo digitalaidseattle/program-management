@@ -79,6 +79,14 @@ class AirtableService {
         return this.base(tableId).find(recordId);
     }
 
+    async update(
+        tableId: string,
+        recordId: string,
+        changes: any
+    ): Promise<any> {
+        return this.base(tableId).update(recordId, changes);
+    }
+
     async createRecord(
         tableId: string,
         record: any

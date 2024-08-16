@@ -32,8 +32,6 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
   //     main = theme.palette.primary.main;
   // }
 
-  console.log(venture)
-
   return (
     <Card sx={{ display: 'flex', padding: '2' }} onClick={() => navigate(`/evaluation/${venture.id}`)}>
       <CardMedia
@@ -69,7 +67,7 @@ const EvaluationsPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    projectService.getAllByStatus(['Active', 'Under evaluation'])
+    projectService.getAllByStatus(['Active', 'Under evaluation', 'Declined'])
       .then((ventures: any[]) => setVentures(ventures))
       .finally(() => setLoading(false))
   }, [refresh])

@@ -51,10 +51,6 @@ class ProjectService {
             .catch(err => console.error(err))
     }
 
-    addEpic = async (epic: any): Promise<any[]> => {
-        return pmAirtableService.createRecord(EPIC_TABLE, epic)
-            .then(resp => resp)
-    }
 
     async getAll(): Promise<any[]> {
         const MAX_RECORDS = 100;
@@ -78,6 +74,23 @@ class ProjectService {
         return dasAirtableService.getRecord(VENTURES_TABLE, id)
             .then(r => this.airtableTransform(r.fields))
     }
+
+    update = async (venture: any, changes: any): Promise<any> => {
+        console.log(venture, changes)
+        return dasAirtableService.update(VENTURES_TABLE, venture.id, changes)
+            .then(r => {
+                console.log('rrr', r)
+                this.airtableTransform(r.fields)
+            })
+            .catch(err => console.error('error', err) )
+    }
+
+
+    addEpic = async (epic: any): Promise<any[]> => {
+        return pmAirtableService.createRecord(EPIC_TABLE, epic)
+            .then(resp => resp)
+    }
+
 
     getEpics = async (project: any): Promise<any> => {
         return Promise.all(project.epicIds
