@@ -39,7 +39,6 @@ class AirtableService {
                     all = [...all, ...records];
                     fetchNextPage();
                 })
-        console.log('done out', all)
         return all;
     }
 

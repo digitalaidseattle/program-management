@@ -18,6 +18,7 @@ import { InfoPanel } from './InfoPanel';
 import { StaffingPanel } from './staffingPanel';
 import { TasksPanel } from './tasksPanel';
 import { TabPanel } from '../../components/TabPanel';
+import { MeetingsPanel } from './meetingsPanel';
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);
@@ -60,6 +61,7 @@ const EvaluationPage = () => {
           <Tab label="Info" {...a11yProps(0)} />
           <Tab label="Tasks" {...a11yProps(1)} />
           <Tab label="Staffing" {...a11yProps(2)} />
+          <Tab label="Meetings" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={tabIndex} index={0}>
@@ -70,6 +72,9 @@ const EvaluationPage = () => {
       </TabPanel>
       <TabPanel value={tabIndex} index={2}>
         <StaffingPanel venture={venture} />
+      </TabPanel>
+      <TabPanel value={tabIndex} index={3}>
+        <MeetingsPanel venture={venture} />
       </TabPanel>
     </>
 

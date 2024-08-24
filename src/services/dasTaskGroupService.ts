@@ -21,16 +21,16 @@ type Task = {
 }
 class DASTaskGroupService {
     getTasks = async (taskGroup: any): Promise<any> => {
-
         // REVIEW This should work, but doesn't
-        // const FILTER = `FIND('${taskGroup.id}', ARRAYJOIN({Task Group}))`;
-        const FILTER = `OR(${taskGroup.taskIds.map((tid: any) => `'${tid}' = {UID}`).join(', ')})`;
+        const FILTER = `FIND('${taskGroup.taskGroupCode}', ARRAYJOIN({Task Group}))`;
+        // const FILTER = `OR(${taskGroup.taskIds.map((tid: any) => `'${tid}' = {UID}`).join(', ')})`;
         return dasAirtableService
             .getAll(TASK_DETAIL_TABLE, FILTER)
             .then(records => {
                 return records
                     .map(record => {
                         // console.log('getTasks', record.fields)
+                        
                         return {
                             id: record.id,
                             title: record.fields['The request'],
@@ -38,7 +38,8 @@ class DASTaskGroupService {
                             requestDetails: record.fields['Request Details'],
                             driId: record.fields['DRI'],
                             driEmail: record.fields['DRI Email'],
-                            status: record.fields['Status']
+                            status: record.fields['Status'],
+                            dueDate: record.fields["Due date"]
                         } as Task
                     })
                     .sort((t1, t2) => t1.phase - t2.phase)
@@ -53,12 +54,16 @@ class DASTaskGroupService {
                 const taskGroup = {
                     id: r.id,
                     name: r.fields["Task Group name"],
+                    taskGroupCode: r.fields["Task group"],
                     taskIds: r.fields["Tasks"],
                     driveUrl: r.fields["Drive URL"],
                     requestDetails: r.fields["Request details"],
                     weeklyStatusSummary: r.fields["Weekly Status Summary"],
+                    responsibleIds: r.fields["Responsible"],
+                    ventureProductManagerIds: r.fields["Venture Product Manager"],
+                    ventureProjectManagerIds: r.fields["Venture Project Manager"],
+                    contributorPdMIds: r.fields["Contributor PdM"],                   
                 }
-                console.log('taskGroup', taskGroup)
                 return this.getTasks(taskGroup)
                     .then(tds => Object.assign(taskGroup, { tasks: tds }))
 

@@ -6,7 +6,7 @@
  *
  */
 
-import { Stack, Typography } from "@mui/material";
+import { IconButton, Stack, Typography } from "@mui/material";
 import {
     DataGrid,
     GridActionsCellItem,
@@ -22,7 +22,7 @@ import { dasTaskGroupService, Task } from "../../services/dasTaskGroupService";
 import { VentureProps } from "../../services/dasVentureService";
 import { PageInfo } from "../../services/supabaseClient";
 // assets
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import TaskDialog from "./taskDialog";
 
 const PAGE_SIZE = 10;
@@ -55,33 +55,22 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
         setShowEditTask(true);
     };
 
+    const handleAddClick = () => {
+        setSelectedTask({} as Task);
+        setShowEditTask(true);
+    };
+
+
     const getColumns = (): GridColDef[] => {
         return [
             {
-                field: 'phase',
-                headerName: 'Phase',
-                width: 50,
-            },
-            {
-                field: 'title',
-                headerName: 'Title',
-                width: 300,
-            },
-
-            {
-                field: 'status',
-                headerName: 'Status',
-                width: 200,
-            },
-            {
-                field: 'driEmail',
-                headerName: 'DRI',
-                width: 300,
-            },
-            {
                 field: 'actions',
                 type: 'actions',
-                headerName: 'Actions',
+                renderHeader: () => (
+                    <IconButton size="small" color="primary" onClick={handleAddClick}>
+                        <PlusCircleOutlined />
+                    </IconButton>
+                ),
                 width: 100,
                 cellClassName: 'actions',
                 getActions: ({ id }) => {
@@ -95,6 +84,31 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
                         />
                     ];
                 },
+            },
+            {
+                field: 'phase',
+                headerName: 'Phase',
+                width: 100,
+            },
+            {
+                field: 'title',
+                headerName: 'Title',
+                width: 300,
+            },
+            {
+                field: 'dueDate',
+                headerName: 'Due Date',
+                width: 150,
+            },
+            {
+                field: 'status',
+                headerName: 'Status',
+                width: 150,
+            },
+            {
+                field: 'driEmail',
+                headerName: 'DRI',
+                width: 300,
             }
         ];
     }

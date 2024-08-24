@@ -31,6 +31,7 @@ class ProjectService {
     async airtableTransform(fields: any): Promise<any> {
         return dasAirtableService.getRecord(PARTNER_TABLE, fields.Partner[0])
             .then(resp => {
+                console.log('ven',fields)
                 const logos: any[] = resp.fields['logo'] as any[];
                 return {
                     id: fields['AirTable ID'],
@@ -48,9 +49,7 @@ class ProjectService {
                     evaluatingTaskGroup: fields['Evaluating Task Group'] ? fields['Evaluating Task Group'][0] : undefined,
                 }
             })
-            .catch(err => console.error(err))
     }
-
 
     async getAll(): Promise<any[]> {
         const MAX_RECORDS = 100;
