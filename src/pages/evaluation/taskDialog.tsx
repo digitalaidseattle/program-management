@@ -4,7 +4,7 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 // material-ui
 import {
@@ -24,7 +24,6 @@ import {
 } from '@mui/material';
 import { Task } from '../../services/dasTaskGroupService';
 import useAppConstants from '../../services/useAppConstants';
-import { dasVolunteerService } from '../../services/dasVolunteerService';
 
 interface TaskDialogProps {
     open: boolean,
@@ -37,14 +36,8 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, task, handleSuccess }) =>
     // const { user } = useContext(UserContext)
     const { data: sources } = useAppConstants('TASK-STATUS');
     // const [setStatus] = useState<string>("inbox");
-    const [volunteers, setVolunteers] = useState<any[]>([]);
     const iconBackColorOpen = 'grey.300';
     const iconBackColor = 'grey.100';
-
-    useEffect(() => {
-        dasVolunteerService.getAll()
-            .then(vols => setVolunteers(vols))
-    }, [])
 
     return <Dialog
         fullWidth={true}

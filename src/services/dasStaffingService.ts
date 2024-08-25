@@ -10,8 +10,6 @@ import { dasAirtableService } from "./airtableService";
 
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
 
-const MAX_RECORDS = 100;
-
 type StaffingNeed = {
     id: string,
     status: string,

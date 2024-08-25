@@ -6,35 +6,26 @@
  *
  */
 
-import { IconButton, Stack, Typography } from "@mui/material";
-import { VentureProps } from "../../services/dasVentureService";
-import { useContext, useEffect, useState } from "react";
-import { dasVolunteerService } from "../../services/dasVolunteerService";
-import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { dasTaskGroupService } from "../../services/dasTaskGroupService";
-import { dasStaffingService, StaffingNeed } from "../../services/dasStaffingService";
-import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
-import { PageInfo } from "../../services/supabaseClient";
 import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { IconButton, Stack, Typography } from "@mui/material";
+import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
+import { useContext, useEffect, useState } from "react";
+import { LoadingContext } from "../../components/contexts/LoadingContext";
+import { dasStaffingService } from "../../services/dasStaffingService";
+import { VentureProps } from "../../services/dasVentureService";
+import { PageInfo } from "../../services/supabaseClient";
 
 const PAGE_SIZE = 10;
 
 export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
 
-    const [volunteers, setVolunteers] = useState<any[]>();
-    const [staffingNeeds, setStaffingNeeds] = useState<StaffingNeed[]>([]);
-    const [responsible, setResponsible] = useState<any[]>([]);
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: PAGE_SIZE });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
     const [pageInfo, setPageInfo] = useState<PageInfo<any>>({ rows: [], totalRowCount: 0 });
     const apiRef = useGridApiRef();
 
 
-    useEffect(() => {
-        dasVolunteerService.getAll()
-            .then(vols => setVolunteers(vols))
-    }, []);
 
     useEffect(() => {
         if (venture) {
@@ -47,7 +38,6 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 .then((staff: any) => {
                     console.log(staff)
                     setPageInfo({ rows: staff, totalRowCount: staff.length });
-                    setStaffingNeeds(staff)
                 })
                 .finally(() => setLoading(false))
 
@@ -67,6 +57,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     // }, [volunteers, taskGroup])
 
     const handleEditClick = (id: GridRowId) => () => {
+        console.log(id)
     };
 
     const handleAddClick = () => {
