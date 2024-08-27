@@ -67,7 +67,7 @@ const EvaluationsPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    projectService.getAllByStatus(['Active', 'Under evaluation', 'Declined'])
+    projectService.getAllByStatus(['Active', 'Under evaluation', "Declined"])
       .then((ventures: any[]) => setVentures(ventures))
       .finally(() => setLoading(false))
   }, [refresh])

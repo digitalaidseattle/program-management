@@ -25,8 +25,6 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const [pageInfo, setPageInfo] = useState<PageInfo<any>>({ rows: [], totalRowCount: 0 });
     const apiRef = useGridApiRef();
 
-
-
     useEffect(() => {
         if (venture) {
             setLoading(true);

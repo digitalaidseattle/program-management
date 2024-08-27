@@ -21,9 +21,7 @@ type Task = {
 }
 class DASTaskGroupService {
     getTasks = async (taskGroup: any): Promise<any> => {
-        // REVIEW This should work, but doesn't
         const FILTER = `FIND('${taskGroup.taskGroupCode}', ARRAYJOIN({Task Group}))`;
-        // const FILTER = `OR(${taskGroup.taskIds.map((tid: any) => `'${tid}' = {UID}`).join(', ')})`;
         return dasAirtableService
             .getAll(TASK_DETAIL_TABLE, FILTER)
             .then(records => {

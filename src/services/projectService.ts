@@ -63,7 +63,6 @@ class ProjectService {
     async getAllByStatus(filteredStatuses: string[]): Promise<any[]> {
         const MAX_RECORDS = 100;
         const FILTER = `OR(${filteredStatuses.map(s => `{Status} = "${s}"`).join(", ")})`;
-        // const ACTIVE_FILTER = '';
         return await dasAirtableService
             .getTableRecords(VENTURES_TABLE, MAX_RECORDS, FILTER)
             .then(records => Promise.all(records.map(record => this.airtableTransform(record.fields))))

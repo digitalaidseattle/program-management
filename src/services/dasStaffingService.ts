@@ -37,15 +37,9 @@ class DASStaffingService {
     }
 
     async findAll(project?: any): Promise<StaffingNeed[]> {
-        // const FILTER = `OR(${taskGroup.taskIds.map((tid: any) => `'${tid}' = {UID}`).join(', ')})`;
-
         const filter = project
             ? `FIND('${project.ventureCode}', ARRAYJOIN({Prospective Ventures}))`
             : ''
-
-        // const FILTER = `'${project.id}' = {Prospective Ventures}`;
-        console.log('FILTER', filter)
-
         return dasAirtableService.getAll(STAFFING_TABLE, filter)
             .then(records => records.map(r => this.transform(r)))
 
