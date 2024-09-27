@@ -37,7 +37,7 @@ class DASVolunteerService {
             firstName: r.fields['First name'],
             lastName: r.fields['Last name'],
             affliation: r.fields['Affiliation (from Volunteer Affiliation)'],
-            status: r.fields['Venture Status'],
+            status: r.fields['Manual Status'],
             ventures: r.fields['Prospective Ventures (from Squad Match Role)'],
             joinDate: r.fields['join date'],
             ventureDate: r.fields['Affiliation Start Date (from Volunteer Affiliation)'],

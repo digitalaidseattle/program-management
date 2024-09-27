@@ -6,19 +6,25 @@
  */
 
 import { dasAirtableService } from "./airtableService";
+import { Task } from "./dasTaskService";
 
 const TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
 const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
 
-type Task = {
-    id: string;
-    title: string;
-    phase: number;
-    requestDetails: string;
-    driId: string;
-    driEmail: string;
-    status: string;
+type TaskGroup = {
+    id: string,
+    name: string,
+    taskGroupCode: string,
+    taskIds: string[],
+    driveUrl: string,
+    requestDetails: string,
+    weeklyStatusSummary: string,
+    responsibleIds: string[],
+    ventureProductManagerIds: string[],
+    ventureProjectManagerIds: string[],
+    contributorPdMIds: string[]
 }
+
 class DASTaskGroupService {
     getTasks = async (taskGroup: any): Promise<any> => {
         const FILTER = `FIND('${taskGroup.taskGroupCode}', ARRAYJOIN({Task Group}))`;
@@ -28,7 +34,7 @@ class DASTaskGroupService {
                 return records
                     .map(record => {
                         // console.log('getTasks', record.fields)
-                        
+
                         return {
                             id: record.id,
                             title: record.fields['The request'],
@@ -44,11 +50,10 @@ class DASTaskGroupService {
             })
     }
 
-    getById = async (id: string): Promise<any> => {
+    getById = async (id: string): Promise<TaskGroup> => {
         return dasAirtableService
             .getRecord(TASK_GROUP_TABLE, id)
             .then(r => {
-                console.log('getById', r)
                 const taskGroup = {
                     id: r.id,
                     name: r.fields["Task Group name"],
@@ -60,8 +65,9 @@ class DASTaskGroupService {
                     responsibleIds: r.fields["Responsible"],
                     ventureProductManagerIds: r.fields["Venture Product Manager"],
                     ventureProjectManagerIds: r.fields["Venture Project Manager"],
-                    contributorPdMIds: r.fields["Contributor PdM"],                   
-                }
+                    contributorPdMIds: r.fields["Contributor PdM"],
+                    partnerId: r.fields["Partner"].length > 0 ? r.fields["Partner"][0] : ""
+                } as TaskGroup
                 return this.getTasks(taskGroup)
                     .then(tds => Object.assign(taskGroup, { tasks: tds }))
 
@@ -72,4 +78,4 @@ class DASTaskGroupService {
 
 const dasTaskGroupService = new DASTaskGroupService()
 export { dasTaskGroupService };
-export type { Task }
+export type { TaskGroup }

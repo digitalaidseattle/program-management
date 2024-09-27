@@ -143,6 +143,7 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
             </Stack>
             <TaskDialog
                 open={showEditTask}
+                taskGroup={taskGroup}
                 task={selectedTask}
                 handleSuccess={function (): void {
                     setShowEditTask(false)

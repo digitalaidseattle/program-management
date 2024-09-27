@@ -21,8 +21,8 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import SortableItem from '../../components/SortableItem';
-import { dasTaskService } from '../../services/dasTaskService';
 import { SprintProps } from '../../services/dasVentureService';
+import { pmTaskService } from '../../services/pmTaskService';
 
 export const STATUSES = [
     "Not Started",
@@ -86,7 +86,7 @@ const SprintBoard: React.FC<SprintProps> = ({ sprint }) => {
 
     useEffect(() => {
         if (sprint) {
-            Promise.all(sprint.taskIds.map((t: string) => dasTaskService.getById(t)))
+            Promise.all(sprint.taskIds.map((t: string) => pmTaskService.getById(t)))
                 .then(resps => setTasks(resps))
         }
     }, [sprint]);
