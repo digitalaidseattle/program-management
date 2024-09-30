@@ -95,8 +95,8 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
     }
 
     const changeTitle = (value: any) => {
-        fields.requestDetails = value;
-        setChanges(Object.assign(changes, { 'The Request': value }))
+        fields.title = value;
+        setChanges(Object.assign(changes, {'The Request': value }))
         setFields(Object.assign({}, fields));
         setDisabled(false);
     }
@@ -149,8 +149,6 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                             label="Title"
                             fullWidth
                             variant="outlined"
-                            multiline
-                            rows={12}
                             onChange={(evt) => changeTitle(evt.target.value)}
                         />
                         <FormControl>
@@ -219,7 +217,7 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                             fullWidth
                             variant="outlined"
                             multiline
-                            rows={12}
+                            rows={8}
                             onChange={(evt) => changeRequestDetails(evt.target.value)}
                         />
                     </Stack>

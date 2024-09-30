@@ -18,12 +18,13 @@ import {
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { dasTaskGroupService, Task } from "../../services/dasTaskGroupService";
+import { dasTaskGroupService } from "../../services/dasTaskGroupService";
 import { VentureProps } from "../../services/dasVentureService";
 import { PageInfo } from "../../services/supabaseClient";
 // assets
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import TaskDialog from "./taskDialog";
+import { Task } from "../../services/dasTaskService";
 
 const PAGE_SIZE = 10;
 

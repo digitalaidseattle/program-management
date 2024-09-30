@@ -6,13 +6,70 @@
  *
  */
 
-import { Card, CardContent, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Chip, Dialog, DialogContent, DialogTitle, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
 import { EditBlock, EditLink } from "../../components/EditBlock";
 import { VentureProps } from "../../services/dasVentureService";
 import { projectService } from "../../services/projectService";
 import { dasPartnerService, Partner } from "../../services/dasPartnerService";
+import useVolunteers from "../../services/useVolunteers";
+import { EditOutlined } from "@ant-design/icons";
+import { TaskGroup } from "../../services/dasTaskGroupService";
+import TaskGroupDialog from "./taskGroupDialog";
+
+export const TaskGroupDetailsSection = (props: { taskGroup: TaskGroup }) => {
+    const volunteers = useVolunteers();
+    const [initialized, setInitialized] = useState<boolean>(false);
+    const [responsibleVolunteers, setResponsibleVolunteers] = useState<any[]>([]);
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const { setRefresh } = useContext(RefreshContext);
+
+    useEffect(() => {
+        if (!initialized) {
+            if (volunteers.status === 'fetched' && props.taskGroup) {
+                setResponsibleVolunteers(volunteers.data
+                    .filter(v => props.taskGroup.responsibleIds.includes(v.id))
+                )
+                setInitialized(true)
+            }
+        }
+    }, [volunteers, props])
+
+    return (
+        <>
+            <Card>
+                <CardContent>
+                    <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+                        Task Group Details
+                        <IconButton size="small" color="primary" onClick={() => setShowDialog(true)}>
+                            <EditOutlined />
+                        </IconButton>
+                    </Typography>
+                    <Stack direction={'column'} gap={'0.5rem'}>
+                        <Stack direction={'row'} gap={'0.5rem'} sx={{ justifyContent: 'space-between' }}>
+                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Name:</FormLabel><Typography>{props.taskGroup.name}</Typography></Stack>
+                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Priority:</FormLabel><Chip label={props.taskGroup.priority} color="primary" variant="filled" /></Stack>
+                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Status:</FormLabel><Chip label={props.taskGroup.status} color="warning" /></Stack>
+                        </Stack>
+                        <FormLabel>Request Details:</FormLabel><Typography>{props.taskGroup.requestDetails}</Typography>
+                        <FormLabel>G Drive:</FormLabel><Link href={props.taskGroup.driveUrl} >{props.taskGroup.driveUrl}</Link>
+                        <FormLabel>Responsible:</FormLabel><Typography>{responsibleVolunteers.map(v => v.name).join(', ')}</Typography>
+                    </Stack>
+                </CardContent>
+            </Card>
+            <TaskGroupDialog
+                open={showDialog}
+                taskGroup={props.taskGroup}
+                handleSuccess={() => {
+                    setRefresh(0);
+                    setShowDialog(false)
+                }}
+                handleError={e => console.error(e)}
+            />
+        </>
+    )
+}
 
 export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setRefresh } = useContext(RefreshContext);
@@ -22,10 +79,7 @@ export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
         console.log('venture', venture)
         if (venture) {
             dasPartnerService.getById(venture.taskGroup.partnerId)
-                .then(p => {
-                    console.log("partner", p);
-                    setPartner(p)
-                })
+                .then(p => setPartner(p))
         }
     }, [venture])
 
@@ -78,13 +132,16 @@ export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
                 <Typography> {venture.title}</Typography>
             </Stack>
             <Stack direction="row" spacing={2}>
-                <Typography fontWeight={600}>Status: </Typography>
+                <Typography fontWeight={600}>Venture Status: </Typography>
                 <Typography> {venture.status}</Typography>
             </Stack>
             <Stack direction="row" spacing={2}>
                 <Typography fontWeight={600}>Painpoint: </Typography>
                 <Typography>{venture.painpoint}</Typography>
             </Stack>
+            {venture.taskGroup &&
+                <TaskGroupDetailsSection taskGroup={venture.taskGroup} />
+            }
             <Card>
                 <CardContent>
                     <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
