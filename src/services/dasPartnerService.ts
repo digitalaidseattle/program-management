@@ -25,7 +25,6 @@ class DASPartnerService {
         return dasAirtableService
             .getRecord(PARTNERS_TABLE, id)
             .then(record => {
-                console.log('getById', record)
                 return {
                     id: record.id,
                     name: record.fields['Org name'],

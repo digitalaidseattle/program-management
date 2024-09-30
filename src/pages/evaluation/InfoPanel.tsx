@@ -6,16 +6,16 @@
  *
  */
 
-import { Card, CardContent, Chip, Dialog, DialogContent, DialogTitle, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
+import { EditOutlined } from "@ant-design/icons";
+import { Card, CardContent, Chip, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
 import { EditBlock, EditLink } from "../../components/EditBlock";
+import { dasPartnerService, Partner } from "../../services/dasPartnerService";
+import { TaskGroup } from "../../services/dasTaskGroupService";
 import { VentureProps } from "../../services/dasVentureService";
 import { projectService } from "../../services/projectService";
-import { dasPartnerService, Partner } from "../../services/dasPartnerService";
 import useVolunteers from "../../services/useVolunteers";
-import { EditOutlined } from "@ant-design/icons";
-import { TaskGroup } from "../../services/dasTaskGroupService";
 import TaskGroupDialog from "./taskGroupDialog";
 
 export const TaskGroupDetailsSection = (props: { taskGroup: TaskGroup }) => {
@@ -76,7 +76,6 @@ export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
     const [partner, setPartner] = useState<Partner>();
 
     useEffect(() => {
-        console.log('venture', venture)
         if (venture) {
             dasPartnerService.getById(venture.taskGroup.partnerId)
                 .then(p => setPartner(p))

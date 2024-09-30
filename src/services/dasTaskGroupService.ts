@@ -65,7 +65,7 @@ class DASTaskGroupService {
             priority: record.fields["Priority"],
             status: record.fields["Status"],
             partnerId: record.fields["Partner"].length > 0 ? record.fields["Partner"][0] : "",
-            disciplinesRequiredId: record.fields["Disciplines required"]
+            disciplinesRequiredId: record.fields["Disciplines required"] ?? []
         }
     }
 

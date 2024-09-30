@@ -9,6 +9,7 @@ import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle
 import { useEffect, useState } from "react";
 import { DASTaskGroupService, dasTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
 import useVolunteers from "../../services/useVolunteers";
+import { useDisciplines } from "../../services/dasDisciplinesService";
 
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
@@ -21,6 +22,7 @@ interface TaskGroupDialogProps {
 }
 const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, handleSuccess, handleError }) => {
     const { data: volunteers } = useVolunteers();
+    const { data: disciplines } = useDisciplines();
 
     const [fields, setFields] = useState<any>();
     const [disabled, setDisabled] = useState<boolean>(true);
@@ -35,6 +37,7 @@ const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, hand
             recordFields["Priority"] = taskGroup.priority ?? ''
             recordFields["Status"] = taskGroup.status ?? ''
             recordFields["Responsible"] = taskGroup.responsibleIds
+            recordFields["Disciplines required"] = taskGroup.disciplinesRequiredId
             setFields(recordFields)
         }
     }, [taskGroup]);
@@ -50,6 +53,7 @@ const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, hand
     }
 
     const change = (field: string, value: any) => {
+        console.log(disciplines)
         fields[field] = value;
         setFields(Object.assign({}, fields));
         // stringify & parse needed for string keys
@@ -113,7 +117,7 @@ const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, hand
                         onChange={(evt) => change("Drive URL", evt.target.value)}
                     />
                     <Autocomplete
-                        id="tags-standard"
+                        id="volunteers"
                         multiple
                         options={volunteers}
                         getOptionLabel={(option) => option.name}
@@ -126,6 +130,23 @@ const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, hand
                                 variant="outlined"
                                 label="Responsible"
                                 placeholder="DAS Member"
+                            />
+                        )}
+                    />
+                    <Autocomplete
+                        id="disciplines"
+                        multiple
+                        options={disciplines}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        value={disciplines.filter(d => fields['Disciplines required'].includes(d.id))}
+                        onChange={(_event, newValue) => change('Disciplines required', newValue.map(d => d.id))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="outlined"
+                                label="Disciplines Required"
+                                placeholder="Project Manager"
                             />
                         )}
                     />
