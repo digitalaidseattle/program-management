@@ -31,7 +31,6 @@ class ProjectService {
     async airtableTransform(fields: any): Promise<any> {
         return dasAirtableService.getRecord(PARTNER_TABLE, fields.Partner[0])
             .then(resp => {
-                console.log('ven',fields)
                 const logos: any[] = resp.fields['logo'] as any[];
                 return {
                     id: fields['AirTable ID'],

@@ -25,6 +25,7 @@ import { PageInfo } from "../../services/supabaseClient";
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import TaskDialog from "./taskDialog";
 import { Task } from "../../services/dasTaskService";
+import { RefreshContext } from "../../components/contexts/RefreshContext";
 
 const PAGE_SIZE = 10;
 
@@ -37,6 +38,7 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
     const [pageInfo, setPageInfo] = useState<PageInfo<any>>({ rows: [], totalRowCount: 0 });
     const [selectedTask, setSelectedTask] = useState<Task>();
     const [showEditTask, setShowEditTask] = useState<boolean>(false);
+    const { setRefresh } = useContext(RefreshContext);
     const apiRef = useGridApiRef();
 
     useEffect(() => {
@@ -60,7 +62,6 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
         setSelectedTask({} as Task);
         setShowEditTask(true);
     };
-
 
     const getColumns = (): GridColDef[] => {
         return [
@@ -143,10 +144,11 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
                 />
             </Stack>
             <TaskDialog
+                entity={selectedTask!}
                 open={showEditTask}
                 taskGroup={taskGroup}
-                task={selectedTask}
                 handleSuccess={function (): void {
+                    setRefresh(0);
                     setShowEditTask(false)
                 }}
                 handleError={function (): void {

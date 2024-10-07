@@ -14,13 +14,7 @@ import { useDisciplines } from "../../services/dasDisciplinesService";
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
 
-interface TaskGroupDialogProps {
-    open: boolean,
-    taskGroup: TaskGroup,
-    handleSuccess: (resp: TaskGroup | null) => void,
-    handleError: (err: Error) => void
-}
-const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, handleSuccess, handleError }) => {
+const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity: taskGroup, handleSuccess, handleError }) => {
     const { data: volunteers } = useVolunteers();
     const { data: disciplines } = useDisciplines();
 
@@ -42,6 +36,14 @@ const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, hand
         }
     }, [taskGroup]);
 
+    const change = (field: string, value: any) => {
+        fields[field] = value;
+        setFields(Object.assign({}, fields));
+        // stringify & parse needed for string keys
+        setChanges(Object.assign(changes, JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)))
+        setDisabled(false);
+    }
+
     const handleSubmit = () => {
         dasTaskGroupService
             .update({
@@ -50,15 +52,6 @@ const TaskGroupDialog: React.FC<TaskGroupDialogProps> = ({ open, taskGroup, hand
             })
             .then(res => handleSuccess(res[0]))
             .catch(e => handleError(e))
-    }
-
-    const change = (field: string, value: any) => {
-        console.log(disciplines)
-        fields[field] = value;
-        setFields(Object.assign({}, fields));
-        // stringify & parse needed for string keys
-        setChanges(Object.assign(changes, JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)))
-        setDisabled(false);
     }
 
     return <Dialog

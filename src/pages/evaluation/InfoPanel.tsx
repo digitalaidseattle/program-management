@@ -59,8 +59,8 @@ export const TaskGroupDetailsSection = (props: { taskGroup: TaskGroup }) => {
                 </CardContent>
             </Card>
             <TaskGroupDialog
+                entity={props.taskGroup}
                 open={showDialog}
-                taskGroup={props.taskGroup}
                 handleSuccess={() => {
                     setRefresh(0);
                     setShowDialog(false)

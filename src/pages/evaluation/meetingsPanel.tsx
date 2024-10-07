@@ -12,26 +12,37 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRen
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { dasMeetingService } from "../../services/dasMeetingService";
-import { dasTaskGroupService } from "../../services/dasTaskGroupService";
+import { dasMeetingService, Meeting } from "../../services/dasMeetingService";
+import { dasTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
 import { VentureProps } from "../../services/dasVentureService";
 import { PageInfo } from "../../services/supabaseClient";
+import MeetingDialog from "./meetingDialog";
+import { RefreshContext } from "../../components/contexts/RefreshContext";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { TeamContext } from "../../services/dasTeamsService";
 
 
 
 export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
+    const { setRefresh } = useContext(RefreshContext);
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
     const [pageInfo, setPageInfo] = useState<PageInfo<any>>({ rows: [], totalRowCount: 0 });
+    const [taskGroup, setTaskGroup] = useState<TaskGroup>();
+    const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+    const { team } = useContext(TeamContext);
     const apiRef = useGridApiRef();
+    const [selectedMeeting, setSelectedMeeting] = useState<Meeting>();
 
     useEffect(() => {
         if (venture) {
             setLoading(true);
             dasTaskGroupService.getById(venture.evaluatingTaskGroup)
                 .then((tg: any) => {
+                    setTaskGroup(tg)
                     dasMeetingService.findAll(tg)
                         .then((meetings: any) => {
                             const sorted = meetings.sort((m1: any, m2: any) => m2.startDateTime.time > m1.startDateTime.time);
@@ -39,9 +50,18 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                         })
                 })
                 .finally(() => setLoading(false))
-
         }
     }, [venture]);
+
+    useEffect(() => {
+        if (taskGroup) {
+            dasMeetingService.findAll(taskGroup)
+                .then((meetings: any) => {
+                    const sorted = meetings.sort((m1: any, m2: any) => m2.startDateTime.time > m1.startDateTime.time);
+                    setPageInfo({ rows: sorted, totalRowCount: sorted.length });
+                })
+        }
+    }, [taskGroup]);
 
 
     const handleEditClick = (id: GridRowId) => () => {
@@ -49,6 +69,11 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     };
 
     const handleAddClick = () => {
+        const newMeeting = dasMeetingService.newMeeting();
+        newMeeting.taskGroupCode = [taskGroup?.taskGroupCode!];
+        newMeeting.teamIds = [team?.id!];
+        setSelectedMeeting(newMeeting)
+        setShowCreateDialog(true)
     };
 
     const getColumns = (): GridColDef[] => {
@@ -92,7 +117,7 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                 )
             },
             {
-                field: 'meetingPurpose',
+                field: 'purpose',
                 headerName: 'Purpose',
                 width: 300,
             },
@@ -107,7 +132,6 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
             }
         ];
     }
-
 
     return (venture &&
         <>
@@ -136,6 +160,19 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                     disableRowSelectionOnClick
                 />
             </Stack>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <MeetingDialog
+                    entity={selectedMeeting!}
+                    open={showCreateDialog}
+                    handleSuccess={function (): void {
+                        setRefresh(0);
+                        setShowCreateDialog(false)
+                    }}
+                    handleError={function (err: Error): void {
+                        throw new Error("Function not implemented.");
+                    }}
+                    taskGroup={taskGroup!} />
+            </LocalizationProvider>
         </>
     )
 };

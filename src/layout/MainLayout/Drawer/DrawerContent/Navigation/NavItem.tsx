@@ -24,6 +24,8 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
 
   // active menu item on page load
   useEffect(() => {
+    // FIXME assign menuitem for different pages
+    console.log('pathname', pathname)
     if (pathname.includes(item.url)) {
       setActiveMenuItem(item.id);
     }

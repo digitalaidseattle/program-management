@@ -4,7 +4,7 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // material-ui
 import {
@@ -30,81 +30,46 @@ import useVolunteers from '../../services/useVolunteers';
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
 
-interface TaskDialogProps {
-    open: boolean,
-    taskGroup: TaskGroup,
-    task: Task | undefined,
-    handleSuccess: (resp: Task | null) => void,
-    handleError: (err: Error) => void
-}
-const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSuccess }) => {
 
-    // const { user } = useContext(UserContext)
+const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> = ({ open, entity: task, handleSuccess, handleError, taskGroup }) => {
+
     const { data: statuses } = useAppConstants('TASK-STATUS');
     const volunteers = useVolunteers();
-    // const [setStatus] = useState<string>("inbox");
-    const [changes, setChanges] = useState<any>({});
-    const [fields, setFields] = useState<any>({
-        title: '',
-        status: '',
-        requestDetails: '',
-        driId: '',
-        phase: 0
-    });
-    const [initialized, setInitialized] = useState<boolean>(false);
-    const [disabled, setDisabled] = useState<boolean>(true);
-    const [taskGroupVolunteers, setTaskGroupVolunteers] = useState<any[]>([]);
 
-    useEffect(() => {
-        if (!initialized) {
-            if (volunteers.status === 'fetched' && taskGroup && task) {
-                console.log("task", task);
-                setTaskGroupVolunteers(volunteers.data
-                    .filter(v => taskGroup.responsibleIds.includes(v.id)
-                        || (task.driId && task.driId.includes(v.id)))
-                )
-                setInitialized(true)
-            }
+    const [fields, setFields] = useState<any>();
+    const [disabled, setDisabled] = useState<boolean>(true);
+    const [changes, setChanges] = useState<any>({});
+
+    const lookup = (volunteers: any, task: Task, taskGroup: TaskGroup) => {
+        if (volunteers.status === 'fetched' && taskGroup && task) {
+            return volunteers.data
+                .filter((v: any) => taskGroup.responsibleIds.includes(v.id)
+                    || (task.driId && task.driId.includes(v.id)))
         }
-    }, [volunteers, task, taskGroup, initialized])
+    }
+
+    const taskGroupVolunteers = useMemo(
+        () => lookup(volunteers, task, taskGroup),
+        [volunteers, task, taskGroup]
+    )
 
     useEffect(() => {
         if (task) {
-            setFields(Object.assign({}, {
-                title: task.title,
-                status: task.status,
-                requestDetails: task.requestDetails,
-                driId: (task.driId && task.driId.length > 0) ? task.driId[0] : undefined,
-                phase: task.phase
-            }))
+            const recordFields: any = {}
+            recordFields["TThe Request"] = task.title
+            recordFields["Status"] = task.status
+            recordFields["Request Details"] = task.requestDetails
+            recordFields["DRI"] = task.driId
+            recordFields["Phase"] = task.phase
+            setFields(recordFields)
         }
-    }, [task])
+    }, [task]);
 
-    const changeStatus = (value: any) => {
-        fields.status = value;
-        setChanges(Object.assign(changes, { 'Status': value }))
+    const change = (field: string, value: any) => {
+        fields[field] = value;
         setFields(Object.assign({}, fields));
-        setDisabled(false);
-    }
-
-    const changeDri = (value: any) => {
-        fields.status = value;
-        // setChanges(Object.assign(changes, { 'Status': value }))
-        // setFields(Object.assign({}, fields));
-        setDisabled(false);
-    }
-
-    const changeTitle = (value: any) => {
-        fields.title = value;
-        setChanges(Object.assign(changes, {'The Request': value }))
-        setFields(Object.assign({}, fields));
-        setDisabled(false);
-    }
-
-    const changeRequestDetails = (value: any) => {
-        fields.requestDetails = value;
-        setChanges(Object.assign(changes, { 'Request Details': value }))
-        setFields(Object.assign({}, fields));
+        // stringify & parse needed for string keys
+        setChanges(Object.assign(changes, JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)))
         setDisabled(false);
     }
 
@@ -115,6 +80,7 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                 fields: changes
             })
             .then(res => handleSuccess(res[0]))
+            .catch(e => handleError(e))
     }
 
     return <Dialog
@@ -135,7 +101,7 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
     >
         <DialogTitle><Typography fontSize={24}>Update Task</Typography></DialogTitle>
         <DialogContent>
-            {task &&
+            {fields &&
                 <Stack spacing={2}>
                     <DialogContentText>
                         Title: {task.title}
@@ -145,20 +111,20 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                             id="title"
                             name="title"
                             type="text"
-                            value={fields.title}
+                            value={fields['The Request']}
                             label="Title"
                             fullWidth
                             variant="outlined"
-                            onChange={(evt) => changeTitle(evt.target.value)}
+                            onChange={(evt) => change('The Request', evt.target.value)}
                         />
                         <FormControl>
                             <InputLabel>Status</InputLabel>
                             <Select
                                 id="status"
                                 name="status"
-                                value={fields.status}
+                                value={fields['Status']}
                                 label="Status"
-                                onChange={(evt) => changeStatus(evt.target.value)}
+                                onChange={(evt) => change('Status', evt.target.value)}
                                 fullWidth
                                 required={true}
                             >
@@ -174,9 +140,9 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                             <Select
                                 id="dri"
                                 name="dri"
-                                value={fields.driId}
+                                value={fields['DRI']}
                                 label="DRI"
-                                onChange={(evt) => changeDri(evt.target.value)}
+                                onChange={(evt) => change('DRI', evt.target.value)}
                                 fullWidth
                             >
                                 {taskGroupVolunteers.map((vol, idx: number) =>
@@ -191,9 +157,9 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                             <Select
                                 id="phase"
                                 name="phase"
-                                value={fields.phase}
+                                value={fields['Phase']}
                                 label="Phase"
-                                onChange={(evt) => changeDri(evt.target.value)}
+                                onChange={(evt) => change('Phase', evt.target.value.toString())}
                                 fullWidth
                                 required={true}
                             >
@@ -212,13 +178,13 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, taskGroup, task, handleSu
                             id="requestDetails"
                             name="requestDetails"
                             type="text"
-                            value={fields.requestDetails}
+                            value={fields['Request Details']}
                             label="Description"
                             fullWidth
                             variant="outlined"
                             multiline
                             rows={8}
-                            onChange={(evt) => changeRequestDetails(evt.target.value)}
+                            onChange={(evt) => change('Request Details', evt.target.value)}
                         />
                     </Stack>
                 </Stack>

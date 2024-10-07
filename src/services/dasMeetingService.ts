@@ -5,22 +5,97 @@
  *
  */
 
-import { FieldSet, Record } from "airtable";
 import { dasAirtableService } from "./airtableService";
 
 const MEETING_TABLE = 'tblWwnZ8rjLFjQizJ';
 
-class DASMeetingService {
+// const MAX_RECORDS = 200;
+// const FILTER = ``
 
-    transform(r: Record<FieldSet>): any {
-        console.log(r)
+type Meeting = {
+    id: string
+    title: string
+    taskGroupCode: string[]
+    type: "Plenary" | "Leadership" | "Team meeting" | "Task Group" | "Ad hoc" | "Venture in Evaluation Task Group "
+    createdVia: " AirTable" | "Gcal"
+    purpose: string,
+    topics: string,
+    startDateTime: Date | undefined,
+    duration: "25" | "40" | "50" | "80",
+    attendees: string[],
+    teamIds: string[],
+    attendance: string[]
+}
+
+
+class DASMeetingService {
+    static TYPES = [
+        "Plenary", "Leadership", "Team meeting", "Task Group", "Ad hoc", "Venture in Evaluation Task Group "
+    ]
+    static CREATION_TYPES = [
+        " AirTable", "Gcal"
+    ]
+    static DURATIONS = [
+        "25", "40", "50", "80"
+    ]
+
+    newMeeting(): Meeting {
         return {
-            id: r.id,
-            title: r.fields['Meeting'],
-            meetingPurpose: r.fields['Meeting purpose'],
-            startDateTime: r.fields['Start Date/Time'] ? new Date(Date.parse(r.fields['Start Date/Time'] as string)) : undefined,
-            attendees: (r.fields['Attendance names'] as string[]).filter(n => n),
+            id: "",
+            title: "",
+            taskGroupCode: [],
+            type: "Venture in Evaluation Task Group ",
+            createdVia: " AirTable",
+            purpose: "",
+            topics: "",
+            startDateTime: new Date(),
+            duration: "25",
+            attendees: [],
+            teamIds: [],
+            attendance: []
         }
+    }
+
+    async create(fields: any): Promise<Meeting> {
+        return dasAirtableService
+            .base(MEETING_TABLE)
+            .create([{ fields: fields }])
+            .then((resp: any) => {
+                console.log(resp)
+                if (resp.error) {
+                    throw resp.error
+                }
+                return this.transform(resp[0])
+            })
+    }
+
+    transform = (record: any): Meeting => {
+        return {
+            id: record.id,
+            title: record.fields['Meeting'],
+            taskGroupCode: record.fields["Task group"],
+            type: record.fields["type"],
+            createdVia: record.fields["Created via"],
+            purpose: record.fields["Meeting purpose"],
+            topics: record.fields["Topics"],
+            startDateTime: record.fields['Start Date/Time'] ? new Date(Date.parse(record.fields['Start Date/Time'] as string)) : undefined,
+            duration: record.fields["Meeting duration in minutes"],
+            attendees: (record.fields['Attendance names'] as string[]).filter(n => n),
+            teamIds: record.fields['Team'],
+            attendance: record.fields['Attendance']
+        }
+    }
+
+    async update(changes: { id: string; fields: any; }): Promise<Meeting> {
+        return dasAirtableService
+            .base(MEETING_TABLE)
+            .update([changes])
+            .then((resp: any) => {
+                if (resp.error) {
+                    throw resp.error
+                }
+                return this.transform(resp[0])
+            })
     }
 
     async findAll(tg?: any): Promise<any[]> {
@@ -35,5 +110,6 @@ class DASMeetingService {
 }
 
 const dasMeetingService = new DASMeetingService();
-export { dasMeetingService };
+export { dasMeetingService, DASMeetingService };
+export type { Meeting };
 
