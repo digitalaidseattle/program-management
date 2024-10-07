@@ -51,7 +51,11 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGrou
         } else {
             dasMeetingService
                 .create(fields)
-                .then(res => handleSuccess(res))
+                .then(res => {
+                    // TODO add attendance
+                    console.log(res, taskGroup)
+                    handleSuccess(res)
+                })
                 .catch(e => handleError(e))
         }
         setFields(undefined)

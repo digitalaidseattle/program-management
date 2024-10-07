@@ -26,6 +26,7 @@ import { TaskGroup } from '../../services/dasTaskGroupService';
 import { dasTaskService, Task } from '../../services/dasTaskService';
 import useAppConstants from '../../services/useAppConstants';
 import useVolunteers from '../../services/useVolunteers';
+import { Volunteer } from '../../services/dasVolunteerService';
 
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
@@ -145,7 +146,7 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
                                 onChange={(evt) => change('DRI', evt.target.value)}
                                 fullWidth
                             >
-                                {taskGroupVolunteers.map((vol, idx: number) =>
+                                {taskGroupVolunteers.map((vol : Volunteer, idx: number) =>
                                     <MenuItem key={idx} value={vol.id}>
                                         {vol.name}
                                     </MenuItem>

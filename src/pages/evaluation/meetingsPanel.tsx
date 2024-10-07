@@ -170,6 +170,7 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                     }}
                     handleError={function (err: Error): void {
                         throw new Error("Function not implemented.");
+                        console.error(err)
                     }}
                     taskGroup={taskGroup!} />
             </LocalizationProvider>
