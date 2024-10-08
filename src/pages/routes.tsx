@@ -1,3 +1,4 @@
+import { redirect } from 'react-router';
 import MainLayout from '../layout/MainLayout';
 import MinimalLayout from '../layout/MinimalLayout';
 import PrivacyPage from './PrivacyPage';
@@ -17,6 +18,10 @@ const routes = [
     children: [
       {
         path: "",
+        element: <EvaluationsPage />,
+      },
+      {
+        path: "dashboard",
         element: <DashboardDefault />,
       },
       {
@@ -38,8 +43,7 @@ const routes = [
       {
         path: "evaluations",
         element: <EvaluationsPage />,
-      }
-      ,
+      },
       {
         path: "evaluation/:id",
         element: <EvaluationPage />,

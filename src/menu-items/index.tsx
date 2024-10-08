@@ -37,22 +37,22 @@ const radiator = {
   title: 'Navigation',
   type: 'group',
   children: [
-    {
-      id: 'dashboard',
-      title: 'Dashboard',
-      type: 'item',
-      url: '/',
-      icon: icons.DashboardOutlined,
-      breadcrumbs: false
-    },
-    {
-      id: 'ventures',
-      title: 'Ventures',
-      type: 'item',
-      url: '/ventures',
-      icon: icons.FileOutlined,
-      breadcrumbs: false
-    },
+    // {
+    //   id: 'dashboard',
+    //   title: 'Dashboard',
+    //   type: 'item',
+    //   url: '/',
+    //   icon: icons.DashboardOutlined,
+    //   breadcrumbs: false
+    // },
+    // {
+    //   id: 'ventures',
+    //   title: 'Ventures',
+    //   type: 'item',
+    //   url: '/ventures',
+    //   icon: icons.FileOutlined,
+    //   breadcrumbs: false
+    // },
     {
       id: 'evaluations',
       title: 'Evaluation',
@@ -61,14 +61,14 @@ const radiator = {
       icon: icons.QuestionOutlined,
       breadcrumbs: false
     },
-    {
-      id: 'contributors',
-      title: 'Contributors',
-      type: 'item',
-      url: '/contributors',
-      icon: icons.FileOutlined,
-      breadcrumbs: false
-    }
+    // {
+    //   id: 'contributors',
+    //   title: 'Contributors',
+    //   type: 'item',
+    //   url: '/contributors',
+    //   icon: icons.FileOutlined,
+    //   breadcrumbs: false
+    // }
   ]
 }
 

@@ -54,11 +54,12 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     //     }
     // }, [volunteers, taskGroup])
 
-    const handleEditClick = (id: GridRowId) => () => {
-        console.log(id)
+    const handleEditClick = (_id: GridRowId) => () => {
+        alert('Not ready ')
     };
 
     const handleAddClick = () => {
+        alert('Not ready ')
     };
 
     const getColumns = (): GridColDef[] => {

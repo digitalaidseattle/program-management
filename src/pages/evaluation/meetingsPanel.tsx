@@ -64,17 +64,18 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     }, [taskGroup]);
 
 
-    const handleEditClick = (id: GridRowId) => async () => {
-        const selected: Meeting = pageInfo.rows.find(m => m.id === id)
-        // const selected = pageInfo.rows.find(m => m.id === id)
-        Promise.all(selected.attendanceIds
-            .map(async attId => dasAttendanceService.getById(attId)))
-            .then(attendances => {
-                console.log('attendances', attendances)
-                selected.attendances = attendances;
-                setSelectedMeeting(selected)
-                setShowCreateDialog(true)
-            })
+    const handleEditClick = (_id: GridRowId) => async () => {
+        alert('Not ready ')
+        // const selected: Meeting = pageInfo.rows.find(m => m.id === id)
+        // // const selected = pageInfo.rows.find(m => m.id === id)
+        // Promise.all(selected.attendanceIds
+        //     .map(async attId => dasAttendanceService.getById(attId)))
+        //     .then(attendances => {
+        //         console.log('attendances', attendances)
+        //         selected.attendances = attendances;
+        //         setSelectedMeeting(selected)
+        //         setShowCreateDialog(true)
+        //     })
     };
 
     const handleAddClick = () => {
