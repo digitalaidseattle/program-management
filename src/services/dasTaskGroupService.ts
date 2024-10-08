@@ -42,7 +42,7 @@ class DASTaskGroupService {
         "Abandoned",
         "Paused"
     ]
-    
+
     static PRIORITIES = [
         "whenevs",
         "soon",
@@ -59,8 +59,8 @@ class DASTaskGroupService {
             requestDetails: record.fields["Request details"],
             weeklyStatusSummary: record.fields["Weekly Status Summary"],
             responsibleIds: record.fields["Responsible"],
-            ventureProductManagerIds: record.fields["Venture Product Manager"],
-            ventureProjectManagerIds: record.fields["Venture Project Manager"],
+            ventureProductManagerIds: record.fields["Venture Product Manager"] ?? [],
+            ventureProjectManagerIds: record.fields["Venture Project Manager"] ?? [],
             contributorPdMIds: record.fields["Contributor PdM"],
             priority: record.fields["Priority"],
             status: record.fields["Status"],

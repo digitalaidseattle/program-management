@@ -17,20 +17,23 @@ import { VentureProps } from "../../services/dasVentureService";
 import { projectService } from "../../services/projectService";
 import useVolunteers from "../../services/useVolunteers";
 import TaskGroupDialog from "./taskGroupDialog";
+import { Volunteer } from "../../services/dasVolunteerService";
 
 export const TaskGroupDetailsSection = (props: { taskGroup: TaskGroup }) => {
     const volunteers = useVolunteers();
+    const [responsibleVolunteers, setResponsibleVolunteers] = useState<Volunteer[]>([]);
+    const [projectManagers, setProjectManagers] = useState<Volunteer[]>([]);
+    const [productManagers, setProductManagers] = useState<Volunteer[]>([]);
     const [initialized, setInitialized] = useState<boolean>(false);
-    const [responsibleVolunteers, setResponsibleVolunteers] = useState<any[]>([]);
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const { setRefresh } = useContext(RefreshContext);
 
     useEffect(() => {
         if (!initialized) {
             if (volunteers.status === 'fetched' && props.taskGroup) {
-                setResponsibleVolunteers(volunteers.data
-                    .filter(v => props.taskGroup.responsibleIds.includes(v.id))
-                )
+                setResponsibleVolunteers(volunteers.data.filter(v => props.taskGroup.responsibleIds.includes(v.id)))
+                setProjectManagers(volunteers.data.filter(v => props.taskGroup.ventureProjectManagerIds.includes(v.id)))
+                setProductManagers(volunteers.data.filter(v => props.taskGroup.ventureProductManagerIds.includes(v.id)))
                 setInitialized(true)
             }
         }
@@ -55,6 +58,8 @@ export const TaskGroupDetailsSection = (props: { taskGroup: TaskGroup }) => {
                         <FormLabel>Request Details:</FormLabel><Typography>{props.taskGroup.requestDetails}</Typography>
                         <FormLabel>G Drive:</FormLabel><Link href={props.taskGroup.driveUrl} >{props.taskGroup.driveUrl}</Link>
                         <FormLabel>Responsible:</FormLabel><Typography>{responsibleVolunteers.map(v => v.name).join(', ')}</Typography>
+                        <FormLabel>Venture Product Manager:</FormLabel><Typography>{productManagers.map(v => v.name).join(', ')}</Typography>
+                        <FormLabel>Venture Project Manager:</FormLabel><Typography>{projectManagers.map(v => v.name).join(', ')}</Typography>
                     </Stack>
                 </CardContent>
             </Card>

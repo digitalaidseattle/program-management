@@ -79,6 +79,10 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     };
 
     const handleAddClick = () => {
+        if (taskGroup?.ventureProjectManagerIds.length === 0) {
+            alert('Task group requires a venture project manager to create a meeting.')
+            return;
+        }
         const newMeeting = dasMeetingService.newMeeting();
         newMeeting.taskGroupIds = [taskGroup?.id!];
         newMeeting.teamIds = [team?.id!];

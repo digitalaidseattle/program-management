@@ -5,7 +5,7 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DASTaskGroupService, dasTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
 import useVolunteers from "../../services/useVolunteers";
@@ -32,6 +32,8 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
             recordFields["Status"] = taskGroup.status ?? ''
             recordFields["Responsible"] = taskGroup.responsibleIds
             recordFields["Disciplines required"] = taskGroup.disciplinesRequiredId
+            recordFields["Venture Project Manager"] = taskGroup.ventureProjectManagerIds
+            recordFields["Venture Product Manager"] = taskGroup.ventureProductManagerIds
             setFields(recordFields)
         }
     }, [taskGroup]);
@@ -73,32 +75,38 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
                         variant="outlined"
                         onChange={(evt) => change("Task Group name", evt.target.value)}
                     />
-                    <FormControl fullWidth>
-                        <InputLabel id="priority-label">Priority</InputLabel>
-                        <Select
-                            labelId="priority-label"
-                            id="priority-label-select"
-                            value={fields["Priority"]}
-                            label="Priority"
-                            onChange={(evt) => change("Priority", evt.target.value)}
-                        >
-                            {DASTaskGroupService.PRIORITIES
-                                .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <InputLabel id="status-label">Status</InputLabel>
-                        <Select
-                            labelId="status-label"
-                            id="status-label-select"
-                            value={fields["Status"]}
-                            label="Status"
-                            onChange={(evt) => change("Status", evt.target.value)}
-                        >
-                            {DASTaskGroupService.STATUSES
-                                .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-                        </Select>
-                    </FormControl>
+                    <Grid container>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <InputLabel id="priority-label">Priority</InputLabel>
+                                <Select
+                                    labelId="priority-label"
+                                    id="priority-label-select"
+                                    value={fields["Priority"]}
+                                    label="Priority"
+                                    onChange={(evt) => change("Priority", evt.target.value)}
+                                >
+                                    {DASTaskGroupService.PRIORITIES
+                                        .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <InputLabel id="status-label">Status</InputLabel>
+                                <Select
+                                    labelId="status-label"
+                                    id="status-label-select"
+                                    value={fields["Status"]}
+                                    label="Status"
+                                    onChange={(evt) => change("Status", evt.target.value)}
+                                >
+                                    {DASTaskGroupService.STATUSES
+                                        .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                     <TextField
                         id="gdrive"
                         name="gdrive"
@@ -110,7 +118,41 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
                         onChange={(evt) => change("Drive URL", evt.target.value)}
                     />
                     <Autocomplete
-                        id="volunteers"
+                        id="ventureProductManager"
+                        multiple
+                        options={volunteers}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        value={volunteers.filter(v => fields['Venture Product Manager'].includes(v.id))}
+                        onChange={(_event, newValue) => change('Venture Product Manager', newValue.map(v => v.id))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="outlined"
+                                label="Venture Product Manager"
+                                placeholder="DAS Member"
+                            />
+                        )}
+                    />
+                    <Autocomplete
+                        id="ventureProjecttManager"
+                        multiple
+                        options={volunteers}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        value={volunteers.filter(v => fields['Venture Project Manager'].includes(v.id))}
+                        onChange={(_event, newValue) => change('Venture Project Manager', newValue.map(v => v.id))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="outlined"
+                                label="Venture Project Manager"
+                                placeholder="DAS Member"
+                            />
+                        )}
+                    />
+                    <Autocomplete
+                        id="responsible"
                         multiple
                         options={volunteers}
                         getOptionLabel={(option) => option.name}
