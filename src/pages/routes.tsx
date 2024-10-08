@@ -1,4 +1,3 @@
-import { redirect } from 'react-router';
 import MainLayout from '../layout/MainLayout';
 import MinimalLayout from '../layout/MinimalLayout';
 import PrivacyPage from './PrivacyPage';
