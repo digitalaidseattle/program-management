@@ -5,20 +5,24 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
-import { DASMeetingService, dasMeetingService, Meeting } from "../../services/dasMeetingService";
+import { Attendance, dasAttendanceService, DASMeetingService, dasMeetingService, Meeting } from "../../services/dasMeetingService";
 import { TaskGroup } from "../../services/dasTaskGroupService";
+import useVolunteers from "../../services/useVolunteers";
+import { Volunteer } from "../../services/dasVolunteerService";
 
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
 
 const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGroup }> = ({ open, entity, handleSuccess, handleError, taskGroup }) => {
 
-    const [fields, setFields] = useState<any>();
     const [disabled, setDisabled] = useState<boolean>(true);
     const [changes, setChanges] = useState<any>({});
+    const { data: volunteers } = useVolunteers();
+    const [fields, setFields] = useState<any>();
+    const [selectedVolunteers, setSelectedVolunteers] = useState<Volunteer[]>();
 
     useEffect(() => {
         if (entity && !fields) {
@@ -30,9 +34,17 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGrou
             recordFields["Topics"] = entity.topics
             recordFields["Meeting duration in minutes"] = entity.duration
             recordFields["Start Date/Time"] = entity.startDateTime
+            recordFields["Team"] = entity.teamIds
+            recordFields["Task Group discussed"] = entity.taskGroupIds
             setFields(recordFields)
         }
-    }, [entity, open]);
+
+        if (entity && !selectedVolunteers) {
+            setSelectedVolunteers(entity.attendances.map(att => volunteers.find(v => v.id === att.internalAttendeeIds[0])))
+        }
+    }, [entity]);
+
+
 
     const handleCancel = () => {
         setFields(undefined);
@@ -52,12 +64,25 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGrou
             dasMeetingService
                 .create(fields)
                 .then(res => {
-                    // TODO add attendance
-                    console.log(res, taskGroup)
-                    handleSuccess(res)
+                    if (selectedVolunteers) {
+                        const atats = selectedVolunteers.map(v => {
+                            return {
+                                fields: {
+                                    'Meeting': [res.id],
+                                    'Internal Attendee': [v.id]
+                                }
+                            }
+                        });
+                        dasAttendanceService.createAttendances(atats)
+                            .then(_res => {
+                                // Consider requerying meeting
+                                handleSuccess(res)
+                            })
+                    }
                 })
                 .catch(e => handleError(e))
         }
+        setSelectedVolunteers(undefined);
         setFields(undefined)
     }
 
@@ -69,45 +94,56 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGrou
         setDisabled(false);
     }
 
+    const changedSelectedVolunteers = (ids: string[]) => {
+        setSelectedVolunteers(ids.map(id => volunteers.find(v => v.id === id)));
+        setDisabled(false);
+    }
+
     return <Dialog
         fullWidth={true}
         open={open}
         onClose={() => handleSuccess(null)}
     >
-        <DialogTitle><Typography fontSize={24}>Create Meeting</Typography></DialogTitle>
+        <DialogTitle><Typography fontSize={24}>Create Meeting: {taskGroup?.name}</Typography></DialogTitle>
         <DialogContent>
             {fields &&
                 <Stack spacing={2} margin={2}>
-                    <FormControl fullWidth>
-                        <InputLabel id="type-label">Type</InputLabel>
-                        <Select
-                            labelId="type-label"
-                            id="type-select"
-                            value={fields["type"]}
-                            label="Type"
-                            disabled={true}
-                            required={true}
-                            onChange={(evt) => change("type", evt.target.value)}
-                        >
-                            {DASMeetingService.TYPES
-                                .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <InputLabel id="created-via-label">Created Via</InputLabel>
-                        <Select
-                            labelId="created-via-label"
-                            id="created-via-select"
-                            value={fields["Created via"]}
-                            label="Created Via"
-                            disabled={true}
-                            required={true}
-                            onChange={(evt) => change("Created via", evt.target.value)}
-                        >
-                            {DASMeetingService.CREATION_TYPES
-                                .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-                        </Select>
-                    </FormControl>
+                    <Grid container>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <InputLabel id="type-label">Type</InputLabel>
+                                <Select
+                                    labelId="type-label"
+                                    id="type-select"
+                                    value={fields["type"]}
+                                    label="Type"
+                                    disabled={true}
+                                    required={true}
+                                    onChange={(evt) => change("type", evt.target.value)}
+                                >
+                                    {DASMeetingService.TYPES
+                                        .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <InputLabel id="created-via-label">Created Via</InputLabel>
+                                <Select
+                                    labelId="created-via-label"
+                                    id="created-via-select"
+                                    value={fields["Created via"]}
+                                    label="Created Via"
+                                    disabled={true}
+                                    required={true}
+                                    onChange={(evt) => change("Created via", evt.target.value)}
+                                >
+                                    {DASMeetingService.CREATION_TYPES
+                                        .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                     <TextField
                         id="purpose"
                         name="purpose"
@@ -134,32 +170,55 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGrou
                         required={true}
                         onChange={(evt) => change("Topics", evt.target.value)}
                     />
-                    <FormControl fullWidth>
-                        <InputLabel id="duration-label">Meeting duration in minutes</InputLabel>
-                        <Select
-                            labelId="duration-label"
-                            id="duration-select"
-                            value={fields["Meeting duration in minutes"]}
-                            label="Meeting duration in minutes"
-                            required={true}
-                            onChange={(evt) => change("Meeting duration in minutes", evt.target.value)}
-                        >
-                            {DASMeetingService.DURATIONS
-                                .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <Stack direction={'row'} spacing={'1rem'}>
-                        <DatePicker
-                            label='Start Date'
-                            value={fields["Start Date/Time"]}
-                            onChange={(value) => change("Start Date/Time", value)}
-                        />
-                        <TimePicker
-                            label='Start Time'
-                            value={fields["Start Date/Time"]}
-                            onChange={(value) => change("Start Date/Time", value)}
-                        />
-                    </Stack>
+                    <Autocomplete
+                        id="volunteers"
+                        multiple
+                        options={volunteers}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        value={selectedVolunteers}
+                        onChange={(_event, newValue) => changedSelectedVolunteers(newValue.map(v => v.id))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="outlined"
+                                label="Attendees"
+                                placeholder="DAS Member"
+                            />
+                        )}
+                    />
+                    <Grid container>
+                        <Grid item xs={4}>
+                            <DatePicker
+                                label='Start Date'
+                                value={fields["Start Date/Time"]}
+                                onChange={(value) => change("Start Date/Time", value)}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TimePicker
+                                label='Start Time'
+                                value={fields["Start Date/Time"]}
+                                onChange={(value) => change("Start Date/Time", value)}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <FormControl fullWidth>
+                                <InputLabel id="duration-label">Meeting duration in minutes</InputLabel>
+                                <Select
+                                    labelId="duration-label"
+                                    id="duration-select"
+                                    value={fields["Meeting duration in minutes"]}
+                                    label="Meeting duration in minutes"
+                                    required={true}
+                                    onChange={(evt) => change("Meeting duration in minutes", evt.target.value)}
+                                >
+                                    {DASMeetingService.DURATIONS
+                                        .map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                 </Stack>
             }
         </DialogContent>

@@ -12,7 +12,7 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRen
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { dasMeetingService, Meeting } from "../../services/dasMeetingService";
+import { Attendance, dasAttendanceService, dasMeetingService, Meeting } from "../../services/dasMeetingService";
 import { dasTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
 import { VentureProps } from "../../services/dasVentureService";
 import { PageInfo } from "../../services/supabaseClient";
@@ -26,7 +26,7 @@ import { TeamContext } from "../../services/dasTeamsService";
 
 export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
-    const { setRefresh } = useContext(RefreshContext);
+    const { refresh, setRefresh } = useContext(RefreshContext);
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: 10 });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
@@ -51,7 +51,7 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                 })
                 .finally(() => setLoading(false))
         }
-    }, [venture]);
+    }, [venture, refresh]);
 
     useEffect(() => {
         if (taskGroup) {
@@ -64,14 +64,31 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     }, [taskGroup]);
 
 
-    const handleEditClick = (id: GridRowId) => () => {
-        console.log(id)
+    const handleEditClick = (id: GridRowId) => async () => {
+        const selected: Meeting = pageInfo.rows.find(m => m.id === id)
+        // const selected = pageInfo.rows.find(m => m.id === id)
+        Promise.all(selected.attendanceIds
+            .map(async attId => dasAttendanceService.getById(attId)))
+            .then(attendances => {
+                console.log('attendances', attendances)
+                selected.attendances = attendances;
+                setSelectedMeeting(selected)
+                setShowCreateDialog(true)
+            })
     };
 
     const handleAddClick = () => {
         const newMeeting = dasMeetingService.newMeeting();
-        newMeeting.taskGroupCode = [taskGroup?.taskGroupCode!];
+        newMeeting.taskGroupIds = [taskGroup?.id!];
         newMeeting.teamIds = [team?.id!];
+        //by default responsible TG volunteers are added
+        if (taskGroup) {
+            newMeeting.attendances = taskGroup.responsibleIds.map(id => {
+                return {
+                    internalAttendeeIds: [id]
+                } as Attendance
+            })
+        }
         setSelectedMeeting(newMeeting)
         setShowCreateDialog(true)
     };

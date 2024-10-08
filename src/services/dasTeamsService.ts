@@ -52,7 +52,6 @@ const useTeams = () => {
 class DASTeamsService {
 
     transform = (record: any): Team => {
-        console.log(record.fields)
         return {
             id: record.id,
             name: record.fields['Team name'],
