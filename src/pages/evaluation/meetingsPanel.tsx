@@ -79,23 +79,19 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     };
 
     const handleAddClick = () => {
-        if (taskGroup?.ventureProjectManagerIds.length === 0) {
-            alert('Task group requires a venture project manager to create a meeting.')
-            return;
+        if (taskGroup && team) {
+            if (taskGroup.ventureProjectManagerIds.length === 0) {
+                alert('Task group requires a venture project manager to create a meeting.')
+                return;
+            } else {
+                const newMeeting = dasMeetingService.newMeeting();
+                newMeeting.taskGroupIds = [taskGroup.id!];
+                newMeeting.teamIds = [team.id!];
+                newMeeting.attendances = dasMeetingService.createAttendances(taskGroup);
+                setSelectedMeeting(newMeeting)
+                setShowCreateDialog(true)
+            }
         }
-        const newMeeting = dasMeetingService.newMeeting();
-        newMeeting.taskGroupIds = [taskGroup?.id!];
-        newMeeting.teamIds = [team?.id!];
-        //by default responsible TG volunteers are added
-        if (taskGroup) {
-            newMeeting.attendances = taskGroup.responsibleIds.map(id => {
-                return {
-                    internalAttendeeIds: [id]
-                } as Attendance
-            })
-        }
-        setSelectedMeeting(newMeeting)
-        setShowCreateDialog(true)
     };
 
     const getColumns = (): GridColDef[] => {

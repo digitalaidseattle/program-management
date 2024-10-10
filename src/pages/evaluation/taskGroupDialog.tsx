@@ -34,6 +34,7 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
             recordFields["Disciplines required"] = taskGroup.disciplinesRequiredId
             recordFields["Venture Project Manager"] = taskGroup.ventureProjectManagerIds
             recordFields["Venture Product Manager"] = taskGroup.ventureProductManagerIds
+            recordFields["Contributor PdM"] = taskGroup.contributorPdMIds
             setFields(recordFields)
         }
     }, [taskGroup]);
@@ -118,18 +119,18 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
                         onChange={(evt) => change("Drive URL", evt.target.value)}
                     />
                     <Autocomplete
-                        id="ventureProductManager"
+                        id="responsible"
                         multiple
                         options={volunteers}
                         getOptionLabel={(option) => option.name}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
-                        value={volunteers.filter(v => fields['Venture Product Manager'].includes(v.id))}
-                        onChange={(_event, newValue) => change('Venture Product Manager', newValue.map(v => v.id))}
+                        value={volunteers.filter(v => fields['Responsible'].includes(v.id))}
+                        onChange={(_event, newValue) => change('Responsible', newValue.map(v => v.id))}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 variant="outlined"
-                                label="Venture Product Manager"
+                                label="Responsible"
                                 placeholder="DAS Member"
                             />
                         )}
@@ -152,18 +153,35 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
                         )}
                     />
                     <Autocomplete
-                        id="responsible"
+                        id="ventureProductManager"
                         multiple
                         options={volunteers}
                         getOptionLabel={(option) => option.name}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
-                        value={volunteers.filter(v => fields['Responsible'].includes(v.id))}
-                        onChange={(_event, newValue) => change('Responsible', newValue.map(v => v.id))}
+                        value={volunteers.filter(v => fields['Venture Product Manager'].includes(v.id))}
+                        onChange={(_event, newValue) => change('Venture Product Manager', newValue.map(v => v.id))}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
                                 variant="outlined"
-                                label="Responsible"
+                                label="Venture Product Manager"
+                                placeholder="DAS Member"
+                            />
+                        )}
+                    />
+                    <Autocomplete
+                        id="contributorProductManager"
+                        multiple
+                        options={volunteers}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        value={volunteers.filter(v => fields['Contributor PdM'].includes(v.id))}
+                        onChange={(_event, newValue) => change('Contributor PdM', newValue.map(v => v.id))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="outlined"
+                                label="Contributor Product Manager"
                                 placeholder="DAS Member"
                             />
                         )}

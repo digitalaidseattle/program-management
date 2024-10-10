@@ -6,6 +6,7 @@
  */
 
 import { dasAirtableService } from "./airtableService";
+import { TaskGroup } from "./dasTaskGroupService";
 
 const MEETING_TABLE = 'tblWwnZ8rjLFjQizJ';
 const ATTENDANCE_TABLE = 'tblteoO3SNWzBpyfo';
@@ -101,6 +102,19 @@ class DASMeetingService {
     static DURATIONS = [
         "25", "40", "50", "80"
     ]
+
+    createAttendances(taskGroup: TaskGroup): Attendance[] {
+        const attendancesIds: Set<string> = new Set();
+        taskGroup.responsibleIds.forEach(id => attendancesIds.add(id));
+        taskGroup.ventureProductManagerIds.forEach(id => attendancesIds.add(id));
+        taskGroup.ventureProjectManagerIds.forEach(id => attendancesIds.add(id));
+        taskGroup.contributorPdMIds.forEach(id => attendancesIds.add(id));        
+        return Array.from(attendancesIds).map(id => {
+            return {
+                internalAttendeeIds: [id]
+            } as Attendance
+        });
+    }
 
     newMeeting(): Meeting {
         return {

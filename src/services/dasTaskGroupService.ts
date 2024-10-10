@@ -61,7 +61,7 @@ class DASTaskGroupService {
             responsibleIds: record.fields["Responsible"],
             ventureProductManagerIds: record.fields["Venture Product Manager"] ?? [],
             ventureProjectManagerIds: record.fields["Venture Project Manager"] ?? [],
-            contributorPdMIds: record.fields["Contributor PdM"],
+            contributorPdMIds: record.fields["Contributor PdM"] ?? [],
             priority: record.fields["Priority"],
             status: record.fields["Status"],
             partnerId: record.fields["Partner"].length > 0 ? record.fields["Partner"][0] : "",
