@@ -12,7 +12,8 @@ import {
   UploadOutlined,
   DragOutlined,
   GlobalOutlined,
-  TableOutlined
+  TableOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 
 const icons = {
@@ -28,7 +29,8 @@ const icons = {
   UploadOutlined,
   DragOutlined,
   GlobalOutlined,
-  TableOutlined
+  TableOutlined,
+  SearchOutlined
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -58,7 +60,7 @@ const radiator = {
       title: 'Evaluation',
       type: 'item',
       url: '/evaluations',
-      icon: icons.QuestionOutlined,
+      icon: icons.SearchOutlined,
       breadcrumbs: false
     },
     // {

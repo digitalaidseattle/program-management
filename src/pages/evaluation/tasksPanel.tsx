@@ -6,12 +6,13 @@
  *
  */
 
-import { IconButton, Stack, Typography } from "@mui/material";
+import { Chip, IconButton, Stack, Typography } from "@mui/material";
 import {
     DataGrid,
     GridActionsCellItem,
     GridColDef,
     GridPaginationModel,
+    GridRenderCellParams,
     GridRowId,
     GridSortModel,
     useGridApiRef
@@ -26,8 +27,26 @@ import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import TaskDialog from "./taskDialog";
 import { Task } from "../../services/dasTaskService";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
+import { format } from "date-fns";
 
 const PAGE_SIZE = 10;
+const STATUS_COLOR_MAP: any = {
+    'Delivered': 'success',
+    'Paused': 'warning',
+    'Todo': 'primary',
+    "inbox": 'primary',
+    "needs re-work": 'danger',
+    "Approved": 'success',
+    "In progress": 'warning',
+    "Someday maybe": 'primary',
+    "Cancelled": 'danger',
+}
+
+const StatusCell = (props: { status: string }) => {
+    return <Chip
+        color={STATUS_COLOR_MAP[props.status]}
+        label={props.status} />
+}
 
 export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
@@ -101,11 +120,17 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
                 field: 'dueDate',
                 headerName: 'Due Date',
                 width: 150,
+                renderCell: (params: GridRenderCellParams<any, string>) => (
+                    <Typography>{format(params.row.dueDate, "MMM dd, yyyy")}</Typography>
+                )
             },
             {
                 field: 'status',
                 headerName: 'Status',
                 width: 150,
+                renderCell: (params: GridRenderCellParams<any, string>) => (
+                    <StatusCell status={params.row.status} />
+                )
             },
             {
                 field: 'driEmail',
