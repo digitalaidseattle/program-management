@@ -15,7 +15,7 @@ import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
-import { Attendance, dasMeetingService, Meeting } from "../../services/dasMeetingService";
+import { dasMeetingService, Meeting } from "../../services/dasMeetingService";
 import { dasTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
 import { TeamContext } from "../../services/dasTeamsService";
 import { VentureProps } from "../../services/dasVentureService";
