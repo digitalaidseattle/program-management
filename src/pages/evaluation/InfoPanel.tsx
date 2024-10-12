@@ -18,13 +18,14 @@ import { projectService } from "../../services/projectService";
 import useVolunteers from "../../services/useVolunteers";
 import TaskGroupDialog from "./taskGroupDialog";
 import { Volunteer } from "../../services/dasVolunteerService";
+import placeholder from '../../assets/images/project-image.png';
 
 const DescriptionSection = (props: { venture: any }) => {
     return (
         <Stack direction={'row'} spacing={2}>
             <CardMedia
                 component='img'
-                image={props.venture.imageSrc ? props.venture.imageSrc : '../../assets/images/project-image.png'}
+                image={props.venture.imageSrc ? props.venture.imageSrc : placeholder}
                 alt={props.venture.title + " logo"}
                 sx={{
                     objectFit: 'contain',

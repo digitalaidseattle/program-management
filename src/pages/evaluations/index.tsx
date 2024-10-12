@@ -15,7 +15,7 @@ import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
 import { VentureProps } from '../../services/dasVentureService';
 import { projectService } from '../../services/projectService';
-
+import placeholder from '../../assets/images/project-image.png';
 
 const VentureCard: React.FC<VentureProps> = ({ venture }) => {
   const theme = useTheme();
@@ -40,7 +40,7 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
     <Card sx={{ display: 'flex', padding: '2' }} onClick={() => navigate(`/evaluation/${venture.id}`)}>
       <CardMedia
         component='img'
-        image={venture.imageSrc ? venture.imageSrc : '../../assets/images/project-image.png'}
+        image={venture.imageSrc ? venture.imageSrc : placeholder}
         alt={venture.title + " logo"}
         sx={{
           objectFit: 'contain',
