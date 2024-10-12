@@ -123,7 +123,7 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                 headerName: 'Date',
                 width: 150,
                 renderCell: (params: GridRenderCellParams<any, string>) => (
-                    <Typography>{format(params.row.startDateTime, "MMMM d yyy")}</Typography>
+                    <Typography>{format(params.row.startDateTime, "MMM d yyy")}</Typography>
                 )
             },
             {
@@ -131,7 +131,7 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                 headerName: 'Time',
                 width: 150,
                 renderCell: (params: GridRenderCellParams<any, string>) => (
-                    <Typography>{format(params.row.startDateTime, "hh:mm")}</Typography>
+                    <Typography>{format(params.row.startDateTime, "hh:mm a")}</Typography>
                 )
             },
             {

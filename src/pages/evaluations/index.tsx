@@ -48,7 +48,7 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
         }}
       />
       <Stack margin={1} spacing={1}>
-        <Stack direction={'row'}  spacing={{ xs: 1, sm: 2, md: 4 }}>
+        <Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
           <Typography variant='h5'>{venture.title} </Typography>
           <Typography>{venture.status}</Typography>
         </Stack>
@@ -67,8 +67,8 @@ const EvaluationsPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    projectService.getAllByStatus(['Active', 'Under evaluation', "Declined"])
-      .then((ventures: any[]) => setVentures(ventures))
+    projectService.getAllByStatus(['Under evaluation'])
+      .then((ventures: any[]) => setVentures(ventures.filter(v => v.evaluatingTaskGroup)))
       .finally(() => setLoading(false))
   }, [refresh])
 
