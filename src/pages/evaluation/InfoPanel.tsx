@@ -7,7 +7,7 @@
  */
 
 import { EditOutlined } from "@ant-design/icons";
-import { Card, CardContent, Chip, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardMedia, Chip, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
 import { EditBlock, EditLink } from "../../components/EditBlock";
@@ -19,95 +19,50 @@ import useVolunteers from "../../services/useVolunteers";
 import TaskGroupDialog from "./taskGroupDialog";
 import { Volunteer } from "../../services/dasVolunteerService";
 
-export const TaskGroupDetailsSection = (props: { taskGroup: TaskGroup }) => {
-    const volunteers = useVolunteers();
-    const [responsibleVolunteers, setResponsibleVolunteers] = useState<Volunteer[]>([]);
-    const [projectManagers, setProjectManagers] = useState<Volunteer[]>([]);
-    const [productManagers, setProductManagers] = useState<Volunteer[]>([]);
-    const [contributorProductManagers, setContributorProductManagers] = useState<Volunteer[]>([]);
-    
-    const [initialized, setInitialized] = useState<boolean>(false);
-    const [showDialog, setShowDialog] = useState<boolean>(false);
-    const { setRefresh } = useContext(RefreshContext);
-
-    useEffect(() => {
-        if (!initialized) {
-            if (volunteers.status === 'fetched' && props.taskGroup) {
-                setResponsibleVolunteers(volunteers.data.filter(v => props.taskGroup.responsibleIds.includes(v.id)))
-                setProjectManagers(volunteers.data.filter(v => props.taskGroup.ventureProjectManagerIds.includes(v.id)))
-                setProductManagers(volunteers.data.filter(v => props.taskGroup.ventureProductManagerIds.includes(v.id)))
-                setContributorProductManagers(volunteers.data.filter(v => props.taskGroup.contributorPdMIds.includes(v.id)))
-                setInitialized(true)
-            }
-        }
-    }, [volunteers, props])
-
+const DescriptionSection = (props: { venture: any }) => {
     return (
-        <>
-            <Card>
-                <CardContent>
-                    <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                        Task Group Details
-                        <IconButton size="small" color="primary" onClick={() => setShowDialog(true)}>
-                            <EditOutlined />
-                        </IconButton>
-                    </Typography>
-                    <Stack direction={'column'} gap={'0.5rem'}>
-                        <Stack direction={'row'} gap={'0.5rem'} sx={{ justifyContent: 'space-between' }}>
-                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Name:</FormLabel><Typography>{props.taskGroup.name}</Typography></Stack>
-                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Priority:</FormLabel><Chip label={props.taskGroup.priority} color="primary" variant="filled" /></Stack>
-                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Status:</FormLabel><Chip label={props.taskGroup.status} color="warning" /></Stack>
-                        </Stack>
-                        <FormLabel>Request Details:</FormLabel><Typography>{props.taskGroup.requestDetails}</Typography>
-                        <FormLabel>G Drive:</FormLabel><Link href={props.taskGroup.driveUrl} >{props.taskGroup.driveUrl}</Link>
-                        <FormLabel>Responsible:</FormLabel><Typography>{responsibleVolunteers.map(v => v.name).join(', ')}</Typography>
-                        <FormLabel>Venture Project Manager:</FormLabel><Typography>{projectManagers.map(v => v.name).join(', ')}</Typography>
-                        <FormLabel>Venture Product Manager:</FormLabel><Typography>{productManagers.map(v => v.name).join(', ')}</Typography>
-                        <FormLabel>Contributor Product Manager:</FormLabel><Typography>{contributorProductManagers.map(v => v.name).join(', ')}</Typography>
-                    </Stack>
-                </CardContent>
-            </Card>
-            <TaskGroupDialog
-                entity={props.taskGroup}
-                open={showDialog}
-                handleSuccess={() => {
-                    setRefresh(0);
-                    setShowDialog(false)
+        <Stack direction={'row'} spacing={2}>
+            <CardMedia
+                component='img'
+                image={props.venture.imageSrc ? props.venture.imageSrc : '../../assets/images/project-image.png'}
+                alt={props.venture.title + " logo"}
+                sx={{
+                    objectFit: 'contain',
+                    width: { md: '2rem', lg: '4rem' },
+                    aspectRatio: '1 / 1',
+                    borderRadius: '8px',
+                    display: { xs: 'none', md: 'block' },
+                    backgroundColor: 'white',
                 }}
-                handleError={e => console.error(e)}
             />
-        </>
-    )
+            <Stack>
+                <Stack direction="row" spacing={2}>
+                    <Typography fontWeight={600}>Partner: </Typography>
+                    <Typography> {props.venture.title}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={2}>
+                    <Typography fontWeight={600}>Venture Status: </Typography>
+                    <Typography> {props.venture.status}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={2}>
+                    <Typography fontWeight={600}>Painpoint: </Typography>
+                    <Typography>{props.venture.painpoint}</Typography>
+                </Stack>
+            </Stack>
+        </Stack>
+    );
 }
 
-export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
+const PartnerSection = (props: { venture: any }) => {
     const { setRefresh } = useContext(RefreshContext);
     const [partner, setPartner] = useState<Partner>();
 
     useEffect(() => {
-        if (venture) {
-            dasPartnerService.getById(venture.taskGroup.partnerId)
+        if (props.venture) {
+            dasPartnerService.getById(props.venture.taskGroup.partnerId)
                 .then(p => setPartner(p))
         }
-    }, [venture])
-
-    const saveProblem = (text: string) => {
-        projectService
-            .update(venture, { 'Problem (for DAS website)': text })
-            .then(() => setRefresh(0))
-    }
-
-    const saveSolution = (text: string) => {
-        projectService
-            .update(venture, { 'Solution (for DAS website)': text })
-            .then(() => setRefresh(0))
-    }
-
-    const saveImpact = (text: string) => {
-        projectService
-            .update(venture, { 'Impact (for DAS website)': text })
-            .then(() => setRefresh(0))
-    }
+    }, [props])
 
     const saveOverview = (text: string) => {
         dasPartnerService
@@ -132,51 +87,127 @@ export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
             .update(partner!, { 'Miro Board Link': text })
             .then(() => setRefresh(0))
     }
+    return (partner &&
+        <Card>
+            <CardContent>
+                <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+                    Partner Information
+                </Typography>
+                <Stack direction={'column'} gap={'0.5rem'}>
+                    <EditLink label="Overview" value={partner.overviewLink} save={saveOverview} />
+                    <EditLink label="G Drive" value={partner.gdriveLink} save={saveGdrive} />
+                    <EditLink label="HubSpot" value={partner.hubspotLink} save={saveHubspot} />
+                    <EditLink label="Miro" value={partner.miroLink} save={saveMiro} />
+                </Stack>
+            </CardContent>
+        </Card>
+    )
+}
 
+const PSISection = (props: { venture: any }) => {
+    const { setRefresh } = useContext(RefreshContext);
+    const saveProblem = (text: string) => {
+        projectService
+            .update(props.venture, { 'Problem (for DAS website)': text })
+            .then(() => setRefresh(0))
+    }
+
+    const saveSolution = (text: string) => {
+        projectService
+            .update(props.venture, { 'Solution (for DAS website)': text })
+            .then(() => setRefresh(0))
+    }
+
+    const saveImpact = (text: string) => {
+        projectService
+            .update(props.venture, { 'Impact (for DAS website)': text })
+            .then(() => setRefresh(0))
+    }
     return (
-        <Stack spacing={2}>
-            <Stack direction="row" spacing={2}>
-                <Typography fontWeight={600}>Partner: </Typography>
-                <Typography> {venture.title}</Typography>
-            </Stack>
-            <Stack direction="row" spacing={2}>
-                <Typography fontWeight={600}>Venture Status: </Typography>
-                <Typography> {venture.status}</Typography>
-            </Stack>
-            <Stack direction="row" spacing={2}>
-                <Typography fontWeight={600}>Painpoint: </Typography>
-                <Typography>{venture.painpoint}</Typography>
-            </Stack>
-            {venture.taskGroup &&
-                <TaskGroupDetailsSection taskGroup={venture.taskGroup} />
+        <Card>
+            <CardContent>
+                <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+                    Venture P.S.I.
+                </Typography>
+                <Stack direction={'column'} gap={'0.5rem'}>
+                    <EditBlock label="Problem" value={props.venture.problem} save={saveProblem} />
+                    <EditBlock label="Solution" value={props.venture.solution} save={saveSolution} />
+                    <EditBlock label="Impact" value={props.venture.impact} save={saveImpact} />
+                </Stack>
+            </CardContent>
+        </Card>
+    )
+}
+
+const TaskGroupDetailsSection = (props: { venture: any }) => {
+    const { setRefresh } = useContext(RefreshContext);
+    const { data: volunteers } = useVolunteers();
+    const [responsibleVolunteers, setResponsibleVolunteers] = useState<Volunteer[]>([]);
+    const [projectManagers, setProjectManagers] = useState<Volunteer[]>([]);
+    const [productManagers, setProductManagers] = useState<Volunteer[]>([]);
+    const [contributorProductManagers, setContributorProductManagers] = useState<Volunteer[]>([]);
+
+    const [initialized, setInitialized] = useState<boolean>(false);
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const taskGroup: TaskGroup = props.venture.taskGroup
+
+    useEffect(() => {
+        if (!initialized) {
+            if (volunteers && taskGroup) {
+                setResponsibleVolunteers(volunteers.filter(v => taskGroup.responsibleIds.includes(v.id)))
+                setProjectManagers(volunteers.filter(v => taskGroup.ventureProjectManagerIds.includes(v.id)))
+                setProductManagers(volunteers.filter(v => taskGroup.ventureProductManagerIds.includes(v.id)))
+                setContributorProductManagers(volunteers.filter(v => taskGroup.contributorPdMIds.includes(v.id)))
+                setInitialized(true)
             }
+        }
+    }, [volunteers, taskGroup])
+
+    return (taskGroup &&
+        <>
             <Card>
                 <CardContent>
                     <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                        Venture P.S.I.
+                        Task Group Details
+                        <IconButton size="small" color="primary" onClick={() => setShowDialog(true)}>
+                            <EditOutlined />
+                        </IconButton>
                     </Typography>
                     <Stack direction={'column'} gap={'0.5rem'}>
-                        <EditBlock label="Problem" value={venture.problem} save={saveProblem} />
-                        <EditBlock label="Solution" value={venture.solution} save={saveSolution} />
-                        <EditBlock label="Impact" value={venture.impact} save={saveImpact} />
+                        <Stack direction={'row'} gap={'0.5rem'} sx={{ justifyContent: 'space-between' }}>
+                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Name:</FormLabel><Typography>{taskGroup.name}</Typography></Stack>
+                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Priority:</FormLabel><Chip label={taskGroup.priority} color="primary" variant="filled" /></Stack>
+                            <Stack direction={'column'} gap={'0.5rem'}><FormLabel>Status:</FormLabel><Chip label={taskGroup.status} color="warning" /></Stack>
+                        </Stack>
+                        <FormLabel>Request Details:</FormLabel><Typography>{taskGroup.requestDetails}</Typography>
+                        <FormLabel>G Drive:</FormLabel><Link href={taskGroup.driveUrl} >{taskGroup.driveUrl}</Link>
+                        <FormLabel>Responsible:</FormLabel><Typography>{responsibleVolunteers.map(v => v.name).join(', ')}</Typography>
+                        <FormLabel>Venture Project Manager:</FormLabel><Typography>{projectManagers.map(v => v.name).join(', ')}</Typography>
+                        <FormLabel>Venture Product Manager:</FormLabel><Typography>{productManagers.map(v => v.name).join(', ')}</Typography>
+                        <FormLabel>Contributor Product Manager:</FormLabel><Typography>{contributorProductManagers.map(v => v.name).join(', ')}</Typography>
                     </Stack>
                 </CardContent>
             </Card>
-            {partner &&
-                <Card>
-                    <CardContent>
-                        <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                            Partner Information
-                        </Typography>
-                        <Stack direction={'column'} gap={'0.5rem'}>
-                            <EditLink label="Overview" value={partner.overviewLink} save={saveOverview} />
-                            <EditLink label="G Drive" value={partner.gdriveLink} save={saveGdrive} />
-                            <EditLink label="HubSpot" value={partner.hubspotLink} save={saveHubspot} />
-                            <EditLink label="Miro" value={partner.miroLink} save={saveMiro} />
-                        </Stack>
-                    </CardContent>
-                </Card>
-            }
+            <TaskGroupDialog
+                entity={taskGroup}
+                open={showDialog}
+                handleSuccess={() => {
+                    setRefresh(0);
+                    setShowDialog(false)
+                }}
+                handleError={e => console.error(e)}
+            />
+        </>
+    )
+}
+
+export const InfoPanel: React.FC<VentureProps> = ({ venture }) => {
+    return (
+        <Stack spacing={2}>
+            <DescriptionSection venture={venture} />
+            <TaskGroupDetailsSection venture={venture} />
+            <PSISection venture={venture} />
+            <PartnerSection venture={venture} />
         </Stack>
     )
 };

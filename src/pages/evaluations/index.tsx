@@ -4,7 +4,8 @@ import {
   Card,
   CardMedia,
   Stack,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 
 // project import
@@ -17,20 +18,23 @@ import { projectService } from '../../services/projectService';
 
 
 const VentureCard: React.FC<VentureProps> = ({ venture }) => {
-  // const theme = useTheme();
+  const theme = useTheme();
+
+  const statusColor = (venture: any) => {
+    switch (venture.status) {
+      case 'Active':
+        return theme.palette.success.main;
+      case 'Under evaluation':
+        return theme.palette.warning.main;
+        case 'Declined':
+          return theme.palette.error.main;
+        default:
+        return theme.palette.primary.main;
+    }
+  }
 
   const navigate = useNavigate();
-  // let main;
-  // switch (venture.status) {
-  //   case 'Active':
-  //     main = theme.palette.success.light;
-  //     break;
-  //   case 'Under evaluation':
-  //     main = theme.palette.warning.light;
-  //     break;
-  //   default:
-  //     main = theme.palette.primary.main;
-  // }
+
 
   return (
     <Card sx={{ display: 'flex', padding: '2' }} onClick={() => navigate(`/evaluation/${venture.id}`)}>
@@ -50,7 +54,7 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
       <Stack margin={1} spacing={1}>
         <Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
           <Typography variant='h5'>{venture.title} </Typography>
-          <Typography>{venture.status}</Typography>
+          <Typography color={statusColor(venture)}>{venture.status}</Typography>
         </Stack>
         <Typography >{venture.partner}</Typography>
         <Typography >{venture.painpoint}</Typography>
@@ -67,7 +71,7 @@ const EvaluationsPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    projectService.getAllByStatus(['Under evaluation'])
+    projectService.getAllByStatus(['Active', 'Under evaluation', "Declined"])
       .then((ventures: any[]) => setVentures(ventures.filter(v => v.evaluatingTaskGroup)))
       .finally(() => setLoading(false))
   }, [refresh])
