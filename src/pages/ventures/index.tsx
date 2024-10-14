@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
 import MainCard from '../../components/MainCard';
-import { VentureProps, ventureService } from '../../services/pmVentureService';
+import { pmVentureService, VentureProps } from '../../services/pmVentureService';
 import VenturesTable from './VenturesTable';
 
 
@@ -67,9 +67,9 @@ const VenturesPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    ventureService.getAll()
+    pmVentureService.getAll()
       .then((ventures: any[]) =>
-        Promise.all(ventures.map(v => ventureService.getById(v.id)))
+        Promise.all(ventures.map(v => pmVentureService.getById(v.id)))
           .then(resps => setVentures(resps)))
       .finally(() => setLoading(false))
   }, [refresh])

@@ -9,7 +9,7 @@
 import { ButtonGroup, IconButton, Stack, Typography } from "@mui/material";
 import { RichTreeView, TreeViewBaseItem } from "@mui/x-tree-view";
 import { useContext, useEffect, useState } from "react";
-import { ventureService, VentureProps } from "../../services/pmVentureService";
+import { pmVentureService, VentureProps } from "../../services/pmVentureService";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
 import EpicDialog from "./EpicDialog";
@@ -67,7 +67,7 @@ export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
             const coord = itemId.split('.');
             const epic = venture.epics[Number(coord[0])];
             epic.features.forEach(async (f: any) => {
-                f.stories = ventureService.getStories(f);
+                f.stories = pmVentureService.getStories(f);
             })
             console.log(epic)
             // setLastSelectedItem(itemId);

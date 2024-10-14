@@ -14,7 +14,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import MainCard from '../../components/MainCard';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
-import { ventureService } from '../../services/pmVentureService';
+import { pmVentureService } from '../../services/pmVentureService';
 import { EpicPanel } from '../../sections/projects/EpicPanel';
 import { SprintPanel } from '../../sections/projects/SprintPanel';
 import { TabPanel } from '../../components/TabPanel';
@@ -56,16 +56,16 @@ const VenturePage = () => {
     setVenture(undefined);
     if (id) {
       setLoading(true);
-      ventureService.getById(id)
+      pmVentureService.getById(id)
         .then(async (resp: any) => {
-          resp.contributors = await ventureService.getContributors(resp);
-          resp.epics = await ventureService.getEpics(resp);
+          resp.contributors = await pmVentureService.getContributors(resp);
+          resp.epics = await pmVentureService.getEpics(resp);
           resp.epics.forEach(async (e: any) => {
-            e.features = await ventureService.getFeatures(e);
+            e.features = await pmVentureService.getFeatures(e);
             e.features.forEach(async (f: any) => {
-              f.stories = await ventureService.getStories(f);
+              f.stories = await pmVentureService.getStories(f);
               f.stories.forEach(async (s: any) => {
-                s.tasks = await ventureService.getTasks(s);
+                s.tasks = await pmVentureService.getTasks(s);
               })
             })
           })

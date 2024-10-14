@@ -10,7 +10,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { ButtonGroup, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { VentureProps, ventureService } from "../../services/pmVentureService";
+import { pmVentureService, VentureProps } from "../../services/pmVentureService";
 import SprintBoard from "./SprintBoard";
 
 // type SprintCardProps = {
@@ -45,7 +45,7 @@ export const SprintPanel: React.FC<VentureProps> = ({ venture }) => {
     useEffect(() => {
         if (venture) {
             setLoading(true);
-            ventureService.getSprints(venture)
+            pmVentureService.getSprints(venture)
                 .then((sps: any[]) => {
                     setSprints(sps)
                     setSprint(currentSprint(sps))
