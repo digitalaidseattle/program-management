@@ -1,5 +1,5 @@
 /**
- *  projectService.ts
+ *  pmEpicService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
@@ -9,7 +9,7 @@ import { pmAirtableService } from "./airtableService";
 
 const EPIC_TABLE = 'tblrCoHnjUwyC2kwq';
 
-class DASEpicService {
+class PMEpicService {
 
     create = async (epic: any): Promise<any[]> => {
         return pmAirtableService.createRecord(EPIC_TABLE, epic)
@@ -32,5 +32,5 @@ class DASEpicService {
 
 }
 
-const dasEpicService = new DASEpicService()
-export { dasEpicService };
+const pmEpicService = new PMEpicService()
+export { pmEpicService };

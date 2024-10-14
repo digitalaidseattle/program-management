@@ -21,7 +21,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import SortableItem from '../../components/SortableItem';
-import { SprintProps } from '../../services/dasVentureService';
+import { SprintProps } from '../../services/pmVentureService';
 import { pmTaskService } from '../../services/pmTaskService';
 
 export const STATUSES = [

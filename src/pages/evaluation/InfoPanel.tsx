@@ -13,8 +13,8 @@ import { RefreshContext } from "../../components/contexts/RefreshContext";
 import { EditBlock, EditLink } from "../../components/EditBlock";
 import { dasPartnerService, Partner } from "../../services/dasPartnerService";
 import { TaskGroup } from "../../services/dasTaskGroupService";
-import { VentureProps } from "../../services/dasVentureService";
-import { projectService } from "../../services/projectService";
+import { VentureProps } from "../../services/pmVentureService";
+import { dasProjectService } from "../../services/dasProjectService";
 import useVolunteers from "../../services/useVolunteers";
 import TaskGroupDialog from "./taskGroupDialog";
 import { Volunteer } from "../../services/dasVolunteerService";
@@ -108,19 +108,19 @@ const PartnerSection = (props: { venture: any }) => {
 const PSISection = (props: { venture: any }) => {
     const { setRefresh } = useContext(RefreshContext);
     const saveProblem = (text: string) => {
-        projectService
+        dasProjectService
             .update(props.venture, { 'Problem (for DAS website)': text })
             .then(() => setRefresh(0))
     }
 
     const saveSolution = (text: string) => {
-        projectService
+        dasProjectService
             .update(props.venture, { 'Solution (for DAS website)': text })
             .then(() => setRefresh(0))
     }
 
     const saveImpact = (text: string) => {
-        projectService
+        dasProjectService
             .update(props.venture, { 'Impact (for DAS website)': text })
             .then(() => setRefresh(0))
     }
@@ -142,7 +142,7 @@ const PSISection = (props: { venture: any }) => {
 
 const TaskGroupDetailsSection = (props: { venture: any }) => {
     const { setRefresh } = useContext(RefreshContext);
-    const { data: volunteers } = useVolunteers();
+    const volunteers = useVolunteers();
     const [responsibleVolunteers, setResponsibleVolunteers] = useState<Volunteer[]>([]);
     const [projectManagers, setProjectManagers] = useState<Volunteer[]>([]);
     const [productManagers, setProductManagers] = useState<Volunteer[]>([]);
@@ -154,11 +154,11 @@ const TaskGroupDetailsSection = (props: { venture: any }) => {
 
     useEffect(() => {
         if (!initialized) {
-            if (volunteers && taskGroup) {
-                setResponsibleVolunteers(volunteers.filter(v => taskGroup.responsibleIds.includes(v.id)))
-                setProjectManagers(volunteers.filter(v => taskGroup.ventureProjectManagerIds.includes(v.id)))
-                setProductManagers(volunteers.filter(v => taskGroup.ventureProductManagerIds.includes(v.id)))
-                setContributorProductManagers(volunteers.filter(v => taskGroup.contributorPdMIds.includes(v.id)))
+            if (volunteers && volunteers.status === 'fetched' && taskGroup) {
+                setResponsibleVolunteers(volunteers.data.filter(v => taskGroup.responsibleIds.includes(v.id)))
+                setProjectManagers(volunteers.data.filter(v => taskGroup.ventureProjectManagerIds.includes(v.id)))
+                setProductManagers(volunteers.data.filter(v => taskGroup.ventureProductManagerIds.includes(v.id)))
+                setContributorProductManagers(volunteers.data.filter(v => taskGroup.contributorPdMIds.includes(v.id)))
                 setInitialized(true)
             }
         }

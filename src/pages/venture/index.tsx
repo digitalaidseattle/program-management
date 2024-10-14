@@ -14,7 +14,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import MainCard from '../../components/MainCard';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
-import { ventureService } from '../../services/dasVentureService';
+import { ventureService } from '../../services/pmVentureService';
 import { EpicPanel } from '../../sections/projects/EpicPanel';
 import { SprintPanel } from '../../sections/projects/SprintPanel';
 import { TabPanel } from '../../components/TabPanel';

@@ -1,5 +1,5 @@
 /**
- *  projectService.ts
+ *  dasStaffingService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
@@ -19,7 +19,6 @@ type StaffingNeed = {
     roles: string[],
     volunteerAssigned: string[]
 }
-
 
 class DASStaffingService {
 

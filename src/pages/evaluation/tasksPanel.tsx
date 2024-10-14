@@ -20,7 +20,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
 import { dasTaskGroupService } from "../../services/dasTaskGroupService";
-import { VentureProps } from "../../services/dasVentureService";
+import { VentureProps } from "../../services/pmVentureService";
 import { PageInfo } from "../../services/supabaseClient";
 // assets
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';

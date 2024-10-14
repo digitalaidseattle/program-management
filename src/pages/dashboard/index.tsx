@@ -27,7 +27,7 @@ import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icon
 import ReactApexChart from 'react-apexcharts';
 import MainCard from '../../components/MainCard';
 import { dasVolunteerService } from '../../services/dasVolunteerService';
-import { projectService } from '../../services/projectService';
+import { dasProjectService } from '../../services/dasProjectService';
 import avatar1 from '/src/assets/images/users/avatar-1.png';
 import avatar2 from '/src/assets/images/users/avatar-2.png';
 import avatar3 from '/src/assets/images/users/avatar-3.png';
@@ -85,7 +85,7 @@ const VentureChart = () => {
   const [ventureCounts, setVentureCounts] = useState<number[]>([14, 3, 0, 2, 3, 4]);
 
   useEffect(() => {
-    projectService.getAll()
+    dasProjectService.getAll()
       .then((ventures: any) => {
         console.log('ventures', ventures)
         setVentureCounts(

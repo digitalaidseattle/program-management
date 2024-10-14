@@ -18,7 +18,7 @@ import { RefreshContext } from "../../components/contexts/RefreshContext";
 import { dasMeetingService, Meeting } from "../../services/dasMeetingService";
 import { dasTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
 import { TeamContext } from "../../services/dasTeamsService";
-import { VentureProps } from "../../services/dasVentureService";
+import { VentureProps } from "../../services/pmVentureService";
 import { PageInfo } from "../../services/supabaseClient";
 import MeetingDialog from "./meetingDialog";
 

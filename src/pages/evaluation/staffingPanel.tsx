@@ -12,7 +12,7 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRow
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../components/contexts/LoadingContext";
 import { dasStaffingService } from "../../services/dasStaffingService";
-import { VentureProps } from "../../services/dasVentureService";
+import { VentureProps } from "../../services/pmVentureService";
 import { PageInfo } from "../../services/supabaseClient";
 
 const PAGE_SIZE = 10;

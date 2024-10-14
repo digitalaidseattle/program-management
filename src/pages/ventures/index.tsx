@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
 import MainCard from '../../components/MainCard';
-import { VentureProps, ventureService } from '../../services/dasVentureService';
+import { VentureProps, ventureService } from '../../services/pmVentureService';
 import VenturesTable from './VenturesTable';
 
 

@@ -13,8 +13,8 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
-import { VentureProps } from '../../services/dasVentureService';
-import { projectService } from '../../services/projectService';
+import { VentureProps } from '../../services/pmVentureService';
+import { dasProjectService } from '../../services/dasProjectService';
 import placeholder from '../../assets/images/project-image.png';
 
 const VentureCard: React.FC<VentureProps> = ({ venture }) => {
@@ -71,7 +71,7 @@ const EvaluationsPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    projectService.getAllByStatus(['Active', 'Under evaluation', "Declined"])
+    dasProjectService.getAllByStatus(['Active', 'Under evaluation', "Declined"])
       .then((ventures: any[]) => setVentures(ventures.filter(v => v.evaluatingTaskGroup)))
       .finally(() => setLoading(false))
   }, [refresh])

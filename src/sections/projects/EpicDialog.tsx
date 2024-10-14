@@ -18,8 +18,8 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { dasEpicService } from '../../services/dasEpicService';
-import { VentureProps } from '../../services/dasVentureService';
+import { pmEpicService } from '../../services/pmEpicService';
+import { VentureProps } from '../../services/pmVentureService';
 
 interface DialogProps {
     open: boolean,
@@ -43,7 +43,7 @@ const EpicDialog: React.FC<DialogProps & VentureProps> = ({ open, handleSuccess,
                 const formJson = Object.fromEntries(formData.entries());
                 // Review: as unknown as Ticket
                 console.log('formJson', formJson)
-                dasEpicService.create(formJson)
+                pmEpicService.create(formJson)
                     .then((resp: any) => handleSuccess(resp))
                     .catch(err => handleError(err))
             },

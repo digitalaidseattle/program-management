@@ -13,7 +13,7 @@ import { useParams } from 'react-router';
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
 import { dasTaskGroupService } from '../../services/dasTaskGroupService';
-import { projectService } from '../../services/projectService';
+import { dasProjectService } from '../../services/dasProjectService';
 import { InfoPanel } from './InfoPanel';
 import { StaffingPanel } from './staffingPanel';
 import { TasksPanel } from './tasksPanel';
@@ -34,7 +34,7 @@ const EvaluationPage = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      projectService.getById(id)
+      dasProjectService.getById(id)
         .then((venture: any) => {
           dasTaskGroupService.getById(venture.evaluatingTaskGroup)
             .then((tgs: any) => setVenture(Object.assign(venture, { taskGroup: tgs })))
