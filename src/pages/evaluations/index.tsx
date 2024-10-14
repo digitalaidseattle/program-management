@@ -26,9 +26,9 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
         return theme.palette.success.main;
       case 'Under evaluation':
         return theme.palette.warning.main;
-        case 'Declined':
-          return theme.palette.error.main;
-        default:
+      case 'Declined':
+        return theme.palette.error.main;
+      default:
         return theme.palette.primary.main;
     }
   }
@@ -68,10 +68,11 @@ const EvaluationsPage = () => {
   const { setLoading } = useContext(LoadingContext);
   const { refresh } = useContext(RefreshContext);
   const [ventures, setVentures] = useState<any[]>([]);
-
+  // const statuses = ['Active', 'Under evaluation', "Declined"];
+  const statuses = ['Under evaluation'];
   useEffect(() => {
     setLoading(true);
-    dasProjectService.getAllByStatus(['Active', 'Under evaluation', "Declined"])
+    dasProjectService.getAllByStatus(statuses)
       .then((ventures: any[]) => setVentures(ventures.filter(v => v.evaluatingTaskGroup)))
       .finally(() => setLoading(false))
   }, [refresh])
