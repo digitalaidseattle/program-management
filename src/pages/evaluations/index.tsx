@@ -68,6 +68,7 @@ const EvaluationsPage = () => {
   const { setLoading } = useContext(LoadingContext);
   const { refresh } = useContext(RefreshContext);
   const [ventures, setVentures] = useState<any[]>([]);
+  // This allows quick access to more projects in DEV
   // const statuses = ['Active', 'Under evaluation', "Declined"];
   const statuses = ['Under evaluation'];
   useEffect(() => {
