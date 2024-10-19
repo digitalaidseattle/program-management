@@ -14,27 +14,27 @@ import { LoadingContext } from "../../components/contexts/LoadingContext";
 import { dasStaffingService } from "../../services/dasStaffingService";
 import { VentureProps } from "../../services/pmVentureService";
 import { PageInfo } from "../../services/supabaseClient";
+import StaffingDialog from "./staffingDialog";
+import { RefreshContext } from "../../components/contexts/RefreshContext";
 
 const PAGE_SIZE = 10;
 
 export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
+    const { setRefresh } = useContext(RefreshContext);
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: PAGE_SIZE });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
     const [pageInfo, setPageInfo] = useState<PageInfo<any>>({ rows: [], totalRowCount: 0 });
     const apiRef = useGridApiRef();
-
+    const [showEditStaff, setShowEditStaff] = useState<boolean>(false);
+    const [selectedStaff, setSelectedStaff] = useState<any>();
+    
     useEffect(() => {
         if (venture) {
             setLoading(true);
-            // dasTaskGroupService.getById(venture.evaluatingTaskGroup)
-            //     .then((tg: any) => setTaskGroup(tg))
-            //     .finally(() => setLoading(false))
-
             dasStaffingService.findAll(venture)
                 .then((staff: any) => {
-                    console.log(staff)
                     setPageInfo({ rows: staff, totalRowCount: staff.length });
                 })
                 .finally(() => setLoading(false))
@@ -42,24 +42,15 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
         }
     }, [venture]);
 
-    // useEffect(() => {
-    //     if (volunteers && taskGroup) {
-    //         const resp = volunteers.filter(vol =>
-    //             taskGroup.responsibleIds.includes(vol.id)
-    //             || taskGroup.ventureProductManagerIds.includes(vol.id)
-    //             || taskGroup.ventureProjectManagerIds.includes(vol.id)
-    //             || taskGroup.contributorPdMIds.includes(vol.id));
-    //         console.log('resp', volunteers, resp, taskGroup)
-    //         setResponsible(resp)
-    //     }
-    // }, [volunteers, taskGroup])
-
     const handleEditClick = (_id: GridRowId) => () => {
-        alert('Not ready ')
+        const staff = pageInfo.rows.find(r => r.id === _id)
+        setSelectedStaff(staff)
+        setShowEditStaff(true)
     };
 
     const handleAddClick = () => {
-        alert('Not ready ')
+        setSelectedStaff(dasStaffingService.newStaffingNeed())
+        setShowEditStaff(true)
     };
 
     const getColumns = (): GridColDef[] => {
@@ -107,7 +98,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 width: 150,
             },
             {
-                field: 'volunteerAssigned',
+                field: 'contributors',
                 headerName: 'Volunteer Assigned',
                 width: 300,
             }
@@ -141,6 +132,16 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                     pageSizeOptions={[5, 10, 25, 100]}
                     disableRowSelectionOnClick
                 />
+                <StaffingDialog
+                    entity={selectedStaff!}
+                    open={showEditStaff}
+                    handleSuccess={function (): void {
+                        setRefresh(0)
+                        setShowEditStaff(false)
+                    }}
+                    handleError={function (): void {
+                        throw new Error("Function not implemented.");
+                    }} />
             </Stack>
         </>
     )

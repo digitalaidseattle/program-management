@@ -57,7 +57,7 @@ const radiator = {
     // },
     {
       id: 'evaluations',
-      title: 'Evaluation',
+      title: 'Evaluations',
       type: 'item',
       url: '/evaluations',
       icon: icons.SearchOutlined,
