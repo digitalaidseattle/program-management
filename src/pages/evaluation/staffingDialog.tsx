@@ -22,7 +22,6 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { Role } from '../../services/dasRoleService';
 import { dasStaffingService, StaffingNeed } from '../../services/dasStaffingService';
 import useRoles from '../../services/useRoles';
 
