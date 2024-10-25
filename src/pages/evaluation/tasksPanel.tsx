@@ -43,9 +43,11 @@ const STATUS_COLOR_MAP: any = {
 }
 
 const StatusCell = (props: { status: string }) => {
-    return <Chip
-        color={STATUS_COLOR_MAP[props.status]}
-        label={props.status} />
+    return (props.status &&
+        <Chip
+            color={STATUS_COLOR_MAP[props.status]}
+            label={props.status} />
+    )
 }
 
 export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
@@ -83,6 +85,7 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
     };
 
     const getColumns = (): GridColDef[] => {
+        console.log(pageInfo)
         return [
             {
                 field: 'actions',
@@ -121,7 +124,7 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
                 headerName: 'Due Date',
                 width: 150,
                 renderCell: (params: GridRenderCellParams<any, string>) => (
-                    <Typography>{format(params.row.dueDate, "MMM dd, yyyy")}</Typography>
+                    <Typography>{params.row.dueDate && format(params.row.dueDate, "MMM dd, yyyy")}</Typography>
                 )
             },
             {
