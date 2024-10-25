@@ -85,7 +85,6 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
     };
 
     const getColumns = (): GridColDef[] => {
-        console.log(pageInfo)
         return [
             {
                 field: 'actions',
