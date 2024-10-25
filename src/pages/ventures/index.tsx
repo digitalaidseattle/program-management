@@ -59,7 +59,11 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
   )
 };
 
+
+const VENTURE_STATUSES =  ['Active'];
+
 const VenturesPage = () => {
+
   const { setLoading } = useContext(LoadingContext);
   const { refresh } = useContext(RefreshContext);
   const [tabIndex, setTabIndex] = useState(0);
@@ -69,7 +73,9 @@ const VenturesPage = () => {
     setLoading(true);
     pmVentureService.getAll()
       .then((ventures: any[]) =>
-        Promise.all(ventures.map(v => pmVentureService.getById(v.id)))
+        Promise.all(ventures
+          .filter(v => VENTURE_STATUSES.includes(v.status))
+          .map(v => pmVentureService.getById(v.id)))
           .then(resps => setVentures(resps)))
       .finally(() => setLoading(false))
   }, [refresh])

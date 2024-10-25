@@ -11,6 +11,8 @@ import { useState } from 'react';
 // material-ui
 import {
     Box,
+    Button,
+    Chip,
     SortDirection,
     Table,
     TableBody,
@@ -19,7 +21,6 @@ import {
     TableHead,
     TableRow
 } from '@mui/material';
-
 
 function descendingComparator(a: any, b: any, orderBy: string) {
     switch (orderBy) {
@@ -39,6 +40,19 @@ function getComparator(order: SortDirection, orderBy: string) {
     return order === 'desc'
         ? (a: any, b: any) => descendingComparator(a, b, orderBy)
         : (a: any, b: any) => -descendingComparator(a, b, orderBy);
+}
+
+const STATUS_COLOR_MAP: any = {
+    'Active': 'success',
+    'Cancelled': 'warning',
+    'Under evaluation': 'primary',
+    "Declined": 'danger'
+}
+
+const StatusCell = (props: { status: string }) => {
+    return <Chip
+        color={STATUS_COLOR_MAP[props.status]}
+        label={props.status} />
 }
 
 // ==============================|| ORDER TABLE - HEADER CELL ||============================== //
@@ -82,12 +96,12 @@ const headCells = [
     }
 ];
 
-// ==============================|| Ticket TABLE - HEADER ||============================== //
-type TicketTableHeadProps = {
+// ==============================|| Ventures TABLE - HEADER ||============================== //
+type TableHeadProps = {
     order: SortDirection,
     orderBy: string
 };
-const TicketTableHead: React.FC<TicketTableHeadProps> = ({ order, orderBy }) => {
+const VenturesTableHead: React.FC<TableHeadProps> = ({ order, orderBy }) => {
     return (
         <TableHead>
             <TableRow>
@@ -106,15 +120,16 @@ const TicketTableHead: React.FC<TicketTableHeadProps> = ({ order, orderBy }) => 
     );
 }
 
-
-
-// ==============================|| TICKETS TABLE ||============================== //
+// ==============================|| Ventures TABLE ||============================== //
 
 
 export default function VenturesTable(ventures: any[]): any {
     const [order] = useState<SortDirection>('desc');
     const [orderBy] = useState<string>('id');
 
+    const handleClick = (venture: any) => {
+        return () => {alert(venture.id)}
+    }
     return (
         <Box>
             <TableContainer
@@ -138,23 +153,29 @@ export default function VenturesTable(ventures: any[]): any {
                         }
                     }}
                 >
-                    <TicketTableHead order={order} orderBy={orderBy} />
+                    <VenturesTableHead order={order} orderBy={orderBy} />
                     <TableBody>
                         {ventures.sort(getComparator(order, orderBy))
                             .map((venture: any, index: number) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow
+                                        id={venture.id}
                                         hover
                                         role="checkbox"
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         tabIndex={-1}
                                         key={index}
+                                        onClick={handleClick(venture)}
                                     >
                                         <TableCell component="th" id={labelId} scope="row" align="left">{venture.name}</TableCell>
                                         <TableCell align="left">{venture.partner}</TableCell>
-                                        <TableCell align="left">{venture.status}</TableCell>
-                                        <TableCell align="left">{venture.startDate}</TableCell>
+                                        <TableCell align="left">
+                                            <StatusCell status={venture.status} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {venture.startDate}
+                                        </TableCell>
                                         <TableCell align="left">{venture.epicIds.length}</TableCell>
                                         <TableCell align="left">{venture.contributorIds.length}</TableCell>
                                     </TableRow>

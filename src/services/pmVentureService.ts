@@ -37,7 +37,7 @@ class PMVentureService {
                     name: r.fields['Project Name'],
                     partner: r.fields['Partners'],
                     status: r.fields['Status'],
-                    startDate: r.fields['Start Date']
+                    startDate: r.fields['Start Date'] ? new Date(Date.parse(r.fields['Start Date'] as string)) : undefined,
                 } as any
             }));
     }
