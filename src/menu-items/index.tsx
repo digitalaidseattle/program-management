@@ -23,14 +23,14 @@ const radiator = {
     //   icon: icons.DashboardOutlined,
     //   breadcrumbs: false
     // },
-    {
-      id: 'ventures',
-      title: 'Ventures',
-      type: 'item',
-      url: '/ventures',
-      icon: icons.RocketOutlined,
-      breadcrumbs: false
-    },
+    // {
+    //   id: 'ventures',
+    //   title: 'Ventures',
+    //   type: 'item',
+    //   url: '/ventures',
+    //   icon: icons.RocketOutlined,
+    //   breadcrumbs: false
+    // },
     {
       id: 'evaluations',
       title: 'Evaluations',

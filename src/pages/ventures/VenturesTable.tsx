@@ -11,7 +11,6 @@ import { useState } from 'react';
 // material-ui
 import {
     Box,
-    Button,
     Chip,
     SortDirection,
     Table,
@@ -21,6 +20,7 @@ import {
     TableHead,
     TableRow
 } from '@mui/material';
+import { useNavigate } from 'react-router';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
     switch (orderBy) {
@@ -127,9 +127,12 @@ export default function VenturesTable(ventures: any[]): any {
     const [order] = useState<SortDirection>('desc');
     const [orderBy] = useState<string>('id');
 
+    const navigate = useNavigate();
+
     const handleClick = (venture: any) => {
-        return () => {alert(venture.id)}
+        return () => navigate(`/venture/${venture.id}`)
     }
+
     return (
         <Box>
             <TableContainer

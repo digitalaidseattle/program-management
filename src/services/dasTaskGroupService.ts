@@ -10,8 +10,6 @@ import { dasAirtableService } from "./airtableService";
 const TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
 const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
 
-
-
 type TaskGroup = {
     id: string,
     name: string,
@@ -31,6 +29,9 @@ type TaskGroup = {
 }
 
 class DASTaskGroupService {
+    static TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
+    static TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
+
     static STATUSES = [
         "Backlog",
         "Approved",
