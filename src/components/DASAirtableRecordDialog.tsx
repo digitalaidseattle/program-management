@@ -23,6 +23,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
+import { DatePicker } from "@mui/x-date-pickers";
 
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
@@ -52,6 +53,13 @@ const AirtableSurvey: React.FC<AirtableSurveyProps> = ({ fields, options, onChan
 
     const renderInputField = (option: any) => {
         switch (option.type) {
+            case 'date':
+                return <DatePicker
+                    key={option.name}
+                    label={option.label}
+                    value={fields[option.fieldName] ? new Date(Date.parse(fields[option.fieldName] as string)) : undefined}
+                    onChange={(value) => change(option.fieldName, value)}
+                />
             case 'lookup':
                 return <Autocomplete
                     key={option.name}
@@ -107,17 +115,20 @@ const AirtableSurvey: React.FC<AirtableSurveyProps> = ({ fields, options, onChan
                 );
             case 'string':
             default:
-                return (<TextField
-                    key={option.name}
-                    id={option.name}
-                    name={option.name}
-                    type="text"
-                    label={option.label}
-                    value={fields[option.fieldName]}
-                    fullWidth
-                    variant="outlined"
-                    onChange={(evt) => change(option.fieldName, evt.target.value)}
-                />);
+                return (
+                    <FormControl fullWidth key={option.name}>
+                        <TextField
+                            key={option.name}
+                            id={option.name}
+                            name={option.name}
+                            type="text"
+                            label={option.label}
+                            value={fields[option.fieldName]}
+                            fullWidth
+                            variant="outlined"
+                            onChange={(evt) => change(option.fieldName, evt.target.value)}
+                        />
+                    </FormControl>);
         }
     }
     return (

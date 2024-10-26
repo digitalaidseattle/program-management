@@ -7,8 +7,6 @@
 
 import { dasAirtableService } from "./airtableService";
 
-const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
-
 type Task = {
     id: string;
     title: string;
@@ -18,11 +16,25 @@ type Task = {
     driId: string;
     driEmail: string;
     status: string;
+    dueDate: string;
 }
 class DASTaskService {
+    static TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
+    static TASK_STATUSES = [
+        "inbox",
+        "needs re-work",
+        "Approved",
+        "Delivered",
+        "In progress",
+        "Todo",
+        "Someday maybe",
+        "Paused",
+    ];
+    static TASK_PHASES = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
     getById = async (id: string): Promise<any> => {
         return dasAirtableService
-            .getRecord(TASK_DETAIL_TABLE, id)
+            .getRecord(DASTaskService.TASK_DETAIL_TABLE, id)
             .then(record => {
                 console.log('getById', record)
                 return {
@@ -40,7 +52,7 @@ class DASTaskService {
 
     update = async (changes: any): Promise<any> => {
         return dasAirtableService
-            .base(TASK_DETAIL_TABLE)
+            .base(DASTaskService.TASK_DETAIL_TABLE)
             .update([changes])
             .then((records: any) => {
                 console.log('update', records)
@@ -50,5 +62,5 @@ class DASTaskService {
 }
 
 const dasTaskService = new DASTaskService()
-export { dasTaskService };
+export { DASTaskService, dasTaskService };
 export type { Task }
