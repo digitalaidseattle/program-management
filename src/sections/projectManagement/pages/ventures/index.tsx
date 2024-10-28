@@ -16,11 +16,11 @@ import { useNavigate } from 'react-router';
 import { LoadingContext } from '../../../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../../../components/contexts/RefreshContext';
 import MainCard from '../../../../components/MainCard';
-import { pmVentureService, VentureProps } from '../../api/pmVentureService';
+import { pmProjectService, ProjectProps } from '../../api/pmProjectService';
 import VenturesTable from './VenturesTable';
 
 
-const VentureCard: React.FC<VentureProps> = ({ venture }) => {
+const VentureCard: React.FC<ProjectProps> = ({ project: venture }) => {
   const theme = useTheme();
 
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
 };
 
 
-const VENTURE_STATUSES =  ['Active'];
+const VENTURE_STATUSES = ['Active'];
 
 const VenturesPage = () => {
 
@@ -71,11 +71,11 @@ const VenturesPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    pmVentureService.getAll()
+    pmProjectService.getAll()
       .then((ventures: any[]) =>
         Promise.all(ventures
           .filter(v => VENTURE_STATUSES.includes(v.status))
-          .map(v => pmVentureService.getById(v.id)))
+          .map(v => pmProjectService.getById(v.id)))
           .then(resps => setVentures(resps)))
       .finally(() => setLoading(false))
   }, [refresh])
@@ -133,7 +133,7 @@ const VenturesPage = () => {
         <Grid container spacing={2}>
           {ventures.map(p =>
             <Grid item xs={4} key={p.id}>
-              <VentureCard venture={p} />
+              <VentureCard project={p} />
             </Grid>
           )}
         </Grid>

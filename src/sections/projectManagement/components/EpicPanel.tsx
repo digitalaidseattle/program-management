@@ -9,13 +9,13 @@
 import { ButtonGroup, IconButton, Stack, Typography } from "@mui/material";
 import { RichTreeView, TreeViewBaseItem } from "@mui/x-tree-view";
 import { useContext, useEffect, useState } from "react";
-import { pmVentureService, VentureProps } from "../api/pmVentureService";
+import { pmProjectService, ProjectProps } from "../api/pmProjectService";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { RefreshContext } from "../../../components/contexts/RefreshContext";
 import EpicDialog from "./EpicDialog";
 
 
-export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
+export const EpicPanel: React.FC<ProjectProps> = ({ project: venture }) => {
     const { refresh } = useContext(RefreshContext);
     const [items, setItems] = useState<TreeViewBaseItem[]>([]);
     const [showEpicDialog, setShowEpicDialog] = useState<boolean>(false);
@@ -67,7 +67,7 @@ export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
             const coord = itemId.split('.');
             const epic = venture.epics[Number(coord[0])];
             epic.features.forEach(async (f: any) => {
-                f.stories = pmVentureService.getStories(f);
+                f.stories = pmProjectService.getStories(f);
             })
             console.log(epic)
             // setLastSelectedItem(itemId);
@@ -105,7 +105,7 @@ export const EpicPanel: React.FC<VentureProps> = ({ venture }) => {
                 {venture && venture.epics.length > 0 && <RichTreeView items={items} onItemSelectionToggle={handleItemSelectionToggle} />}
             </Stack>
             <EpicDialog
-                venture={venture}
+                project={venture}
                 open={showEpicDialog}
                 handleSuccess={function (resp: any | null): void {
                     if (resp) {

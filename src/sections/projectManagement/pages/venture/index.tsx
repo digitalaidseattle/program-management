@@ -13,11 +13,11 @@ import {
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import MainCard from '../../../../components/MainCard';
+import { TabPanel } from '../../../../components/TabPanel';
 import { LoadingContext } from '../../../../components/contexts/LoadingContext';
-import { pmVentureService } from '../../api/pmVentureService';
+import { pmProjectService } from '../../api/pmProjectService';
 import { EpicPanel } from '../../components/EpicPanel';
 import { SprintPanel } from '../../components/SprintPanel';
-import { TabPanel } from '../../../../components/TabPanel';
 
 type ContributorCardProps = {
   contributor: any,
@@ -56,16 +56,16 @@ const VenturePage = () => {
     setVenture(undefined);
     if (id) {
       setLoading(true);
-      pmVentureService.getById(id)
+      pmProjectService.getById(id)
         .then(async (resp: any) => {
-          resp.contributors = await pmVentureService.getContributors(resp);
-          resp.epics = await pmVentureService.getEpics(resp);
+          resp.contributors = await pmProjectService.getContributors(resp);
+          resp.epics = await pmProjectService.getEpics(resp);
           resp.epics.forEach(async (e: any) => {
-            e.features = await pmVentureService.getFeatures(e);
+            e.features = await pmProjectService.getFeatures(e);
             e.features.forEach(async (f: any) => {
-              f.stories = await pmVentureService.getStories(f);
+              f.stories = await pmProjectService.getStories(f);
               f.stories.forEach(async (s: any) => {
-                s.tasks = await pmVentureService.getTasks(s);
+                s.tasks = await pmProjectService.getTasks(s);
               })
             })
           })
@@ -99,10 +99,10 @@ const VenturePage = () => {
         </Tabs>
       </Box>
       <TabPanel value={tabIndex} index={0}>
-        {venture && <SprintPanel venture={venture} />}
+        {venture && <SprintPanel project={venture} />}
       </TabPanel>
       <TabPanel value={tabIndex} index={1}>
-        {venture && <EpicPanel venture={venture} />}
+        {venture && <EpicPanel project={venture} />}
       </TabPanel>
       <TabPanel value={tabIndex} index={2}>
         <Stack gap={'0.5rem'}>

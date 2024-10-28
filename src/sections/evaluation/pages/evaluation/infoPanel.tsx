@@ -13,14 +13,13 @@ import placeholder from '../../../../assets/images/project-image.png';
 import { RefreshContext } from "../../../../components/contexts/RefreshContext";
 import { dasPartnerService, Partner } from "../../api/dasPartnerService";
 import { EditBlock, EditLink } from "../../../../components/EditBlock";
-import { dasProjectService } from "../../api/dasProjectService";
+import { dasProjectService, Venture, VentureProps } from "../../api/dasProjectService";
 import useVolunteers from "../../components/useVolunteers";
 import { Volunteer } from "../../api/dasVolunteerService";
 import { TaskGroup } from "../../api/dasTaskGroupService";
-import { VentureProps } from "../../../projectManagement/api/pmVentureService";
 import TaskGroupDialog from "./taskGroupDialog";
 
-const DescriptionSection = (props: { venture: any }) => {
+const DescriptionSection = (props: { venture: Venture }) => {
     return (
         <Stack direction={'row'} spacing={2}>
             <CardMedia

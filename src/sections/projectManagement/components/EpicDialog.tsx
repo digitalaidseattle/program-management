@@ -19,14 +19,14 @@ import {
     Typography
 } from '@mui/material';
 import { pmEpicService } from '../api/pmEpicService';
-import { VentureProps } from '../api/pmVentureService';
+import { ProjectProps } from '../api/pmProjectService';
 
 interface DialogProps {
     open: boolean,
     handleSuccess: (resp: any | null) => void,
     handleError: (err: Error) => void
 }
-const EpicDialog: React.FC<DialogProps & VentureProps> = ({ open, handleSuccess, handleError, venture }) => {
+const EpicDialog: React.FC<DialogProps & ProjectProps> = ({ open, handleSuccess, handleError, project: venture }) => {
 
     const iconBackColorOpen = 'grey.300';
     const iconBackColor = 'grey.100';

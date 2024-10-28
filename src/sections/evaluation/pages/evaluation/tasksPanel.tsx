@@ -19,7 +19,6 @@ import {
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
 import { LoadingContext } from "../../../../components/contexts/LoadingContext";
-import { VentureProps } from "../../../projectManagement/api/pmVentureService";
 import { PageInfo } from "../../../../services/supabaseClient";
 import { dasTaskGroupService } from "../../api/dasTaskGroupService";
 // assets
@@ -30,6 +29,7 @@ import { format } from "date-fns";
 import { RefreshContext } from "../../../../components/contexts/RefreshContext";
 import { Task } from "../../api/dasTaskService";
 import TaskDialog from "./taskDialog";
+import { VentureProps } from "../../api/dasProjectService";
 
 const PAGE_SIZE = 10;
 const STATUS_COLOR_MAP: any = {

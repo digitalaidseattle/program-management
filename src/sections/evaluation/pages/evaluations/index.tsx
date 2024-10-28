@@ -14,8 +14,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { LoadingContext } from '../../../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../../../components/contexts/RefreshContext';
-import { VentureProps } from '../../../projectManagement/api/pmVentureService';
-import { dasProjectService } from '../../api/dasProjectService';
+import { dasProjectService, VentureProps } from '../../api/dasProjectService';
 import placeholder from '../../../../assets/images/project-image.png';
 
 const VentureCard: React.FC<VentureProps> = ({ venture }) => {

@@ -13,7 +13,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
-import { VentureProps } from "../../../projectManagement/api/pmVentureService";
 import { LoadingContext } from "../../../../components/contexts/LoadingContext";
 import { RefreshContext } from "../../../../components/contexts/RefreshContext";
 import { PageInfo } from "../../../../services/supabaseClient";
@@ -21,6 +20,7 @@ import { dasTaskGroupService, TaskGroup } from "../../api/dasTaskGroupService";
 import { TeamContext } from "../../api/dasTeamsService";
 import { dasMeetingService, Meeting } from "../../api/dasMeetingService";
 import MeetingDialog from "./meetingDialog";
+import { VentureProps } from "../../api/dasProjectService";
 
 export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);

@@ -1,5 +1,5 @@
 /**
- *  pmVentureService.ts
+ *  pmProjectService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
@@ -19,15 +19,15 @@ const TASK_TABLE = 'tbl9Ttk2DUsAP2iDx';
 const MAX_RECORDS = 100;
 const FILTER = ``
 
-type VentureProps = {
-    venture: any,
+type ProjectProps = {
+    project: any,
 };
 
 type SprintProps = {
     sprint: any
 }
 
-class PMVentureService {
+class PMProjectService {
 
     getAll = async (): Promise<any[]> => {
         return pmAirtableService.getTableRecords(PROJECT_TABLE, MAX_RECORDS, FILTER)
@@ -176,7 +176,7 @@ class PMVentureService {
     }
 }
 
-const pmVentureService = new PMVentureService()
-export { pmVentureService };
-export type { SprintProps, VentureProps };
+const pmProjectService = new PMProjectService()
+export { pmProjectService };
+export type { SprintProps, ProjectProps };
 
