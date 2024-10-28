@@ -23,7 +23,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 
 const iconBackColorOpen = 'grey.300';
 const iconBackColor = 'grey.100';
@@ -55,6 +55,13 @@ const AirtableSurvey: React.FC<AirtableSurveyProps> = ({ fields, options, onChan
         switch (option.type) {
             case 'date':
                 return <DatePicker
+                    key={option.name}
+                    label={option.label}
+                    value={fields[option.fieldName] ? new Date(Date.parse(fields[option.fieldName] as string)) : new Date()}
+                    onChange={(value) => change(option.fieldName, value)}
+                />
+            case 'time':
+                return <TimePicker
                     key={option.name}
                     label={option.label}
                     value={fields[option.fieldName] ? new Date(Date.parse(fields[option.fieldName] as string)) : new Date()}

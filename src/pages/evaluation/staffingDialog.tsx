@@ -91,7 +91,7 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
                 fields: fields
             } as unknown as Record<FieldSet>}
             options={{
-                title: 'Update Task Group',
+                title: 'Edit Venture Staffing',
                 inputs: inputs
             }}
             onCancel={() => handleSuccess(null)}
