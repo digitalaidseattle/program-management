@@ -8,8 +8,6 @@
 import { FieldSet, Record } from "airtable";
 import { dasAirtableService } from "./airtableService";
 
-const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
-
 type StaffingNeed = {
     id: string,
     status: string,
@@ -23,6 +21,8 @@ type StaffingNeed = {
 }
 
 class DASStaffingService {
+    static STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
+
     STATUSES = [
         "Proposed",
         "Filled",
@@ -75,13 +75,13 @@ class DASStaffingService {
         const filter = project
             ? `FIND('${project.ventureCode}', ARRAYJOIN({Prospective Ventures}))`
             : ''
-        return dasAirtableService.getAll(STAFFING_TABLE, filter)
+        return dasAirtableService.getAll(DASStaffingService.STAFFING_TABLE, filter)
             .then(records => records.map(r => this.transform(r)))
     }
 
     update = async (changes: any): Promise<any> => {
         return dasAirtableService
-            .base(STAFFING_TABLE)
+            .base(DASStaffingService.STAFFING_TABLE)
             .update([changes])
             .then((resp: any) => {
                 if (resp.error) {
@@ -92,11 +92,11 @@ class DASStaffingService {
     }
 
     create = async (record: any): Promise<StaffingNeed> => {
-        return dasAirtableService.createRecord(STAFFING_TABLE, record)
+        return dasAirtableService.createRecord(DASStaffingService.STAFFING_TABLE, record)
     }
 }
 
 const dasStaffingService = new DASStaffingService();
-export { dasStaffingService };
+export { DASStaffingService, dasStaffingService };
 export type { StaffingNeed };
 

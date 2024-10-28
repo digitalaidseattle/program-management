@@ -21,7 +21,7 @@ const PAGE_SIZE = 10;
 
 export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
-    const { setRefresh } = useContext(RefreshContext);
+    const { refresh, setRefresh } = useContext(RefreshContext);
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: PAGE_SIZE });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
@@ -29,7 +29,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const apiRef = useGridApiRef();
     const [showEditStaff, setShowEditStaff] = useState<boolean>(false);
     const [selectedStaff, setSelectedStaff] = useState<any>();
-    
+
     useEffect(() => {
         if (venture) {
             setLoading(true);
@@ -40,7 +40,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 .finally(() => setLoading(false))
 
         }
-    }, [venture]);
+    }, [venture, refresh]);
 
     const handleEditClick = (_id: GridRowId) => () => {
         const staff = pageInfo.rows.find(r => r.id === _id)
@@ -132,6 +132,8 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                     pageSizeOptions={[5, 10, 25, 100]}
                     disableRowSelectionOnClick
                 />
+            </Stack>
+            {selectedStaff &&
                 <StaffingDialog
                     entity={selectedStaff!}
                     open={showEditStaff}
@@ -142,7 +144,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                     handleError={function (): void {
                         throw new Error("Function not implemented.");
                     }} />
-            </Stack>
+            }
         </>
     )
 };

@@ -57,7 +57,7 @@ const AirtableSurvey: React.FC<AirtableSurveyProps> = ({ fields, options, onChan
                 return <DatePicker
                     key={option.name}
                     label={option.label}
-                    value={fields[option.fieldName] ? new Date(Date.parse(fields[option.fieldName] as string)) : undefined}
+                    value={fields[option.fieldName] ? new Date(Date.parse(fields[option.fieldName] as string)) : new Date()}
                     onChange={(value) => change(option.fieldName, value)}
                 />
             case 'lookup':
@@ -121,6 +121,7 @@ const AirtableSurvey: React.FC<AirtableSurveyProps> = ({ fields, options, onChan
                             key={option.name}
                             id={option.name}
                             name={option.name}
+                            disabled={option.disabled}
                             type="text"
                             label={option.label}
                             value={fields[option.fieldName]}
@@ -153,10 +154,12 @@ const AirtableRecordDialog: React.FC<AirtableDialogProps<Record<FieldSet>>> = ({
     const [disabled, setDisabled] = useState<boolean>(true);
     const [allChanges, setAllChanges] = useState<any>({});
     const [fields, setFields] = useState<FieldSet>({});
+    const [initialized, setInitialized] = useState<boolean>(false);
 
     useEffect(() => {
-        if (record) {
+        if (record && !initialized) {
             setFields(record.fields)
+            setInitialized(true)
         }
     }, [record])
 
@@ -170,31 +173,33 @@ const AirtableRecordDialog: React.FC<AirtableDialogProps<Record<FieldSet>>> = ({
         onSubmit(allChanges);
     }
 
-    return (<Dialog
-        fullWidth={true}
-        open={open}
-        onClose={onCancel}
-    >
-        <DialogTitle><Typography fontSize={24}>{options ? options.title : 'Edit'}</Typography></DialogTitle>
-        <DialogContent>
-            <Stack spacing={2} margin={2}>
-                <AirtableSurvey
-                    fields={fields}
-                    options={options}
-                    onChange={handleChange} />
-            </Stack>
-        </DialogContent>
-        <DialogActions>
-            <Button
-                variant='outlined'
-                sx={{ color: 'text.secondary', bgcolor: open ? iconBackColorOpen : iconBackColor }}
-                onClick={onCancel}>Cancel</Button>
-            <Button
-                variant='outlined'
-                sx={{ color: 'text.success', bgcolor: open ? iconBackColorOpen : iconBackColor }}
-                onClick={handleSubmit}
-                disabled={disabled}>OK</Button>
-        </DialogActions>
-    </Dialog>)
+    return (initialized &&
+        <Dialog
+            fullWidth={true}
+            open={open}
+            onClose={onCancel}
+        >
+            <DialogTitle><Typography fontSize={24}>{options ? options.title : 'Edit'}</Typography></DialogTitle>
+            <DialogContent>
+                <Stack spacing={2} margin={2}>
+                    <AirtableSurvey
+                        fields={fields}
+                        options={options}
+                        onChange={handleChange} />
+                </Stack>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    variant='outlined'
+                    sx={{ color: 'text.secondary', bgcolor: open ? iconBackColorOpen : iconBackColor }}
+                    onClick={onCancel}>Cancel</Button>
+                <Button
+                    variant='outlined'
+                    sx={{ color: 'text.success', bgcolor: open ? iconBackColorOpen : iconBackColor }}
+                    onClick={handleSubmit}
+                    disabled={disabled}>OK</Button>
+            </DialogActions>
+        </Dialog>
+    )
 }
 export default AirtableRecordDialog;
