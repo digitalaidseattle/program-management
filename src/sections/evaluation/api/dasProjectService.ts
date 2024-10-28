@@ -5,7 +5,7 @@
  *
  */
 
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 
 const PARTNER_TABLE = 'tblqttKinLZJ2JXo7';
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE

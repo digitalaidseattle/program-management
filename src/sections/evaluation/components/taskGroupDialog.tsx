@@ -6,11 +6,11 @@
  */
 import { Record } from "airtable";
 import { FieldSet } from "airtable/lib/field_set";
-import AirtableRecordDialog from "../../components/DASAirtableRecordDialog";
-import { dasAirtableService } from "../../services/airtableService";
-import { useDisciplines } from "../../services/dasDisciplinesService";
-import { DASTaskGroupService, TaskGroup } from "../../services/dasTaskGroupService";
-import useVolunteers from "../../services/useVolunteers";
+import AirtableRecordDialog from "../../../components/DASAirtableRecordDialog";
+import { dasAirtableService } from "../../../services/airtableService";
+import { useDisciplines } from "../api/dasDisciplinesService";
+import { DASTaskGroupService, TaskGroup } from "../api/dasTaskGroupService";
+import useVolunteers from "../components/useVolunteers";
 
 const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity: taskGroup, handleSuccess, handleError }) => {
     const { data: volunteers } = useVolunteers();

@@ -5,7 +5,7 @@
  *
  */
 import { useEffect, useState } from "react";
-import { dasVolunteerService } from "./dasVolunteerService";
+import { dasVolunteerService } from "../api/dasVolunteerService";
 
 
 const useVolunteers = () => {

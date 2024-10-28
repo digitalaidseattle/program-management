@@ -5,7 +5,7 @@
  *
  */
 import { useEffect, useState } from "react";
-import { dasRoleService, Role } from "./dasRoleService";
+import { dasRoleService, Role } from "../api/dasRoleService";
 
 const useRoles = () => {
     const [status, setStatus] = useState('idle');

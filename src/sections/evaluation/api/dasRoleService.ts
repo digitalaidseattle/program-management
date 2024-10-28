@@ -6,7 +6,7 @@
  */
 
 import { FieldSet, Record } from "airtable";
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 
 const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 

@@ -6,7 +6,7 @@
  */
 
 import { createContext, useEffect, useState } from "react";
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 
 const TEAMS_TABLE = 'tblcRB8AHw18uw2zb';
 

@@ -5,10 +5,9 @@
  *
  */
 import { FieldSet, Record } from "airtable";
-import AirtableRecordDialog from "../../components/DASAirtableRecordDialog";
-import { dasAttendanceService, DASMeetingService, dasMeetingService, Meeting } from "../../services/dasMeetingService";
-import useVolunteers from "../../services/useVolunteers";
-
+import { dasAttendanceService, dasMeetingService, DASMeetingService, Meeting } from "../api/dasMeetingService";
+import useVolunteers from "./useVolunteers";
+import AirtableRecordDialog from "../../../components/DASAirtableRecordDialog";
 
 const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, handleSuccess, handleError }) => {
 

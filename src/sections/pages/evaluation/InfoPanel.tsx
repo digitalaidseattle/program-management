@@ -9,16 +9,16 @@
 import { EditOutlined } from "@ant-design/icons";
 import { Card, CardContent, CardMedia, Chip, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { RefreshContext } from "../../components/contexts/RefreshContext";
-import { EditBlock, EditLink } from "../../components/EditBlock";
-import { dasPartnerService, Partner } from "../../services/dasPartnerService";
-import { TaskGroup } from "../../services/dasTaskGroupService";
-import { VentureProps } from "../../services/pmVentureService";
-import { dasProjectService } from "../../services/dasProjectService";
-import useVolunteers from "../../services/useVolunteers";
-import TaskGroupDialog from "./taskGroupDialog";
-import { Volunteer } from "../../services/dasVolunteerService";
 import placeholder from '../../assets/images/project-image.png';
+import { RefreshContext } from "../../../components/contexts/RefreshContext";
+import { dasPartnerService, Partner } from "../../evaluation/api/dasPartnerService";
+import { EditBlock, EditLink } from "../../../components/EditBlock";
+import { dasProjectService } from "../../evaluation/api/dasProjectService";
+import useVolunteers from "../../evaluation/components/useVolunteers";
+import { Volunteer } from "../../evaluation/api/dasVolunteerService";
+import { TaskGroup } from "../../evaluation/api/dasTaskGroupService";
+import TaskGroupDialog from "./taskGroupDialog";
+import { VentureProps } from "../../../services/pmVentureService";
 
 const DescriptionSection = (props: { venture: any }) => {
     return (

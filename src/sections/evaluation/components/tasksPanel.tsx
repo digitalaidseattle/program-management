@@ -18,18 +18,18 @@ import {
     useGridApiRef
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { dasTaskGroupService } from "../../services/dasTaskGroupService";
-import { VentureProps } from "../../services/pmVentureService";
-import { PageInfo } from "../../services/supabaseClient";
+import { LoadingContext } from "../../../components/contexts/LoadingContext";
+import { VentureProps } from "../../../services/pmVentureService";
+import { PageInfo } from "../../../services/supabaseClient";
+import { dasTaskGroupService } from "../api/dasTaskGroupService";
 // assets
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import TaskDialog from "./taskDialog";
-import { Task } from "../../services/dasTaskService";
-import { RefreshContext } from "../../components/contexts/RefreshContext";
-import { format } from "date-fns";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { format } from "date-fns";
+import { RefreshContext } from "../../../components/contexts/RefreshContext";
+import { Task } from "../api/dasTaskService";
+import TaskDialog from "./taskDialog";
 
 const PAGE_SIZE = 10;
 const STATUS_COLOR_MAP: any = {

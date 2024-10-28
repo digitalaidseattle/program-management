@@ -10,16 +10,16 @@ import {
 // project import
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { LoadingContext } from '../../components/contexts/LoadingContext';
-import { RefreshContext } from '../../components/contexts/RefreshContext';
-import { dasTaskGroupService } from '../../services/dasTaskGroupService';
-import { dasProjectService } from '../../services/dasProjectService';
-import { InfoPanel } from './InfoPanel';
-import { StaffingPanel } from './staffingPanel';
-import { TasksPanel } from './tasksPanel';
-import { TabPanel } from '../../components/TabPanel';
-import { MeetingsPanel } from './meetingsPanel';
-import { Team, TeamContext, useTeams } from '../../services/dasTeamsService';
+import { LoadingContext } from '../../../../components/contexts/LoadingContext';
+import { RefreshContext } from '../../../../components/contexts/RefreshContext';
+import { dasTaskGroupService } from '../../api/dasTaskGroupService';
+import { dasProjectService } from '../../api/dasProjectService';
+import { InfoPanel } from '../../components/InfoPanel';
+import { StaffingPanel } from '../../components/staffingPanel';
+import { TasksPanel } from '../../components/tasksPanel';
+import { TabPanel } from '../../../../components/TabPanel';
+import { MeetingsPanel } from '../../components/meetingsPanel';
+import { Team, TeamContext, useTeams } from '../../api/dasTeamsService';
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);

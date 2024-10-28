@@ -5,7 +5,7 @@
  *
  */
 
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 
 const PARTNERS_TABLE = 'tblqttKinLZJ2JXo7';
 

@@ -5,7 +5,7 @@
  *
  */
 
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 import { TaskGroup } from "./dasTaskGroupService";
 
 const MEETING_TABLE = 'tblWwnZ8rjLFjQizJ';

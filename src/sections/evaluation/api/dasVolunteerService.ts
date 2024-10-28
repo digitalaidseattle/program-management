@@ -6,8 +6,8 @@
  */
 
 import { FieldSet, Record } from "airtable";
-import { dasAirtableService } from "./airtableService";
-import { PageInfo, QueryModel } from "./supabaseClient";
+import { dasAirtableService } from "../../../services/airtableService";
+import { PageInfo, QueryModel } from "../../../services/supabaseClient";
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
 

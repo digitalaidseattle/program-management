@@ -5,7 +5,7 @@
  *
  */
 
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 
 type Task = {
     id: string;

@@ -6,7 +6,7 @@
  */
 
 import { FieldSet, Record } from "airtable";
-import { dasAirtableService } from "./airtableService";
+import { dasAirtableService } from "../../../services/airtableService";
 
 type StaffingNeed = {
     id: string,
