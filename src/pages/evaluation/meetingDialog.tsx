@@ -7,11 +7,10 @@
 import { FieldSet, Record } from "airtable";
 import AirtableRecordDialog from "../../components/DASAirtableRecordDialog";
 import { dasAttendanceService, DASMeetingService, dasMeetingService, Meeting } from "../../services/dasMeetingService";
-import { TaskGroup } from "../../services/dasTaskGroupService";
 import useVolunteers from "../../services/useVolunteers";
 
 
-const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGroup }> = ({ open, entity, handleSuccess, handleError, taskGroup }) => {
+const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, handleSuccess, handleError }) => {
 
     const { data: volunteers } = useVolunteers();
 
@@ -93,10 +92,12 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting> & { taskGroup: TaskGrou
                 .then(res => handleSuccess(res))
                 .catch(e => handleError(e))
         } else {
+            const volunteerIds =  fields['volunteerIds'];
+            delete (fields as any)['volunteerIds'];
             dasMeetingService
                 .create(fields)
                 .then(res => {
-                    const atats = fields['volunteerIds'].map(vid => {
+                    const atats = volunteerIds.map(vid => {
                         return {
                             fields: {
                                 'Meeting': [res.id],

@@ -188,8 +188,7 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                         handleError={function (err: Error): void {
                             console.error(err)
                             throw err;
-                        }}
-                        taskGroup={taskGroup!} />
+                        }} />
                 </LocalizationProvider>
             }
         </>
