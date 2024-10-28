@@ -12,12 +12,12 @@ import {
 // project import
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import MainCard from '../../components/MainCard';
-import { LoadingContext } from '../../components/contexts/LoadingContext';
-import { pmVentureService } from '../../services/pmVentureService';
-import { EpicPanel } from '../../sections/projects/EpicPanel';
-import { SprintPanel } from '../../sections/projects/SprintPanel';
-import { TabPanel } from '../../components/TabPanel';
+import MainCard from '../../../../components/MainCard';
+import { LoadingContext } from '../../../../components/contexts/LoadingContext';
+import { pmVentureService } from '../../api/pmVentureService';
+import { EpicPanel } from '../../components/EpicPanel';
+import { SprintPanel } from '../../components/SprintPanel';
+import { TabPanel } from '../../../../components/TabPanel';
 
 type ContributorCardProps = {
   contributor: any,

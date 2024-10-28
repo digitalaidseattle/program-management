@@ -5,7 +5,7 @@
  *
  */
 
-import { pmAirtableService } from "./airtableService";
+import { pmAirtableService } from "../../../services/airtableService";
 
 
 const PROJECT_TABLE = 'tblFeZtplagoFIQBs';

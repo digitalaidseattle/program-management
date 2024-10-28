@@ -5,9 +5,9 @@
  *
  */
 import { FieldSet, Record } from "airtable";
-import { dasAttendanceService, dasMeetingService, DASMeetingService, Meeting } from "../api/dasMeetingService";
-import useVolunteers from "./useVolunteers";
-import AirtableRecordDialog from "../../../components/DASAirtableRecordDialog";
+import { dasAttendanceService, dasMeetingService, DASMeetingService, Meeting } from "../../api/dasMeetingService";
+import useVolunteers from "../../components/useVolunteers";
+import AirtableRecordDialog from "../../../../components/DASAirtableRecordDialog";
 
 const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, handleSuccess, handleError }) => {
 
@@ -91,7 +91,7 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, han
                 .then(res => handleSuccess(res))
                 .catch(e => handleError(e))
         } else {
-            const volunteerIds =  fields['volunteerIds'];
+            const volunteerIds = fields['volunteerIds'];
             delete (fields as any)['volunteerIds'];
             dasMeetingService
                 .create(fields)

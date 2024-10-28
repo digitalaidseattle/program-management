@@ -18,8 +18,8 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { pmEpicService } from '../../services/pmEpicService';
-import { VentureProps } from '../../services/pmVentureService';
+import { pmEpicService } from '../api/pmEpicService';
+import { VentureProps } from '../api/pmVentureService';
 
 interface DialogProps {
     open: boolean,

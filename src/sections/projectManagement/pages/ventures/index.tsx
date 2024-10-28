@@ -13,10 +13,10 @@ import {
 // project import
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { LoadingContext } from '../../components/contexts/LoadingContext';
-import { RefreshContext } from '../../components/contexts/RefreshContext';
-import MainCard from '../../components/MainCard';
-import { pmVentureService, VentureProps } from '../../services/pmVentureService';
+import { LoadingContext } from '../../../../components/contexts/LoadingContext';
+import { RefreshContext } from '../../../../components/contexts/RefreshContext';
+import MainCard from '../../../../components/MainCard';
+import { pmVentureService, VentureProps } from '../../api/pmVentureService';
 import VenturesTable from './VenturesTable';
 
 

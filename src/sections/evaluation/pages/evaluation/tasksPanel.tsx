@@ -18,17 +18,17 @@ import {
     useGridApiRef
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { LoadingContext } from "../../../components/contexts/LoadingContext";
-import { VentureProps } from "../../../services/pmVentureService";
-import { PageInfo } from "../../../services/supabaseClient";
-import { dasTaskGroupService } from "../api/dasTaskGroupService";
+import { LoadingContext } from "../../../../components/contexts/LoadingContext";
+import { VentureProps } from "../../../projectManagement/api/pmVentureService";
+import { PageInfo } from "../../../../services/supabaseClient";
+import { dasTaskGroupService } from "../../api/dasTaskGroupService";
 // assets
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { format } from "date-fns";
-import { RefreshContext } from "../../../components/contexts/RefreshContext";
-import { Task } from "../api/dasTaskService";
+import { RefreshContext } from "../../../../components/contexts/RefreshContext";
+import { Task } from "../../api/dasTaskService";
 import TaskDialog from "./taskDialog";
 
 const PAGE_SIZE = 10;

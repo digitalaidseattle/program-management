@@ -8,10 +8,10 @@ import React from 'react';
 
 // material-ui
 import { FieldSet, Record } from 'airtable';
-import AirtableRecordDialog from '../../../components/DASAirtableRecordDialog';
-import { dasAirtableService } from '../../../services/airtableService';
-import { DASStaffingService, dasStaffingService, StaffingNeed } from '../api/dasStaffingService';
-import useRoles from '../components/useRoles';
+import AirtableRecordDialog from '../../../../components/DASAirtableRecordDialog';
+import { dasAirtableService } from '../../../../services/airtableService';
+import { DASStaffingService, dasStaffingService, StaffingNeed } from '../../api/dasStaffingService';
+import useRoles from '../../components/useRoles';
 
 const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entity: staffingNeed, handleSuccess, handleError }) => {
 

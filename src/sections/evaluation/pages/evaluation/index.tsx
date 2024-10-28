@@ -14,12 +14,12 @@ import { LoadingContext } from '../../../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../../../components/contexts/RefreshContext';
 import { dasTaskGroupService } from '../../api/dasTaskGroupService';
 import { dasProjectService } from '../../api/dasProjectService';
-import { InfoPanel } from '../../components/InfoPanel';
-import { StaffingPanel } from '../../components/staffingPanel';
-import { TasksPanel } from '../../components/tasksPanel';
+import { StaffingPanel } from './staffingPanel';
+import { TasksPanel } from './tasksPanel';
 import { TabPanel } from '../../../../components/TabPanel';
-import { MeetingsPanel } from '../../components/meetingsPanel';
+import { MeetingsPanel } from './meetingsPanel';
 import { Team, TeamContext, useTeams } from '../../api/dasTeamsService';
+import { InfoPanel } from './infoPanel';
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);

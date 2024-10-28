@@ -9,9 +9,9 @@
 import { ButtonGroup, IconButton, Stack, Typography } from "@mui/material";
 import { RichTreeView, TreeViewBaseItem } from "@mui/x-tree-view";
 import { useContext, useEffect, useState } from "react";
-import { pmVentureService, VentureProps } from "../../services/pmVentureService";
+import { pmVentureService, VentureProps } from "../api/pmVentureService";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { RefreshContext } from "../../components/contexts/RefreshContext";
+import { RefreshContext } from "../../../components/contexts/RefreshContext";
 import EpicDialog from "./EpicDialog";
 
 

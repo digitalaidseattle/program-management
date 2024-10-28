@@ -9,16 +9,16 @@
 import { EditOutlined } from "@ant-design/icons";
 import { Card, CardContent, CardMedia, Chip, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import placeholder from '../../assets/images/project-image.png';
-import { RefreshContext } from "../../../components/contexts/RefreshContext";
-import { dasPartnerService, Partner } from "../../evaluation/api/dasPartnerService";
-import { EditBlock, EditLink } from "../../../components/EditBlock";
-import { dasProjectService } from "../../evaluation/api/dasProjectService";
-import useVolunteers from "../../evaluation/components/useVolunteers";
-import { Volunteer } from "../../evaluation/api/dasVolunteerService";
-import { TaskGroup } from "../../evaluation/api/dasTaskGroupService";
+import placeholder from '../../../../assets/images/project-image.png';
+import { RefreshContext } from "../../../../components/contexts/RefreshContext";
+import { dasPartnerService, Partner } from "../../api/dasPartnerService";
+import { EditBlock, EditLink } from "../../../../components/EditBlock";
+import { dasProjectService } from "../../api/dasProjectService";
+import useVolunteers from "../../components/useVolunteers";
+import { Volunteer } from "../../api/dasVolunteerService";
+import { TaskGroup } from "../../api/dasTaskGroupService";
+import { VentureProps } from "../../../projectManagement/api/pmVentureService";
 import TaskGroupDialog from "./taskGroupDialog";
-import { VentureProps } from "../../../services/pmVentureService";
 
 const DescriptionSection = (props: { venture: any }) => {
     return (
@@ -196,7 +196,7 @@ const TaskGroupDetailsSection = (props: { venture: any }) => {
                     setRefresh(0);
                     setShowDialog(false)
                 }}
-                handleError={e => console.error(e)}
+                handleError={(e: any) => console.error(e)}
             />
         </>
     )

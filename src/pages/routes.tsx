@@ -7,8 +7,8 @@ import Login from './authentication/Login';
 import ContributorsPage from './contributors';
 import DashboardDefault from './dashboard';
 import Page404 from './error/404';
-import VenturePage from './venture';
-import VenturesPage from './ventures';
+import VenturePage from '../sections/projectManagement/pages/venture';
+import VenturesPage from '../sections/projectManagement/pages/ventures';
 
 const routes = [
   {

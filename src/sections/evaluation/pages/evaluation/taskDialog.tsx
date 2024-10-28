@@ -8,11 +8,11 @@ import React, { useMemo } from 'react';
 
 // material-ui
 import { FieldSet, Record } from 'airtable';
-import AirtableRecordDialog from '../../../components/DASAirtableRecordDialog';
-import { dasAirtableService } from '../../../services/airtableService';
-import { TaskGroup } from '../api/dasTaskGroupService';
-import { DASTaskService, Task } from '../api/dasTaskService';
-import useVolunteers from '../components/useVolunteers';
+import AirtableRecordDialog from '../../../../components/DASAirtableRecordDialog';
+import { dasAirtableService } from '../../../../services/airtableService';
+import { TaskGroup } from '../../api/dasTaskGroupService';
+import { DASTaskService, Task } from '../../api/dasTaskService';
+import useVolunteers from '../../components/useVolunteers';
 
 
 const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> = ({ open, entity: task, handleSuccess, handleError, taskGroup }) => {

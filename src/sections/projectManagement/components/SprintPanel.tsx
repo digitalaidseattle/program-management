@@ -9,8 +9,8 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { ButtonGroup, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { LoadingContext } from "../../components/contexts/LoadingContext";
-import { pmVentureService, VentureProps } from "../../services/pmVentureService";
+import { LoadingContext } from "../../../components/contexts/LoadingContext";
+import { pmVentureService, VentureProps } from "../api/pmVentureService";
 import SprintBoard from "./SprintBoard";
 
 // type SprintCardProps = {

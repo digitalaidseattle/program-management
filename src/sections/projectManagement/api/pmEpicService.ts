@@ -5,7 +5,7 @@
  *
  */
 
-import { pmAirtableService } from "./airtableService";
+import { pmAirtableService } from "../../../services/airtableService";
 
 const EPIC_TABLE = 'tblrCoHnjUwyC2kwq';
 
