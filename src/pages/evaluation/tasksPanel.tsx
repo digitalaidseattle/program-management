@@ -28,6 +28,8 @@ import TaskDialog from "./taskDialog";
 import { Task } from "../../services/dasTaskService";
 import { RefreshContext } from "../../components/contexts/RefreshContext";
 import { format } from "date-fns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 
 const PAGE_SIZE = 10;
 const STATUS_COLOR_MAP: any = {
@@ -170,17 +172,21 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
                     disableRowSelectionOnClick
                 />
             </Stack>
-            <TaskDialog
-                entity={selectedTask!}
-                open={showEditTask}
-                taskGroup={taskGroup}
-                handleSuccess={function (): void {
-                    setRefresh(0);
-                    setShowEditTask(false)
-                }}
-                handleError={function (): void {
-                    throw new Error("Function not implemented.");
-                }} />
+            {selectedTask &&
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <TaskDialog
+                        entity={selectedTask!}
+                        open={showEditTask}
+                        taskGroup={taskGroup}
+                        handleSuccess={function (): void {
+                            setRefresh(1000);
+                            setShowEditTask(false)
+                        }}
+                        handleError={function (): void {
+                            throw new Error("Function not implemented.");
+                        }} />
+                </LocalizationProvider>
+            }
         </>
     )
 };

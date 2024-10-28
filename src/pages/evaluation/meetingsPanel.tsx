@@ -65,13 +65,11 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
 
 
     const handleEditClick = (_id: GridRowId) => async () => {
-        alert('Not ready ')
-        // const selected: Meeting = pageInfo.rows.find(m => m.id === id)
-        // // const selected = pageInfo.rows.find(m => m.id === id)
+        alert('Not implemented yet.')
+        // const selected: Meeting = pageInfo.rows.find(m => m.id === _id)
         // Promise.all(selected.attendanceIds
         //     .map(async attId => dasAttendanceService.getById(attId)))
         //     .then(attendances => {
-        //         console.log('attendances', attendances)
         //         selected.attendances = attendances;
         //         setSelectedMeeting(selected)
         //         setShowCreateDialog(true)
@@ -178,20 +176,21 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                     disableRowSelectionOnClick
                 />
             </Stack>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <MeetingDialog
-                    entity={selectedMeeting!}
-                    open={showCreateDialog}
-                    handleSuccess={function (): void {
-                        setRefresh(0);
-                        setShowCreateDialog(false)
-                    }}
-                    handleError={function (err: Error): void {
-                        throw new Error("Function not implemented.");
-                        console.error(err)
-                    }}
-                    taskGroup={taskGroup!} />
-            </LocalizationProvider>
+            {selectedMeeting &&
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <MeetingDialog
+                        entity={selectedMeeting}
+                        open={showCreateDialog}
+                        handleSuccess={function (): void {
+                            setRefresh(0);
+                            setShowCreateDialog(false)
+                        }}
+                        handleError={function (err: Error): void {
+                            console.error(err)
+                            throw err;
+                        }} />
+                </LocalizationProvider>
+            }
         </>
     )
 };

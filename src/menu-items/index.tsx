@@ -1,36 +1,12 @@
 // project import
 import {
-  ChromeOutlined,
-  DashboardOutlined,
-  LoginOutlined,
-  ProfileOutlined,
-  QuestionOutlined,
-  ExclamationOutlined,
-  FileOutlined,
-  FileExclamationOutlined,
-  EyeInvisibleOutlined,
-  UploadOutlined,
-  DragOutlined,
-  GlobalOutlined,
-  TableOutlined,
-  SearchOutlined
+  SearchOutlined,
+  RocketOutlined
 } from '@ant-design/icons';
 
 const icons = {
-  DashboardOutlined,
-  LoginOutlined,
-  ProfileOutlined,
-  ChromeOutlined,
-  QuestionOutlined,
-  ExclamationOutlined,
-  FileOutlined,
-  FileExclamationOutlined,
-  EyeInvisibleOutlined,
-  UploadOutlined,
-  DragOutlined,
-  GlobalOutlined,
-  TableOutlined,
-  SearchOutlined
+  SearchOutlined,
+  RocketOutlined
 };
 
 // ==============================|| MENU ITEMS ||============================== //
@@ -52,7 +28,7 @@ const radiator = {
     //   title: 'Ventures',
     //   type: 'item',
     //   url: '/ventures',
-    //   icon: icons.FileOutlined,
+    //   icon: icons.RocketOutlined,
     //   breadcrumbs: false
     // },
     {
