@@ -1,6 +1,6 @@
 
 /**
- *  InfoPanel.tsx
+ *  TabPanel.tsx
  *
  *  @copyright 2024 Digital Aid Seattle
  *

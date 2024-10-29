@@ -24,7 +24,7 @@ import {
 // project import
 import { LoadingContext } from '../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../components/contexts/RefreshContext';
-import { dasVolunteerService, Volunteer } from '../../services/dasVolunteerService';
+import { dasVolunteerService, Volunteer } from '../../sections/evaluation/api/dasVolunteerService';
 import { QueryModel } from '../../services/supabaseClient';
 
 // ==============================|| Tickets Grid ||============================== //
