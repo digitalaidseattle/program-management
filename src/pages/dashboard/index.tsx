@@ -85,9 +85,8 @@ const VentureChart = () => {
   const [ventureCounts, setVentureCounts] = useState<number[]>([14, 3, 0, 2, 3, 4]);
 
   useEffect(() => {
-    dasProjectService.getAll()
+    dasProjectService.findAll()
       .then((ventures: any) => {
-        console.log('ventures', ventures)
         setVentureCounts(
           [
             ventures.filter((v: any) => v.status === "Submitted by Partner").length,
@@ -129,7 +128,7 @@ const ContributorChart = () => {
   const [counts, setCounts] = useState<number[]>([]);
 
   useEffect(() => {
-    dasVolunteerService.getAll()
+    dasVolunteerService.findAll()
       .then(volunteers => {
         const contributors = volunteers.filter((v: any) => v.affliation ? v.affliation.includes('Contributor') : false)
         setCounts(

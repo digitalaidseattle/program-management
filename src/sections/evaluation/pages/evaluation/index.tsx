@@ -65,7 +65,7 @@ const EvaluationPage = () => {
   return (venture &&
     <>
       <TeamContext.Provider value={{ team, setTeam }}>
-        <Typography variant='h2'>Venture Evaluation: {venture.title}</Typography>
+        <Typography variant='h2'>Venture Evaluation: {venture.ventureCode}</Typography>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tabIndex} onChange={handleChange} aria-label="basic tabs example">
             <Tab label="Info" {...a11yProps(0)} />

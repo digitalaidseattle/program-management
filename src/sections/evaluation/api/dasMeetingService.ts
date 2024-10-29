@@ -139,7 +139,6 @@ class DASMeetingService {
             .base(MEETING_TABLE)
             .create([{ fields: fields }])
             .then((resp: any) => {
-                console.log(resp)
                 if (resp.error) {
                     throw resp.error
                 }

@@ -112,7 +112,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 <Stack direction="row" spacing={2}>
                     <Stack direction="row" spacing={2}>
                         <Typography fontWeight={600}>Group Name: </Typography>
-                        <Typography>{venture.title}</Typography>
+                        <Typography>{venture.ventureCode}</Typography>
                     </Stack>
                 </Stack>
                 <DataGrid

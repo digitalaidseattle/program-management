@@ -6,7 +6,8 @@
  */
 
 import { FieldSet, Record } from "airtable";
-import { dasAirtableService } from "../../../services/airtableService";
+import { dasAirtableClient } from "../../../services/airtableClient";
+import { AirtableRecordService } from "../../../services/airtableRecordService";
 
 type StaffingNeed = {
     id: string,
@@ -20,9 +21,9 @@ type StaffingNeed = {
     contributors: string[]
 }
 
-class DASStaffingService {
-    static STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
+const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
 
+class DASStaffingService extends AirtableRecordService<StaffingNeed> {
     STATUSES = [
         "Proposed",
         "Filled",
@@ -42,6 +43,10 @@ class DASStaffingService {
         "1/3 into the Venture",
         "2/3 into the Venture"
     ]
+    
+    public constructor() {
+        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), STAFFING_TABLE);
+    }
 
     newStaffingNeed(): StaffingNeed {
         return {
@@ -57,7 +62,7 @@ class DASStaffingService {
         } as StaffingNeed
     }
 
-    transform(r: Record<FieldSet>): StaffingNeed {
+    airtableTransform(r: Record<FieldSet>): StaffingNeed {
         return {
             id: r.id,
             status: r.fields['Status'],
@@ -71,29 +76,14 @@ class DASStaffingService {
         } as StaffingNeed
     }
 
-    async findAll(project?: any): Promise<StaffingNeed[]> {
+
+    findAll = async (project?: any): Promise<StaffingNeed[]>  => {
         const filter = project
             ? `FIND('${project.ventureCode}', ARRAYJOIN({Prospective Ventures}))`
             : ''
-        return dasAirtableService.getAll(DASStaffingService.STAFFING_TABLE, filter)
-            .then(records => records.map(r => this.transform(r)))
+        return super.findAll(undefined, filter)
     }
 
-    update = async (changes: any): Promise<any> => {
-        return dasAirtableService
-            .base(DASStaffingService.STAFFING_TABLE)
-            .update([changes])
-            .then((resp: any) => {
-                if (resp.error) {
-                    throw resp.error
-                }
-                return this.transform(resp[0])
-            })
-    }
-
-    create = async (record: any): Promise<StaffingNeed> => {
-        return dasAirtableService.createRecord(DASStaffingService.STAFFING_TABLE, record)
-    }
 }
 
 const dasStaffingService = new DASStaffingService();

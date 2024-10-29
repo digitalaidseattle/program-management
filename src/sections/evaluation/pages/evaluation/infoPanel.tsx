@@ -24,8 +24,8 @@ const DescriptionSection = (props: { venture: Venture }) => {
         <Stack direction={'row'} spacing={2}>
             <CardMedia
                 component='img'
-                image={props.venture.imageSrc ? props.venture.imageSrc : placeholder}
-                alt={props.venture.title + " logo"}
+                image={props.venture.partner.logoUrl ? props.venture.partner.logoUrl : placeholder}
+                alt={props.venture.partner.name + " logo"}
                 sx={{
                     objectFit: 'contain',
                     width: { md: '2rem', lg: '4rem' },
@@ -38,7 +38,7 @@ const DescriptionSection = (props: { venture: Venture }) => {
             <Stack>
                 <Stack direction="row" spacing={2}>
                     <Typography fontWeight={600}>Partner: </Typography>
-                    <Typography> {props.venture.title}</Typography>
+                    <Typography> {props.venture.partner.name}</Typography>
                 </Stack>
                 <Stack direction="row" spacing={2}>
                     <Typography fontWeight={600}>Venture Status: </Typography>
@@ -66,25 +66,25 @@ const PartnerSection = (props: { venture: any }) => {
 
     const saveOverview = (text: string) => {
         dasPartnerService
-            .update(partner!, { 'Overview link': text })
+            .update(partner!.id, { 'Overview link': text })
             .then(() => setRefresh(0))
     }
 
     const saveGdrive = (text: string) => {
         dasPartnerService
-            .update(partner!, { 'Gdrive link URL': text })
+            .update(partner!.id, { 'Gdrive link URL': text })
             .then(() => setRefresh(0))
     }
 
     const saveHubspot = (text: string) => {
         dasPartnerService
-            .update(partner!, { 'Hubspot interface': text })
+            .update(partner!.id, { 'Hubspot interface': text })
             .then(() => setRefresh(0))
     }
 
     const saveMiro = (text: string) => {
         dasPartnerService
-            .update(partner!, { 'Miro Board Link': text })
+            .update(partner!.id, { 'Miro Board Link': text })
             .then(() => setRefresh(0))
     }
     return (partner &&

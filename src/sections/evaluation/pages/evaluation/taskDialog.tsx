@@ -9,9 +9,8 @@ import React, { useMemo } from 'react';
 // material-ui
 import { FieldSet, Record } from 'airtable';
 import AirtableRecordDialog from '../../../../components/DASAirtableRecordDialog';
-import { dasAirtableService } from '../../../../services/airtableService';
 import { TaskGroup } from '../../api/dasTaskGroupService';
-import { DASTaskService, Task } from '../../api/dasTaskService';
+import { dasTaskService, DASTaskService, Task } from '../../api/dasTaskService';
 import useVolunteers from '../../components/useVolunteers';
 
 
@@ -88,18 +87,9 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
     ]
 
     const handleSubmit = (changes: any) => {
-        return dasAirtableService
-            .base(DASTaskService.TASK_DETAIL_TABLE)
-            .update([{
-                id: task?.id,
-                fields: changes
-            }])
-            .then((resp: any) => {
-                if (resp.error) {
-                    throw resp.error
-                }
-                return handleSuccess(resp[0])
-            })
+        return dasTaskService
+            .update(task.id, changes)
+            .then((updated: Task) => handleSuccess(updated))
             .catch(e => handleError(e))
     }
 

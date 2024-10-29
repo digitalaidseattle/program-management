@@ -6,13 +6,12 @@
  */
 
 import { FieldSet, Record } from "airtable";
-import { dasAirtableService } from "../../../services/airtableService";
+import { dasAirtableClient } from "../../../services/airtableClient";
+import { AirtableRecordService } from "../../../services/airtableRecordService";
 import { PageInfo, QueryModel } from "../../../services/supabaseClient";
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
 
-const MAX_RECORDS = 200;
-const FILTER = ``
 
 type Volunteer = {
     id: string,
@@ -28,9 +27,11 @@ type Volunteer = {
 }
 
 
-class DASVolunteerService {
-
-    transform(r: Record<FieldSet>): Volunteer {
+class DASVolunteerService extends AirtableRecordService<Volunteer> {
+    public constructor() {
+        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), VOLUNTEER_TABLE);
+    }
+    airtableTransform(r: Record<FieldSet>): Volunteer {
         return {
             id: r.id,
             name: r.fields['Name'],
@@ -45,29 +46,22 @@ class DASVolunteerService {
         } as Volunteer
     }
 
-    async query(queryModel: QueryModel): Promise<PageInfo<Volunteer>> {
+    async findConstributors(queryModel: QueryModel): Promise<PageInfo<Volunteer>> {
         // Airtable is lame: no table count
         // return dasAirtableService.query(VOLUNTEER_TABLE, queryModel)
-        return dasAirtableService.getTableRecords(VOLUNTEER_TABLE, MAX_RECORDS, FILTER)
-            .then(records => {
-                const contributors = records
-                    .map(r => this.transform(r))
+        return super.findAll()
+            .then(volunteers => {
+                const contributors = volunteers
                     .filter(v1 => v1.affliation ? v1.affliation.includes('Contributor') : false)
                 const trimmed = contributors
                     .sort((v1, v2) => v1.lastName.localeCompare(v2.lastName))
                     .slice(queryModel.page, queryModel.page + queryModel.pageSize)
-                console.log(queryModel, contributors)
                 return {
                     totalRowCount: contributors.length,
                     rows: trimmed
                 }
             })
 
-    }
-
-    getAll = async (): Promise<Volunteer[]> => {
-        return dasAirtableService.getTableRecords(VOLUNTEER_TABLE, MAX_RECORDS, FILTER)
-            .then(records => records.map(r => this.transform(r)));
     }
 
 }

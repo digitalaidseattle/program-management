@@ -16,7 +16,7 @@ const useVolunteers = () => {
     useEffect(() => {
         const fetchData = async () => {
             setStatus('fetching');
-            const response = await dasVolunteerService.getAll()
+            const response = await dasVolunteerService.findAll()
             setData(response);
             setStatus('fetched');
         };

@@ -42,8 +42,8 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
         <Stack direction={'row'}>
           <CardMedia
             component='img'
-            image={venture.imageSrc ? venture.imageSrc : placeholder}
-            alt={venture.title + " logo"}
+            image={venture.partner.logoUrl ? venture.partner.logoUrl : placeholder}
+            alt={venture.partner.name + " logo"}
             sx={{
               objectFit: 'contain',
               width: { md: '7rem', lg: 200 },
@@ -55,12 +55,12 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
           />
           <Stack margin={1} spacing={1}>
             <Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
-              <Typography variant='h5'>{venture.title} </Typography>
+              <Typography variant='h5'>{venture.ventureCode} </Typography>
               <Typography color={statusColor(venture)}>{venture.status}</Typography>
             </Stack>
-            <Typography >{venture.partner}</Typography>
+            <Typography >{venture.partner.name}</Typography>
             <Typography >{venture.painpoint}</Typography>
-            <Typography >{venture.description}</Typography>
+            <Typography >{venture.partner.description}</Typography>
           </Stack>
         </Stack>
       </CardActionArea>

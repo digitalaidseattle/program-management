@@ -5,33 +5,32 @@
  *
  */
 
+import { FieldSet, Record } from "airtable";
 import { useEffect, useState } from "react";
-import { dasAirtableService } from "../../../services/airtableService";
+import { dasAirtableClient } from "../../../services/airtableClient";
+import { AirtableRecordService } from "../../../services/airtableRecordService";
 
 const DISCIPLINES_TABLE = 'tblAL15eUBFRIrdVH';
-
-const MAX_RECORDS = 200;
-const FILTER = ``;
 
 type Discipline = {
     id: string
     name: string
 }
 
-class DASDisciplinesService {
-    transform(r: any): Discipline {
+class DASDisciplinesService extends AirtableRecordService<Discipline> {
+
+    public constructor() {
+        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), DISCIPLINES_TABLE);
+    }
+
+    airtableTransform(record: Record<FieldSet>): Discipline {
         return {
-            id: r.id,
-            name: r.fields['Name']
-        }
+            id: record.id,
+            name: record.fields['Name']
+        } as Discipline
     }
 
-    getAll = async (): Promise<Discipline[]> => {
-        return dasAirtableService.getTableRecords(DISCIPLINES_TABLE, MAX_RECORDS, FILTER)
-            .then(records => records.map(r => this.transform(r)));
-    }
-
-}
+};
 
 const useDisciplines = () => {
     const [status, setStatus] = useState('idle');
@@ -41,14 +40,13 @@ const useDisciplines = () => {
         const fetchData = async () => {
             setStatus('fetching');
             const response = await dasDisciplinesService
-                .getAll()
+                .findAll()
                 .then(recs => recs.sort((d1, d2) => d1.name.localeCompare(d2.name)))
             setData(response);
             setStatus('fetched');
         };
         fetchData();
     }, []);
-
 
     return { status, data };
 };

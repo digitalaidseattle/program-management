@@ -9,8 +9,7 @@ import React from 'react';
 // material-ui
 import { FieldSet, Record } from 'airtable';
 import AirtableRecordDialog from '../../../../components/DASAirtableRecordDialog';
-import { dasAirtableService } from '../../../../services/airtableService';
-import { DASStaffingService, dasStaffingService, StaffingNeed } from '../../api/dasStaffingService';
+import { dasStaffingService, StaffingNeed } from '../../api/dasStaffingService';
 import useRoles from '../../components/useRoles';
 
 const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entity: staffingNeed, handleSuccess, handleError }) => {
@@ -62,18 +61,9 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
 
     const handleSubmit = (changes: any) => {
         if (staffingNeed && staffingNeed.id) {
-            return dasAirtableService
-                .base(DASStaffingService.STAFFING_TABLE)
-                .update([{
-                    id: staffingNeed?.id,
-                    fields: changes
-                }])
-                .then((resp: any) => {
-                    if (resp.error) {
-                        throw resp.error
-                    }
-                    return handleSuccess(resp[0])
-                })
+            return dasStaffingService
+                .update(staffingNeed?.id, changes)
+                .then(updated => handleSuccess(updated))
                 .catch(e => handleError(e))
         } else {
             dasStaffingService

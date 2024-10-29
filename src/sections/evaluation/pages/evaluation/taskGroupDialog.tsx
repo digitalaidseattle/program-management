@@ -7,9 +7,8 @@
 import { Record } from "airtable";
 import { FieldSet } from "airtable/lib/field_set";
 import AirtableRecordDialog from "../../../../components/DASAirtableRecordDialog";
-import { dasAirtableService } from "../../../../services/airtableService";
 import { useDisciplines } from "../../api/dasDisciplinesService";
-import { DASTaskGroupService, TaskGroup } from "../../api/dasTaskGroupService";
+import { dasTaskGroupService, DASTaskGroupService, TaskGroup } from "../../api/dasTaskGroupService";
 import useVolunteers from "../../components/useVolunteers";
 
 const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity: taskGroup, handleSuccess, handleError }) => {
@@ -105,18 +104,9 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
     ]
 
     const handleSubmit = (changes: any) => {
-        return dasAirtableService
-            .base(DASTaskGroupService.TASK_GROUP_TABLE)
-            .update([{
-                id: taskGroup?.id,
-                fields: changes
-            }])
-            .then((resp: any) => {
-                if (resp.error) {
-                    throw resp.error
-                }
-                return handleSuccess(resp[0])
-            })
+        return dasTaskGroupService
+            .update(taskGroup?.id, changes)
+            .then((updated) => handleSuccess(updated))
             .catch(e => handleError(e))
     }
 

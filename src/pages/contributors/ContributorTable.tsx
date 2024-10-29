@@ -81,7 +81,7 @@ export default function ContributorTable() {
                 sortField: sortModel.length === 0 ? 'created_at' : sortModel[0].field,
                 sortDirection: sortModel.length === 0 ? 'created_at' : sortModel[0].sort
             } as QueryModel
-            dasVolunteerService.query(queryModel)
+            dasVolunteerService.findConstributors(queryModel)
                 .then((vols) => setPageInfo(vols))
         }
     }, [paginationModel, sortModel])
@@ -94,7 +94,7 @@ export default function ContributorTable() {
             sortDirection: sortModel.length === 0 ? 'created_at' : sortModel[0].sort
         } as QueryModel
         setLoading(true);
-        dasVolunteerService.query(queryModel)
+        dasVolunteerService.findConstributors(queryModel)
             .then((pi) => setPageInfo(pi))
             .finally(() => setLoading(false))
 

@@ -5,10 +5,11 @@
  *
  */
 
-import { dasAirtableService } from "../../../services/airtableService";
+import { dasAirtableClient } from "../../../services/airtableClient";
+import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { dasTaskService } from "./dasTaskService";
 
 const TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
-const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
 
 type TaskGroup = {
     id: string,
@@ -28,7 +29,7 @@ type TaskGroup = {
     disciplinesRequiredId: string[]
 }
 
-class DASTaskGroupService {
+class DASTaskGroupService extends AirtableRecordService<TaskGroup> {
     static TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
     static TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
 
@@ -50,7 +51,11 @@ class DASTaskGroupService {
         "AAAAAAAA!!!!!"
     ]
 
-    transform = (record: any): TaskGroup => {
+    public constructor() {
+        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), TASK_GROUP_TABLE);
+    }
+
+    airtableTransform = (record: any): TaskGroup => {
         return {
             id: record.id,
             name: record.fields["Task Group name"],
@@ -72,48 +77,18 @@ class DASTaskGroupService {
 
     getTasks = async (taskGroup: any): Promise<any> => {
         const FILTER = `FIND('${taskGroup.taskGroupCode}', ARRAYJOIN({Task Group}))`;
-        return dasAirtableService
-            .getAll(TASK_DETAIL_TABLE, FILTER)
-            .then(records => {
-                return records
-                    .map(record => {
-                        // console.log('getTasks', record.fields)
-                        return {
-                            id: record.id,
-                            title: record.fields['The request'],
-                            phase: Number.parseInt(record.fields['Phase'] as string),
-                            requestDetails: record.fields['Request Details'],
-                            driId: record.fields['DRI'],
-                            driEmail: record.fields['DRI Email'],
-                            status: record.fields['Status'],
-                            dueDate: record.fields["Due date"]
-                        }
-                    })
-                    .sort((t1, t2) => t1.phase - t2.phase)
-            })
+        return dasTaskService
+            .findAll(undefined, FILTER)
+            .then(tasks => tasks.sort((t1, t2) => t1.phase - t2.phase))
+
     }
 
     getById = async (id: string): Promise<TaskGroup> => {
-        return dasAirtableService
-            .getRecord(TASK_GROUP_TABLE, id)
-            .then(r => {
-                const taskGroup = this.transform(r)
-                return this.getTasks(taskGroup)
+        return super.getById(id)
+            .then(taskGroup =>
+                this.getTasks(taskGroup)
                     .then(tds => Object.assign(taskGroup, { tasks: tds }))
-            })
-    }
-
-
-    update = async (changes: any): Promise<any> => {
-        return dasAirtableService
-            .base(TASK_GROUP_TABLE)
-            .update([changes])
-            .then((resp: any) => {
-                if (resp.error) {
-                    throw resp.error
-                }
-                return this.transform(resp[0])
-            })
+            )
     }
 
 }

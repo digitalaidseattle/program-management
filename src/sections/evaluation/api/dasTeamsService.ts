@@ -1,12 +1,14 @@
 /**
- *  dasMeetingService.ts
+ *  dasTeamsService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
  */
 
+import { FieldSet, Record } from "airtable";
 import { createContext, useEffect, useState } from "react";
-import { dasAirtableService } from "../../../services/airtableService";
+import { dasAirtableClient } from "../../../services/airtableClient";
+import { AirtableRecordService } from "../../../services/airtableRecordService";
 
 const TEAMS_TABLE = 'tblcRB8AHw18uw2zb';
 
@@ -17,7 +19,6 @@ type Team = {
     id: string
     name: string
     volunteerIds: string[]
-
 }
 
 interface TeamContextType {
@@ -37,37 +38,33 @@ const useTeams = () => {
     useEffect(() => {
         const fetchData = async () => {
             setStatus('fetching');
-            const response = await dasTeamsService.getAll()
+            const response = await dasTeamsService.findAll()
             setData(response);
             setStatus('fetched');
         };
         fetchData();
     }, []);
 
-
     return { status, data };
 };
 
 
-class DASTeamsService {
+class DASTeamsService extends AirtableRecordService<Team> {
 
-    transform = (record: any): Team => {
+    public constructor() {
+        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), TEAMS_TABLE);
+    }
+
+    airtableTransform(record: Record<FieldSet>): Team {
         return {
             id: record.id,
             name: record.fields['Team name'],
             volunteerIds: record.fields["volunteers on team"]
-        }
+        } as Team
     }
-
-    async getAll(): Promise<any[]> {
-        const filter = ''
-        return dasAirtableService.getAll(TEAMS_TABLE, filter)
-            .then(records => records.map(r => this.transform(r)))
-    }
-
 }
 
 const dasTeamsService = new DASTeamsService();
-export { dasTeamsService, useTeams, TeamContext };
+export { dasTeamsService, TeamContext, useTeams };
 export type { Team };
 

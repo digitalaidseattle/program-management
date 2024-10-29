@@ -6,7 +6,8 @@
  */
 
 import { FieldSet, Record } from "airtable";
-import { dasAirtableService } from "../../../services/airtableService";
+import { dasAirtableClient } from "../../../services/airtableClient";
+import { AirtableRecordService } from "../../../services/airtableRecordService";
 
 const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 
@@ -16,19 +17,18 @@ type Role = {
     status: string,
 }
 
-class DASRoleService {
+class DASRoleService extends AirtableRecordService<Role> {
 
-    transform = (r: Record<FieldSet>): Role => {
-        return {
-            id: r.id,
-            name: r.fields['Role'],
-            status: r.fields['Status'],
-        } as Role
+    public constructor() {
+        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), ROLES_TABLE);
     }
 
-    async findAll(): Promise<Role[]> {
-        return dasAirtableService.getTableRecords(ROLES_TABLE)
-            .then(records => records.map(r => this.transform(r)))
+    airtableTransform(record: Record<FieldSet>): Role {
+        return {
+            id: record.id,
+            name: record.fields['Role'],
+            status: record.fields['Status'],
+        } as Role
     }
 
 };
