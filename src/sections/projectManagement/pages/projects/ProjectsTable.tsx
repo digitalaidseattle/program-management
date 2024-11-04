@@ -1,7 +1,7 @@
 /**
- *  VenturesTable.tsx
+ *  ProjectsTable.tsx
  *
- *  Display a table of ventures.
+ *  Display a table of projects.
  * 
  *  @copyright 2024 Digital Aid Seattle
  *
@@ -18,9 +18,12 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { format } from 'date-fns';
+import { Project } from '../../api/pmProjectService';
 
 function descendingComparator(a: any, b: any, orderBy: string) {
     switch (orderBy) {
@@ -96,12 +99,12 @@ const headCells = [
     }
 ];
 
-// ==============================|| Ventures TABLE - HEADER ||============================== //
+// ==============================|| Projects TABLE - HEADER ||============================== //
 type TableHeadProps = {
     order: SortDirection,
     orderBy: string
 };
-const VenturesTableHead: React.FC<TableHeadProps> = ({ order, orderBy }) => {
+const ProjectsTableHead: React.FC<TableHeadProps> = ({ order, orderBy }) => {
     return (
         <TableHead>
             <TableRow>
@@ -120,17 +123,17 @@ const VenturesTableHead: React.FC<TableHeadProps> = ({ order, orderBy }) => {
     );
 }
 
-// ==============================|| Ventures TABLE ||============================== //
+// ==============================|| Projects TABLE ||============================== //
 
 
-export default function VenturesTable(ventures: any[]): any {
+export default function ProjectsTable({projects}): any {
     const [order] = useState<SortDirection>('desc');
     const [orderBy] = useState<string>('id');
 
     const navigate = useNavigate();
 
-    const handleClick = (venture: any) => {
-        return () => navigate(`/venture/${venture.id}`)
+    const handleClick = (project: any) => {
+        return () => navigate(`/project/${project.id}`)
     }
 
     return (
@@ -156,31 +159,31 @@ export default function VenturesTable(ventures: any[]): any {
                         }
                     }}
                 >
-                    <VenturesTableHead order={order} orderBy={orderBy} />
+                    <ProjectsTableHead order={order} orderBy={orderBy} />
                     <TableBody>
-                        {ventures.sort(getComparator(order, orderBy))
-                            .map((venture: any, index: number) => {
+                        {projects.sort(getComparator(order, orderBy))
+                            .map((project: any, index: number) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow
-                                        id={venture.id}
+                                        id={project.id}
                                         hover
                                         role="checkbox"
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         tabIndex={-1}
                                         key={index}
-                                        onClick={handleClick(venture)}
+                                        onClick={handleClick(project)}
                                     >
-                                        <TableCell component="th" id={labelId} scope="row" align="left">{venture.name}</TableCell>
-                                        <TableCell align="left">{venture.partner}</TableCell>
+                                        <TableCell component="th" id={labelId} scope="row" align="left">{project.name}</TableCell>
+                                        <TableCell align="left">{project.partner}</TableCell>
                                         <TableCell align="left">
-                                            <StatusCell status={venture.status} />
+                                            <StatusCell status={project.status} />
                                         </TableCell>
                                         <TableCell align="left">
-                                            {venture.startDate}
+                                            <Typography>{project.startDate && format(project.startDate, "MMM d yyy")}</Typography>
                                         </TableCell>
-                                        <TableCell align="left">{venture.epicIds.length}</TableCell>
-                                        <TableCell align="left">{venture.contributorIds.length}</TableCell>
+                                        <TableCell align="left">{project.epicIds.length}</TableCell>
+                                        <TableCell align="left">{project.contributorIds.length}</TableCell>
                                     </TableRow>
                                 );
                             })}

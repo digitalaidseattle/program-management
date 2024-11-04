@@ -18,8 +18,7 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { pmEpicService } from '../api/pmEpicService';
-import { ProjectProps } from '../api/pmProjectService';
+import { pmEpicService, ProjectProps } from '../api/pmProjectService';
 
 interface DialogProps {
     open: boolean,

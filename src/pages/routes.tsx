@@ -7,8 +7,8 @@ import Login from './authentication/Login';
 import ContributorsPage from './contributors';
 import DashboardDefault from './dashboard';
 import Page404 from './error/404';
-import VenturePage from '../sections/projectManagement/pages/venture';
-import VenturesPage from '../sections/projectManagement/pages/ventures';
+import ProjectPage from '../sections/projectManagement/pages/project';
+import ProjectsPage from '../sections/projectManagement/pages/projects';
 
 const routes = [
   {
@@ -28,12 +28,12 @@ const routes = [
         element: <PrivacyPage />,
       },
       {
-        path: "ventures",
-        element: <VenturesPage />,
+        path: "projects",
+        element: <ProjectsPage />,
       },
       {
-        path: "venture/:id",
-        element: <VenturePage />,
+        path: "project/:id",
+        element: <ProjectPage />,
       },
       {
         path: "contributors",

@@ -24,10 +24,10 @@ const radiator = {
     //   breadcrumbs: false
     // },
     // {
-    //   id: 'ventures',
-    //   title: 'Ventures',
+    //   id: 'projects',
+    //   title: 'Proects',
     //   type: 'item',
-    //   url: '/ventures',
+    //   url: '/projects',
     //   icon: icons.RocketOutlined,
     //   breadcrumbs: false
     // },

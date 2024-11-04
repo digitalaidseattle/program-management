@@ -1,62 +1,119 @@
 
 /**
- *  EpicPanel.tsx
+ *  SprintPanel.tsx
  *
  *  @copyright 2024 Digital Aid Seattle
  *
  */
 
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { ButtonGroup, FormControl, IconButton, InputLabel, MenuItem, Select, Stack } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Button, ButtonGroup, Card, CardActions, CardContent, FormControl, IconButton, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { LoadingContext } from "../../../components/contexts/LoadingContext";
-import { pmProjectService, ProjectProps } from "../api/pmProjectService";
-import SprintBoard from "./SprintBoard";
+import DragDropBoard from "../../../components/dragdrop/DragDropBoard";
+import { DDCategory, DDType } from "../../../components/dragdrop/types";
+import { pmTaskService, Task } from "../api/pmProjectService";
+import { pmSprintService, Sprint } from "../api/pmSprintService";
+import { useContributors } from "../api/useContributors";
+import { ProjectContext } from "./ProjectContext";
+import { pmContributorService } from "../api/pmContributorService";
 
-// type SprintCardProps = {
-//     sprint: any,
-// };
+export const SmallTaskCard = (props: { task: Task }) => {
 
-// const SprintCard: React.FC<SprintCardProps> = ({ sprint }) => (
-//     <MainCard contentSX={{ p: 2.25 }}>
-//         <Stack spacing={0.5}>
-//             <Typography variant="h4">
-//                 {sprint.name}
-//             </Typography>
-//             <Grid container alignItems="center">
-//                 <Grid item>
-//                     <Typography variant="h4" color="textSecondary">
-//                         {sprint.startDate} - {sprint.endDate}
-//                     </Typography>
-//                     <Typography variant="h6" color="textSecondary">
-//                         {sprint.goal}
-//                     </Typography>
-//                 </Grid>
-//             </Grid>
-//         </Stack>
-//     </MainCard>
-// );
+    return (
+        <Card sx={{ pointerEvents: 'auto' }}>
+            <CardContent>
+                <Stack gap={1}>
+                    <Typography>{props.task.name}</Typography>
+                    <Typography fontWeight={700}>{props.task.assignees}</Typography>
+                </Stack>
+            </CardContent>
+            <CardActions>
+                <Button size="small" onClick={(evt) => {
+                    alert(props.task.name)
+                }
+                }>Edit</Button>
+            </CardActions>
+        </Card>
+    );
+}
 
-export const SprintPanel: React.FC<ProjectProps> = ({ project: venture }) => {
+const categories: DDCategory<string>[] = [
+    { label: 'Backlog', value: 'backlog' },
+    { label: 'Not Started', value: 'Not Started' },
+    { label: 'In Progress', value: 'In Progress' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Paused', value: 'Paused' }
+]
+type TaskWrapper = Task & DDType
+
+export const SprintPanel = () => {
     const { setLoading } = useContext(LoadingContext);
-    const [sprints, setSprints] = useState<any[]>([]);
-    const [sprint, setSprint] = useState<any>();
+    const { project } = useContext(ProjectContext)
 
-    useEffect(() => {
-        if (venture) {
+    const [tasks, setTasks] = useState<TaskWrapper[]>([]);
+    const [sprints, setSprints] = useState<Sprint[]>([]);
+    const [sprint, setSprint] = useState<Sprint>();
+
+    const refresh = () => {
+        if (project) {
             setLoading(true);
-            pmProjectService.getSprints(venture)
-                .then((sps: any[]) => {
-                    setSprints(sps)
-                    setSprint(currentSprint(sps))
+            Promise
+                .all([
+                    pmSprintService.findByProject(project),
+                    pmTaskService.findByProject(project),
+                    pmContributorService.findAll()
+                ])
+                .then(resps => {
+                    const sps = resps[0];
+                    const tts = resps[1];
+                    const contributors = resps[2];
+                    setSprints(sps.sort((s1, s2) => s1.name.localeCompare(s2.name)));
+                    setSprint(currentSprint(sps));
+                    tts.forEach(async t => {
+                        t.assignees = (await contributors)
+                            .filter(c => t.assigneeIds ? t.assigneeIds.includes(c.id) : false)
+                            .map(a => a.name)
+                    })
+                    setTasks(tts);
                 })
                 .finally(() => setLoading(false))
         }
-    }, [venture])
+    }
+
+    useEffect(() => {
+        refresh();
+    }, [project])
 
     const currentSprint = (sprints: any[]) => {
-        return sprints.length > 0 ? sprints[0].id : undefined
+        return sprints.find(s => s.status === 'Active')
     }
+
+    function handleChange(c: Map<string, unknown>, t: Task) {
+        console.log(c, t)
+    }
+
+    function isCategory(item: TaskWrapper, category: DDCategory<any>): boolean {
+        if (sprint && sprint.taskIds.includes(item.id)) {
+            return item.status === category.value
+        } else {
+            if (category.value === 'backlog') {
+                return !['Completed', 'Canceled'].includes(item.status)
+            }
+        }
+        return false
+    }
+
+    function cellRender(item: TaskWrapper): ReactNode {
+        return <SmallTaskCard task={item} />
+    }
+
+    function changeSprint(sid: string): void {
+        setSprint(sprints.find(s => s.id === sid))
+        // forces rendering sprint DDBoard
+        setTasks(tasks.slice())
+    }
+
     return (
         <Stack gap={'0.5rem'}>
             <ButtonGroup>
@@ -72,15 +129,21 @@ export const SprintPanel: React.FC<ProjectProps> = ({ project: venture }) => {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={sprint}
-                        label="Age"
-                        onChange={(evt) => console.log(evt)}
+                        value={sprint ? sprint.id : ''}
+                        label="Sprint"
+                        onChange={evt => changeSprint(evt.target.value)}
                     >
-                        {sprints.map(s => <MenuItem value={s.id}>{s.name}</MenuItem>)}
+                        {sprints.map(s => <MenuItem value={s.id}>{s.name} {s.sprintId}</MenuItem>)}
                     </Select>
                 </FormControl>
             </ButtonGroup>
-            {sprint && <SprintBoard sprint={sprints.find(s => s.id === sprint)} />}
+            <DragDropBoard
+                onChange={(c: Map<string, unknown>, t: Task) => handleChange(c, t)}
+                items={tasks}
+                categories={categories}
+                isCategory={isCategory}
+                cardRenderer={cellRender}
+            />
         </Stack>
     )
 };
