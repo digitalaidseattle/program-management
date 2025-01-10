@@ -1,14 +1,14 @@
-import MainLayout from '../layout/MainLayout';
-import MinimalLayout from '../layout/MinimalLayout';
+/**
+ *  routes.tsx
+ *
+ *  @copyright 2024 Digital Aid Seattle
+ *
+ */
+import { Error, Login, MainLayout, MarkdownPage, MinimalLayout } from '@digitalaidseattle/mui';
+
 import EvaluationPage from '../sections/evaluation/pages/evaluation';
 import EvaluationsPage from '../sections/evaluation/pages/evaluations';
-import PrivacyPage from './PrivacyPage';
-import Login from './authentication/Login';
 import ContributorsPage from './contributors';
-import DashboardDefault from './dashboard';
-import Page404 from './error/404';
-import VenturePage from '../sections/projectManagement/pages/venture';
-import VenturesPage from '../sections/projectManagement/pages/ventures';
 
 const routes = [
   {
@@ -20,20 +20,8 @@ const routes = [
         element: <EvaluationsPage />,
       },
       {
-        path: "dashboard",
-        element: <DashboardDefault />,
-      },
-      {
         path: "privacy",
-        element: <PrivacyPage />,
-      },
-      {
-        path: "ventures",
-        element: <VenturesPage />,
-      },
-      {
-        path: "venture/:id",
-        element: <VenturePage />,
+        element: <MarkdownPage filepath='privacy.md'/>,
       },
       {
         path: "contributors",
@@ -65,7 +53,7 @@ const routes = [
     children: [
       {
         path: '*',
-        element: <Page404 />
+        element: <Error />
       }
     ]
   }

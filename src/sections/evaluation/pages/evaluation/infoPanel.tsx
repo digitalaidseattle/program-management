@@ -10,7 +10,6 @@ import { EditOutlined } from "@ant-design/icons";
 import { Card, CardContent, CardMedia, Chip, FormLabel, IconButton, Link, Stack, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import placeholder from '../../../../assets/images/project-image.png';
-import { RefreshContext } from "../../../../components/contexts/RefreshContext";
 import { dasPartnerService, Partner } from "../../api/dasPartnerService";
 import { EditBlock, EditLink } from "../../../../components/EditBlock";
 import { dasProjectService, Venture, VentureProps } from "../../api/dasProjectService";
@@ -18,6 +17,7 @@ import useVolunteers from "../../components/useVolunteers";
 import { Volunteer } from "../../api/dasVolunteerService";
 import { TaskGroup } from "../../api/dasTaskGroupService";
 import TaskGroupDialog from "./taskGroupDialog";
+import { RefreshContext } from "@digitalaidseattle/core";
 
 const DescriptionSection = (props: { venture: Venture }) => {
     return (

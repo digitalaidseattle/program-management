@@ -10,12 +10,11 @@ import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { LoadingContext } from "../../../../components/contexts/LoadingContext";
-import { RefreshContext } from "../../../../components/contexts/RefreshContext";
-import { PageInfo } from "../../../../services/supabaseClient";
 import { dasStaffingService } from "../../api/dasStaffingService";
 import StaffingDialog from "./staffingDialog";
 import { VentureProps } from "../../api/dasProjectService";
+import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
 
 const PAGE_SIZE = 10;
 

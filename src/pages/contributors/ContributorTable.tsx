@@ -22,10 +22,9 @@ import {
 // third-party
 
 // project import
-import { LoadingContext } from '../../components/contexts/LoadingContext';
-import { RefreshContext } from '../../components/contexts/RefreshContext';
 import { dasVolunteerService, Volunteer } from '../../sections/evaluation/api/dasVolunteerService';
-import { QueryModel } from '../../services/supabaseClient';
+import { LoadingContext, RefreshContext } from '@digitalaidseattle/core';
+import { QueryModel } from '@digitalaidseattle/supabase';
 
 // ==============================|| Tickets Grid ||============================== //
 
