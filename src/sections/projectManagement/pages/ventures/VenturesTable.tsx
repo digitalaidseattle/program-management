@@ -21,6 +21,10 @@ import {
     TableRow
 } from '@mui/material';
 import { useNavigate } from 'react-router';
+<<<<<<< Updated upstream:src/sections/projectManagement/pages/ventures/VenturesTable.tsx
+=======
+import { format } from 'date-fns';
+>>>>>>> Stashed changes:src/sections/projectManagement/pages/projects/ProjectsTable.tsx
 
 function descendingComparator(a: any, b: any, orderBy: string) {
     switch (orderBy) {
@@ -123,7 +127,25 @@ const VenturesTableHead: React.FC<TableHeadProps> = ({ order, orderBy }) => {
 // ==============================|| Ventures TABLE ||============================== //
 
 
+<<<<<<< Updated upstream:src/sections/projectManagement/pages/ventures/VenturesTable.tsx
 export default function VenturesTable(ventures: any[]): any {
+=======
+type Project = {
+    id: string;
+    name: string;
+    partner: string;
+    status: string;
+    startDate: Date;
+    epicIds: string[];
+    contributorIds: string[];
+};
+
+type ProjectsTableProps = {
+    projects: Project[];
+};
+
+export default function ProjectsTable({ projects }: ProjectsTableProps): JSX.Element {
+>>>>>>> Stashed changes:src/sections/projectManagement/pages/projects/ProjectsTable.tsx
     const [order] = useState<SortDirection>('desc');
     const [orderBy] = useState<string>('id');
 

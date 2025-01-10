@@ -10,8 +10,6 @@ import {
 // project import
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { LoadingContext } from '../../../../components/contexts/LoadingContext';
-import { RefreshContext } from '../../../../components/contexts/RefreshContext';
 import { dasTaskGroupService } from '../../api/dasTaskGroupService';
 import { dasProjectService } from '../../api/dasProjectService';
 import { StaffingPanel } from './staffingPanel';
@@ -20,6 +18,7 @@ import { TabPanel } from '../../../../components/TabPanel';
 import { MeetingsPanel } from './meetingsPanel';
 import { Team, TeamContext, useTeams } from '../../api/dasTeamsService';
 import { InfoPanel } from './infoPanel';
+import { LoadingContext, RefreshContext } from '@digitalaidseattle/core';
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);

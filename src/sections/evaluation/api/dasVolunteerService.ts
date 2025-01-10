@@ -8,7 +8,7 @@
 import { FieldSet, Record } from "airtable";
 import { dasAirtableClient } from "../../../services/airtableClient";
 import { AirtableRecordService } from "../../../services/airtableRecordService";
-import { PageInfo, QueryModel } from "../../../services/supabaseClient";
+import { PageInfo, QueryModel } from "@digitalaidseattle/supabase";
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
 

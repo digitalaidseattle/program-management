@@ -13,14 +13,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
-import { LoadingContext } from "../../../../components/contexts/LoadingContext";
-import { RefreshContext } from "../../../../components/contexts/RefreshContext";
-import { PageInfo } from "../../../../services/supabaseClient";
 import { dasTaskGroupService, TaskGroup } from "../../api/dasTaskGroupService";
 import { TeamContext } from "../../api/dasTeamsService";
 import { dasMeetingService, Meeting } from "../../api/dasMeetingService";
 import MeetingDialog from "./meetingDialog";
 import { VentureProps } from "../../api/dasProjectService";
+import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
 
 export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);

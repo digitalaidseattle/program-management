@@ -12,10 +12,9 @@ import {
 // project import
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { LoadingContext } from '../../../../components/contexts/LoadingContext';
-import { RefreshContext } from '../../../../components/contexts/RefreshContext';
 import { dasProjectService, VentureProps } from '../../api/dasProjectService';
 import placeholder from '../../../../assets/images/project-image.png';
+import { LoadingContext, RefreshContext } from '@digitalaidseattle/core';
 
 const VentureCard: React.FC<VentureProps> = ({ venture }) => {
   const theme = useTheme();

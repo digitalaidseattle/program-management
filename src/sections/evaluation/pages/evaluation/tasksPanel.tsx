@@ -18,18 +18,17 @@ import {
     useGridApiRef
 } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { LoadingContext } from "../../../../components/contexts/LoadingContext";
-import { PageInfo } from "../../../../services/supabaseClient";
 import { dasTaskGroupService } from "../../api/dasTaskGroupService";
 // assets
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { format } from "date-fns";
-import { RefreshContext } from "../../../../components/contexts/RefreshContext";
 import { Task } from "../../api/dasTaskService";
 import TaskDialog from "./taskDialog";
 import { VentureProps } from "../../api/dasProjectService";
+import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
 
 const PAGE_SIZE = 10;
 const STATUS_COLOR_MAP: any = {

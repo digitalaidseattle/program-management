@@ -4,8 +4,8 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
+import { supabaseClient } from "@digitalaidseattle/supabase";
 import { useEffect, useState } from "react";
-import { supabaseClient } from "./supabaseClient";
 
 export type AppConstant = {
     value: string,

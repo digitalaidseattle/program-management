@@ -1,6 +1,6 @@
 import Airtable, { FieldSet, Records } from 'airtable';
 import { dasAirtableClient, pmAirtableClient } from './airtableClient';
-import { QueryModel } from './supabaseClient';
+import { QueryModel } from '@digitalaidseattle/supabase';
 
 
 class AirtableService {

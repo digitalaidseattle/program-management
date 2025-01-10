@@ -13,11 +13,18 @@ import {
 // project import
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+<<<<<<< Updated upstream:src/sections/projectManagement/pages/ventures/index.tsx
 import { LoadingContext } from '../../../../components/contexts/LoadingContext';
 import { RefreshContext } from '../../../../components/contexts/RefreshContext';
 import MainCard from '../../../../components/MainCard';
 import { pmProjectService, ProjectProps } from '../../api/pmProjectService';
 import VenturesTable from './VenturesTable';
+=======
+import { pmProjectService, ProjectProps } from '../../api/pmProjectService';
+import ProjectsTable from './ProjectsTable';
+import { MainCard } from '@digitalaidseattle/mui';
+import { LoadingContext, RefreshContext } from '@digitalaidseattle/core';
+>>>>>>> Stashed changes:src/sections/projectManagement/pages/projects/index.tsx
 
 
 const VentureCard: React.FC<ProjectProps> = ({ project: venture }) => {

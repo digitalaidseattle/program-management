@@ -9,10 +9,22 @@
 import { ButtonGroup, IconButton, Stack, Typography } from "@mui/material";
 import { RichTreeView, TreeViewBaseItem } from "@mui/x-tree-view";
 import { useContext, useEffect, useState } from "react";
+<<<<<<< Updated upstream
 import { pmProjectService, ProjectProps } from "../api/pmProjectService";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { RefreshContext } from "../../../components/contexts/RefreshContext";
 import EpicDialog from "./EpicDialog";
+=======
+import { EpicCard } from "./EpicCard";
+import EpicDialog from "./EpicDialog";
+import { FeatureCard } from "./FeatureCard";
+import { ProjectContext } from "./ProjectContext";
+import { StoryCard } from "./StoryCard";
+import { TaskCard } from "./TaskCard";
+import { RefreshContext } from "@digitalaidseattle/core";
+
+
+>>>>>>> Stashed changes
 
 
 export const EpicPanel: React.FC<ProjectProps> = ({ project: venture }) => {
