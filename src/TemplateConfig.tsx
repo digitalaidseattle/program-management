@@ -10,7 +10,7 @@ import { MenuItem } from "@digitalaidseattle/mui";
 export const TemplateConfig = () => {
     const radiator = {
         id: 'group-dashboard',
-        title: 'Digital Aid Seattle',
+        title: 'Ventures',
         type: 'group',
         children: [
             {
@@ -24,7 +24,7 @@ export const TemplateConfig = () => {
     } as MenuItem;
 
     return ({
-        appName: 'DAS',
+        appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
         menuItems: [radiator],
