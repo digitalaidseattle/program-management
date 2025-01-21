@@ -165,9 +165,9 @@ const AirtableRecordDialog: React.FC<AirtableDialogProps<Record<FieldSet>>> = ({
 
     useEffect(() => {
         if (record && !initialized) {
-            setFields(record.fields)
             setInitialized(true)
         }
+        setFields(record.fields)
     }, [record])
 
     const handleChange = (c: any) => {

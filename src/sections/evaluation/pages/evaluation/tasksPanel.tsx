@@ -21,14 +21,14 @@ import { useContext, useEffect, useState } from "react";
 import { dasTaskGroupService } from "../../api/dasTaskGroupService";
 // assets
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { format } from "date-fns";
-import { Task } from "../../api/dasTaskService";
-import TaskDialog from "./taskDialog";
 import { VentureProps } from "../../api/dasProjectService";
-import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
-import { PageInfo } from "@digitalaidseattle/supabase";
+import { dasTaskService, Task } from "../../api/dasTaskService";
+import TaskDialog from "./taskDialog";
 
 const PAGE_SIZE = 10;
 const STATUS_COLOR_MAP: any = {
@@ -76,12 +76,13 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
     }, [venture]);
 
     const handleEditClick = (id: GridRowId) => () => {
-        setSelectedTask(pageInfo.rows.find(t => t.id === id));
+        const found = pageInfo.rows.find(t => t.id === id);
+        setSelectedTask(found);
         setShowEditTask(true);
     };
 
     const handleAddClick = () => {
-        setSelectedTask({} as Task);
+        setSelectedTask(dasTaskService.emptyTask());
         setShowEditTask(true);
     };
 
@@ -174,7 +175,7 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
             {selectedTask &&
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <TaskDialog
-                        entity={selectedTask!}
+                        entity={selectedTask}
                         open={showEditTask}
                         taskGroup={taskGroup}
                         handleSuccess={function (): void {
