@@ -4,7 +4,7 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 // material-ui
 import { FieldSet, Record } from 'airtable';
@@ -17,6 +17,11 @@ import useVolunteers from '../../components/useVolunteers';
 const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> = ({ open, entity: task, handleSuccess, handleError, taskGroup }) => {
 
     const volunteers = useVolunteers();
+    const [dialogTitle, setDialogTitle] = useState<string>("Update Task");
+
+    useEffect(() => {
+        setDialogTitle(task.id === '' ? 'Add Task' : 'Update Task');
+    }, [task]);
 
     const fields = {
         "The request": task.title,
@@ -101,7 +106,7 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
                 fields: fields
             } as unknown as Record<FieldSet>}
             options={{
-                title: 'Update Task',
+                title: dialogTitle,
                 inputs: inputs
             }}
             onCancel={() => handleSuccess(null)}
