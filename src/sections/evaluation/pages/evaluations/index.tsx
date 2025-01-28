@@ -1,9 +1,16 @@
 
 // material-ui
 import {
+  Box,
   Card,
   CardActionArea,
   CardMedia,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
   Stack,
   Typography,
   useTheme
@@ -69,22 +76,66 @@ const VentureCard: React.FC<VentureProps> = ({ venture }) => {
 
 const EvaluationsPage = () => {
   const { setLoading } = useContext(LoadingContext);
-  const { refresh } = useContext(RefreshContext);
+  const { refresh, setRefresh } = useContext(RefreshContext);
   const [ventures, setVentures] = useState<any[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(['Under evaluation']);
+
   // This allows quick access to more projects in DEV
-  const statuses = ['Active', 'Under evaluation', "Declined"];
+  const statuses = ['Active', 'Under evaluation', 'Declined'];
   // const statuses = ['Under evaluation'];
   useEffect(() => {
     setLoading(true);
     dasProjectService.getAllByStatus(statuses)
-      .then((ventures: any[]) => setVentures(ventures.filter(v => v.evaluatingTaskGroup)))
+      .then((ventures: any[]) => {
+        console.log(ventures)
+        setVentures(ventures
+          .filter(v => v.evaluatingTaskGroup && selectedStatuses.includes(v.status))
+          .sort((v1, v2) => v1.ventureCode.localeCompare(v2.ventureCode)))
+      })
       .finally(() => setLoading(false))
   }, [refresh])
 
+  const handleChange = (event: SelectChangeEvent<typeof selectedStatuses>) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedStatuses(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+    setRefresh(refresh + 1)
+  };
+
   return (
     <>
-      <Typography variant='h2'>Digital Aid Projects</Typography>
+      <Stack sx={{ justifyContent: "space-between" }} direction={'row'} useFlexGap>
+        <Typography variant='h2'>Digital Aid Projects</Typography>
+        <Box>
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="status-label">Evaluation Status</InputLabel>
+            <Select
+              label='Evaluation Status'
+              labelId="status-label"
+              id="demo-multiple-name"
+              multiple
+              value={selectedStatuses}
+              onChange={handleChange}
+              input={<OutlinedInput label="Name" />}
+            >
+              {statuses.map((status) => (
+                <MenuItem
+                  key={status}
+                  value={status}
+                >
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Stack>
       <Stack spacing={2}>
+
         {ventures.map(p =>
           <VentureCard key={p.id} venture={p} />
         )}
