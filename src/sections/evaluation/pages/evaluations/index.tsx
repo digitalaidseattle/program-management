@@ -87,7 +87,6 @@ const EvaluationsPage = () => {
     setLoading(true);
     dasProjectService.getAllByStatus(statuses)
       .then((ventures: any[]) => {
-        console.log(ventures)
         setVentures(ventures
           .filter(v => v.evaluatingTaskGroup && selectedStatuses.includes(v.status))
           .sort((v1, v2) => v1.ventureCode.localeCompare(v2.ventureCode)))
