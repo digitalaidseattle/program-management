@@ -23,7 +23,9 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
         "Prospective Ventures": staffingNeed.ventureIds,
         "Role": staffingNeed.role,
         "Volunteer Assigned": staffingNeed.volunteerAssigned,
-        "Contributor in text for website": staffingNeed.contributors
+        "Contributor in text for website": staffingNeed.contributors,
+        "Level requirement": staffingNeed.levelRequirement,
+        "Desired skills": staffingNeed.desiredSkills
     }
 
     const inputs = [
@@ -50,6 +52,19 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
             options: roles
         },
         {
+            name: "levelRequirement",
+            fieldName: "Level requirement",
+            label: 'Level Requirement',
+            type: 'select',
+            options: dasStaffingService.EXPERIENCE_LEVELS
+        },
+        {
+            name: "desiredSkills",
+            fieldName: "Desired skills",
+            label: 'Desired Skills',
+            placeholder: "SAP"
+        },
+        {
             name: "contributors",
             fieldName: "Contributor in text for website",
             label: 'Volunteer Assigned',
@@ -60,7 +75,10 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
     ]
 
     const handleSubmit = (changes: any) => {
+        console.log('handleSubmit', changes)
+
         if (staffingNeed && staffingNeed.id) {
+            console.log('handleSubmit', staffingNeed)
             return dasStaffingService
                 .update(staffingNeed?.id, changes)
                 .then(updated => handleSuccess(updated))

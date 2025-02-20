@@ -89,6 +89,16 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
             {
                 field: 'roles',
                 headerName: 'Roles',
+                width: 250,
+            },
+            {
+                field: 'levelRequirement',
+                headerName: 'Level requirement',
+                width: 200,
+            },
+            {
+                field: 'desiredSkills',
+                headerName: 'Desired skills',
                 width: 300,
             },
             {
