@@ -25,9 +25,6 @@ import {
 } from '@mui/material';
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 
-const iconBackColorOpen = 'grey.300';
-const iconBackColor = 'grey.100';
-
 interface AirtableSurveyProps {
     fields: FieldSet,
     options: {
@@ -198,11 +195,11 @@ const AirtableRecordDialog: React.FC<AirtableDialogProps<Record<FieldSet>>> = ({
             <DialogActions>
                 <Button
                     variant='outlined'
-                    sx={{ color: 'text.secondary', bgcolor: open ? iconBackColorOpen : iconBackColor }}
+                    sx={{ color: 'text.secondary'}}
                     onClick={onCancel}>Cancel</Button>
                 <Button
-                    variant='outlined'
-                    sx={{ color: 'text.success', bgcolor: open ? iconBackColorOpen : iconBackColor }}
+                    variant='contained'
+                    sx={{ color: 'text.success' }}
                     onClick={handleSubmit}
                     disabled={disabled}>OK</Button>
             </DialogActions>

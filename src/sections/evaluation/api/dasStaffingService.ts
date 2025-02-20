@@ -18,7 +18,9 @@ type StaffingNeed = {
     roles: string[],
     role: string[],
     volunteerAssigned: string[],
-    contributors: string[]
+    contributors: string[],
+    levelRequirement: string,
+    desiredSkills: string
 }
 
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
@@ -43,7 +45,13 @@ class DASStaffingService extends AirtableRecordService<StaffingNeed> {
         "1/3 into the Venture",
         "2/3 into the Venture"
     ]
-    
+
+    EXPERIENCE_LEVELS = [
+        "Junior",
+        "Mid",
+        "Senior"
+    ]
+
     public constructor() {
         super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), STAFFING_TABLE);
     }
@@ -58,7 +66,9 @@ class DASStaffingService extends AirtableRecordService<StaffingNeed> {
             roles: [],
             role: [],
             volunteerAssigned: [],
-            contributors: []
+            contributors: [],
+            levelRequirement: this.EXPERIENCE_LEVELS[0],
+            desiredSkills: ''
         } as StaffingNeed
     }
 
@@ -72,12 +82,14 @@ class DASStaffingService extends AirtableRecordService<StaffingNeed> {
             roles: r.fields['Role in text for website'],
             role: r.fields['Role'],
             volunteerAssigned: r.fields['Volunteer Assigned'],
-            contributors: r.fields['Contributor in text for website']
+            contributors: r.fields['Contributor in text for website'],
+            levelRequirement: r.fields['Level requirement'],
+            desiredSkills: r.fields['Desired skills'],
         } as StaffingNeed
     }
 
 
-    findAll = async (project?: any): Promise<StaffingNeed[]>  => {
+    findAll = async (project?: any): Promise<StaffingNeed[]> => {
         const filter = project
             ? `FIND('${project.ventureCode}', ARRAYJOIN({Prospective Ventures}))`
             : ''
