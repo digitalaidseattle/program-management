@@ -134,10 +134,12 @@ const EvaluationsPage = () => {
         </Box>
       </Stack>
       <Stack spacing={2}>
-
-        {ventures.map(p =>
+        {ventures.length > 0 && ventures.map(p =>
           <VentureCard key={p.id} venture={p} />
         )}
+        {ventures.length === 0 &&
+          <Typography variant='h4'>No Ventures with the selected status.</Typography>
+        }
       </Stack>
     </>
   );
