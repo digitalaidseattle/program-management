@@ -36,15 +36,16 @@ const STATUS_COLOR_MAP: any = {
     'Paused': 'warning',
     'Todo': 'primary',
     "inbox": 'primary',
-    "needs re-work": 'danger',
+    "needs re-work": 'error',
     "Approved": 'success',
     "In progress": 'warning',
     "Someday maybe": 'primary',
-    "Cancelled": 'danger',
+    "Cancelled": 'error',
 }
 
 const StatusCell = (props: { status: string }) => {
-    return (props.status &&
+    console.log('StatusCell', props.status, STATUS_COLOR_MAP[props.status])
+    return (props.status !== undefined &&
         <Chip
             color={STATUS_COLOR_MAP[props.status]}
             label={props.status} />
