@@ -125,11 +125,6 @@ export default function StaffingTable() {
     return (
         <>
             <Stack spacing={2}>
-                <Stack direction="row" spacing={2}>
-                    <Stack direction="row" spacing={2}>
-                        <Typography fontWeight={600}>Group Name: </Typography>
-                    </Stack>
-                </Stack>
                 <DataGrid
                     apiRef={apiRef}
                     rows={pageInfo.rows}
