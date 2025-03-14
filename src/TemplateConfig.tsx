@@ -1,7 +1,8 @@
 
 
 import {
-    SearchOutlined
+    SearchOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import logo from "./assets/images/logo-light-icon.svg";
 
@@ -19,9 +20,18 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/',
                 icon: <SearchOutlined />
+            },
+            {
+                id: 'staffing',
+                title: 'Staffing',
+                type: 'item',
+                url: '/staffing',
+                icon: <UserOutlined />
             }
         ]
     } as MenuItem;
+
+  
 
     return ({
         appName: 'DAS Program Management',
