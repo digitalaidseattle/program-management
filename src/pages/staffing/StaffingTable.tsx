@@ -8,8 +8,7 @@ import { useContext, useEffect, useState } from 'react';
 // material-ui
 import {
     Chip,
-    Stack,
-    Typography
+    Stack
 } from '@mui/material';
 import {
     DataGrid,
