@@ -9,6 +9,7 @@ import { Error, Login, MainLayout, MarkdownPage, MinimalLayout } from '@digitala
 import EvaluationPage from '../sections/evaluation/pages/evaluation';
 import EvaluationsPage from '../sections/evaluation/pages/evaluations';
 import ContributorsPage from './contributors';
+import StaffingPage from './staffing';
 
 const routes = [
   {
@@ -34,6 +35,10 @@ const routes = [
       {
         path: "evaluation/:id",
         element: <EvaluationPage />,
+      },
+      {
+        path: "staffing",
+        element: <StaffingPage />,
       }
     ]
   },
