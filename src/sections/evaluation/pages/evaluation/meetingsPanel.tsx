@@ -1,8 +1,7 @@
-
 /**
  *  MeetingsPanel.tsx
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
@@ -146,6 +145,16 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
         ];
     }
 
+    function handleSuccess(): void {
+        setRefresh(0);
+        setShowCreateDialog(false)
+    }
+
+    function handleError(error: any): void {
+        console.error(error)
+        throw error;
+    }
+
     return (venture &&
         <>
             <Stack spacing={2}>
@@ -177,15 +186,9 @@ export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <MeetingDialog
                         entity={selectedMeeting}
-                        open={showCreateDialog}
-                        handleSuccess={function (): void {
-                            setRefresh(0);
-                            setShowCreateDialog(false)
-                        }}
-                        handleError={function (err: Error): void {
-                            console.error(err)
-                            throw err;
-                        }} />
+                        open={showCreateDialog} 
+                        handleSuccess={handleSuccess}
+                        handleError={handleError}  />
                 </LocalizationProvider>
             }
         </>

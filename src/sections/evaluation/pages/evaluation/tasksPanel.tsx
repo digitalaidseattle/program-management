@@ -1,8 +1,7 @@
-
 /**
  *  EpicPanel.tsx
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
@@ -145,6 +144,15 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
         ];
     }
 
+    function handleSuccess(): void {
+        setRefresh(0);
+        setShowEditTask(false)
+    }
+
+    function handleError(error: any): void {
+        console.error(error)
+        throw error;
+    }
 
     return (taskGroup &&
         <>
@@ -179,13 +187,8 @@ export const TasksPanel: React.FC<VentureProps> = ({ venture }) => {
                         entity={selectedTask}
                         open={showEditTask}
                         taskGroup={taskGroup}
-                        handleSuccess={function (): void {
-                            setRefresh(1000);
-                            setShowEditTask(false)
-                        }}
-                        handleError={function (): void {
-                            throw new Error("Function not implemented.");
-                        }} />
+                        handleSuccess={handleSuccess}
+                        handleError={handleError} />
                 </LocalizationProvider>
             }
         </>

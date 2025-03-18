@@ -1,26 +1,24 @@
-
 /**
  *  StaffingPanel.tsx
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
 import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { LoadingContext } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { dasStaffingService } from "../../api/dasStaffingService";
-import StaffingDialog from "./staffingDialog";
 import { VentureProps } from "../../api/dasProjectService";
-import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
-import { PageInfo } from "@digitalaidseattle/supabase";
+import { dasStaffingService, StaffingNeed } from "../../api/dasStaffingService";
+import StaffingDialog from "./staffingDialog";
 
 const PAGE_SIZE = 10;
 
 export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
-    const { refresh, setRefresh } = useContext(RefreshContext);
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: PAGE_SIZE });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
@@ -39,7 +37,19 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 .finally(() => setLoading(false))
 
         }
-    }, [venture, refresh]);
+    }, [venture]);
+
+    useEffect(() => {
+        if (venture) {
+            setLoading(true);
+            dasStaffingService.findAll(venture)
+                .then((staff: any) => {
+                    setPageInfo({ rows: staff, totalRowCount: staff.length });
+                })
+                .finally(() => setLoading(false))
+
+        }
+    }, [selectedStaff]);
 
     const handleEditClick = (_id: GridRowId) => () => {
         const staff = pageInfo.rows.find(r => r.id === _id)
@@ -114,6 +124,14 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
         ];
     }
 
+    function handleSuccess(resp: StaffingNeed | null): void {
+        console.log(resp)
+        setShowEditStaff(false)
+    }
+    function handleError(error: any): void {
+        console.error(error);
+        setShowEditStaff(false)
+    }
 
     return (venture &&
         <>
@@ -146,13 +164,8 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 <StaffingDialog
                     entity={selectedStaff!}
                     open={showEditStaff}
-                    handleSuccess={function (): void {
-                        setRefresh(0)
-                        setShowEditStaff(false)
-                    }}
-                    handleError={function (): void {
-                        throw new Error("Function not implemented.");
-                    }} />
+                    handleSuccess={handleSuccess}
+                    handleError={handleError} />
             }
         </>
     )
