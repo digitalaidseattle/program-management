@@ -31,8 +31,6 @@ export const TemplateConfig = () => {
         ]
     } as MenuItem;
 
-  
-
     return ({
         appName: 'DAS Program Management',
         logoUrl: logo,
