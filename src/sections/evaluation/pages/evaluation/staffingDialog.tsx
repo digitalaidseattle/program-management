@@ -74,6 +74,10 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
         }
     ]
 
+    const handleCancel = () => {
+        handleSuccess(null);
+    }
+
     const handleSubmit = (changes: any) => {
         console.log('handleSubmit', changes)
 
@@ -102,7 +106,7 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
                 title: 'Edit Venture Staffing',
                 inputs: inputs
             }}
-            onCancel={() => handleSuccess(null)}
+            onCancel={handleCancel}
             onSubmit={handleSubmit}
         >
         </AirtableRecordDialog>

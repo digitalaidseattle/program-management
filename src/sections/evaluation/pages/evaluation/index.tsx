@@ -8,21 +8,20 @@ import {
 } from '@mui/material';
 
 // project import
+import { LoadingContext } from '@digitalaidseattle/core';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { dasTaskGroupService } from '../../api/dasTaskGroupService';
-import { dasProjectService } from '../../api/dasProjectService';
-import { StaffingPanel } from './staffingPanel';
-import { TasksPanel } from './tasksPanel';
 import { TabPanel } from '../../../../components/TabPanel';
-import { MeetingsPanel } from './meetingsPanel';
+import { dasProjectService } from '../../api/dasProjectService';
+import { dasTaskGroupService } from '../../api/dasTaskGroupService';
 import { Team, TeamContext, useTeams } from '../../api/dasTeamsService';
 import { InfoPanel } from './infoPanel';
-import { LoadingContext, RefreshContext } from '@digitalaidseattle/core';
+import { MeetingsPanel } from './meetingsPanel';
+import { StaffingPanel } from './staffingPanel';
+import { TasksPanel } from './tasksPanel';
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);
-  const { refresh } = useContext(RefreshContext);
   const [venture, setVenture] = useState<any>();
   const [tabIndex, setTabIndex] = useState(0);
   const [team, setTeam] = useState<Team>();
@@ -34,14 +33,13 @@ const EvaluationPage = () => {
     if (id) {
       setLoading(true);
       dasProjectService.getById(id)
-        .then((venture: any) => {
+        .then((venture) => {
           dasTaskGroupService.getById(venture.evaluatingTaskGroup)
             .then((tgs: any) => setVenture(Object.assign(venture, { taskGroup: tgs })))
-            .finally(() => setLoading(false))
         })
         .finally(() => setLoading(false))
     }
-  }, [id, refresh])
+  }, [id])
 
   useEffect(() => {
     if (teams && teams.data) {

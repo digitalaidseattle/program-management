@@ -10,15 +10,16 @@ import { IconButton, Stack, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRenderCellParams, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
+
 import { format } from "date-fns";
 import { useContext, useEffect, useState } from "react";
-import { dasTaskGroupService, TaskGroup } from "../../api/dasTaskGroupService";
 import { TeamContext } from "../../api/dasTeamsService";
+import { dasTaskGroupService, TaskGroup } from "../../api/dasTaskGroupService";
 import { dasMeetingService, Meeting } from "../../api/dasMeetingService";
 import MeetingDialog from "./meetingDialog";
 import { VentureProps } from "../../api/dasProjectService";
-import { LoadingContext, RefreshContext } from "@digitalaidseattle/core";
-import { PageInfo } from "@digitalaidseattle/supabase";
 
 export const MeetingsPanel: React.FC<VentureProps> = ({ venture }) => {
     const { setLoading } = useContext(LoadingContext);
