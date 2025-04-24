@@ -4,17 +4,19 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 
 // material-ui
 import { FieldSet, Record } from 'airtable';
 import AirtableRecordDialog from '../../../../components/DASAirtableRecordDialog';
 import { dasStaffingService, StaffingNeed } from '../../api/dasStaffingService';
 import useRoles from '../../components/useRoles';
+import { VentureContext } from '../../api/dasProjectService';
 
 const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entity: staffingNeed, handleSuccess, handleError }) => {
 
     const { data: roles } = useRoles();
+    const { venture } = useContext(VentureContext);
 
     const fields = {
         "Status": staffingNeed.status,
@@ -79,23 +81,24 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
     }
 
     const handleSubmit = (changes: any) => {
-        console.log('handleSubmit', changes)
 
         if (staffingNeed && staffingNeed.id) {
-            console.log('handleSubmit', staffingNeed)
             return dasStaffingService
                 .update(staffingNeed?.id, changes)
                 .then(updated => handleSuccess(updated))
                 .catch(e => handleError(e))
         } else {
             dasStaffingService
-                .create(fields)
+                .create({
+                    ...changes,
+                    "Prospective Ventures": [venture.id]
+                })
                 .then(res => handleSuccess(res))
                 .catch(e => handleError(e))
         }
     }
 
-    return (
+    return (venture &&
         <AirtableRecordDialog
             open={open}
             record={{

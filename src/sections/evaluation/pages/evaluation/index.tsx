@@ -9,12 +9,13 @@ import {
 
 // project import
 import { LoadingContext } from '@digitalaidseattle/core';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { TabPanel } from '../../../../components/TabPanel';
 import { dasProjectService } from '../../api/dasProjectService';
 import { dasTaskGroupService } from '../../api/dasTaskGroupService';
 import { Team, TeamContext, useTeams } from '../../api/dasTeamsService';
+import { VentureContext } from '../../api/dasProjectService';
 import { InfoPanel } from './infoPanel';
 import { MeetingsPanel } from './meetingsPanel';
 import { StaffingPanel } from './staffingPanel';
@@ -61,29 +62,31 @@ const EvaluationPage = () => {
 
   return (venture &&
     <>
-      <TeamContext.Provider value={{ team, setTeam }}>
-        <Typography variant='h2'>Venture Evaluation: {venture.ventureCode}</Typography>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabIndex} onChange={handleChange} aria-label="basic tabs example">
-            <Tab label="Info" {...a11yProps(0)} />
-            <Tab label="Tasks" {...a11yProps(1)} />
-            <Tab label="Staffing" {...a11yProps(2)} />
-            <Tab label="Meetings" {...a11yProps(2)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={tabIndex} index={0}>
-          <InfoPanel venture={venture} />
-        </TabPanel>
-        <TabPanel value={tabIndex} index={1}>
-          <TasksPanel venture={venture} />
-        </TabPanel>
-        <TabPanel value={tabIndex} index={2}>
-          <StaffingPanel venture={venture} />
-        </TabPanel>
-        <TabPanel value={tabIndex} index={3}>
-          <MeetingsPanel venture={venture} />
-        </TabPanel>
-      </TeamContext.Provider>
+      <VentureContext.Provider value={{ venture, setVenture }}>
+        <TeamContext.Provider value={{ team, setTeam }}>
+          <Typography variant='h2'>Venture Evaluation: {venture.ventureCode}</Typography>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={tabIndex} onChange={handleChange} aria-label="basic tabs example">
+              <Tab label="Info" {...a11yProps(0)} />
+              <Tab label="Tasks" {...a11yProps(1)} />
+              <Tab label="Staffing" {...a11yProps(2)} />
+              <Tab label="Meetings" {...a11yProps(2)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={tabIndex} index={0}>
+            <InfoPanel venture={venture} />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={1}>
+            <TasksPanel venture={venture} />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={2}>
+            <StaffingPanel venture={venture} />
+          </TabPanel>
+          <TabPanel value={tabIndex} index={3}>
+            <MeetingsPanel venture={venture} />
+          </TabPanel>
+        </TeamContext.Provider>
+      </VentureContext.Provider>
     </>
 
 

@@ -5,6 +5,7 @@
  *
  */
 
+import { createContext } from "react";
 import { dasAirtableClient } from "../../../services/airtableClient";
 import { AirtableRecordService } from "../../../services/airtableRecordService";
 import { dasPartnerService, Partner } from "./dasPartnerService";
@@ -26,6 +27,17 @@ type Venture = {
     partner: Partner
     partnerId: string
 }
+
+interface VentureContextType {
+    venture: any;
+    setVenture: (l: any) => void;
+}
+
+const VentureContext = createContext<VentureContextType>({
+    venture: undefined,
+    setVenture: () => {}
+})
+
 type VentureProps = {
     venture: Venture,
 };
@@ -75,6 +87,6 @@ class DASProjectService extends AirtableRecordService<Venture> {
 }
 
 const dasProjectService = new DASProjectService()
-export { dasProjectService };
+export { dasProjectService, VentureContext };
 export type { Venture, VentureProps };
 

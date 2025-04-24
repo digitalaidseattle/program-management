@@ -28,7 +28,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
     const [selectedStaff, setSelectedStaff] = useState<any>();
 
     useEffect(() => {
-        if (venture) {
+        if (venture && !showEditStaff) {
             setLoading(true);
             dasStaffingService.findAll(venture)
                 .then((staff: any) => {
@@ -38,18 +38,6 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
 
         }
     }, [venture]);
-
-    useEffect(() => {
-        if (venture) {
-            setLoading(true);
-            dasStaffingService.findAll(venture)
-                .then((staff: any) => {
-                    setPageInfo({ rows: staff, totalRowCount: staff.length });
-                })
-                .finally(() => setLoading(false))
-
-        }
-    }, [selectedStaff]);
 
     const handleEditClick = (_id: GridRowId) => () => {
         const staff = pageInfo.rows.find(r => r.id === _id)

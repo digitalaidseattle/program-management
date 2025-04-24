@@ -43,7 +43,6 @@ const STATUS_COLOR_MAP: any = {
 }
 
 const StatusCell = (props: { status: string }) => {
-    console.log('StatusCell', props.status, STATUS_COLOR_MAP[props.status])
     return (props.status !== undefined &&
         <Chip
             color={STATUS_COLOR_MAP[props.status]}
