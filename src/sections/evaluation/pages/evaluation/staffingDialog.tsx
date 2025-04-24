@@ -4,14 +4,14 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 
 // material-ui
 import { FieldSet, Record } from 'airtable';
 import AirtableRecordDialog from '../../../../components/DASAirtableRecordDialog';
+import { VentureContext } from '../../api/dasProjectService';
 import { dasStaffingService, StaffingNeed } from '../../api/dasStaffingService';
 import useRoles from '../../components/useRoles';
-import { VentureContext } from '../../api/dasProjectService';
 
 const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entity: staffingNeed, handleSuccess, handleError }) => {
 
