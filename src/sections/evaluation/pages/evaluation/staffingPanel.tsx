@@ -100,6 +100,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 field: 'roles',
                 headerName: 'Roles',
                 width: 250,
+                valueGetter: (params) => `${params.row.roles.join(", ")}`,
             },
             {
                 field: 'levelRequirement',
@@ -120,6 +121,7 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 field: 'contributors',
                 headerName: 'Volunteer Assigned',
                 width: 300,
+                valueGetter: (params) => `${params.row.contributors ? params.row.contributors.join(", ") : ''}`,
             }
         ];
     }
