@@ -9,16 +9,27 @@ import {
 
 // project import
 import { LoadingContext } from '@digitalaidseattle/core';
-import { useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { TabPanel } from '../../../../components/TabPanel';
-import { dasProjectService } from '../../api/dasProjectService';
+import { dasProjectService, Venture } from '../../api/dasProjectService';
 import { dasTaskGroupService } from '../../api/dasTaskGroupService';
 import { Team, TeamContext, useTeams } from '../../api/dasTeamsService';
 import { InfoPanel } from './infoPanel';
 import { MeetingsPanel } from './meetingsPanel';
 import { StaffingPanel } from './staffingPanel';
 import { TasksPanel } from './tasksPanel';
+
+export interface VentureContextType {
+  venture: Venture,
+  setVenture: (v: Venture) => void
+}
+
+
+export const VentureContext = createContext<VentureContextType>({
+  venture: {} as Venture,
+  setVenture: (_venture: Venture) => { }
+});
 
 const EvaluationPage = () => {
   const { setLoading } = useContext(LoadingContext);
@@ -60,7 +71,7 @@ const EvaluationPage = () => {
   }
 
   return (venture &&
-    <>
+    <VentureContext.Provider value={{ venture, setVenture }}>
       <TeamContext.Provider value={{ team, setTeam }}>
         <Typography variant='h2'>Venture Evaluation: {venture.ventureCode}</Typography>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -78,15 +89,13 @@ const EvaluationPage = () => {
           <TasksPanel venture={venture} />
         </TabPanel>
         <TabPanel value={tabIndex} index={2}>
-          <StaffingPanel venture={venture} />
+          <StaffingPanel />
         </TabPanel>
         <TabPanel value={tabIndex} index={3}>
           <MeetingsPanel venture={venture} />
         </TabPanel>
       </TeamContext.Provider>
-    </>
-
-
+    </VentureContext.Provider>
   );
 };
 

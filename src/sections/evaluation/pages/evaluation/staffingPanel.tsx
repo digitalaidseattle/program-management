@@ -11,14 +11,16 @@ import { PageInfo } from "@digitalaidseattle/supabase";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
 import { useContext, useEffect, useState } from "react";
-import { VentureProps } from "../../api/dasProjectService";
+import { VentureContext } from ".";
 import { dasStaffingService, StaffingNeed } from "../../api/dasStaffingService";
 import StaffingDialog from "./staffingDialog";
+import { ventureService } from "../../../../pages/staffing/ventureService";
 
 const PAGE_SIZE = 10;
 
-export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
+export const StaffingPanel: React.FC = () => {
     const { setLoading } = useContext(LoadingContext);
+    const { venture, setVenture } = useContext(VentureContext);
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: PAGE_SIZE });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }])
@@ -92,13 +94,14 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
                 width: 100,
             },
             {
-                field: 'importance',
-                headerName: 'Importance',
-                width: 100,
+                field: 'contributors',
+                headerName: 'Volunteer Assigned',
+                width: 250,
+                valueGetter: (params) => `${params.row.contributors ? params.row.contributors.join(", ") : ''}`,
             },
             {
                 field: 'roles',
-                headerName: 'Roles',
+                headerName: 'Role',
                 width: 250,
                 valueGetter: (params) => `${params.row.roles.join(", ")}`,
             },
@@ -110,29 +113,31 @@ export const StaffingPanel: React.FC<VentureProps> = ({ venture }) => {
             {
                 field: 'desiredSkills',
                 headerName: 'Desired skills',
-                width: 300,
+                width: 200,
+            },
+            {
+                field: 'importance',
+                headerName: 'Importance',
+                width: 100,
             },
             {
                 field: 'timing',
                 headerName: 'Timing',
                 width: 150,
-            },
-            {
-                field: 'contributors',
-                headerName: 'Volunteer Assigned',
-                width: 300,
-                valueGetter: (params) => `${params.row.contributors ? params.row.contributors.join(", ") : ''}`,
             }
         ];
     }
 
     function handleSuccess(resp: StaffingNeed | null): void {
         console.log(resp)
-        setShowEditStaff(false)
+        setShowEditStaff(false);
+        ventureService.getById(venture.id)
+            .then((v) => setVenture(v))
     }
     function handleError(error: any): void {
         console.error(error);
-        setShowEditStaff(false)
+        setShowEditStaff(false);
+
     }
 
     return (venture &&
