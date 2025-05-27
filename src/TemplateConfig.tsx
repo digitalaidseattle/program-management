@@ -7,6 +7,7 @@ import {
 import logo from "./assets/images/logo-light-icon.svg";
 
 import { MenuItem } from "@digitalaidseattle/mui";
+import packageJson from '../package.json';
 
 export const TemplateConfig = () => {
     const radiator = {
@@ -36,6 +37,7 @@ export const TemplateConfig = () => {
         logoUrl: logo,
         drawerWidth: 240,
         menuItems: [radiator],
-        toolbarItems: []
+        toolbarItems: [],
+        version: packageJson.version,
     });
 }

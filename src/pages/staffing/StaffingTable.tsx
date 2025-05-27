@@ -7,7 +7,9 @@ import { useContext, useEffect, useState } from 'react';
 
 // material-ui
 import {
+    Box,
     Chip,
+    CircularProgress,
     Stack
 } from '@mui/material';
 import {
@@ -104,7 +106,6 @@ export default function StaffingTable() {
                 headerName: 'Status',
                 width: 200,
                 renderCell: (param: GridRenderCellParams) => {
-                    console.log(param)
                     return <Chip label={param.row.status} color={POSITION_COLORS[param.row.status]} />
                 }
             },

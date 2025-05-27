@@ -25,7 +25,6 @@ export interface VentureContextType {
   setVenture: (v: Venture) => void
 }
 
-
 export const VentureContext = createContext<VentureContextType>({
   venture: {} as Venture,
   setVenture: (_venture: Venture) => { }
