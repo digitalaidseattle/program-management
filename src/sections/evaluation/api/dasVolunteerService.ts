@@ -5,13 +5,11 @@
  *
  */
 
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import { PageInfo, QueryModel } from "@digitalaidseattle/supabase";
+import Airtable, { FieldSet, Record } from "airtable";
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
-
 
 type Volunteer = {
     id: string,
@@ -26,12 +24,15 @@ type Volunteer = {
     ventureStatus: string,
 }
 
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
-class DASVolunteerService extends AirtableRecordService<Volunteer> {
+class DASVolunteerService extends AirtableEntityService<Volunteer> {
+
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), VOLUNTEER_TABLE);
+        super(airtableClient, VOLUNTEER_TABLE);
     }
-    airtableTransform(r: Record<FieldSet>): Volunteer {
+    
+    transform(r: Record<FieldSet>): Volunteer {
         return {
             id: r.id,
             name: r.fields['Name'],
@@ -46,10 +47,24 @@ class DASVolunteerService extends AirtableRecordService<Volunteer> {
         } as Volunteer
     }
 
+    transformEntity(entity: Partial<Volunteer>): Partial<FieldSet> {
+        return {
+            'Name': entity.name,
+            'First name': entity.firstName,
+            'Last name': entity.lastName,
+            'Affiliation (from Volunteer Affiliation)': entity.affliation,
+            'Manual Status': entity.status,
+            'Prospective Ventures (from Squad Match Role)': entity.ventures,
+            'join date': entity.joinDate,
+            'Affiliation Start Date (from Volunteer Affiliation)': entity.ventureDate,
+            'Venture Status': entity.ventureStatus
+        };
+    }
+
     async findConstributors(queryModel: QueryModel): Promise<PageInfo<Volunteer>> {
         // Airtable is lame: no table count
         // return dasAirtableService.query(VOLUNTEER_TABLE, queryModel)
-        return super.findAll()
+        return super.getAll()
             .then(volunteers => {
                 const contributors = volunteers
                     .filter(v1 => v1.affliation ? v1.affliation.includes('Contributor') : false)

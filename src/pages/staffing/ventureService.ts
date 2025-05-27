@@ -5,8 +5,8 @@
  *
  */
 
-import { dasAirtableClient } from "../../services/airtableClient";
-import { AirtableRecordService } from "../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable from "airtable";
 import { dasPartnerService, Partner } from "../../sections/evaluation/api/dasPartnerService";
 
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE
@@ -30,14 +30,17 @@ type VentureProps = {
     venture: Venture,
 };
 
-class VentureService extends AirtableRecordService<Venture> {
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
+
+class VentureService extends AirtableEntityService<Venture> {
+
     filteredStatuses = ['Active', 'Under evaluation'];
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), VENTURES_TABLE);
+        super(airtableClient, VENTURES_TABLE);
     }
 
-    airtableTransform(record: any): Venture {
+    transform(record: any): Venture {
         return {
             id: record.id,
             painpoint: record.fields['Painpoint Shorthand'],
@@ -53,6 +56,20 @@ class VentureService extends AirtableRecordService<Venture> {
         } as Venture
     }
 
+    transformEntity(entity: Partial<Venture>): Partial<Airtable.FieldSet> {
+        return {
+            'Painpoint Shorthand': entity.painpoint,
+            'Status': entity.status,
+            'Problem (for DAS website)': entity.problem,
+            'Solution (for DAS website)': entity.solution,
+            'Impact (for DAS website)': entity.impact,
+            'Foci (from Partner)': entity.programAreas,
+            'Prospective Venture Code': entity.ventureCode,
+            'Evaluating Task Group': entity.evaluatingTaskGroup ? [entity.evaluatingTaskGroup] : undefined,
+            'Partner': entity.partnerId ? [entity.partnerId] : undefined,
+        };
+    }
+
     async getById(recordId: string): Promise<Venture> {
         return super.getById(recordId)
             .then(venture =>
@@ -64,7 +81,7 @@ class VentureService extends AirtableRecordService<Venture> {
 
     async getAll(): Promise<Venture[]> {
         const FILTER = ``;
-        return this.findAll(undefined, FILTER)
+        return super.getAll(undefined, FILTER)
             .then(ventures =>
                 Promise
                     .all(ventures.map(v => dasPartnerService.getById(v.partnerId)))

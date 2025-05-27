@@ -1,12 +1,12 @@
 /**
  *  dasProjectService.ts
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable from "airtable";
 import { dasPartnerService, Partner } from "./dasPartnerService";
 
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE
@@ -30,14 +30,17 @@ type VentureProps = {
     venture: Venture,
 };
 
-class DASProjectService extends AirtableRecordService<Venture> {
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
+
+class DASProjectService extends AirtableEntityService<Venture> {
+
     filteredStatuses = ['Active', 'Under evaluation'];
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), VENTURES_TABLE);
+        super(airtableClient, VENTURES_TABLE);
     }
 
-    airtableTransform(record: any): Venture {
+    transform(record: any): Venture {
         return {
             id: record.id,
             painpoint: record.fields['Painpoint Shorthand'],
@@ -53,6 +56,20 @@ class DASProjectService extends AirtableRecordService<Venture> {
         } as Venture
     }
 
+    transformEntity(entity: Partial<Venture>): Partial<Airtable.FieldSet> {
+        return {
+            'Title': entity.title,
+            'Painpoint Shorthand': entity.painpoint,
+            'Status': entity.status,
+            'Problem (for DAS website)': entity.problem,
+            'Solution (for DAS website)': entity.solution,
+            'Impact (for DAS website)': entity.impact,
+            'Foci (from Partner)': entity.programAreas,
+            'Prospective Venture Code': entity.ventureCode,
+            'Evaluating Task Group': entity.evaluatingTaskGroup ? [entity.evaluatingTaskGroup] : undefined,
+            'Partner': entity.partnerId ? [entity.partnerId] : undefined
+        };
+    }
     async getById(recordId: string): Promise<Venture> {
         return super.getById(recordId)
             .then(venture =>
@@ -64,7 +81,7 @@ class DASProjectService extends AirtableRecordService<Venture> {
 
     async getAllByStatus(filteredStatuses: string[]): Promise<Venture[]> {
         const FILTER = `OR(${filteredStatuses.map(s => `{Status} = "${s}"`).join(", ")})`;
-        return this.findAll(undefined, FILTER)
+        return this.getAll(undefined, FILTER)
             .then(ventures =>
                 Promise
                     .all(ventures.map(v => dasPartnerService.getById(v.partnerId)))

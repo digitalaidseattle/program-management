@@ -1,13 +1,12 @@
 /**
  *  dasStaffingService.ts
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable, { FieldSet, Record } from "airtable";
 
 type StaffingNeed = {
     id: string,
@@ -25,7 +24,10 @@ type StaffingNeed = {
 
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
 
-class DASStaffingService extends AirtableRecordService<StaffingNeed> {
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
+
+class DASStaffingService extends AirtableEntityService<StaffingNeed> {
+
     STATUSES = [
         "Proposed",
         "Filled",
@@ -53,7 +55,7 @@ class DASStaffingService extends AirtableRecordService<StaffingNeed> {
     ]
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), STAFFING_TABLE);
+        super(airtableClient, STAFFING_TABLE);
     }
 
     newStaffingNeed(): StaffingNeed {
@@ -72,7 +74,7 @@ class DASStaffingService extends AirtableRecordService<StaffingNeed> {
         } as StaffingNeed
     }
 
-    airtableTransform(r: Record<FieldSet>): StaffingNeed {
+   transform(r: Record<FieldSet>): StaffingNeed {
         return {
             id: r.id,
             status: r.fields['Status'],
@@ -88,12 +90,26 @@ class DASStaffingService extends AirtableRecordService<StaffingNeed> {
         } as StaffingNeed
     }
 
+    transformEntity(entity: Partial<StaffingNeed>): Partial<FieldSet> {
+        return {
+            'Status': entity.status,
+            'Importance': entity.importance,
+            'Timing': entity.timing,
+            'Prospective Ventures': entity.ventureIds,
+            'Role in text for website': entity.roles,
+            'Role': entity.role,
+            'Volunteer Assigned': entity.volunteerAssigned,
+            'Contributor in text for website': entity.contributors,
+            'Level requirement': entity.levelRequirement,
+            'Desired skills': entity.desiredSkills,
+        };
+    }
 
     findAll = async (project?: any): Promise<StaffingNeed[]> => {
         const filter = project
             ? `FIND('${project.ventureCode}', ARRAYJOIN({Prospective Ventures}))`
             : ''
-        return super.findAll(undefined, filter)
+        return super.getAll(undefined, filter)
     }
 
 }

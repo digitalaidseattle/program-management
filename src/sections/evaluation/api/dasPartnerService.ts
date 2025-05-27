@@ -1,13 +1,12 @@
 /**
  *  dasPartnerService.ts
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable, { FieldSet, Record } from "airtable";
 
 const PARTNERS_TABLE = 'tblqttKinLZJ2JXo7';
 
@@ -23,13 +22,15 @@ type Partner = {
     overviewLink: string,
     logoUrl: string
 }
-class DASPartnerService extends AirtableRecordService<Partner> {
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
+
+class DASPartnerService extends AirtableEntityService<Partner> {
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), PARTNERS_TABLE);
+        super(airtableClient, PARTNERS_TABLE);
     }
 
-    airtableTransform(record: Record<FieldSet>): Partner {
+    transform(record: Record<FieldSet>): Partner {
         return {
             id: record.id,
             name: record.fields['Org name'],
@@ -43,9 +44,22 @@ class DASPartnerService extends AirtableRecordService<Partner> {
             logoUrl: record.fields["logo"] ? (record.fields["logo"] as any[])[0].url : undefined,
         } as Partner
     }
-
+    
+    transformEntity(entity: Partial<Partner>): Partial<FieldSet> {
+        return {
+            'Org name': entity.name,
+            'Org shorthand': entity.shorthandName,
+            'Status': entity.status,
+            'Org description': entity.description,
+            'Gdrive link URL': entity.gdriveLink,
+            'Hubspot interface': entity.hubspotLink,
+            'Miro Board Link': entity.miroLink,
+            'Overview link': entity.overviewLink
+        };
+    }
 }
 
 const dasPartnerService = new DASPartnerService()
 export { dasPartnerService };
 export type { Partner };
+

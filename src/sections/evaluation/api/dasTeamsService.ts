@@ -5,10 +5,9 @@
  *
  */
 
-import { FieldSet, Record } from "airtable";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable, { FieldSet, Record } from "airtable";
 import { createContext, useEffect, useState } from "react";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
 
 const TEAMS_TABLE = 'tblcRB8AHw18uw2zb';
 
@@ -38,7 +37,7 @@ const useTeams = () => {
     useEffect(() => {
         const fetchData = async () => {
             setStatus('fetching');
-            const response = await dasTeamsService.findAll()
+            const response = await dasTeamsService.getAll()
             setData(response);
             setStatus('fetched');
         };
@@ -48,19 +47,31 @@ const useTeams = () => {
     return { status, data };
 };
 
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
-class DASTeamsService extends AirtableRecordService<Team> {
+class DASTeamsService extends AirtableEntityService<Team> {
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), TEAMS_TABLE);
+        super(airtableClient, TEAMS_TABLE);
     }
 
-    airtableTransform(record: Record<FieldSet>): Team {
+    transform(record: Record<FieldSet>): Team {
         return {
             id: record.id,
             name: record.fields['Team name'],
             volunteerIds: record.fields["volunteers on team"]
         } as Team
+    }
+
+    transformEntity(entity: Partial<Team>): Partial<FieldSet> {
+        const fields: Partial<FieldSet> = {};
+        if (entity.name !== undefined) {
+            fields['Team name'] = entity.name;
+        }
+        if (entity.volunteerIds !== undefined) {
+            fields['volunteers on team'] = entity.volunteerIds;
+        }
+        return fields;
     }
 }
 

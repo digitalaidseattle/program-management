@@ -5,9 +5,9 @@
  *
  */
 
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../services/airtableClient";
-import { AirtableRecordService } from "../../services/airtableRecordService";
+import Airtable, { Record, FieldSet } from 'airtable';
+
+import {AirtableEntityService} from "@digitalaidseattle/airtable";
 
 type OpenPosition = {
     id: string,
@@ -21,8 +21,10 @@ type OpenPosition = {
 }
 
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
-class OpenPositionService extends AirtableRecordService<OpenPosition> {
+class OpenPositionService extends AirtableEntityService<OpenPosition> {
+
     STATUSES = [
         "Proposed",
         "Filled",
@@ -50,10 +52,10 @@ class OpenPositionService extends AirtableRecordService<OpenPosition> {
     ]
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), STAFFING_TABLE);
+        super(airtableClient, STAFFING_TABLE);
     }
 
-    airtableTransform(r: Record<FieldSet>): OpenPosition {
+    transform(r: Record<FieldSet>): OpenPosition {
         return {
             id: r.id,
             status: r.fields['Status'],
@@ -66,9 +68,32 @@ class OpenPositionService extends AirtableRecordService<OpenPosition> {
         } as OpenPosition
     }
 
+    transformEntity(entity: Partial<OpenPosition>): Partial<FieldSet> {
+        const fields: Partial<FieldSet> = {};
+
+        if (entity.status !== undefined) {
+            fields['Status'] = entity.status;
+        }
+        if (entity.ventureId !== undefined) {
+            fields['Prospective Ventures'] = [entity.ventureId];
+        }
+        if (entity.role !== undefined) {
+            fields['Role in text for website'] = entity.role;
+        }
+        if (entity.level !== undefined) {
+            fields['Level requirement'] = entity.level;
+        }
+        if (entity.skill !== undefined) {
+            fields['Desired skills'] = entity.skill;
+        }
+        // venture and ventureStatus are not stored directly in Airtable
+
+        return fields;
+    }
+
     findOpen = async (statuses: string[]): Promise<OpenPosition[]> => {
         const filter = `OR(${statuses.map(s => `{Status} = "${s}"`).join(", ")})`;
-        return super.findAll(undefined, filter)
+        return super.getAll(undefined, filter);
     }
 
 }

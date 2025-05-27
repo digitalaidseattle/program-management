@@ -5,10 +5,9 @@
  *
  */
 
-import { FieldSet, Record } from "airtable";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable, { FieldSet, Record } from "airtable";
 import { useEffect, useState } from "react";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
 
 const DISCIPLINES_TABLE = 'tblAL15eUBFRIrdVH';
 
@@ -16,20 +15,28 @@ type Discipline = {
     id: string
     name: string
 }
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
-class DASDisciplinesService extends AirtableRecordService<Discipline> {
+class DASDisciplinesService extends AirtableEntityService<Discipline> {
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), DISCIPLINES_TABLE);
+        super(airtableClient, DISCIPLINES_TABLE);
     }
 
-    airtableTransform(record: Record<FieldSet>): Discipline {
+    transform(record: Record<FieldSet>): Discipline {
         return {
             id: record.id,
             name: record.fields['Name']
         } as Discipline
     }
 
+    transformEntity(entity: Partial<Discipline>): Partial<FieldSet> {
+        const fields: Partial<FieldSet> = {};
+        if (entity.name !== undefined) {
+            fields['Name'] = entity.name;
+        }
+        return fields;
+    }
 };
 
 const useDisciplines = () => {
@@ -40,7 +47,7 @@ const useDisciplines = () => {
         const fetchData = async () => {
             setStatus('fetching');
             const response = await dasDisciplinesService
-                .findAll()
+                .getAll()
                 .then(recs => recs.sort((d1, d2) => d1.name.localeCompare(d2.name)))
             setData(response);
             setStatus('fetched');
@@ -50,6 +57,7 @@ const useDisciplines = () => {
 
     return { status, data };
 };
+
 const dasDisciplinesService = new DASDisciplinesService()
 export { dasDisciplinesService, useDisciplines };
 export type { Discipline };

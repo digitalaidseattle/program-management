@@ -1,13 +1,12 @@
 /**
- *  dasStaffingService.ts
+ *  dasRoleService.ts
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable, { FieldSet, Record } from "airtable";
 
 const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 
@@ -16,20 +15,33 @@ type Role = {
     name: string,
     status: string,
 }
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
-class DASRoleService extends AirtableRecordService<Role> {
+class DASRoleService extends AirtableEntityService<Role> {
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), ROLES_TABLE);
+        super(airtableClient, ROLES_TABLE);
     }
 
-    airtableTransform(record: Record<FieldSet>): Role {
+    transform(record: Record<FieldSet>): Role {
         return {
             id: record.id,
             name: record.fields['Role'],
             status: record.fields['Status'],
         } as Role
     }
+
+    transformEntity(entity: Partial<Role>): Partial<FieldSet> {
+        const fields: Partial<FieldSet> = {};
+        if (entity.name !== undefined) {
+            fields['Role'] = entity.name;
+        }
+        if (entity.status !== undefined) {
+            fields['Status'] = entity.status;
+        }
+        return fields;
+    }
+
 
 };
 

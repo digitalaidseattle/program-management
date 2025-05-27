@@ -5,9 +5,8 @@
  *
  */
 
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
-import { AirtableRecordService } from "../../../services/airtableRecordService";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import Airtable, { FieldSet, Record } from "airtable";
 
 type Task = {
     id: string;
@@ -22,7 +21,10 @@ type Task = {
 }
 const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
 
-class DASTaskService extends AirtableRecordService<Task> {
+const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
+
+class DASTaskService extends AirtableEntityService<Task> {
+
 
     static TASK_STATUSES = [
         "inbox",
@@ -37,7 +39,7 @@ class DASTaskService extends AirtableRecordService<Task> {
     static TASK_PHASES = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
     public constructor() {
-        super(dasAirtableClient.base(import.meta.env.VITE_AIRTABLE_BASE_ID_DAS), TASK_DETAIL_TABLE);
+        super(airtableClient, TASK_DETAIL_TABLE);
     }
 
     emptyTask(): Task {
@@ -54,7 +56,7 @@ class DASTaskService extends AirtableRecordService<Task> {
         }
     }
 
-    airtableTransform(record: Record<FieldSet>): Task {
+    transform(record: Record<FieldSet>): Task {
         return {
             id: record.id,
             title: record.fields['The request'],
@@ -68,17 +70,22 @@ class DASTaskService extends AirtableRecordService<Task> {
         } as Task;
     }
 
-    // update = async (changes: any): Promise<any> => {
-    //     return dasAirtableService
-    //         .base(TASK_DETAIL_TABLE)
-    //         .update([changes])
-    //         .then((records: any) => {
-    //             console.log('update', records)
-    //             return records
-    //         })
-    // }
+    transformEntity(entity: Partial<Task>): Partial<FieldSet> {
+        return {
+            ...(entity.title !== undefined && { 'The request': entity.title }),
+            ...(entity.phase !== undefined && { 'Phase': entity.phase }),
+            ...(entity.request !== undefined && { 'The Request': entity.request }),
+            ...(entity.requestDetails !== undefined && { 'Request Details': entity.requestDetails }),
+            ...(entity.driId !== undefined && { 'DRI': entity.driId }),
+            ...(entity.driEmail !== undefined && { 'DRI Email': entity.driEmail }),
+            ...(entity.status !== undefined && { 'Status': entity.status }),
+            ...(entity.dueDate !== undefined && { 'Due date': entity.dueDate }),
+        };
+    }
+ 
 }
 
 const dasTaskService = new DASTaskService()
 export { DASTaskService, dasTaskService };
 export type { Task };
+

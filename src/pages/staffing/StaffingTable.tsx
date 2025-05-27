@@ -1,5 +1,5 @@
 /**
- * TicketsGrid.tsx
+ * StaffingTable.tsx
  * 
  * Example of integrating tickets with data-grid
  */
@@ -7,9 +7,7 @@ import { useContext, useEffect, useState } from 'react';
 
 // material-ui
 import {
-    Box,
     Chip,
-    CircularProgress,
     Stack
 } from '@mui/material';
 import {
@@ -30,7 +28,7 @@ import { Venture, ventureService } from './ventureService';
 
 // ==============================|| Tickets Grid ||============================== //
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 25;
 
 type PageInfo<T> = {
     totalRowCount: number
@@ -91,7 +89,7 @@ export default function StaffingTable() {
             }, {
                 field: 'ventureStatus',
                 headerName: 'Venture Status',
-                width: 200,
+                width: 100,
                 renderCell: (param: GridRenderCellParams) => {
                     return <Chip label={param.row.ventureStatus} color={VENTURE_COLORS[param.row.ventureStatus]} />
                 }
@@ -104,7 +102,7 @@ export default function StaffingTable() {
             {
                 field: 'status',
                 headerName: 'Status',
-                width: 200,
+                width: 150,
                 renderCell: (param: GridRenderCellParams) => {
                     return <Chip label={param.row.status} color={POSITION_COLORS[param.row.status]} />
                 }
