@@ -6,7 +6,8 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import Airtable, { FieldSet, Record } from "airtable";
+import { FieldSet, Record } from "airtable";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 
@@ -15,12 +16,11 @@ type Role = {
     name: string,
     status: string,
 }
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASRoleService extends AirtableEntityService<Role> {
 
     public constructor() {
-        super(airtableClient, ROLES_TABLE);
+        super(dasAirtableClient, ROLES_TABLE);
     }
 
     transform(record: Record<FieldSet>): Role {

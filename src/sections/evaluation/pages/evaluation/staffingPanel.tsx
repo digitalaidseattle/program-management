@@ -6,7 +6,7 @@
  */
 
 import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { LoadingContext } from "@digitalaidseattle/core";
+import { LoadingContext, useNotifications } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridPaginationModel, GridRowId, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
@@ -19,6 +19,8 @@ import { ventureService } from "../../../../pages/staffing/ventureService";
 const PAGE_SIZE = 10;
 
 export const StaffingPanel: React.FC = () => {
+    const notifications = useNotifications();;
+
     const { setLoading } = useContext(LoadingContext);
     const { venture, setVenture } = useContext(VentureContext);
 
@@ -131,13 +133,17 @@ export const StaffingPanel: React.FC = () => {
     function handleSuccess(resp: StaffingNeed | null): void {
         console.log(resp)
         setShowEditStaff(false);
+        if (resp !== null) {
+            notifications.success(`Request is being processed`);
+        }
+
         ventureService.getById(venture.id)
             .then((v) => setVenture(v))
     }
     function handleError(error: any): void {
         console.error(error);
+        notifications.error(`Error saving: ${error.message}`);;
         setShowEditStaff(false);
-
     }
 
     return (venture &&

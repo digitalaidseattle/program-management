@@ -5,9 +5,10 @@
  *
  */
 
-import Airtable, { Record, FieldSet } from 'airtable';
+import { FieldSet, Record } from 'airtable';
 
-import {AirtableEntityService} from "@digitalaidseattle/airtable";
+import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import { dasAirtableClient } from '../../services/airtableClient';
 
 type OpenPosition = {
     id: string,
@@ -21,7 +22,6 @@ type OpenPosition = {
 }
 
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class OpenPositionService extends AirtableEntityService<OpenPosition> {
 
@@ -52,7 +52,7 @@ class OpenPositionService extends AirtableEntityService<OpenPosition> {
     ]
 
     public constructor() {
-        super(airtableClient, STAFFING_TABLE);
+        super(dasAirtableClient, STAFFING_TABLE);
     }
 
     transform(r: Record<FieldSet>): OpenPosition {

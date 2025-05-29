@@ -15,7 +15,7 @@ const useRoles = () => {
     useEffect(() => {
         const fetchData = async () => {
             setStatus('fetching');
-            const response = await dasRoleService.findAll()
+            const response = await dasRoleService.getAll()
                 .then(roles => roles.sort((r1, r2) => r1.name.localeCompare(r2.name)));
             setData(response);
             setStatus('fetched');

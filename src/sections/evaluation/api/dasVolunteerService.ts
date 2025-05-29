@@ -7,7 +7,8 @@
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import { PageInfo, QueryModel } from "@digitalaidseattle/supabase";
-import Airtable, { FieldSet, Record } from "airtable";
+import { FieldSet, Record } from "airtable";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
 
@@ -24,12 +25,10 @@ type Volunteer = {
     ventureStatus: string,
 }
 
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
-
 class DASVolunteerService extends AirtableEntityService<Volunteer> {
 
     public constructor() {
-        super(airtableClient, VOLUNTEER_TABLE);
+        super(dasAirtableClient, VOLUNTEER_TABLE);
     }
     
     transform(r: Record<FieldSet>): Volunteer {

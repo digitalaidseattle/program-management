@@ -15,43 +15,30 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
     const { data: volunteers } = useVolunteers();
     const { data: disciplines } = useDisciplines();
 
-    const fields = {
-        "Task Group name": taskGroup.name,
-        "Drive URL": taskGroup.driveUrl,
-        "Request details": taskGroup.requestDetails,
-        "Priority": taskGroup.priority ?? '',
-        "Status": taskGroup.status ?? '',
-        "Responsible": taskGroup.responsibleIds,
-        "Disciplines required": taskGroup.disciplinesRequiredId,
-        "Venture Project Manager": taskGroup.ventureProjectManagerIds,
-        "Venture Product Manager": taskGroup.ventureProductManagerIds,
-        "Contributor PdM": taskGroup.contributorPdMIds
-    }
-
     const inputs = [
         {
             name: "taskGroupName",
             label: 'Name',
-            fieldName: "Task Group name",
+            fieldName: "taskGroupName",
             type: 'string'
         },
         {
             name: "priority",
             label: 'Priority',
-            fieldName: "Priority",
+            fieldName: "priority",
             type: 'select',
             options: DASTaskGroupService.PRIORITIES
         },
         {
             name: "status",
             label: 'Status',
-            fieldName: "Status",
+            fieldName: "status",
             type: 'select',
             options: DASTaskGroupService.STATUSES
         },
         {
             name: "responsible",
-            fieldName: "Responsible",
+            fieldName: "responsible",
             label: 'Responsible',
             placeholder: "DAS Member",
             type: 'lookup',
@@ -59,7 +46,7 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
         },
         {
             name: "ventureProjecttManager",
-            fieldName: "Venture Project Manager",
+            fieldName: "ventureProjecttManager",
             label: 'Venture Project Manager',
             placeholder: "DAS Member",
             type: 'lookup',
@@ -67,7 +54,7 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
         },
         {
             name: "ventureProductManager",
-            fieldName: "Venture Product Manager",
+            fieldName: "ventureProductManager",
             label: 'Venture Product Manager',
             placeholder: "DAS Member",
             type: 'lookup',
@@ -75,7 +62,7 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
         },
         {
             name: "contributorProductManager",
-            fieldName: "Venture Project Manager",
+            fieldName: "contributorProductManager",
             label: 'Venture Project Manager',
             placeholder: "DAS Member",
             type: 'lookup',
@@ -83,7 +70,7 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
         },
         {
             name: "disciplinesRequired",
-            fieldName: "Disciplines required",
+            fieldName: "disciplinesRequired",
             label: 'Disciplines',
             placeholder: "Developer, Project Manager",
             type: 'lookup',
@@ -92,13 +79,13 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
         {
             name: "gDrive",
             label: 'G-Drive',
-            fieldName: "Drive URL",
+            fieldName: "gDrive",
             type: 'string'
         },
         {
             name: "requestDetails",
             label: 'Description',
-            fieldName: "Request details",
+            fieldName: "requestDetails",
             type: 'text'
         }
     ]
@@ -115,7 +102,7 @@ const TaskGroupDialog: React.FC<EntityDialogProps<TaskGroup>> = ({ open, entity:
             open={open}
             record={{
                 id: taskGroup.id,
-                fields: fields
+                fields: taskGroup
             } as unknown as Record<FieldSet>}
             options={{
                 title: 'Update Task Group',

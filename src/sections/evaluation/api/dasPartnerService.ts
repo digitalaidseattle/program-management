@@ -6,7 +6,8 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import Airtable, { FieldSet, Record } from "airtable";
+import { FieldSet, Record } from "airtable";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 const PARTNERS_TABLE = 'tblqttKinLZJ2JXo7';
 
@@ -22,12 +23,11 @@ type Partner = {
     overviewLink: string,
     logoUrl: string
 }
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASPartnerService extends AirtableEntityService<Partner> {
 
     public constructor() {
-        super(airtableClient, PARTNERS_TABLE);
+        super(dasAirtableClient, PARTNERS_TABLE);
     }
 
     transform(record: Record<FieldSet>): Partner {

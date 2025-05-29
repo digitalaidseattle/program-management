@@ -6,7 +6,8 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import Airtable, { FieldSet, Record } from "airtable";
+import { FieldSet, Record } from "airtable";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 type StaffingNeed = {
     id: string,
@@ -23,8 +24,6 @@ type StaffingNeed = {
 }
 
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
-
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASStaffingService extends AirtableEntityService<StaffingNeed> {
 
@@ -55,7 +54,7 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
     ]
 
     public constructor() {
-        super(airtableClient, STAFFING_TABLE);
+        super(dasAirtableClient, STAFFING_TABLE);
     }
 
     newStaffingNeed(): StaffingNeed {

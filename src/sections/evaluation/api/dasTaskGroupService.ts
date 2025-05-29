@@ -8,6 +8,7 @@
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import Airtable from "airtable";
 import { dasTaskService } from "./dasTaskService";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 const TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
 
@@ -28,8 +29,6 @@ type TaskGroup = {
     partnerId: string,
     disciplinesRequiredId: string[]
 }
-
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASTaskGroupService extends AirtableEntityService<TaskGroup> {
 
@@ -55,7 +54,7 @@ class DASTaskGroupService extends AirtableEntityService<TaskGroup> {
     ]
 
     public constructor() {
-        super(airtableClient, TASK_GROUP_TABLE);
+        super(dasAirtableClient, TASK_GROUP_TABLE);
     }
 
    transform = (record: any): TaskGroup => {

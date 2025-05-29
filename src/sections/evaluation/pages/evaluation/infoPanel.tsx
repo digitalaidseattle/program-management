@@ -66,25 +66,25 @@ const PartnerSection = (props: { venture: any }) => {
 
     const saveOverview = (text: string) => {
         dasPartnerService
-            .update(partner!.id, { 'Overview link': text })
+            .update(partner!.id, { overviewLink: text })
             .then(() => setRefresh(0))
     }
 
     const saveGdrive = (text: string) => {
         dasPartnerService
-            .update(partner!.id, { 'Gdrive link URL': text })
+            .update(partner!.id, { gdriveLink: text })
             .then(() => setRefresh(0))
     }
 
     const saveHubspot = (text: string) => {
         dasPartnerService
-            .update(partner!.id, { 'Hubspot interface': text })
+            .update(partner!.id, { hubspotLink: text })
             .then(() => setRefresh(0))
     }
 
     const saveMiro = (text: string) => {
         dasPartnerService
-            .update(partner!.id, { 'Miro Board Link': text })
+            .update(partner!.id, { miroLink: text })
             .then(() => setRefresh(0))
     }
     return (partner &&
@@ -108,19 +108,19 @@ const PSISection = (props: { venture: any }) => {
     const { setRefresh } = useContext(RefreshContext);
     const saveProblem = (text: string) => {
         dasProjectService
-            .update(props.venture, { 'Problem (for DAS website)': text })
+            .update(props.venture, { problem: text })
             .then(() => setRefresh(0))
     }
 
     const saveSolution = (text: string) => {
         dasProjectService
-            .update(props.venture, { 'Solution (for DAS website)': text })
+            .update(props.venture, { solution: text })
             .then(() => setRefresh(0))
     }
 
     const saveImpact = (text: string) => {
         dasProjectService
-            .update(props.venture, { 'Impact (for DAS website)': text })
+            .update(props.venture, { impact: text })
             .then(() => setRefresh(0))
     }
     return (

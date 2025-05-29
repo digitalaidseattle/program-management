@@ -6,8 +6,9 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import Airtable, { FieldSet, Record } from "airtable";
+import { FieldSet, Record } from "airtable";
 import { createContext, useEffect, useState } from "react";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 const TEAMS_TABLE = 'tblcRB8AHw18uw2zb';
 
@@ -47,12 +48,11 @@ const useTeams = () => {
     return { status, data };
 };
 
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASTeamsService extends AirtableEntityService<Team> {
 
     public constructor() {
-        super(airtableClient, TEAMS_TABLE);
+        super(dasAirtableClient, TEAMS_TABLE);
     }
 
     transform(record: Record<FieldSet>): Team {

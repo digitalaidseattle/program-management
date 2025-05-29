@@ -5,26 +5,13 @@
  *
  */
 import { FieldSet, Record } from "airtable";
+import AirtableRecordDialog from "../../../../components/DASAirtableRecordDialog";
 import { dasAttendanceService, dasMeetingService, DASMeetingService, Meeting } from "../../api/dasMeetingService";
 import useVolunteers from "../../components/useVolunteers";
-import AirtableRecordDialog from "../../../../components/DASAirtableRecordDialog";
 
 const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, handleSuccess, handleError }) => {
 
     const { data: volunteers } = useVolunteers();
-
-    const fields =
-    {
-        "Topics": entity.topics,
-        "type": entity.type,
-        "Created via": entity.createdVia,
-        "Meeting purpose": entity.purpose,
-        "Meeting duration in minutes": entity.duration,
-        "Start Date/Time": entity.startDateTime,
-        "Team": entity.teamIds,
-        "Task Group discussed": entity.taskGroupIds,
-        "volunteerIds": entity.attendances.map(att => att.internalAttendeeIds).flat()
-    }
 
     const inputs = [
         {
@@ -36,44 +23,44 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, han
         }, {
             name: "createdVia",
             label: 'Created Via',
-            fieldName: "Created via",
+            fieldName: "createdVia",
             type: 'select',
             options: DASMeetingService.CREATION_TYPES
         },
         {
             name: "date",
             label: 'Date',
-            fieldName: "Start Date/Time",
+            fieldName: "date",
             type: 'date'
         },
         {
             name: "time",
             label: 'Time',
-            fieldName: "Start Date/Time",
+            fieldName: "time",
             type: 'time'
         },
         {
             name: "meetingDuration",
             label: 'Meeting length',
-            fieldName: "Meeting duration in minutes",
+            fieldName: "meetingDuration",
             type: 'select',
             options: DASMeetingService.DURATIONS
         },
         {
             name: "purpose",
             label: 'Purpose',
-            fieldName: "Meeting purpose",
+            fieldName: "purpose",
             type: 'text'
         },
         {
             name: "topics",
             label: 'Topics',
-            fieldName: "Topics",
+            fieldName: "topics",
             type: 'text'
         },
         {
             name: "attendees",
-            fieldName: "volunteerIds",
+            fieldName: "attendees",
             label: 'Attendees',
             placeholder: "DAS Member",
             type: 'lookup',
@@ -91,10 +78,9 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, han
                 .then(res => handleSuccess(res))
                 .catch(e => handleError(e))
         } else {
-            const volunteerIds = fields['volunteerIds'];
-            delete (fields as any)['volunteerIds'];
+            const volunteerIds = entity.attendanceIds;
             dasMeetingService
-                .create(fields)
+                .create(entity)
                 .then(res => {
                     const atats = volunteerIds.map(vid => {
                         return {
@@ -119,7 +105,7 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, han
             open={open}
             record={{
                 id: entity.id,
-                fields: fields
+                fields: entity
             } as unknown as Record<FieldSet>}
             options={{
                 title: 'Edit Meeting',

@@ -23,16 +23,6 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
         setDialogTitle(task.id === '' ? 'Add Task' : 'Update Task');
     }, [task]);
 
-    const fields = {
-        "The request": task.title,
-        "Phase": task.phase,
-        "Request details": task.requestDetails,
-        "DRI": task.driId,
-        "DRI Email": task.driEmail,
-        "Status": task.status,
-        "Due date": task.dueDate
-    }
-
     // ONLY Responsible volunteers are eligible
     const lookup = (volunteers: any, task: Task, taskGroup: TaskGroup) => {
         if (volunteers.status === 'fetched' && taskGroup && task) {
@@ -51,13 +41,13 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
         {
             name: "title",
             label: 'Title',
-            fieldName: "The request",
+            fieldName: "title",
             type: 'string'
         },
         {
             name: "dri",
             label: 'DRI',
-            fieldName: "DRI",
+            fieldName: "dri",
             placeholder: "DAS Member",
             type: 'lookup',
             options: taskGroupVolunteers
@@ -65,7 +55,7 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
         {
             name: "status",
             label: 'Status',
-            fieldName: "Status",
+            fieldName: "status",
             type: 'select',
             options: DASTaskService.TASK_STATUSES
 
@@ -73,20 +63,20 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
         {
             name: "phase",
             label: 'Phase',
-            fieldName: "Phase",
+            fieldName: "phase",
             type: 'select',
             options: DASTaskService.TASK_PHASES
         },
         {
             name: "dueDate",
             label: 'Due Date',
-            fieldName: "Due date",
+            fieldName: "dueDate",
             type: 'date'
         },
         {
             name: "requestDetails",
             label: 'Description',
-            fieldName: "Request details",
+            fieldName: "requestDetails",
             type: 'text'
         }
     ]
@@ -103,7 +93,7 @@ const TaskDialog: React.FC<EntityDialogProps<Task> & { taskGroup: TaskGroup }> =
             open={open}
             record={{
                 id: task.id,
-                fields: fields
+                fields: task
             } as unknown as Record<FieldSet>}
             options={{
                 title: dialogTitle,

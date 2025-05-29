@@ -7,6 +7,7 @@
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import Airtable from "airtable";
+import { dasAirtableClient } from "../../../services/airtableClient";
 import { dasPartnerService, Partner } from "./dasPartnerService";
 
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE
@@ -30,14 +31,13 @@ type VentureProps = {
     venture: Venture,
 };
 
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASProjectService extends AirtableEntityService<Venture> {
 
     filteredStatuses = ['Active', 'Under evaluation'];
 
     public constructor() {
-        super(airtableClient, VENTURES_TABLE);
+        super(dasAirtableClient, VENTURES_TABLE);
     }
 
     transform(record: any): Venture {

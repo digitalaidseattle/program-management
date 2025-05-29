@@ -6,8 +6,9 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import Airtable, { FieldSet, Record } from "airtable";
+import { FieldSet, Record } from "airtable";
 import { useEffect, useState } from "react";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 const DISCIPLINES_TABLE = 'tblAL15eUBFRIrdVH';
 
@@ -15,12 +16,11 @@ type Discipline = {
     id: string
     name: string
 }
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASDisciplinesService extends AirtableEntityService<Discipline> {
 
     public constructor() {
-        super(airtableClient, DISCIPLINES_TABLE);
+        super(dasAirtableClient, DISCIPLINES_TABLE);
     }
 
     transform(record: Record<FieldSet>): Discipline {

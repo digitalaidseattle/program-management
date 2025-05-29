@@ -7,6 +7,7 @@
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import Airtable, { FieldSet, Record } from "airtable";
+import { dasAirtableClient } from "../../../services/airtableClient";
 
 type Task = {
     id: string;
@@ -20,8 +21,6 @@ type Task = {
     dueDate: string;
 }
 const TASK_DETAIL_TABLE = 'tblOku4Z4Fiqyx6S8';
-
-const airtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_ANON_KEY })
 
 class DASTaskService extends AirtableEntityService<Task> {
 
@@ -39,7 +38,7 @@ class DASTaskService extends AirtableEntityService<Task> {
     static TASK_PHASES = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
     public constructor() {
-        super(airtableClient, TASK_DETAIL_TABLE);
+        super(dasAirtableClient, TASK_DETAIL_TABLE);
     }
 
     emptyTask(): Task {
