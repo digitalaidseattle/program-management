@@ -7,7 +7,7 @@
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import Airtable from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
+import { dasAirtableClient } from "./airtableClient";
 import { dasPartnerService, Partner } from "./dasPartnerService";
 
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE

@@ -8,7 +8,7 @@
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import Airtable from "airtable";
 import { dasTaskService } from "./dasTaskService";
-import { dasAirtableClient } from "../../../services/airtableClient";
+import { dasAirtableClient } from "./airtableClient";
 
 const TASK_GROUP_TABLE = 'tblIDWTIHBu3XiuqW';
 

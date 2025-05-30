@@ -7,7 +7,7 @@
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import Airtable, { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
+import { dasAirtableClient } from "./airtableClient";
 
 type Task = {
     id: string;

@@ -8,7 +8,7 @@
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import { PageInfo, QueryModel } from "@digitalaidseattle/supabase";
 import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "../../../services/airtableClient";
+import { dasAirtableClient } from "./airtableClient";
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
 

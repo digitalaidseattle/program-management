@@ -8,7 +8,7 @@
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import { FieldSet, Record } from "airtable";
 import { createContext, useEffect, useState } from "react";
-import { dasAirtableClient } from "../../../services/airtableClient";
+import { dasAirtableClient } from "./airtableClient";
 
 const TEAMS_TABLE = 'tblcRB8AHw18uw2zb';
 

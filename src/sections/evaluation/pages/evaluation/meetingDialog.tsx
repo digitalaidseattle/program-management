@@ -6,7 +6,8 @@
  */
 import { FieldSet, Record } from "airtable";
 import AirtableRecordDialog from "../../../../components/DASAirtableRecordDialog";
-import { dasAttendanceService, dasMeetingService, DASMeetingService, Meeting } from "../../api/dasMeetingService";
+import { dasMeetingService, DASMeetingService, Meeting } from "../../api/dasMeetingService";
+import { Attendance, dasAttendanceService } from "../../api/dasAttendanceService";
 import useVolunteers from "../../components/useVolunteers";
 
 const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, handleSuccess, handleError }) => {
@@ -71,31 +72,29 @@ const MeetingDialog: React.FC<EntityDialogProps<Meeting>> = ({ open, entity, han
     const handleSubmit = (changes: any) => {
         if (entity && entity.id) {
             dasMeetingService
-                .update({
-                    id: entity?.id,
-                    fields: changes
-                })
+                .update(entity?.id, changes)
                 .then(res => handleSuccess(res))
                 .catch(e => handleError(e))
         } else {
             const volunteerIds = entity.attendanceIds;
             dasMeetingService
-                .create(entity)
+                .insert(entity)
                 .then(res => {
-                    const atats = volunteerIds.map(vid => {
+                    const atats: Partial<Attendance>[] = volunteerIds.map(vid => {
                         return {
-                            fields: {
-                                'Meeting': [res.id],
-                                'Internal Attendee': [vid]
-                            }
+                            meetingId: [res.id],
+                            internalAttendeeIds: [vid],
+                            present: true,
+                            absent: false
                         }
                     });
-                    dasAttendanceService.createAttendances(atats)
+                    dasAttendanceService.batchInsert(atats)
                         .then(_res => {
                             // Consider requerying meeting
                             handleSuccess(res)
                         })
                 })
+
                 .catch(e => handleError(e))
         }
     }

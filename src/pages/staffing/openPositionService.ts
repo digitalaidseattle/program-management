@@ -8,7 +8,7 @@
 import { FieldSet, Record } from 'airtable';
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import { dasAirtableClient } from '../../services/airtableClient';
+import { dasAirtableClient } from '../../sections/evaluation/api/airtableClient';
 
 type OpenPosition = {
     id: string,
