@@ -6,11 +6,10 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import { dasAirtableService } from "../../../services/airtableService";
-import { Attendance } from "./dasAttendanceService";
-import { TaskGroup } from "./dasTaskGroupService";
 import { FieldSet } from "airtable";
 import { dasAirtableClient } from "./airtableClient";
+import { Attendance } from "./dasAttendanceService";
+import { TaskGroup } from "./dasTaskGroupService";
 
 const MEETING_TABLE = 'tblWwnZ8rjLFjQizJ';
 

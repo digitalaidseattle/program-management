@@ -6,10 +6,9 @@
  */
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
-import { dasAirtableService } from "../../../services/airtableService";
-import { FieldSet, Record } from "airtable";
-import { dasAirtableClient } from "./airtableClient";
 import { User } from "@digitalaidseattle/core";
+import { FieldSet } from "airtable";
+import { dasAirtableClient } from "./airtableClient";
 
 const ATTENDANCE_TABLE = 'tblteoO3SNWzBpyfo';
 
