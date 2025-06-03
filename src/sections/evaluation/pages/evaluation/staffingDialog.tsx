@@ -68,6 +68,7 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
     }
 
     const handleSubmit = (changes: any) => {
+
         if (staffingNeed && staffingNeed.id) {
             console.log(changes)
             return dasStaffingService
@@ -75,9 +76,12 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
                 .then(updated => handleSuccess(updated))
                 .catch(e => handleError(e))
         } else {
-            console.log(staffingNeed)
+            console.log('staffingNeed', staffingNeed, changes);
             dasStaffingService
-                .insert(staffingNeed)
+                .insert({
+                    ...staffingNeed,
+                    ...changes
+                })
                 .then(res => handleSuccess(res))
                 .catch(e => handleError(e))
         }

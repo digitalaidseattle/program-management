@@ -8,6 +8,7 @@
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 import { FieldSet, Record } from "airtable";
 import { dasAirtableClient } from "./airtableClient";
+import { User } from "@digitalaidseattle/core";
 
 type StaffingNeed = {
     id: string,
@@ -73,7 +74,7 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
         } as StaffingNeed
     }
 
-   transform(r: Record<FieldSet>): StaffingNeed {
+    transform(r: Record<FieldSet>): StaffingNeed {
         return {
             id: r.id,
             status: r.fields['Status'],
@@ -95,10 +96,7 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
             'Importance': entity.importance,
             'Timing': entity.timing,
             'Prospective Ventures': entity.ventureIds,
-            'Role in text for website': entity.roles,
             'Role': entity.role,
-            'Volunteer Assigned': entity.volunteerAssigned,
-            'Contributor in text for website': entity.contributors,
             'Level requirement': entity.levelRequirement,
             'Desired skills': entity.desiredSkills,
         };
@@ -109,6 +107,11 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
             ? `FIND('${project.ventureCode}', ARRAYJOIN({Prospective Ventures}))`
             : ''
         return super.getAll(undefined, filter)
+    }
+
+    insert = async (entity: StaffingNeed, select?: string, user?: User): Promise<StaffingNeed> => {
+        console.log(entity);
+        return super.insert(entity, select, user);
     }
 
 }

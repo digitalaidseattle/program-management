@@ -62,8 +62,12 @@ export const StaffingPanel: React.FC = () => {
     };
 
     const handleAddClick = () => {
-        setSelectedStaff(dasStaffingService.newStaffingNeed())
-        setShowEditStaff(true)
+        const staffingNed = dasStaffingService.newStaffingNeed();
+        staffingNed.ventureIds = [venture.id];
+        staffingNed.status = "Please fill";
+        staffingNed.timing = "At the start";
+        setSelectedStaff(staffingNed);
+        setShowEditStaff(true);
     };
 
     const getColumns = (): GridColDef[] => {
