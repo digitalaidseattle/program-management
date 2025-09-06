@@ -64,8 +64,6 @@ export const StaffingPanel: React.FC = () => {
     const handleAddClick = () => {
         const staffingNed = dasStaffingService.newStaffingNeed();
         staffingNed.ventureIds = [venture.id];
-        staffingNed.status = "Please fill";
-        staffingNed.timing = "At the start";
         setSelectedStaff(staffingNed);
         setShowEditStaff(true);
     };

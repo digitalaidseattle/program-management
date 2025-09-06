@@ -34,7 +34,8 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
         "Please fill",
         "Maybe filled",
         "Cancelled",
-        "Declined by Contributor"
+        "Declined by Contributor",
+        "Concluded"
     ]
 
     IMPORTANCES = [
@@ -61,9 +62,9 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
     newStaffingNeed(): StaffingNeed {
         return {
             id: '',
-            status: '',
+            status: 'Please fill',
             importance: '',
-            timing: '',
+            timing: 'At the start',
             ventureIds: [],
             roles: [],
             role: [],
@@ -93,12 +94,12 @@ class DASStaffingService extends AirtableEntityService<StaffingNeed> {
     transformEntity(entity: Partial<StaffingNeed>): Partial<FieldSet> {
         return {
             'Status': entity.status,
-            'Importance': entity.importance,
-            'Timing': entity.timing,
-            'Prospective Ventures': entity.ventureIds,
-            'Role': entity.role,
-            'Level requirement': entity.levelRequirement,
-            'Desired skills': entity.desiredSkills,
+            'Importance': entity.importance ?? '',
+            'Timing': entity.timing ?? '',
+            'Prospective Ventures': entity.ventureIds ?? [],
+            'Role': entity.role ?? [],
+            'Level requirement': entity.levelRequirement ?? '',
+            'Desired skills': entity.desiredSkills ?? '',
         };
     }
 

@@ -25,17 +25,16 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
 
     const inputs = [
         {
-            name: "importance",
-            label: 'Importance',
-            fieldName: "importance",
+            name: "status",
+            label: 'Status',
+            fieldName: "status",
             type: 'select',
-            options: dasStaffingService.IMPORTANCES
+            options: dasStaffingService.STATUSES
         },
         {
             name: "role",
             fieldName: "role",
             label: 'Role',
-            placeholder: "Project Manager",
             type: 'lookup',
             options: roles
         },
@@ -51,6 +50,13 @@ const StaffingDialog: React.FC<EntityDialogProps<StaffingNeed>> = ({ open, entit
             fieldName: "desiredSkills",
             label: 'Desired Skills',
             placeholder: "SAP"
+        },
+        {
+            name: "importance",
+            label: 'Importance',
+            fieldName: "importance",
+            type: 'select',
+            options: dasStaffingService.IMPORTANCES
         },
         {
             name: "contributors",
