@@ -68,8 +68,3 @@ const SchedulingPage = () => {
 }
 
 export default SchedulingPage;
-
-
-
-
-
