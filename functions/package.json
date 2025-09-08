@@ -1,0 +1,16 @@
+{
+  "name": "program-management-functions",
+  "private": true,
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "airtable": "^0.12.2",
+    "axios": "^1.7.2",
+    "express": "^4.19.2",
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.4.1"
+  }
+}
+
