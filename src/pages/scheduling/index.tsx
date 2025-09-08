@@ -8,9 +8,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
-const getQueryParam = (search: string, key: string): string | null => {
+const getQueryParams = (search: string) => {
   const params = new URLSearchParams(search);
-  return params.get(key);
+  return {
+    code: params.get('code'),
+    state: params.get('state'),
+    interviewerRecordId: params.get('interviewerRecordId'),
+    email: params.get('email'),
+    autoDetect: params.get('autoDetect'),
+    source: params.get('source')
+  };
 }
 
 const SchedulingPage = () => {
@@ -24,10 +31,7 @@ const SchedulingPage = () => {
   }, []);
 
   useEffect(() => {
-    const code = getQueryParam(location.search, 'code');
-    const stateParam = getQueryParam(location.search, 'state');
-    const interviewerRecordId = getQueryParam(location.search, 'interviewerRecordId');
-    const email = getQueryParam(location.search, 'email');
+    const { code, state: stateParam, interviewerRecordId, email, autoDetect, source } = getQueryParams(location.search);
 
     if (code) {
       const state = stateParam ? stateParam : JSON.stringify({ interviewerRecordId, email });
@@ -49,8 +53,32 @@ const SchedulingPage = () => {
       return;
     }
 
+    // Handle auto-detection
+    if (autoDetect === 'true' && email) {
+      fetch('/api/airtable/get-current-interviewer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.interviewerRecordId) {
+          // Redirect with the detected interviewer ID
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set('interviewerRecordId', data.interviewerRecordId);
+          newUrl.searchParams.set('email', data.email);
+          newUrl.searchParams.delete('autoDetect');
+          window.location.replace(newUrl.toString());
+        } else {
+          setError(data.error || 'Could not detect interviewer. Please contact support.');
+        }
+      })
+      .catch(() => setError('Failed to detect interviewer. Please try again.'));
+      return;
+    }
+
     if (!interviewerRecordId) {
-      setError('Missing interviewerRecordId');
+      setError('Missing interviewerRecordId. Please provide interviewerRecordId or use autoDetect=true with email.');
       return;
     }
 
