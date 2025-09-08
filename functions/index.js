@@ -147,7 +147,7 @@ async function handleCalendlyCallback(req, res) {
 async function handleInterviewerDetect(req, res) {
   try {
     const { email, source } = req.body || {};
-    
+
     if (!email) {
       return res.status(400).json({ error: 'Email is required' });
     }
@@ -156,67 +156,34 @@ async function handleInterviewerDetect(req, res) {
     validateConfig(config.airtable, ['pat', 'baseId']);
 
     const base = createAirtableBase(config.airtable.pat, config.airtable.baseId);
-    
-    // Proctors table ID
     const proctorsTableId = 'tblKQ7tCTI0WTbkvy';
 
     const emailLowerRaw = String(email).trim().toLowerCase();
     const emailLower = emailLowerRaw.replace(/'/g, "\\'");
-    const candidateFields = [
-      'Email', 'email', 'E-mail', 'E-Mail', 'Email Address', 'Email address', 'email address',
-      'Work Email', 'Work E-mail', 'Work Email Address', 'Work email',
-      'Personal Email', 'Primary Email', 'Primary Email Address', 'Contact Email', 'Contact E-mail',
-      'OS email', 'OS Email'
-    ];
 
-    functions.logger.info('Interviewer detection start', { email, emailLower: emailLowerRaw, source, proctorsTableId, candidateFields });
+    // Only use the known field name used in Proctors
+    const fieldName = 'OS email';
+    const formula = `LOWER({${fieldName}}) = '${emailLower}'`;
 
-    for (const fieldName of candidateFields) {
-      const formula = `LOWER({${fieldName}}) = '${emailLower}'`;
-      try {
-        functions.logger.info('Attempting lookup', { fieldName, formula });
-        const page = await base(proctorsTableId).select({
-          filterByFormula: formula,
-          maxRecords: 1
-        }).firstPage();
-        functions.logger.info('Lookup result', { fieldName, count: page.length });
-        if (page.length > 0) {
-          const record = page[0];
-          const found = {
-            interviewerRecordId: record.id,
-            email: record.get(fieldName) || record.get('Email') || email,
-            name: record.get('Name') || record.get('Full Name') || 'Unknown',
-            matchedField: fieldName
-          };
-          functions.logger.info('Interviewer detected', found);
-          return res.json(found);
-        }
-      } catch (e) {
-        functions.logger.warn('Lookup failed for field', { fieldName, error: e?.message || String(e) });
-        // Continue to next candidate field
-      }
-    }
+    functions.logger.info('Interviewer detection', { email, fieldName, source });
 
-    // Extra diagnostics: sample a few records to inspect field names and email-like fields
-    try {
-      const sample = await base(proctorsTableId).select({ maxRecords: 3 }).firstPage();
-      const samples = sample.map((rec) => {
-        const fields = Object.keys(rec.fields || {});
-        const emailish = fields.filter((f) => /mail/i.test(f)).reduce((acc, f) => {
-          acc[f] = rec.get(f);
-          return acc;
-        }, {});
-        return { id: rec.id, fields, emailish };
+    const page = await base(proctorsTableId).select({
+      filterByFormula: formula,
+      maxRecords: 1
+    }).firstPage();
+
+    if (page.length > 0) {
+      const record = page[0];
+      return res.json({
+        interviewerRecordId: record.id,
+        email: record.get(fieldName) || email,
+        name: record.get('Name') || 'Unknown',
+        matchedField: fieldName
       });
-      functions.logger.info('Interviewer diagnostics sample', { samplesCount: samples.length, samples });
-    } catch (diagErr) {
-      functions.logger.warn('Diagnostics sampling failed', { error: diagErr?.message || String(diagErr) });
     }
 
-    functions.logger.info('Interviewer not found after trying fields', { emailLower: emailLowerRaw, tried: candidateFields });
-    return res.status(404).json({ error: 'Interviewer not found', email, triedFields: candidateFields });
+    return res.status(404).json({ error: 'Interviewer not found', email });
   } catch (err) {
-    console.error('Error finding interviewer:', err);
     return handleError(err, res);
   }
 }
