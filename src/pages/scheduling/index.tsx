@@ -8,18 +8,21 @@ import { useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { calendlyService } from './calendlyService';
+import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
 
+const DEFAULT_LINK_COUNT = 10
 const SchedulingPage = () => {
     const searchParams = useSearchParams()[0];
     const authService = useAuthService();
     const notifications = useNotifications();
 
     const [selectedProctor, setSelectedProctor] = useState<Proctor | null>();
-    const [authCode, setAuthCode] = useState<string | null>();
-    const [numLinks, setNumLinks] = useState<number>(10);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+    const [numLinks, setNumLinks] = useState<number>(DEFAULT_LINK_COUNT);
     const [activeStep, setActiveStep] = useState<number>(0);
+    const [events, setEvents] = useState<EventType[]>([]);
+    const [interviewEventUri, setInterviewEventUri] = useState<string | null>(null);
 
     const redirectUri = useMemo(() => {
         // return `${window.location.origin}/api/calendly/oauth/callback`;
@@ -27,7 +30,11 @@ const SchedulingPage = () => {
     }, []);
 
     useEffect(() => {
-        setAuthCode(searchParams.get('code'));
+        const authCode = searchParams.get('code');
+        if (authCode) {
+            calendlyService.exchangeCodeForToken(authCode, redirectUri)
+                .then(accessToken => setAccessToken(accessToken))
+        }
         authService.getUser()
             .then(user => {
                 if (user) {
@@ -39,8 +46,25 @@ const SchedulingPage = () => {
     }, []);
 
     useEffect(() => {
-        setActiveStep(authCode ? 1 : 0)
-    }, [authCode]);
+        setActiveStep(accessToken ? 1 : 0)
+        if (accessToken && selectedProctor) {
+            try {
+                calendlyService.getUser(accessToken)
+                    .then(user => {
+                        calendlyService.getEventTypes(accessToken, user.resource.uri)
+                            .then(events => {
+                                console.log(events)
+                                setEvents(events)
+                                setInterviewEventUri(events.length > 0 ? events[0].uri : null)
+                            })
+                    })
+            } catch (err) {
+                console.error(err)
+                notifications.error('Your authentication with Calendly expired. Try it again.');
+                setAccessToken(null);
+            }
+        }
+    }, [accessToken, selectedProctor]);
 
     async function authenticate() {
         const calendlyUri = calendlyService.getAuthUri(redirectUri);
@@ -48,13 +72,9 @@ const SchedulingPage = () => {
     }
 
     async function makeLinks() {
-        if (authCode && selectedProctor) {
+        if (accessToken && interviewEventUri && selectedProctor) {
             try {
-                const accessToken = await calendlyService.exchangeCodeForToken(authCode, redirectUri);
-                const user = await calendlyService.getUser(accessToken);
-                const eventTypes = await calendlyService.getEventTypes(accessToken, user.resource.uri);
-                const interviewEvent = eventTypes.find(et => et.name === 'Digital Aid Seattle Interview');
-                const links = await calendlyService.createOneTimeLinks(accessToken, interviewEvent!.uri, numLinks);
+                const links = await calendlyService.createOneTimeLinks(accessToken, interviewEventUri, numLinks);
                 const scheduled = await proctorService.addBookingLinks(selectedProctor, links);
                 if (scheduled) {
                     notifications.success('Your links have been created')
@@ -62,10 +82,6 @@ const SchedulingPage = () => {
             } catch (err) {
                 console.error(err)
                 notifications.error('Your authentication with Calendly expired. Try it again.');
-            }
-            finally {
-                setAuthCode(null)
-                setActiveStep(0)
             }
         }
     }
@@ -88,11 +104,21 @@ const SchedulingPage = () => {
                     {activeStep == 1 &&
                         <Stack direction={'row'} gap={1}>
                             <FormControl>
-                                <InputLabel id="num-links-label">Choose number of links</InputLabel>
-
+                                <InputLabel id="num-links-label">Choose Calendly event</InputLabel>
                                 <Select
                                     labelId='num-links-label'
-                                    sx={{ width: '200px' }}
+                                    sx={{ width: '300px' }}
+                                    value={interviewEventUri ?? ''}
+                                    label="Choose Calendly event"
+                                    onChange={(evt) => setInterviewEventUri(evt.target.value)}>
+                                    {events.map((event: EventType) => <MenuItem key={`${event.id}`} value={event.uri}>{event.name}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel id="num-links-label">Choose number of links</InputLabel>
+                                <Select
+                                    labelId='num-links-label'
+                                    sx={{ width: '150px' }}
                                     value={numLinks}
                                     label="Choose number of links<"
                                     onChange={(evt) => setNumLinks(evt.target.value as number)}>
