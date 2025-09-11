@@ -10,6 +10,7 @@ import EvaluationPage from '../sections/evaluation/pages/evaluation';
 import EvaluationsPage from '../sections/evaluation/pages/evaluations';
 import ContributorsPage from './contributors';
 import StaffingPage from './staffing';
+import SchedulingPage from './scheduling';
 
 const routes = [
   {
@@ -39,6 +40,10 @@ const routes = [
       {
         path: "staffing",
         element: <StaffingPage />,
+      },
+      {
+        path: "scheduling",
+        element: <SchedulingPage />,
       }
     ]
   },
