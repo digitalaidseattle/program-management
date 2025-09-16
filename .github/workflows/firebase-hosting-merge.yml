@@ -18,6 +18,9 @@ jobs:
           echo VITE_AIRTABLE_ANON_KEY=${{ secrets.DAS_ANON_KEY }} >> .env
           echo VITE_SUPABASE_ANON_KEY=${{ secrets.SUPBASE_ANON_KEY }} >> .env
           echo VITE_AIRTABLE_PAT=${{ secrets.AIRTABLE_PAT }} >> .env
+          echo VITE_AIRTABLE_APPLICANT_PAT=${{ secrets.AIRTABLE_APPLICANT_PAT }} >> .env
+          echo VITE_CALENDLY_CLIENT_ID=${{ secrets.CALENDLY_CLIENT_ID }} >> .env
+          echo VITE_CALENDLY_CLIENT_SECRET=${{ secrets.CALENDLY_CLIENT_SECRET }} >> .env
           cat .env
           npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
