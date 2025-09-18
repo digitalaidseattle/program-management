@@ -1,6 +1,7 @@
 
 
 import {
+    ScheduleOutlined,
     SearchOutlined,
     UserOutlined
 } from '@ant-design/icons';
@@ -28,6 +29,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/staffing',
                 icon: <UserOutlined />
+            },
+            {
+                id: 'scheduling',
+                title: 'Scheduling',
+                type: 'item',
+                url: '/scheduling',
+                icon: <ScheduleOutlined />
             }
         ]
     } as MenuItem;
