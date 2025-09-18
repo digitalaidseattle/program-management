@@ -5,7 +5,7 @@
  *
  */
 import { useAuthService, useNotifications } from '@digitalaidseattle/core';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
@@ -23,6 +23,7 @@ const SchedulingPage = () => {
     const [activeStep, setActiveStep] = useState<number>(0);
     const [events, setEvents] = useState<EventType[]>([]);
     const [interviewEventUri, setInterviewEventUri] = useState<string | null>(null);
+    const [thinking, setThinking] = useState<boolean>(false);
 
     const redirectUri = useMemo(() => {
         // return `${window.location.origin}/api/calendly/oauth/callback`;
@@ -74,14 +75,17 @@ const SchedulingPage = () => {
     async function makeLinks() {
         if (accessToken && interviewEventUri && selectedProctor) {
             try {
+                setThinking(true);
                 const links = await calendlyService.createOneTimeLinks(accessToken, interviewEventUri, numLinks);
                 const scheduled = await proctorService.addBookingLinks(selectedProctor, links);
                 if (scheduled) {
-                    notifications.success('Your links have been created')
+                    notifications.success('Your links have been created.')
                 }
             } catch (err) {
-                console.error(err)
+                console.error(err);
                 notifications.error('Your authentication with Calendly expired. Try it again.');
+            } finally {
+                setThinking(false);
             }
         }
     }
@@ -89,7 +93,7 @@ const SchedulingPage = () => {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="50vh" gap={2}>
             <Typography>{selectedProctor ? selectedProctor.name : 'You are not a eligible proctor.'}</Typography>
-            <Typography>Create single use links for "Digital Aid Seattle Interview" in Calendly in two step</Typography>
+            <Typography fontWeight={600}>Create single-use links in Calendly in two steps.</Typography>
             {selectedProctor &&
                 <>
                     <Stepper activeStep={activeStep}>
@@ -97,9 +101,9 @@ const SchedulingPage = () => {
                         <Step> <StepLabel>Create links</StepLabel></Step>
                     </Stepper>
                     {activeStep == 0 &&
-                        <Box>
+                        <Stack direction={'row'} gap={1}>
                             <Button variant={'contained'} onClick={authenticate}>Authenticate</Button>
-                        </Box>
+                        </Stack>
                     }
                     {activeStep == 1 &&
                         <Stack direction={'row'} gap={1}>
@@ -125,7 +129,8 @@ const SchedulingPage = () => {
                                     {[1, 2, 3, 5, 10].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
                                 </Select>
                             </FormControl>
-                            <Button variant={'contained'} onClick={makeLinks}>Do it!</Button>
+                            <Button variant={'contained'} onClick={makeLinks} disabled={thinking}>Do it!</Button>
+                            {thinking && <CircularProgress color="secondary" />}
                         </Stack>
                     }
                 </>
