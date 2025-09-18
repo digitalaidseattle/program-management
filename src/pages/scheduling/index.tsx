@@ -54,7 +54,6 @@ const SchedulingPage = () => {
                     .then(user => {
                         calendlyService.getEventTypes(accessToken, user.resource.uri)
                             .then(events => {
-                                console.log(events)
                                 setEvents(events)
                                 setInterviewEventUri(events.length > 0 ? events[0].uri : null)
                             })
