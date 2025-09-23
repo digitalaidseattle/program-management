@@ -5,7 +5,7 @@
  *
  */
 
-import Airtable, { FieldSet, Record, Records } from 'airtable';
+import Airtable, { FieldSet, Record } from 'airtable';
 
 import { AirtableEntityService } from "@digitalaidseattle/airtable";
 
@@ -17,7 +17,6 @@ type Proctor = {
 
 const applicantAirtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_APPLICANT_PAT });
 const PROCTOR_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_PROCTOR_TABLE;
-const LINK_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_SCHEDULE_LINK_TABLE;
 
 class ProctorService extends AirtableEntityService<Proctor> {
 
@@ -35,7 +34,7 @@ class ProctorService extends AirtableEntityService<Proctor> {
     }
 
     transformEntity(_entity: Partial<Proctor>): Partial<FieldSet> {
-        //TODO
+        //  If we ever need to push proctors up, we need to fill this in
         const fields: Partial<FieldSet> = {};
 
         return fields;
@@ -45,18 +44,6 @@ class ProctorService extends AirtableEntityService<Proctor> {
         const filter = `LOWER({OS email}) = "${email.toLowerCase()}"`
         const proctors = await this.getAll(1, filter);
         return proctors.length == 0 ? null : proctors[0];
-    }
-
-    async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<Records<FieldSet>> {
-        const records = bookingLinks.map((link) => ({
-            fields: {
-                'Scheduling link': link,
-                'Status': 'Available',
-                'Interviewer': [proctor.id]
-            }
-        }));
-        const booked = await this.base(LINK_TABLE).create(records);
-        return booked
     }
 
 }

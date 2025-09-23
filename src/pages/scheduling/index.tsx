@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
+import { linkService } from './linkService';
 
 const DEFAULT_LINK_COUNT = 10
 const SchedulingPage = () => {
@@ -19,6 +20,7 @@ const SchedulingPage = () => {
 
     const [selectedProctor, setSelectedProctor] = useState<Proctor | null>();
     const [accessToken, setAccessToken] = useState<string | null>(null);
+    const [linkCount, setLinkCount] = useState<number>(0);
     const [numLinks, setNumLinks] = useState<number>(DEFAULT_LINK_COUNT);
     const [activeStep, setActiveStep] = useState<number>(0);
     const [events, setEvents] = useState<EventType[]>([]);
@@ -48,6 +50,10 @@ const SchedulingPage = () => {
 
     useEffect(() => {
         setActiveStep(accessToken ? 1 : 0)
+        if (selectedProctor) {
+            linkService.findAvailableByProctor(selectedProctor)
+                .then(links => setLinkCount(links.length))
+        }
         if (accessToken && selectedProctor) {
             try {
                 calendlyService.getUser(accessToken)
@@ -76,9 +82,11 @@ const SchedulingPage = () => {
             try {
                 setThinking(true);
                 const links = await calendlyService.createOneTimeLinks(accessToken, interviewEventUri, numLinks);
-                const scheduled = await proctorService.addBookingLinks(selectedProctor, links);
+                const scheduled = await linkService.addBookingLinks(selectedProctor, links);
                 if (scheduled) {
-                    notifications.success('Your links have been created.')
+                    const newLinks = await linkService.findAvailableByProctor(selectedProctor)
+                    notifications.success(`Your links have been created. You now have ${newLinks.length} links in Airtable.`)
+                    setLinkCount(links.length);
                 }
             } catch (err) {
                 console.error(err);
@@ -92,6 +100,7 @@ const SchedulingPage = () => {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="50vh" gap={2}>
             <Typography>{selectedProctor ? selectedProctor.name : 'You are not a eligible proctor.'}</Typography>
+            {selectedProctor && <Typography>`You have {linkCount} available links in Airtable`</Typography>}
             <Typography fontWeight={600}>Create single-use links in Calendly in two steps.</Typography>
             {selectedProctor &&
                 <>
