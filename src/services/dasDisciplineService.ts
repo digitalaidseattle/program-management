@@ -10,10 +10,11 @@ import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supaba
 
 type Discipline = {
     id: string,
+    airtable_id: string, // eligible to delete after final migration
     name: string,
-    volunteer_ids: string[],
+    volunteer_ids: string[],  // eligible to delete after final migration
     details: string,
-    senior_ids: string[],
+    senior_ids: string[], // eligible to delete after final migration
     slack: string,
     status: string
 }

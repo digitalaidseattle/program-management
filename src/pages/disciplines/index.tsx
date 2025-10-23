@@ -8,10 +8,13 @@ import { Discipline, disciplineService } from '../../services/dasDisciplineServi
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { SupabaseStorage } from '../../services/supabaseStorage';
+
+const supabaseStorage = new SupabaseStorage();
 
 const columns: GridColDef<Discipline[][number]>[] = [
   {
-    field: 'logo',
+    field: 'icon',
     headerName: '',
     width: 100,
     renderCell: (params) => (
@@ -25,8 +28,8 @@ const columns: GridColDef<Discipline[][number]>[] = [
         }}
       >
         <Avatar
-          src={params.value}
-          alt={params.row.name}
+          src={supabaseStorage.getUrl(`icons/${params.row.id}`)}
+          alt={`${params.row.name} icon`}
           sx={{ width: 40, height: 40, objectFit: 'contain' }}
           variant="rounded"
         />

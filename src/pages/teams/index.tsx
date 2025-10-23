@@ -7,11 +7,38 @@ import { TeamCard } from '../../components/TeamCard';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Avatar, Box } from '@mui/material';
+import { SupabaseStorage } from '../../services/supabaseStorage';
+import { ListItem } from './ListItem';
+import { TeamDetails } from '../team';
 
+const supabaseStorage = new SupabaseStorage();
 
 const columns: GridColDef<Team[][number]>[] = [
-
-  { field: 'team_name', headerName: 'Name', width: 200 },
+  {
+    field: 'logo',
+    headerName: '',
+    width: 100,
+    renderCell: (params) => (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Avatar
+          src={supabaseStorage.getUrl(`icons/${params.row.id}`)}
+          alt={`${params.row.name} icon`}
+          sx={{ width: 40, height: 40, objectFit: 'contain' }}
+          variant="rounded"
+        />
+      </Box>
+    ),
+  },
+  { field: 'name', headerName: 'Name', width: 200 },
   {
     field: 'status',
     headerName: 'Status',
@@ -50,8 +77,15 @@ const TeamsPage = () => {
       title='Teams'
       columns={columns}
       onChange={onChange}
-      cardRenderer={entity => <TeamCard key={entity.id} entity={entity} />}
-      onRowDoubleClick={handleRowDoubleClick}
+      gridOpts={{ cardRenderer: entity => <TeamCard key={entity.id} entity={entity} /> }}
+      tableOpts={
+        { onRowDoubleClick: handleRowDoubleClick }
+      }
+      listOpts={{
+        listItemRenderer: entity => <ListItem entity={entity} />,
+        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')}/>,
+      }}
+
     />
   );
 };

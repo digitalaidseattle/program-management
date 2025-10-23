@@ -18,6 +18,8 @@ import { Volunteer, volunteerService } from '../../services/dasVolunteerService'
 import { PageInfo, QueryModel, supabaseClient } from '@digitalaidseattle/supabase';
 import { useNavigate } from 'react-router';
 import { SupabaseStorage } from '../../services/supabaseStorage';
+import { VolunteerListItem } from './VolunteerListItem';
+import { VolunteerDetails } from '../volunteer';
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -48,7 +50,7 @@ const columns: GridColDef<Volunteer[][number]>[] = [
     filterable: false,
   },
   {
-    field: 'profile.name', headerName: 'Name', width: 200,
+    field: 'profile.name', headerName: 'Name', width: 175,
     renderCell: (params) => params.row.profile!.name
   },
   {
@@ -60,7 +62,7 @@ const columns: GridColDef<Volunteer[][number]>[] = [
   {
     field: 'das_email',
     headerName: 'DAS Email',
-    width: 200,
+    width: 250,
   },
   {
     field: 'github',
@@ -70,7 +72,7 @@ const columns: GridColDef<Volunteer[][number]>[] = [
   {
     field: 'linkedin',
     headerName: 'Linked In',
-    width: 200,
+    width: 250,
   },
   {
     field: 'position',
@@ -113,8 +115,13 @@ const VolunteersPage = () => {
   }
 
   const navigate = useNavigate();
+
   function handleRowDoubleClick(event: any) {
     navigate(`/volunteer/${event.id}`)
+  }
+
+  function refreshEntity(entity: Volunteer) {
+    alert('nrfpt');
   }
 
   return (
@@ -125,8 +132,12 @@ const VolunteersPage = () => {
         columns={columns}
         toolbar={toolbar}
         onChange={onChange}
-        cardRenderer={entity => <VolunteerCard key={entity.id} entity={entity} />}
-        onRowDoubleClick={handleRowDoubleClick}
+        tableOpts={{ onRowDoubleClick: handleRowDoubleClick }}
+        gridOpts={{ cardRenderer: entity => <VolunteerCard key={entity.id} entity={entity} /> }}
+        listOpts={{
+          listItemRenderer: entity => <VolunteerListItem entity={entity} />,
+          detailRenderer: entity => <VolunteerDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
+        }}
       />
       <ConfirmationDialog
         open={showDialog}

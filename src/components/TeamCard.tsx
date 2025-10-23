@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router";
 import { EntityCardProps } from "./EntityGrid";
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
 import { Team } from "../services/dasTeamService";
+import { SupabaseStorage } from "../services/supabaseStorage";
+
+const supabaseStorage = new SupabaseStorage();
 
 export const TeamCard: React.FC<EntityCardProps<Team>> = ({ entity: team, cardStyles }) => {
     const navigate = useNavigate();
@@ -19,7 +22,15 @@ export const TeamCard: React.FC<EntityCardProps<Team>> = ({ entity: team, cardSt
         >
             <CardActionArea onClick={() => navigate(`/team/${team.id}`)}>
                 <CardHeader
-                    title={team.team_name} />
+                    title={team.name}
+                    avatar={
+                        <Avatar
+                            src={supabaseStorage.getUrl(`icons/${team.id}`)}
+                            alt={`${team.name} icon`}
+                            sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                            variant="rounded"
+                        />
+                    } />
                 <CardContent
                     sx={{
                         display: 'flex',

@@ -4,10 +4,13 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { EntityCardProps } from "../../components/EntityGrid";
 import { Discipline } from "../../services/dasDisciplineService";
+import { SupabaseStorage } from "../../services/supabaseStorage";
+
+const supabaseStorage = new SupabaseStorage();
 
 export const DisciplineCard: React.FC<EntityCardProps<Discipline>> = ({ entity, cardStyles }) => {
     const navigate = useNavigate();
@@ -25,7 +28,15 @@ export const DisciplineCard: React.FC<EntityCardProps<Discipline>> = ({ entity, 
             }}
         >
             <CardActionArea onClick={() => navigate(`/discipline/${entity.id}`)}>
-                <CardHeader title={entity.name} />
+                <CardHeader title={entity.name}
+                 avatar={
+                        <Avatar
+                            src={supabaseStorage.getUrl(`icons/${entity.id}`)}
+                            alt={`${entity.name} icon`}
+                            sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                            variant="rounded"
+                        />
+                    } />
                 <CardContent
                     sx={{
                         display: 'flex',

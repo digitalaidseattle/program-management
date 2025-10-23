@@ -34,7 +34,6 @@ const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
         .then((active) => {
           team2VolunteerService.findVolunteersByTeamId(entity.id)
             .then(vols => {
-              console.log(vols)
               setCurrent(vols);
               const teamVolunteerIds = vols.map(v => v.id) ?? [];
               const temp = active
@@ -162,33 +161,10 @@ const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
 }
 
 
-const TeamPage = () => {
-  const [entity, setEntity] = useState<Team | null>();
-  const { id } = useParams<string>();
-
-  useEffect(() => {
-    refresh();
-  }, [id]);
-
-  function refresh() {
-    if (id) {
-      teamService.getById(id)
-        .then((team) => setEntity(team));
-    }
-  }
-
+const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   return (entity &&
-    <Stack gap={2}>
-      <Breadcrumbs>
-        <Link color="inherit" href="/">
-          Home
-        </Link>
-        <Link color="inherit" href="/teams">
-          Teams
-        </Link>
-        <Typography>{entity.team_name}</Typography>
-      </Breadcrumbs>
-      <Typography variant='h2'>{entity.team_name}</Typography>
+    <>
+      <Typography variant='h2'>{entity.name}</Typography>
       <Card>
         <CardHeader
           titleTypographyProps={{ fontSize: 24 }}
@@ -234,10 +210,41 @@ const TeamPage = () => {
           </Markdown>
         </CardContent>
       </Card>
-      <VolunteersCard entity={entity} onChange={() => refresh()} />
-      <ToolsCard entity={entity} onChange={() => refresh()} />
+      <VolunteersCard entity={entity} onChange={onChange} />
+      <ToolsCard entity={entity} onChange={onChange} />
+    </>
+  )
+}
+
+const TeamPage = () => {
+  const [entity, setEntity] = useState<Team>();
+  const { id } = useParams<string>();
+
+  useEffect(() => {
+    refresh();
+  }, [id]);
+
+  function refresh() {
+    if (id) {
+      teamService.getById(id, '*, profile(*)')
+        .then((en) => setEntity(en!));
+    }
+  }
+
+  return (entity &&
+    <Stack gap={2}>
+      <Breadcrumbs>
+        <Link color="inherit" href="/">
+          Home
+        </Link>
+        <Link color="inherit" href="/teams">
+          Teams
+        </Link>
+        <Typography>{entity.name}</Typography>
+      </Breadcrumbs>
+      <TeamDetails entity={entity} onChange={refresh} />
     </Stack>
   )
 }
 
-export default TeamPage;
+export { TeamPage, TeamDetails };

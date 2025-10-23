@@ -12,15 +12,15 @@ import MigrationPage from './migration';
 import PartnerPage from './partner';
 import PartnersPage from './partners';
 import SchedulingPage from './scheduling';
-import TeamPage from './team';
+import { TeamPage } from './team';
 import TeamsPage from './teams';
 import ToolPage from './tool';
 import ToolsPage from './tools';
-import VenturePage from './venture';
+import { VenturePage } from './venture';
 import VenturesPage from './ventures';
-import VolunteerPage from './volunteer';
-import VolunteersPage from './volunteers';
 import MeetingPage from './meeting';
+import { VolunteerPage } from './volunteer';
+import VolunteersPage from './volunteers';
 
 const routes = [
   {

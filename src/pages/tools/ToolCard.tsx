@@ -4,11 +4,14 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, CardContent, CardHeader } from "@mui/material";
+import Markdown from "react-markdown";
 import { useNavigate } from "react-router";
 import { EntityCardProps } from "../../components/EntityGrid";
 import { Tool } from "../../services/dasToolsService";
-import Markdown from "react-markdown";
+import { SupabaseStorage } from "../../services/supabaseStorage";
+
+const supabaseStorage = new SupabaseStorage();
 
 export const ToolCard: React.FC<EntityCardProps<Tool>> = ({ entity, cardStyles }) => {
     const navigate = useNavigate();
@@ -26,7 +29,16 @@ export const ToolCard: React.FC<EntityCardProps<Tool>> = ({ entity, cardStyles }
             }}
         >
             <CardActionArea onClick={() => navigate(`/tool/${entity.id}`)}>
-                <CardHeader title={entity.name} />
+                <CardHeader title={entity.name}
+                    avatar={
+                        <Avatar
+                            src={supabaseStorage.getUrl(`logos/${entity.id}`)}
+                            alt={`${entity.name} logo`}
+                            sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                            variant="rounded"
+                        />
+                    }
+                />
                 <CardContent
                     sx={{
                         display: 'flex',

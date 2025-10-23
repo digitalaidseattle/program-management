@@ -1,7 +1,6 @@
 
 
 import {
-    GroupOutlined,
     HeartOutlined,
     HomeOutlined,
     MehOutlined,

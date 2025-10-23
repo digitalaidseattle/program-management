@@ -7,8 +7,36 @@ import { VentureCard } from './VentureCard';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Avatar, Box } from '@mui/material';
+import { SupabaseStorage } from '../../services/supabaseStorage';
+import { VentureDetails } from '../venture';
+
+const supabaseStorage = new SupabaseStorage();
 
 const columns: GridColDef<Venture[][number]>[] = [
+  {
+    field: 'logo',
+    headerName: '',
+    width: 100,
+    renderCell: (params) => (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Avatar
+          src={supabaseStorage.getUrl(`logos/${params.row.partner_id}`)}
+          alt={`${params.row.partner!.name} logo`}
+          sx={{ width: 40, height: 40, objectFit: 'contain' }}
+          variant="rounded"
+        />
+      </Box>
+    ),
+  },
   { field: 'venture_code', headerName: 'Title', width: 300 },
   { field: 'status', headerName: 'Status', width: 200 },
   {
@@ -22,7 +50,7 @@ const VenturesPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Venture>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
 
-  function onChange(queryModel?: QueryModel) {
+  function onChange(_queryModel?: QueryModel) {
     // if (queryModel) {
     //   ventureService.find(queryModel)
     //   .then(pageInfo => {
@@ -48,10 +76,16 @@ const VenturesPage = () => {
       title='Ventures'
       columns={columns}
       onChange={onChange}
-      cardRenderer={entity => <VentureCard key={entity.id} entity={entity} />}
-      onRowDoubleClick={handleRowDoubleClick}
+      tableOpts={
+        { onRowDoubleClick: handleRowDoubleClick }
+      }
+      listOpts={{
+        listItemRenderer: entity => <VentureCard entity={entity} />,
+        detailRenderer: entity => <VentureDetails entity={entity} onChange={() => alert('nrfpt')} />,
+      }}
     />
   );
 };
+
 
 export default VenturesPage;

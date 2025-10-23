@@ -4,10 +4,10 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { Card, CardContent, CardMedia, Chip, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Volunteer } from "../services/dasVolunteerService";
-import { Card, CardActionArea, CardContent, CardMedia, Chip, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { SupabaseStorage } from "../services/supabaseStorage";
 
 type EntityCardProps<T> = {
@@ -30,6 +30,11 @@ const supabaseStorage = new SupabaseStorage();
 export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: volunteer, highlightOptions, cardStyles }) => {
     const navigate = useNavigate();
 
+
+    function changeHighlight() {
+        alert(`TODO toggle ${volunteer.profile!.name}`);
+        
+    }
     return (
         <Card
             key={volunteer.id}
@@ -42,46 +47,46 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                 ...cardStyles,
             }}
         >
-            <CardActionArea onClick={() => navigate(`/volunteer/${volunteer.id}`)}>
-                <CardMedia
-                    component="img"
-                    sx={{
-                        height: 150,
-                        maxWidth: 300,
-                        objectFit: 'contain',
-                    }}
-                    src={supabaseStorage.getUrl(`profiles/${volunteer.profile!.id}`)}
-                    title={volunteer.profile!.name + ' photo'}
-                />
-                <CardContent
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        gap: '0.5rem',
-                        paddingBottom: '1rem !important',
-                    }}
-                >
-                    <Stack direction="row" alignItems={'center'}>
-                        {highlightOptions &&
-                            <Tooltip title={highlightOptions.title}>
-                                <IconButton
-                                    title={highlightOptions.title}
-                                    // onClick={changeHighlight(idx)}
-                                    aria-label="favorite"
-                                    size="small">
-                                    {highlightOptions.highlight
-                                        ? <StarFilled style={{ fontSize: '150%', color: 'yellow' }} />
-                                        : <StarOutlined style={{ fontSize: '150%', color: 'gray' }} />
-                                    }
-                                </IconButton>
-                            </Tooltip>
-                        }
-                        <Typography variant='h4'>{volunteer.profile!.name}</Typography>
-                    </Stack>
-                    <Chip label={volunteer.status} color={STATUS_COLORS[volunteer.status]} />
-                </CardContent>
-            </CardActionArea>
+            <CardMedia
+                component="img"
+                sx={{
+                    height: 150,
+                    maxWidth: 300,
+                    objectFit: 'contain',
+                    cursor: 'pointer'
+                }}
+                src={supabaseStorage.getUrl(`profiles/${volunteer.profile!.id}`)}
+                title={volunteer.profile!.name + ' photo'}
+                onClick={() => navigate(`/volunteer/${volunteer.id}`)}
+            />
+            <CardContent
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    paddingBottom: '1rem !important',
+                }}
+            >
+                <Stack direction="row" alignItems={'center'}>
+                    {highlightOptions &&
+                        <Tooltip title={highlightOptions.title}>
+                            <IconButton
+                                onClick={() => changeHighlight()}
+                                aria-label="favorite"
+                                size="small"
+                            >
+                                {highlightOptions.highlight
+                                    ? <StarFilled style={{ fontSize: '150%', color: 'yellow' }} />
+                                    : <StarOutlined style={{ fontSize: '150%', color: 'gray' }} />
+                                }
+                            </IconButton>
+                        </Tooltip>
+                    }
+                    <Typography variant='h4'>{volunteer.profile!.name}</Typography>
+                </Stack>
+                <Chip label={volunteer.status} color={STATUS_COLORS[volunteer.status]} />
+            </CardContent>
         </Card >
     )
 }

@@ -7,6 +7,7 @@
 
 import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Profile } from "./dasProfileService";
+import { Identifier } from "@digitalaidseattle/core";
 
 type AirtableVolunteer = {
     id: string,
@@ -71,6 +72,10 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .select(DEFAULT_SELECT)
             .in('status', ['Cadre', 'Contributor'])
             .then((resp: any) => resp.data);
+    }
+
+    async getById(id: Identifier): Promise<Volunteer | null> {
+        return super.getById(id, DEFAULT_SELECT);
     }
 
     getAll(_count?: number, _select?: string): Promise<Volunteer[]> {

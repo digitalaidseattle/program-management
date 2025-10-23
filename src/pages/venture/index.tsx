@@ -23,7 +23,6 @@ const VolunteersCard: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
     if (entity) {
       staffingService.findByVentureId(entity.id)
         .then((staffing) => {
-          console.log(staffing)
           setCurrent(staffing)
         });
     }
@@ -61,6 +60,17 @@ const VolunteersCard: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
 }
 
 
+const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) => {
+  return (entity &&
+    <>
+      <Stack gap={3}>
+        <TextField id="outlined-basic" label="Name" variant="outlined" value={entity.venture_code} />
+      </Stack>
+      <VolunteersCard entity={entity} onChange={onChange} />
+    </>
+  )
+}
+
 const VenturePage = () => {
   const [entity, setEntity] = useState<Venture>();
   const { id } = useParams<string>();
@@ -76,25 +86,21 @@ const VenturePage = () => {
     }
   }
 
+
   return (entity &&
-    <>
-      <Stack gap={3}>
-        <Breadcrumbs>
-          <Link color="inherit" href="/">
-            Home
-          </Link>
-          <Link color="inherit" href="/ventures">
-            Ventures
-          </Link>
-          <Typography>{entity.venture_code}</Typography>
-        </Breadcrumbs>
-        <Stack gap={3}>
-          <TextField id="outlined-basic" label="Name" variant="outlined" value={entity.venture_code} />
-        </Stack>
-        <VolunteersCard entity={entity} onChange={() => refresh()} />
-      </Stack>
-    </>
+    <Stack gap={3}>
+      <Breadcrumbs>
+        <Link color="inherit" href="/">
+          Home
+        </Link>
+        <Link color="inherit" href="/ventures">
+          Ventures
+        </Link>
+        <Typography>{entity.venture_code}</Typography>
+      </Breadcrumbs>
+      <VentureDetails entity={entity} onChange={refresh} />
+    </Stack>
   )
 }
+export { VentureDetails, VenturePage };
 
-export default VenturePage;

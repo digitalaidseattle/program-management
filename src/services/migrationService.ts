@@ -48,7 +48,9 @@ class MigrationService {
         'Volunteer/Tool': this.joinVolunteerTool,
         'Staffing Needs': this.migrateStaffingNeeds,
         'Partner Logos': this.downloadPartnerLogos,
-        'Tool Logos': this.downloadToolLogos
+        'Tool Logos': this.downloadToolLogos,
+        'Team Logos': this.downloadTeamIcons,
+        'Discipline Logos': this.downloadDisciplineIcons
     }
 
     migrateVentures(): Promise<void> {
@@ -191,7 +193,7 @@ class MigrationService {
                     return ({
                         id: uuid(),
                         airtable_id: r.id,
-                        team_name: r.fields['Team name'],
+                        name: r.fields['Team name'],
                         volunteer_ids: r.fields['volunteers on team'],
                         welcome_message: r.fields['Welcome message'],
                         okrs: r.fields['OKRs 2'],
@@ -445,6 +447,60 @@ class MigrationService {
                         } else {
                             console.log(record)
                             console.warn(`no pic for aritable record: ${record.id}`)
+                        }
+                    })
+            })
+    }
+
+    async downloadTeamIcons(): Promise<void> {
+        const supabaseStorage = new SupabaseStorage();
+
+        const teams = await teamService.getAll();
+        await new AirtableService(TEAM_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(record => {
+                        const team = teams.find(p => p.airtable_id === record.id);
+                        const url = record['icon'] ? record['icon'][0].url : undefined;
+                        if (team && url) {
+                            fetch(url)
+                                .then(resp => resp.blob()
+                                    .then(blob => {
+                                        supabaseStorage.upload(`icons/${team.id}`, blob)
+                                            .then((data: any) => console.log(data))
+                                    })
+                                )
+                        } else {
+                            console.log(record)
+                            console.warn(`no pic for aritable record: ${record.id}`)
+                        }
+                    })
+            })
+    }
+
+    async downloadDisciplineIcons(): Promise<void> {
+        const supabaseStorage = new SupabaseStorage();
+
+        const disciplines = await disciplineService.getAll();
+        await new AirtableService(DISCIPLINES_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(record => {
+                        const discipline = disciplines.find(p => p.airtable_id === record.id);
+                        const url = record['icon'] ? record['icon'][0].url : undefined;
+                        if (discipline && url) {
+                            fetch(url)
+                                .then(resp => resp.blob()
+                                    .then(blob => {
+                                        supabaseStorage.upload(`icons/${discipline.id}`, blob)
+                                            .then((data: any) => console.log(data))
+                                    })
+                                )
+                        } else {
+                            console.log(record)
+                            console.warn(`no icon for aritable record: ${record.id}`)
                         }
                     })
             })

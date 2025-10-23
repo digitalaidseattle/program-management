@@ -8,8 +8,7 @@ import { useEffect, useState } from 'react';
 // material-ui
 import {
     Chip,
-    Stack,
-    Typography
+    Stack
 } from '@mui/material';
 import {
     DataGrid,
@@ -58,7 +57,7 @@ export const StaffingTable: React.FC<StaffingTableProps> = ({ title, items }) =>
                 headerName: 'Roles',
                 width: 250,
                 renderCell: (param: GridRenderCellParams) => {
-                    return param.row.role.name
+                    return param.row.role ? param.row.role.name : 'N/A'
                 }
             },
             {
@@ -74,7 +73,6 @@ export const StaffingTable: React.FC<StaffingTableProps> = ({ title, items }) =>
                 headerName: 'Volunteer',
                 width: 150,
                 renderCell: (param: GridRenderCellParams) => {
-                    console.log(param.row)
                     return param.row.volunteer ? param.row.volunteer.profile.name : ''
                 }
             },
@@ -101,7 +99,6 @@ export const StaffingTable: React.FC<StaffingTableProps> = ({ title, items }) =>
 
                     paginationMode='client'
                     paginationModel={paginationModel}
-                    rowCount={pageInfo.totalRowCount}
                     onPaginationModelChange={setPaginationModel}
 
                     sortingMode='client'

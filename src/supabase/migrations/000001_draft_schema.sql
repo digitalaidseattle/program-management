@@ -60,7 +60,7 @@ DROP TABLE IF EXISTS team;
 CREATE TABLE team (
     id UUID PRIMARY KEY,
     airtable_id text,
-    team_name text,
+    team text,
     volunteer_ids text [],
     welcome_message text,
     okrs text,
