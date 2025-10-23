@@ -13,6 +13,7 @@ import { ManagedListCard } from '../../components/ManagedListCard';
 import { TeamCard } from '../../components/TeamCard';
 import { EntityProps } from '../../components/utils';
 import { Discipline } from '../../services/dasDisciplineService';
+import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team } from '../../services/dasTeamService';
 import { Tool } from '../../services/dasToolsService';
@@ -21,13 +22,10 @@ import { volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { DisciplineCard } from '../disciplines/DisciplineCard';
 import { ToolCard } from '../tools/ToolCard';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { VentureCard } from '../ventures/VentureCard';
 
-const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   const [current, setCurrent] = useState<Team[]>([]);
-  const [available, setAvailable] = useState<Team[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
 
   useEffect(() => {
     if (entity) {
@@ -38,31 +36,6 @@ const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
     }
   }, [entity]);
 
-  function handleRemove(index: number): Promise<boolean> {
-    throw new Error('handleRemove')
-    // return team2VolunteerService.removeVolunteerFromTeam(current[index], entity!)
-    //   .then(() => {
-    //     onChange(true);
-    //     return true;
-    //   })
-  }
-
-  function handleAdd(value: string | null | undefined): Promise<boolean> {
-    throw new Error('handleAdd')
-
-    //   const selected = available.find(vol => vol.id === value);
-    //   if (selected) {
-    //     return team2VolunteerService.addVolunteerToTeam(selected, entity!)
-    //       .then(() => {
-    //         onChange(true);
-    //         setShowAddDialog(false);
-    //         return true;
-    //       })
-    //   } else {
-    //     return Promise.resolve(true)
-    //   }
-    // }
-  }
 
   return (< >
     <ManagedListCard
@@ -73,8 +46,6 @@ const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
       cardHeaderSx={{
         background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
       }}
-      onAdd={() => setShowAddDialog(true)}
-      onDelete={handleRemove}
     />
     {/* <SelectTeamDialog
         open={showAddDialog}
@@ -85,10 +56,8 @@ const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   </>)
 }
 
-const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   const [current, setCurrent] = useState<Discipline[]>([]);
-  const [available, setAvailable] = useState<Discipline[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
 
   useEffect(() => {
     if (entity) {
@@ -96,32 +65,6 @@ const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange })
         .then((disciplines) => setCurrent(disciplines));
     }
   }, [entity]);
-
-  function handleRemove(index: number): Promise<boolean> {
-    throw new Error('handleRemove')
-    // return team2VolunteerService.removeVolunteerFromTeam(current[index], entity!)
-    //   .then(() => {
-    //     onChange(true);
-    //     return true;
-    //   })
-  }
-
-  function handleAdd(value: string | null | undefined): Promise<boolean> {
-    throw new Error('handleAdd')
-
-    //   const selected = available.find(vol => vol.id === value);
-    //   if (selected) {
-    //     return team2VolunteerService.addVolunteerToTeam(selected, entity!)
-    //       .then(() => {
-    //         onChange(true);
-    //         setShowAddDialog(false);
-    //         return true;
-    //       })
-    //   } else {
-    //     return Promise.resolve(true)
-    //   }
-    // }
-  }
 
   return (< >
     <ManagedListCard
@@ -132,8 +75,6 @@ const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange })
       cardHeaderSx={{
         background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
       }}
-      onAdd={() => setShowAddDialog(true)}
-      onDelete={handleRemove}
     />
     {/* <SelectTeamDialog
         open={showAddDialog}
@@ -144,10 +85,8 @@ const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange })
   </>)
 }
 
-const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   const [current, setCurrent] = useState<Tool[]>([]);
-  const [available, setAvailable] = useState<Tool[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
 
   useEffect(() => {
     if (entity) {
@@ -158,31 +97,6 @@ const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
     }
   }, [entity]);
 
-  function handleRemove(index: number): Promise<boolean> {
-    throw new Error('handleRemove')
-    // return team2VolunteerService.removeVolunteerFromTeam(current[index], entity!)
-    //   .then(() => {
-    //     onChange(true);
-    //     return true;
-    //   })
-  }
-
-  function handleAdd(value: string | null | undefined): Promise<boolean> {
-    throw new Error('handleAdd')
-
-    //   const selected = available.find(vol => vol.id === value);
-    //   if (selected) {
-    //     return team2VolunteerService.addVolunteerToTeam(selected, entity!)
-    //       .then(() => {
-    //         onChange(true);
-    //         setShowAddDialog(false);
-    //         return true;
-    //       })
-    //   } else {
-    //     return Promise.resolve(true)
-    //   }
-    // }
-  }
 
   return (< >
     <ManagedListCard
@@ -193,8 +107,6 @@ const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
       cardHeaderSx={{
         background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
       }}
-      onAdd={() => setShowAddDialog(true)}
-      onDelete={handleRemove}
     />
     {/* <SelectTeamDialog
         open={showAddDialog}
@@ -205,10 +117,8 @@ const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   </>)
 }
 
-const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   const [current, setCurrent] = useState<Staffing[]>([]);
-  const [available, setAvailable] = useState<Staffing[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
 
   useEffect(() => {
     if (entity) {
@@ -219,32 +129,6 @@ const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) =>
         });
     }
   }, [entity]);
-
-  function handleRemove(index: number): Promise<boolean> {
-    throw new Error('handleRemove')
-    // return team2VolunteerService.removeVolunteerFromTeam(current[index], entity!)
-    //   .then(() => {
-    //     onChange(true);
-    //     return true;
-    //   })
-  }
-
-  function handleAdd(value: string | null | undefined): Promise<boolean> {
-    throw new Error('handleAdd')
-
-    //   const selected = available.find(vol => vol.id === value);
-    //   if (selected) {
-    //     return team2VolunteerService.addVolunteerToTeam(selected, entity!)
-    //       .then(() => {
-    //         onChange(true);
-    //         setShowAddDialog(false);
-    //         return true;
-    //       })
-    //   } else {
-    //     return Promise.resolve(true)
-    //   }
-    // }
-  }
 
   return (< >
     <ManagedListCard
@@ -310,4 +194,5 @@ const VolunteerPage = () => {
   )
 }
 
-export { VolunteerPage, VolunteerDetails };
+export { VolunteerDetails, VolunteerPage };
+

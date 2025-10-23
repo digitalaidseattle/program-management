@@ -62,8 +62,10 @@ const ToolsPage = () => {
       title='Tools'
       columns={columns}
       onChange={onChange}
-      cardRenderer={entity => <ToolCard key={entity.id} entity={entity} />}
-      onRowDoubleClick={handleRowDoubleClick}
+      tableOpts={
+        { onRowDoubleClick: handleRowDoubleClick }
+      }
+      gridOpts={{ cardRenderer: entity => <ToolCard entity={entity} /> }}
     />
   );
 };

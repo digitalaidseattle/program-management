@@ -15,10 +15,8 @@ type EntityGridProps<T extends Entity> = {
 }
 
 export function EntityGrid<T extends Entity>({
-    pageInfo, onChange, cardRenderer
+    pageInfo,  cardRenderer
 }: EntityGridProps<T>) {
-
-    console.log('EntityGrid', pageInfo)
     return (
         <Grid container gap={2}>
             {pageInfo.rows.map(entity => cardRenderer(entity))}

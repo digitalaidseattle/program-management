@@ -13,7 +13,7 @@ import {
 } from '@ant-design/icons';
 import logo from "./assets/images/logo-light-icon.svg";
 
-import { MenuItem } from "@digitalaidseattle/mui";
+import { LayoutConfiguration, MenuItem } from "@digitalaidseattle/mui";
 import packageJson from '../package.json';
 
 export const TemplateConfig = () => {
@@ -131,8 +131,8 @@ export const TemplateConfig = () => {
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
-        menuItems: [home, ventures,recruiting, data],
+        menuItems: [home, ventures, recruiting, data],
         toolbarItems: [],
         version: packageJson.version,
-    });
+    } as LayoutConfiguration);
 }

@@ -10,9 +10,9 @@ import {
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { Tool, toolService } from '../../services/dasToolsService';
 import Markdown from 'react-markdown';
+import { useParams } from 'react-router';
+import { Meeting, meetingService } from '../../services/dasMeetingService';
 
 
 const MeetingPage = () => {
@@ -21,7 +21,7 @@ const MeetingPage = () => {
 
   useEffect(() => {
     if (id) {
-      toolService.getById(id)
+      meetingService.getById(id)
         .then((en) => {
           console.log(en)
           setEntity(en!)

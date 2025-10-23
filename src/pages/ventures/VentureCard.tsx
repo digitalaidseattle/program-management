@@ -4,11 +4,10 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, CardHeader } from "@mui/material";
 import { useNavigate } from "react-router";
+import { EntityCardProps } from "../../components/utils";
 import { Venture } from "../../services/dasVentureService";
-import { EntityCardProps } from "../../components/EntityGrid";
-import Markdown from "react-markdown";
 
 export const VentureCard: React.FC<EntityCardProps<Venture>> = ({ entity, cardStyles }) => {
     const navigate = useNavigate();

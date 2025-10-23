@@ -7,7 +7,7 @@
 import { Avatar, Card, CardActionArea, CardContent, CardHeader } from "@mui/material";
 import Markdown from "react-markdown";
 import { useNavigate } from "react-router";
-import { EntityCardProps } from "../../components/EntityGrid";
+import { EntityCardProps } from "../../components/utils";
 import { Tool } from "../../services/dasToolsService";
 import { SupabaseStorage } from "../../services/supabaseStorage";
 

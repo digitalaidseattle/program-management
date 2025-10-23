@@ -94,8 +94,10 @@ const PartnersPage = () => {
       title='Partners'
       columns={columns}
       onChange={onChange}
-      cardRenderer={entity => <PartnerCard key={entity.id} entity={entity} />}
-      onRowDoubleClick={handleRowDoubleClick}
+      tableOpts={
+        { onRowDoubleClick: handleRowDoubleClick }
+      }
+      gridOpts={{ cardRenderer: entity => <PartnerCard entity={entity} /> }}
     />
   );
 };

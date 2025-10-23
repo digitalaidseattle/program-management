@@ -62,8 +62,11 @@ const DisciplinesPage = () => {
       title='Disciplines'
       columns={columns}
       onChange={onChange}
-      cardRenderer={entity => <DisciplineCard key={entity.id} entity={entity} />}
-      onRowDoubleClick={handleRowDoubleClick}
+      tableOpts={
+        { onRowDoubleClick: handleRowDoubleClick }
+      }
+      gridOpts={{ cardRenderer: entity => <DisciplineCard entity={entity} /> }}
+
     />
   );
 };

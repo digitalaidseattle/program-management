@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
-import { EntityCardProps } from "./EntityGrid";
 import { Avatar, Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
 import { Team } from "../services/dasTeamService";
 import { SupabaseStorage } from "../services/supabaseStorage";
+import { EntityCardProps } from "./utils";
 
 const supabaseStorage = new SupabaseStorage();
 

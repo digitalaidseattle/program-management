@@ -6,9 +6,9 @@
  */
 import { Avatar, Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
-import { EntityCardProps } from "../../components/EntityGrid";
 import { Discipline } from "../../services/dasDisciplineService";
 import { SupabaseStorage } from "../../services/supabaseStorage";
+import { EntityCardProps } from "../../components/utils";
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -29,7 +29,7 @@ export const DisciplineCard: React.FC<EntityCardProps<Discipline>> = ({ entity, 
         >
             <CardActionArea onClick={() => navigate(`/discipline/${entity.id}`)}>
                 <CardHeader title={entity.name}
-                 avatar={
+                    avatar={
                         <Avatar
                             src={supabaseStorage.getUrl(`icons/${entity.id}`)}
                             alt={`${entity.name} icon`}

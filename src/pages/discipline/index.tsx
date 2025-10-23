@@ -18,7 +18,7 @@ import { EntityProps } from '../../components/utils';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
 
-const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
+const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity }) => {
   const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
 
   useEffect(() => {

@@ -5,11 +5,11 @@
  *
  */
 
-import { Identifier, User } from "@digitalaidseattle/core";
+import { Identifier } from "@digitalaidseattle/core";
 import { supabaseClient } from "@digitalaidseattle/supabase";
+import { AssociativeTableService } from "./associativeTableService";
 import { Team } from "./dasTeamService";
 import { Volunteer } from "./dasVolunteerService";
-import { AssociativeTableService } from "./associativeTableService";
 
 
 type Team2Volunteer = {

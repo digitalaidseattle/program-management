@@ -4,7 +4,7 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // material-ui
 import {

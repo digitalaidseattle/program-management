@@ -121,6 +121,7 @@ const VolunteersPage = () => {
   }
 
   function refreshEntity(entity: Volunteer) {
+    console.log(entity)
     alert('nrfpt');
   }
 

@@ -33,7 +33,7 @@ export type StaffingTableProps = {
     items: Staffing[];
 }
 
-export const StaffingTable: React.FC<StaffingTableProps> = ({ title, items }) => {
+export const StaffingTable: React.FC<StaffingTableProps> = ({ items }) => {
 
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: PAGE_SIZE });
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'status', sort: 'desc' }])

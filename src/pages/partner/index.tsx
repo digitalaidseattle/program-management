@@ -7,13 +7,13 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { partnerService, SupabasePartner } from '../../services/dasPartnerService';
+import { partnerService, Partner } from '../../services/dasPartnerService';
 
 const LEFT_WIDTH = 2;
 const RIGHT_WIDTH = 8;
 
 const PartnerPage = () => {
-  const [partner, setPartner] = useState<SupabasePartner>();
+  const [partner, setPartner] = useState<Partner>();
   const { id: planId } = useParams<string>();
 
   useEffect(() => {
