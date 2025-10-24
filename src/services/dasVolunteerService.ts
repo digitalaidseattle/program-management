@@ -8,6 +8,7 @@
 import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Profile } from "./dasProfileService";
 import { Identifier } from "@digitalaidseattle/core";
+import { PMEntityService } from "./pmEntityService";
 
 type AirtableVolunteer = {
     id: string,
@@ -72,8 +73,7 @@ type Volunteer = {
 }
 
 const DEFAULT_SELECT = '*, profile!inner(*)';
-class VolunteerService extends SupabaseEntityService<Volunteer> {
-
+class VolunteerService extends PMEntityService<Volunteer> {
     public constructor() {
         super("volunteer");
     }
@@ -111,10 +111,18 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .then((resp: any) => resp.data);
     }
 
-    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Volunteer): Promise<PageInfo<Volunteer>> {
-        return super.find(queryModel!, select ?? DEFAULT_SELECT, mapper);
+    async find(queryModel?: QueryModel, select?: string, mapper?: (json: any) => Volunteer): Promise<PageInfo<Volunteer>> {
+        if (queryModel) {
+            return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
+        } else {
+            return this.getAll()
+                .then(vols => {
+                    return {
+                        rows: vols, totalRowCount: vols.length
+                    }
+                })
+        }
     }
-
 }
 
 const volunteerService = new VolunteerService();
