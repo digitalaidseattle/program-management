@@ -50,19 +50,14 @@ const VenturesPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Venture>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
 
-  function onChange(_queryModel?: QueryModel) {
-    // if (queryModel) {
-    //   ventureService.find(queryModel)
-    //   .then(pageInfo => {
-    //     console.log(pageInfo)
-    //     setPageInfo(pageInfo)
-    //   })
-    // }
-
-    ventureService.getAll()
-      .then(data => {
-        setPageInfo({ rows: data, totalRowCount: data.length })
-      })
+  function onChange(queryModel?: QueryModel) {
+    if (queryModel) {
+      ventureService.find(queryModel)
+        .then(pageInfo => setPageInfo(pageInfo))
+    } else {
+      ventureService.getAll()
+        .then(data => setPageInfo({ rows: data, totalRowCount: data.length }))
+    }
   }
 
   function handleRowDoubleClick(event: any) {
