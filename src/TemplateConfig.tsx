@@ -4,8 +4,8 @@ import {
     HeartOutlined,
     HomeOutlined,
     MehOutlined,
+    PaperClipOutlined,
     RocketOutlined,
-    ScheduleOutlined,
     SearchOutlined,
     TeamOutlined,
     ToolOutlined,
@@ -22,14 +22,13 @@ export const TemplateConfig = () => {
         id: 'home-dashboard',
         title: 'Home',
         type: 'group',
-        icon: <HomeOutlined />,
         children: [
             {
-                id: 'scheduling',
-                title: 'Scheduling',
+                id: 'dashboard',
+                title: 'Home',
                 type: 'item',
-                url: '/scheduling',
-                icon: <ScheduleOutlined />
+                url: '/',
+                icon: <HomeOutlined />
             }]
     }
 
@@ -39,11 +38,11 @@ export const TemplateConfig = () => {
         type: 'group',
         children: [
             {
-                id: 'evaluations',
-                title: 'Evaluations',
+                id: 'reporting',
+                title: 'Reporting',
                 type: 'item',
-                url: '/',
-                icon: <SearchOutlined />
+                url: '/reporting',
+                icon: <PaperClipOutlined />
             },
             {
                 id: 'staffing',
@@ -113,14 +112,14 @@ export const TemplateConfig = () => {
                 id: 'applicants',
                 title: 'Applicants',
                 type: 'item',
-                url: '/',
+                url: '/applicants',
                 icon: <SearchOutlined />
             },
             {
                 id: 'proctors',
                 title: 'Proctors',
                 type: 'item',
-                url: '/staffing',
+                url: '/proctors',
                 icon: <MehOutlined />
             }
         ]

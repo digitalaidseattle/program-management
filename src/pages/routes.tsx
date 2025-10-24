@@ -21,12 +21,18 @@ import VenturesPage from './ventures';
 import MeetingPage from './meeting';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
+import DashboardPage from './dashboard.tsx';
+import Markdown from 'react-markdown';
 
 const routes = [
   {
     path: "/",
     element: <MainLayout />,
     children: [
+      {
+        path: "/",
+        element: <DashboardPage />
+      },
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
@@ -90,6 +96,22 @@ const routes = [
       {
         path: "meeting/:id",
         element: <MeetingPage />,
+      },
+      {
+        path: "applicants",
+        element: <Markdown># The Applicants page is under construction.</Markdown>,
+      },
+      {
+        path: "proctors",
+        element: <Markdown># The Proctors page is under construction.</Markdown>,
+      },
+      {
+        path: "staffing",
+        element: <Markdown># The Staffing page is under construction.</Markdown>,
+      },
+      {
+        path: "reporting",
+        element: <Markdown># The Reporting page is under construction.</Markdown>,
       }
     ]
   },
