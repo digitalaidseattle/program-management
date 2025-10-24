@@ -72,7 +72,7 @@ type Volunteer = {
 }
 
 const DEFAULT_SELECT = '*, profile!inner(*)';
-class VolunteerService extends SupabaseEntityService<Volunteer> {
+class VolunteerService extends PMEntityService<Volunteer> {
     public constructor() {
         super("volunteer");
     }
