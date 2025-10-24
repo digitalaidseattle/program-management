@@ -7,6 +7,7 @@
 
 import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Partner } from "./dasPartnerService";
+import { PMEntityService } from "./pmEntityService";
 
 type Venture = {
     id: string
@@ -26,7 +27,7 @@ type Venture = {
 }
 
 const DEFAULT_SELECT = "*, partner(*)"
-class VentureService extends SupabaseEntityService<Venture> {
+class VentureService extends PMEntityService<Venture> {
     public constructor() {
         super("venture");
     }
