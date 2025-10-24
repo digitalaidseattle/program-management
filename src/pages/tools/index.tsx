@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { useNavigate } from 'react-router';
 import { SupabaseStorage } from '../../services/supabaseStorage';
+import { ListItem } from './ListItem';
+import { ToolDetails } from '../tool';
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -66,6 +68,10 @@ const ToolsPage = () => {
         { onRowDoubleClick: handleRowDoubleClick }
       }
       gridOpts={{ cardRenderer: entity => <ToolCard entity={entity} /> }}
+      listOpts={{
+        listItemRenderer: entity => <ListItem entity={entity} />,
+        detailRenderer: entity => <ToolDetails entity={entity} onChange={() => alert('nrfpt')} />,
+      }}
     />
   );
 };

@@ -9,12 +9,12 @@ import { Error, Login, MainLayout, MarkdownPage, MinimalLayout } from '@digitala
 import DisciplinePage from './discipline';
 import DisciplinesPage from './disciplines';
 import MigrationPage from './migration';
-import PartnerPage from './partner';
+import { PartnerPage } from './partner';
 import PartnersPage from './partners';
 import SchedulingPage from './scheduling';
 import { TeamPage } from './team';
 import TeamsPage from './teams';
-import ToolPage from './tool';
+import { ToolPage } from './tool';
 import ToolsPage from './tools';
 import { VenturePage } from './venture';
 import VenturesPage from './ventures';
@@ -27,7 +27,6 @@ const routes = [
     path: "/",
     element: <MainLayout />,
     children: [
-
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,

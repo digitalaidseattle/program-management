@@ -12,6 +12,8 @@ import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { SupabaseStorage } from '../../services/supabaseStorage';
+import { PartnerDetails } from '../partner';
+import { ListItem } from './ListItem';
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -98,6 +100,10 @@ const PartnersPage = () => {
         { onRowDoubleClick: handleRowDoubleClick }
       }
       gridOpts={{ cardRenderer: entity => <PartnerCard entity={entity} /> }}
+      listOpts={{
+        listItemRenderer: entity => <ListItem entity={entity} />,
+        detailRenderer: entity => <PartnerDetails entity={entity} onChange={() => alert('nrfpt')} />,
+      }}
     />
   );
 };

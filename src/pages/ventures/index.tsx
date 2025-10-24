@@ -61,7 +61,6 @@ const VenturesPage = () => {
 
     ventureService.getAll()
       .then(data => {
-        console.log(data)
         setPageInfo({ rows: data, totalRowCount: data.length })
       })
   }

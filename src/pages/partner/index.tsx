@@ -1,29 +1,22 @@
 
 // material-ui
 import {
+  Breadcrumbs,
   Grid,
+  Link,
   Paper,
+  Stack,
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { partnerService, Partner } from '../../services/dasPartnerService';
+import { EntityProps } from '../../components/utils';
 
 const LEFT_WIDTH = 2;
 const RIGHT_WIDTH = 8;
 
-const PartnerPage = () => {
-  const [partner, setPartner] = useState<Partner>();
-  const { id: planId } = useParams<string>();
-
-  useEffect(() => {
-    if (planId) {
-      partnerService.getById(planId)
-        .then((p) => setPartner(p!));
-    }
-  }, [planId]);
-
-
+const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => {
   return (partner &&
     <Paper>
       <Grid container gap={1}>
@@ -62,4 +55,35 @@ const PartnerPage = () => {
   )
 }
 
-export default PartnerPage;
+
+const PartnerPage = () => {
+  const [entity, setEntity] = useState<Partner>();
+  const { id } = useParams<string>();
+
+  useEffect(() => {
+    refresh();
+  }, [id]);
+
+  function refresh() {
+    if (id) {
+      partnerService.getById(id)
+        .then((en) => setEntity(en!));
+    }
+  }
+
+  return (entity &&
+    <Stack gap={3}>
+      <Breadcrumbs>
+        <Link color="inherit" href="/">
+          Home
+        </Link>
+        <Link color="inherit" href="/partners">
+          Partners
+        </Link>
+        <Typography>{entity.name}</Typography>
+      </Breadcrumbs>
+      <PartnerDetails entity={entity} onChange={refresh} />
+    </Stack>
+  )
+}
+export { PartnerDetails, PartnerPage };
