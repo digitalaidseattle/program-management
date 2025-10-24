@@ -43,7 +43,7 @@ const DisciplinesPage = () => {
       ),
     },
     { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'details', headerName: 'Details', width: 800 },
+    { field: 'description', headerName: 'Description', width: 800 },
 
   ];
 
