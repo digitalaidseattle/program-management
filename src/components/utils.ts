@@ -1,10 +1,22 @@
+import { Entity } from "@digitalaidseattle/core";
+
 /**
  *  utils.ts
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
-interface EntityDialogProps<T> {
+export type EntityProps<T extends Entity> = {
+    entity: T;
+    onChange: (evt: any) => void;
+}
+
+export type EntityCardProps<T extends Entity> = {
+    entity: T
+    cardStyles?: any
+}
+
+export interface EntityDialogProps<T> {
     entity: T,
     open: boolean,
     handleSuccess: (resp: T | null) => void,
