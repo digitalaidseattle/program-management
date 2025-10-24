@@ -13,9 +13,7 @@ import { DisciplineDetails } from '../discipline';
 
 
 const DisciplinesPage = () => {
-  const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
 
-  const navigate = useNavigate();
   const storageService = useStorageService()!;
 
   const columns: GridColDef<Discipline[][number]>[] = [
@@ -43,51 +41,56 @@ const DisciplinesPage = () => {
       ),
     },
     { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'details', headerName: 'Details', minWidth:400}
+    { field: 'details', headerName: 'Details', width: 800 },
+
   ];
 
-  function onChange(queryModel?: QueryModel) {
-    if (queryModel) {
-      disciplineService.find(queryModel)
-        .then(pageInfo => setPageInfo(pageInfo))
-    }
-  }
+  const DisciplinesPage = () => {
+    const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
+    const navigate = useNavigate();
 
-  function handleRowDoubleClick(event: any) {
-    navigate(`/discipline/${event.id}`)
-  }
-
-  function refreshEntity(entity: Discipline) {
-    console.log(entity)
-  }
-
-  return (
-    <ListDetailPage
-      title='Disciplines'
-      pageInfo={pageInfo}
-      onChange={onChange}
-      tableOpts={
-        {
-          columns: columns,
-          onRowDoubleClick: handleRowDoubleClick
-        }
+    function onChange(queryModel?: QueryModel) {
+      if (queryModel) {
+        disciplineService.find(queryModel)
+          .then(pageInfo => setPageInfo(pageInfo))
       }
-      gridOpts={{
-        cardRenderer: entity => <ListCard
-          key={entity.id}
-          title={entity.name}
-          avatarImageSrc={storageService.getUrl(`icons/${entity.id}`)} />
-      }}
-      listOpts={{
-        listItemRenderer: entity => <ListCard
-          key={entity.id}
-          title={entity.name}
-          avatarImageSrc={storageService.getUrl(`icons/${entity.id}`)} />,
-        detailRenderer: entity => <DisciplineDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
-      }}
-    />
-  );
-};
+    }
+
+    function handleRowDoubleClick(event: any) {
+      navigate(`/discipline/${event.id}`)
+    }
+
+    function refreshEntity(entity: Discipline) {
+      console.log(entity)
+    }
+
+    return (
+      <ListDetailPage
+        title='Disciplines'
+        pageInfo={pageInfo}
+        onChange={onChange}
+        tableOpts={
+          {
+            columns: columns,
+            onRowDoubleClick: handleRowDoubleClick
+          }
+        }
+        gridOpts={{
+          cardRenderer: entity => <ListCard
+            key={entity.id}
+            title={entity.name}
+            avatarImageSrc={storageService.getUrl(`icons/${entity.id}`)} />
+        }}
+        listOpts={{
+          listItemRenderer: entity => <ListCard
+            key={entity.id}
+            title={entity.name}
+            avatarImageSrc={storageService.getUrl(`icons/${entity.id}`)} />,
+          detailRenderer: entity => <DisciplineDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
+        }}
+      />
+    );
+  };
 
 
-export default DisciplinesPage;
+  export default DisciplinesPage;
