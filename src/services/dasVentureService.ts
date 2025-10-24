@@ -5,7 +5,7 @@
  *
  */
 
-import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { PageInfo, QueryModel, supabaseClient } from "@digitalaidseattle/supabase";
 import { Partner } from "./dasPartnerService";
 
 type Venture = {
