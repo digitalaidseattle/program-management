@@ -18,10 +18,10 @@ import { EntityList } from "./EntityList";
 export type ListDetailPageProps<T extends Entity> = {
     pageInfo: PageInfo<T>;
     title: string;
-    columns: GridColDef<T[][number]>[];
     toolbar?: () => any;
     onChange: (queryModel: any) => void;
     tableOpts?: {
+        columns: GridColDef<T[][number]>[];
         onRowDoubleClick: (evt: any) => void;
     }
     gridOpts?: {
@@ -34,7 +34,7 @@ export type ListDetailPageProps<T extends Entity> = {
 }
 
 export function ListDetailPage<T extends Entity>({
-    pageInfo, title, columns, toolbar, onChange, tableOpts, gridOpts, listOpts
+    pageInfo, title, toolbar, onChange, tableOpts, gridOpts, listOpts
 }: ListDetailPageProps<T>) {
     const [showType, setShowType] = useState<string>('table');
     return (
@@ -59,13 +59,13 @@ export function ListDetailPage<T extends Entity>({
                         onChange={onChange}
                         cardRenderer={gridOpts.cardRenderer}
                     />}
-                {showType === 'table' &&
+                {showType === 'table' && tableOpts &&
                     <EntityTable
                         pageInfo={pageInfo}
                         onChange={onChange}
-                        columns={columns}
+                        columns={tableOpts.columns}
                         toolbar={toolbar}
-                        onRowDoubleClick={tableOpts ? tableOpts.onRowDoubleClick : () => { }}
+                        onRowDoubleClick={tableOpts.onRowDoubleClick}
                     />}
                 {showType === 'list' && listOpts &&
                     <EntityList
