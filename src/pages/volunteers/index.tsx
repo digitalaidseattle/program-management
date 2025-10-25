@@ -2,6 +2,7 @@
 // material-ui
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
+import { PageInfo, QueryModel, supabaseClient } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box,
@@ -12,13 +13,12 @@ import {
 } from '@mui/material';
 import { GridColDef, Toolbar } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { VolunteerCard } from '../../components/VolunteerCard';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { PageInfo, QueryModel, supabaseClient } from '@digitalaidseattle/supabase';
-import { useNavigate } from 'react-router';
 import { SupabaseStorage } from '../../services/supabaseStorage';
-import { VolunteerListItem } from './VolunteerListItem';
 import { VolunteerDetails } from '../volunteer';
 
 const supabaseStorage = new SupabaseStorage();
@@ -137,9 +137,13 @@ const VolunteersPage = () => {
             columns: columns,
             onRowDoubleClick: handleRowDoubleClick
           }
-        } gridOpts={{ cardRenderer: entity => <VolunteerCard key={entity.id} entity={entity} /> }}
+        }
+        gridOpts={{ cardRenderer: entity => <VolunteerCard key={entity.id} entity={entity} /> }}
         listOpts={{
-          listItemRenderer: entity => <VolunteerListItem entity={entity} />,
+          listItemRenderer: entity => <ListCard
+            key={entity.id}
+            title={entity.profile!.name}
+            avatarImageSrc={supabaseStorage.getUrl(`profiles/${entity.profile!.id}`)} />,
           detailRenderer: entity => <VolunteerDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
         }}
       />

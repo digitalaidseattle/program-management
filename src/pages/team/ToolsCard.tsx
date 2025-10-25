@@ -1,13 +1,14 @@
 
 // material-ui
 import { useEffect, useState } from 'react';
+import { CARD_HEADER_SX } from '.';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import SelectVolunteerDialog from '../../components/SelectVolunteerDialog';
 import { EntityProps } from '../../components/utils';
 import { team2ToolService } from '../../services/dasTeam2ToolService';
 import { Team } from '../../services/dasTeamService';
 import { Tool, toolService } from '../../services/dasToolsService';
-import { ToolCard } from '../tools/ToolCard';
+import { ToolCard } from './ToolCard';
 
 export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Tool[]>([]);
@@ -57,9 +58,7 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
     < >
       <ManagedListCard
         title='Tools'
-        cardHeaderSx={{
-          background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)"
-        }}
+        cardHeaderSx={CARD_HEADER_SX}
         items={current.map(vol => <ToolCard key={vol.id}
           entity={vol}
           cardStyles={{ width: 200 }} />)}

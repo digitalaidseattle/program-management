@@ -1,19 +1,19 @@
 
 // material-ui
+import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import ListDetailPage from '../../components/ListDetailPage';
-import { partnerService, Partner } from '../../services/dasPartnerService';
-import { PartnerCard } from './partnerCard';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { ListCard } from '../../components/ListCard';
+import ListDetailPage from '../../components/ListDetailPage';
+import { Partner, partnerService } from '../../services/dasPartnerService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
 import { PartnerDetails } from '../partner';
-import { ListItem } from './ListItem';
+import { PartnerCard } from './partnerCard';
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -103,7 +103,10 @@ const PartnersPage = () => {
       }
       gridOpts={{ cardRenderer: entity => <PartnerCard entity={entity} /> }}
       listOpts={{
-        listItemRenderer: entity => <ListItem entity={entity} />,
+        listItemRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={supabaseStorage.getUrl(`logos/${entity.id}`)} />,
         detailRenderer: entity => <PartnerDetails entity={entity} onChange={() => alert('nrfpt')} />,
       }}
     />

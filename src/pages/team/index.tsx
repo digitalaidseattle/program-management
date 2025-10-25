@@ -17,6 +17,8 @@ import { Team, teamService } from '../../services/dasTeamService';
 import { VolunteersCard } from './VolunteersCard';
 import { ToolsCard } from './ToolsCard';
 
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
+
 const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   return (entity &&
     <>

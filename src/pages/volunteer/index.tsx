@@ -20,7 +20,7 @@ import { Volunteer, volunteerService } from '../../services/dasVolunteerService'
 import { DisciplinesCard } from './DisplinesCard';
 import { TeamsCard } from './TeamsCard';
 import { ToolsCard } from './ToolsCard';
-import { VenturesCard } from './venturesCard';
+import { VenturesCard } from './VenturesCard';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" }
 

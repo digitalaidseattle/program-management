@@ -1,13 +1,13 @@
 
 // material-ui
-import { GridColDef } from '@mui/x-data-grid';
-import ListDetailPage from '../../components/ListDetailPage';
-import { Venture, ventureService } from '../../services/dasVentureService';
-import { VentureCard } from './VentureCard';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { Avatar, Box } from '@mui/material';
+import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Avatar, Box } from '@mui/material';
+import { ListCard } from '../../components/ListCard';
+import ListDetailPage from '../../components/ListDetailPage';
+import { Venture, ventureService } from '../../services/dasVentureService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
 import { VentureDetails } from '../venture';
 
@@ -81,7 +81,10 @@ const VenturesPage = () => {
         }
       }
       listOpts={{
-        listItemRenderer: entity => <VentureCard entity={entity} />,
+        listItemRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.venture_code}
+          avatarImageSrc={supabaseStorage.getUrl(`logos/${entity.partner!.id}`)} />,
         detailRenderer: entity => <VentureDetails entity={entity} onChange={() => alert('nrfpt')} />,
       }}
     />

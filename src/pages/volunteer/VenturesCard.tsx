@@ -1,6 +1,6 @@
 
 // material-ui
-import { Chip, MenuItem, Stack, Typography } from '@mui/material';
+import { MenuItem, Stack, Typography } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
@@ -12,11 +12,7 @@ import { Volunteer } from '../../services/dasVolunteerService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
 
 const storage = new SupabaseStorage();
-const STATUS_COMP: { [key: string]: JSX.Element } = {
-  'Active': <Chip label='Active' color='primary' />,
-  'constant': <Chip label='Constant' color='success' />,
-  'yet to begin': <Chip label='Not ready' color='warning' />,
-}
+
 export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   const [current, setCurrent] = useState<Staffing[]>([]);
   const navigate = useNavigate();

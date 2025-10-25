@@ -1,5 +1,5 @@
+import { Avatar, Card, CardActionArea, CardContent, CardHeader, Chip } from "@mui/material";
 import { useNavigate } from "react-router";
-import { Avatar, Card, CardActionArea, CardContent, CardHeader, Chip, Typography } from "@mui/material";
 import { Team } from "../services/dasTeamService";
 import { SupabaseStorage } from "../services/supabaseStorage";
 import { EntityCardProps } from "./utils";

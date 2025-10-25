@@ -9,7 +9,6 @@ import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
-import { VolunteerDetails } from '../volunteer';
 import { DisciplineDetails } from '../discipline';
 
 const supabaseStorage = new SupabaseStorage();

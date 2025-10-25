@@ -1,7 +1,7 @@
 
 // material-ui
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { Chip, MenuItem, Stack } from '@mui/material';
+import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
@@ -16,10 +16,7 @@ import { Volunteer } from '../../services/dasVolunteerService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
 
 const storage = new SupabaseStorage();
-const STATUS_COMP: { [key: string]: JSX.Element } = {
-  'active': <Chip label='Active' color='primary' />,
-  'inactive': <Chip label='Inactive' color='default' />
-}
+
 export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Volunteer2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);

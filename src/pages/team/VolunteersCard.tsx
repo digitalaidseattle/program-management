@@ -13,10 +13,9 @@ import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2Vo
 import { Team } from '../../services/dasTeamService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
+import { CARD_HEADER_SX } from '.';
 
 const storage = new SupabaseStorage();
-
-export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
 export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
@@ -34,7 +33,7 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
       volunteerService.getActive()
         .then(vols => setVolunteers(vols));
       team2VolunteerService.findByTeamId(entity.id)
-        .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.profile!.name.localeCompare(e2.volunteer.profile!.name))))
+        .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.profile!.name.localeCompare(e2.volunteer!.profile!.name))))
     }
   }, [entity]);
 
