@@ -1,7 +1,7 @@
 /**
- *  taskDialog.tsx
+ *  SelectItemDialog.tsx
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
 import React, { useState } from 'react';
@@ -20,11 +20,12 @@ import {
     Typography
 } from '@mui/material';
 
-type MenuItem = {
+export type MenuItem = {
     label: string,
     value: string
 }
 
+const DEFAULT_TITLE = 'Select Item';
 interface AddEntityDialogProps {
     open: boolean,
     records: MenuItem[],
@@ -34,7 +35,7 @@ interface AddEntityDialogProps {
     onSubmit: (selected: string | null | undefined) => void
     onCancel: () => void
 }
-const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, options, onSubmit, onCancel }) => {
+const SelectItemDialog: React.FC<AddEntityDialogProps> = ({ open, records, options, onSubmit, onCancel }) => {
 
     const [selected, setSelected] = useState<string>('');
 
@@ -51,7 +52,7 @@ const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
         open={open}
         onClose={onCancel}
     >
-        <DialogTitle><Typography fontSize={24}>{options ? options.title : 'Edit'}</Typography></DialogTitle>
+        <DialogTitle><Typography fontSize={24}>{options ? options.title : DEFAULT_TITLE}</Typography></DialogTitle>
         <DialogContent>
             <Stack spacing={2} margin={2}>
                 <FormControl fullWidth>
@@ -78,4 +79,4 @@ const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
         </DialogActions>
     </Dialog>)
 }
-export default SelectToolDialog;
+export default SelectItemDialog;
