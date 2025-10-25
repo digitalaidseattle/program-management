@@ -59,13 +59,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
           key={v2t.tool_id}
           title={v2t.tool!.name}
           avatarImageSrc={storage.getUrl(`logos/${v2t.tool_id}`)}
-          cardContent={
-            <Stack>
-              {tool.status
-                ? STATUS_COMP[tool.status]
-                : <Chip label='No status' color='default' />}
-            </Stack>
-          }
+          
           highlightOptions={{
             title: "Expert",
             highlight: v2t.expert ?? false,
@@ -99,14 +93,6 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       .finally(() => setShowAddDialog(false))
   }
 
-  function handleDelete(index: number): Promise<boolean> {
-    const volunteer2Tool = current[index];
-    return volunteer2ToolService.removeToolFromVolunteer(volunteer2Tool.tool!, entity)
-      .then(data => {
-        onChange(data);
-        return true;
-      })
-  }
 
   function handleRemoveConfirm(): void {
     if (selectedItem) {
@@ -124,7 +110,6 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       items={cards}
       cardHeaderSx={CARD_HEADER_SX}
       onAdd={() => setShowAddDialog(true)}
-      onDelete={handleDelete}
     />
     <SelectItemDialog
       open={showAddDialog}

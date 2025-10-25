@@ -1,14 +1,16 @@
 
 // material-ui
+import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { Avatar, Box } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import ListDetailPage from '../../components/ListDetailPage';
-import { DisciplineCard } from './DisciplineCard';
-import { Discipline, disciplineService } from '../../services/dasDisciplineService';
-import { useNavigate } from 'react-router';
 import { useState } from 'react';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { useNavigate } from 'react-router';
+import { ListCard } from '../../components/ListCard';
+import ListDetailPage from '../../components/ListDetailPage';
+import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
+import { VolunteerDetails } from '../volunteer';
+import { DisciplineDetails } from '../discipline';
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -56,17 +58,33 @@ const DisciplinesPage = () => {
     navigate(`/discipline/${event.id}`)
   }
 
+  function refreshEntity(entity: Discipline) {
+    console.log(entity)
+    alert('nrfpt');
+  }
+
   return (
     <ListDetailPage
-      pageInfo={pageInfo}
       title='Disciplines'
+      pageInfo={pageInfo}
       columns={columns}
       onChange={onChange}
       tableOpts={
         { onRowDoubleClick: handleRowDoubleClick }
       }
-      gridOpts={{ cardRenderer: entity => <DisciplineCard entity={entity} /> }}
-
+      gridOpts={{
+        cardRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={supabaseStorage.getUrl(`icons/${entity.id}`)} />
+      }}
+      listOpts={{
+        listItemRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={supabaseStorage.getUrl(`icons/${entity.id}`)} />,
+        detailRenderer: entity => <DisciplineDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
+      }}
     />
   );
 };

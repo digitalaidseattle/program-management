@@ -88,7 +88,6 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       })
   }
 
-
   function handleOpen(team_id: string): void {
     navigate(`/team/${team_id}`)
   }
@@ -101,15 +100,6 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
         return true;
       })
       .finally(() => setShowAddDialog(false))
-  }
-
-  function handleDelete(index: number): Promise<boolean> {
-    const t2v = current[index];
-    return removeVolunteerFromTeam(entity, t2v.team!)
-      .then(data => {
-        onChange(data);
-        return true;
-      })
   }
 
   function handleRemoveConfirm(): void {
@@ -128,7 +118,6 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       items={cards}
       cardHeaderSx={CARD_HEADER_SX}
       onAdd={() => setShowAddDialog(true)}
-      onDelete={handleDelete}
     />
     <SelectItemDialog
       open={showAddDialog}

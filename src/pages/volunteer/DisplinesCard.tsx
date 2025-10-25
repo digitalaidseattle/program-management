@@ -100,22 +100,10 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             .finally(() => setShowAddDialog(false))
     }
 
-    function handleDelete(index: number): Promise<boolean> {
-        const volunteer2Discipline = current[index];
-        return removeDisciplineFromVolunteer(volunteer2Discipline.discipline!, entity)
-            .then(data => {
-                onChange(data);
-                return true;
-            })
-    }
-
     function handleRemoveConfirm(): void {
         if (selectedItem) {
             removeDisciplineFromVolunteer(selectedItem, entity)
-                .then(data => {
-                    onChange(data);
-                    return true;
-                })
+                .then(data => onChange(data))
         }
     }
 
@@ -125,7 +113,6 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             items={cards}
             cardHeaderSx={CARD_HEADER_SX}
             onAdd={() => setShowAddDialog(true)}
-            onDelete={handleDelete}
         />
         <SelectItemDialog
             open={showAddDialog}

@@ -17,7 +17,7 @@ type Team2Volunteer = {
     volunteer_id: string,
     leader: boolean,
     team?: Team,
-    volunteer: Volunteer
+    volunteer?: Volunteer
 }
 
 const TABLE_TEAM_2_VOLUNTER = 'team2volunteer';
@@ -97,6 +97,14 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             .from(this.tableName)
             .select('*, team(*)')
             .eq('volunteer_id', volunteerId)
+            .then((resp: any) => resp.data);
+    }
+
+    findByTeamId(teamId: string): Promise<Team2Volunteer[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, volunteer(*, profile(*))')
+            .eq('team_id', teamId)
             .then((resp: any) => resp.data);
     }
 }

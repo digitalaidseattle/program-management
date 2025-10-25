@@ -69,7 +69,7 @@ export const ListCard = ({
                 }
                 action={menuItems &&
                     <IconButton aria-label="more button"
-                        onClick={handleMoreClick}>
+                        onClick={handleMoreClick} >
                         <MoreOutlined />
                     </IconButton>
                 }
@@ -99,25 +99,22 @@ export const ListCard = ({
                 </CardContent>
             }
             {highlightOptions && <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    {highlightOptions &&
-                        <Tooltip title={highlightOptions.title}>
-                            <IconButton
-                                onClick={(event) => {
-                                    event.preventDefault();
-                                    highlightOptions.toggleHighlight();
-                                }}
-                                aria-label="favorite"
-                                size="small"
-                            >
-                                {highlightOptions.highlight
-                                    ? <StarFilled style={{ fontSize: '150%', color: '#bea907ff' }} />
-                                    : <StarOutlined style={{ fontSize: '150%', color: 'gray' }} />
-                                }
-                            </IconButton>
-                        </Tooltip>
-                    }
-                </IconButton>
+                <Tooltip title={highlightOptions.title}>
+                    <IconButton
+                        onClick={(event) => {
+                            event.preventDefault();
+                            highlightOptions.toggleHighlight();
+                        }}
+                        aria-label="favorite"
+                        size="small"
+                    >
+                        {highlightOptions.highlight
+                            ? <StarFilled style={{ color: '#bea907ff' }} />
+                            : <StarOutlined style={{ color: 'gray' }} />
+                        }
+                        &nbsp;{`${highlightOptions.title}`}
+                    </IconButton>
+                </Tooltip>
             </CardActions>}
         </Card >
     )
