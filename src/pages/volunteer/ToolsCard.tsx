@@ -56,16 +56,13 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
           key={v2t.tool_id}
           title={v2t.tool!.name}
           avatarImageSrc={storage.getUrl(`logos/${v2t.tool_id}`)}
-          
+
           highlightOptions={{
             title: "Expert",
             highlight: v2t.expert ?? false,
             toggleHighlight: () => {
-              return toggleVolunteer2ToolExpertFlag(v2t)
-                .then(data => {
-                  onChange(data);
-                  return true;
-                })
+              toggleVolunteer2ToolExpertFlag(v2t)
+                .then(data => onChange(data))
             }
           }}
           menuItems={[
@@ -89,7 +86,6 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       .then(data => onChange(data))
       .finally(() => setShowAddDialog(false))
   }
-
 
   function handleRemoveConfirm(): void {
     if (selectedItem) {

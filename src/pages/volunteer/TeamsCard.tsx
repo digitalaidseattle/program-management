@@ -70,11 +70,8 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
             title: "Team Lead",
             highlight: t2v.leader ?? false,
             toggleHighlight: () => {
-              return toggleVolunteer2TeamLeaderFlag(t2v)
-                .then(data => {
-                  onChange(data);
-                  return true;
-                })
+              toggleVolunteer2TeamLeaderFlag(t2v)
+                .then(data => onChange(data))
             }
           }}
           menuItems={[
