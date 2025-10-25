@@ -20,14 +20,18 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
 
   useEffect(() => {
     if (entity) {
-      staffingService.findByVolunteerId(entity.id)
-        .then((staffing) => setCurrent(staffing));
+      refresh();
     }
   }, [entity]);
 
   useEffect(() => {
     setCards(createCards(current))
   }, [current]);
+
+  function refresh() {
+    staffingService.findByVolunteerId(entity.id)
+      .then((staffing) => setCurrent(staffing));
+  }
 
   function createCards(items: Staffing[]) {
     return items

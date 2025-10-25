@@ -10,7 +10,6 @@ import { removeVolunteerFromTeam } from '../../actions/RemoveVolunteerFromTeam';
 import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import SelectItemDialog from '../../components/SelectItemDialog';
 import { EntityProps } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team, teamService } from '../../services/dasTeamService';
@@ -26,7 +25,6 @@ const STATUS_COMP: { [key: string]: JSX.Element } = {
 export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);
   const [available, setAvailable] = useState<Team[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
@@ -35,13 +33,20 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   const navigate = useNavigate();
 
   useEffect(() => {
+    teamService.getAll()
+      .then(teams => setTeams(teams));
+  }, []);
+
+  useEffect(() => {
     if (entity) {
-      teamService.getAll()
-        .then(teams => setTeams(teams));
-      team2VolunteerService.findByVolunteerId(entity.id)
-        .then((t2v) => setCurrent(t2v.sort((t1, t2) => t1.team!.name.localeCompare(t2.team!.name))))
+      refresh();
     }
   }, [entity]);
+
+  function refresh() {
+    team2VolunteerService.findByVolunteerId(entity.id)
+      .then((t2v) => setCurrent(t2v.sort((t1, t2) => t1.team!.name.localeCompare(t2.team!.name))))
+  }
 
   useEffect(() => {
     const currentIds = current.map(t => t.team!.id);
@@ -71,7 +76,7 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
             highlight: t2v.leader ?? false,
             toggleHighlight: () => {
               toggleVolunteer2TeamLeaderFlag(t2v)
-                .then(data => onChange(data))
+                .then(data => handleChange(data))
             }
           }}
           menuItems={[
@@ -85,26 +90,28 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       })
   }
 
+  function handleChange(data: any) {
+    refresh();
+    onChange(data)
+  }
+
   function handleOpen(team_id: string): void {
     navigate(`/team/${team_id}`)
   }
 
-  function handleAdd(selected: string | null | undefined): Promise<boolean> {
+  function handleAdd(selected: string | null | undefined): void {
     const team = available.find(t => t.id === selected);
-    return addVolunteerToTeam(entity, team!)
-      .then(data => {
-        onChange(data);
-        return true;
-      })
-      .finally(() => setShowAddDialog(false))
+    addVolunteerToTeam(entity, team!)
+      .then(() => handleChange(true))
+
   }
 
   function handleRemoveConfirm(): void {
     if (selectedItem) {
       removeVolunteerFromTeam(entity, selectedItem)
         .then(data => {
-          onChange(data);
-          return true;
+          handleChange(data);
+          setOpenConfirmation(false);
         })
     }
   }
@@ -114,14 +121,12 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       title='Teams'
       items={cards}
       cardHeaderSx={CARD_HEADER_SX}
-      onAdd={() => setShowAddDialog(true)}
+      addOpts={{
+        title: 'Join Team',
+        available: available.map(v => ({ label: v.name, value: v.id })),
+        handleAdd: handleAdd
+      }}
     />
-    <SelectItemDialog
-      open={showAddDialog}
-      options={{ title: 'Join Team' }}
-      records={available.map(v => ({ label: v.name, value: v.id }))}
-      onSubmit={handleAdd}
-      onCancel={() => setShowAddDialog(false)} />
     <ConfirmationDialog
       title="Confirm removal from this team"
       open={openConfirmation}

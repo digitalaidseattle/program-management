@@ -20,15 +20,13 @@ import {
     Typography
 } from '@mui/material';
 
-export type MenuItem = {
-    label: string,
-    value: string
-}
-
 const DEFAULT_TITLE = 'Select Item';
 interface AddEntityDialogProps {
     open: boolean,
-    records: MenuItem[],
+    records: {
+        label: string,
+        value: string
+    }[],
     options: {
         title?: string,
     }
@@ -61,7 +59,10 @@ const SelectItemDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
                         value={selected ?? ''}
                         onChange={(evt) => handleChange(evt)} >
                         {(records ?? [])
-                            .map((item: MenuItem) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}
+                            .map((item: {
+                                value: string,
+                                label: string
+                            }) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}
                     </Select>
                 </FormControl>
             </Stack>

@@ -59,7 +59,6 @@ const DisciplinesPage = () => {
 
   function refreshEntity(entity: Discipline) {
     console.log(entity)
-    alert('nrfpt');
   }
 
   return (

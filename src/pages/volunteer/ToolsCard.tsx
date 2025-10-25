@@ -8,7 +8,6 @@ import { CARD_HEADER_SX } from '.';
 import { toggleVolunteer2ToolExpertFlag } from '../../actions/ToggleVolunteer2ToolExpertFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import SelectItemDialog from '../../components/SelectItemDialog';
 import { EntityProps } from '../../components/utils';
 import { Tool, toolService } from '../../services/dasToolsService';
 import { Volunteer2Tool, volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
@@ -20,7 +19,6 @@ const storage = new SupabaseStorage();
 export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Volunteer2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
   const [tools, setTools] = useState<Tool[]>([]);
   const [available, setAvailable] = useState<Tool[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
@@ -29,11 +27,13 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   const navigate = useNavigate();
 
   useEffect(() => {
+    toolService.getAll()
+      .then(tools => setTools(tools));
+  }, []);
+
+  useEffect(() => {
     if (entity) {
-      toolService.getAll()
-        .then(tools => setTools(tools));
-      volunteer2ToolService.findByVolunteerId(entity.id)
-        .then((tools) => setCurrent(tools));
+      refresh();
     }
   }, [entity]);
 
@@ -47,6 +47,11 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   useEffect(() => {
     setCards(createCards(current))
   }, [current]);
+
+  function refresh() {
+    volunteer2ToolService.findByVolunteerId(entity.id)
+      .then((tools) => setCurrent(tools));
+  }
 
   function createCards(items: Volunteer2Tool[]) {
     return items
@@ -62,7 +67,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
             highlight: v2t.expert ?? false,
             toggleHighlight: () => {
               toggleVolunteer2ToolExpertFlag(v2t)
-                .then(data => onChange(data))
+                .then(data => handleChange(data))
             }
           }}
           menuItems={[
@@ -80,20 +85,21 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
     navigate(`/tool/${discipline_id}`)
   }
 
-  function handleAdd(selected: string | null | undefined) {
+  function handleChange(data: any) {
+    refresh();
+    onChange(data)
+  }
+
+  function handleAdd(selected: string | null | undefined): void {
     const tool = available.find(t => t.id === selected);
     volunteer2ToolService.addToolToVolunteer(tool!, entity)
-      .then(data => onChange(data))
-      .finally(() => setShowAddDialog(false))
+      .then(() => handleChange(true))
   }
 
   function handleRemoveConfirm(): void {
     if (selectedItem) {
       volunteer2ToolService.removeToolFromVolunteer(selectedItem, entity)
-        .then(data => {
-          onChange(data);
-          return true;
-        })
+        .then(() => handleChange(true))
     }
   }
 
@@ -102,14 +108,12 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       title='Tools'
       items={cards}
       cardHeaderSx={CARD_HEADER_SX}
-      onAdd={() => setShowAddDialog(true)}
+      addOpts={{
+        title: 'Add Tool',
+        available: available.map(v => ({ label: v.name, value: v.id })),
+        handleAdd: handleAdd
+      }}
     />
-    <SelectItemDialog
-      open={showAddDialog}
-      options={{ title: 'Add Tool' }}
-      records={available.map(v => ({ label: v.name, value: v.id }))}
-      onSubmit={handleAdd}
-      onCancel={() => setShowAddDialog(false)} />
     <ConfirmationDialog
       title="Confirm removing this tool"
       open={openConfirmation}

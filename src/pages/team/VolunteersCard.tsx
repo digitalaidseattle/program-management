@@ -22,18 +22,19 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [available, setAvailable] = useState<Volunteer[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
   const [cards, setCards] = useState<ReactNode[]>([]);
   const [selectedItem, setSelectedItem] = useState<Volunteer>();
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    volunteerService.getActive()
+      .then(vols => setVolunteers(vols));
+  }, []);
+
+  useEffect(() => {
     if (entity) {
-      volunteerService.getActive()
-        .then(vols => setVolunteers(vols));
-      team2VolunteerService.findByTeamId(entity.id)
-        .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.profile!.name.localeCompare(e2.volunteer!.profile!.name))))
+      refresh();
     }
   }, [entity]);
 
@@ -44,6 +45,11 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
       .sort((t1, t2) => t1.profile!.name.localeCompare(t2.profile!.name)))
     setCards(createCards(current))
   }, [volunteers, current]);
+
+  function refresh() {
+    team2VolunteerService.findByTeamId(entity.id)
+      .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.profile!.name.localeCompare(e2.volunteer!.profile!.name))))
+  }
 
   function createCards(items: Team2Volunteer[]) {
     return items
@@ -62,7 +68,7 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
             highlight: t2v.leader ?? false,
             toggleHighlight: () => {
               return toggleVolunteer2TeamLeaderFlag(t2v)
-                .then(data => onChange(data))
+                .then(data => handleChange(data))
             }
           }}
           menuItems={[
@@ -76,29 +82,30 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
       })
   }
 
+  function handleChange(data: any) {
+    refresh();
+    onChange(data)
+  }
 
   function handleOpen(volunteer_id: string): void {
     navigate(`/volunteer/${volunteer_id}`)
   }
 
-  function handleAdd(value: string | null | undefined): Promise<boolean> {
+  function handleAdd(value: string | null | undefined): void {
     const selected = available.find(vol => vol.id === value);
     if (selected) {
-      return team2VolunteerService.addVolunteerToTeam(selected, entity!)
-        .then(() => {
-          onChange(true);
-          setShowAddDialog(false);
-          return true;
-        })
-    } else {
-      return Promise.resolve(true)
+      team2VolunteerService.addVolunteerToTeam(selected, entity!)
+        .then(() => handleChange(true))
     }
   }
 
   function handleRemoveConfirm(): void {
     if (selectedItem) {
       team2VolunteerService.removeVolunteerFromTeam(selectedItem, entity!)
-        .then(data => onChange(data))
+        .then(data => {
+          handleChange(data);
+          setOpenConfirmation(false);
+        })
     }
   }
 
@@ -107,14 +114,12 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
       title='Members'
       cardHeaderSx={CARD_HEADER_SX}
       items={cards}
-      onAdd={() => setShowAddDialog(true)}
+      addOpts={{
+        title: 'Add volunteer',
+        available: available.map(v => ({ label: v.profile!.name, value: v.id })),
+        handleAdd: handleAdd
+      }}
     />
-    <SelectItemDialog
-      open={showAddDialog}
-      options={{ title: 'Add volunteer' }}
-      records={available.map(v => ({ label: v.profile!.name, value: v.id }))}
-      onSubmit={handleAdd}
-      onCancel={() => setShowAddDialog(false)} />
     <ConfirmationDialog
       title="Confirm removing this volunteer"
       open={openConfirmation}

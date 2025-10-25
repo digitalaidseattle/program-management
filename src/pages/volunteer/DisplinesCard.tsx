@@ -1,19 +1,18 @@
-import { ReactNode, useEffect, useState } from "react";
-import { EntityProps } from "../../components/utils";
-import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
-import { Volunteer } from "../../services/dasVolunteerService";
-import { Discipline, disciplineService } from "../../services/dasDisciplineService";
-import { useNavigate } from "react-router";
-import { ListCard } from "../../components/ListCard";
-import { SupabaseStorage } from "../../services/supabaseStorage";
+import { ConfirmationDialog } from "@digitalaidseattle/mui";
 import { Chip, MenuItem, Stack } from "@mui/material";
-import { toggleVolunteer2DisciplineSeniorFlag } from "../../actions/ToggleVolunteer2DisciplineSeniorFlag";
+import { ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { CARD_HEADER_SX } from ".";
 import { addDisciplineToVolunteer } from "../../actions/AddDisciplineToVolunteer";
 import { removeDisciplineFromVolunteer } from "../../actions/RemoveDisciplineFromVolunteer";
+import { toggleVolunteer2DisciplineSeniorFlag } from "../../actions/ToggleVolunteer2DisciplineSeniorFlag";
+import { ListCard } from "../../components/ListCard";
 import { ManagedListCard } from "../../components/ManagedListCard";
-import SelectItemDialog from "../../components/SelectItemDialog";
-import { ConfirmationDialog } from "@digitalaidseattle/mui";
-import { CARD_HEADER_SX } from ".";
+import { EntityProps } from "../../components/utils";
+import { Discipline, disciplineService } from "../../services/dasDisciplineService";
+import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
+import { Volunteer } from "../../services/dasVolunteerService";
+import { SupabaseStorage } from "../../services/supabaseStorage";
 
 const storage = new SupabaseStorage();
 const DISCIPLINE_STATUS_COMP: { [key: string]: JSX.Element } = {
@@ -24,7 +23,6 @@ const DISCIPLINE_STATUS_COMP: { [key: string]: JSX.Element } = {
 export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-    const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);
     const [available, setAvailable] = useState<Discipline[]>([]);
     const [cards, setCards] = useState<ReactNode[]>([]);
@@ -33,9 +31,12 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
     const navigate = useNavigate();
 
     useEffect(() => {
+        disciplineService.getAll()
+            .then(desciplines => setDisciplines(desciplines));
+    }, []);
+
+    useEffect(() => {
         if (entity) {
-            disciplineService.getAll()
-                .then(desciplines => setDisciplines(desciplines));
             volunteer2DisciplineService.findByVolunteerId(entity.id)
                 .then((disciplines) => setCurrent(disciplines.sort((d1, d2) => d1.discipline!.name.localeCompare(d2.discipline!.name))))
         }
@@ -48,6 +49,11 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             .sort((t1, t2) => t1.name.localeCompare(t2.name)))
         setCards(createCards(current))
     }, [desciplines, current]);
+
+    function refresh() {
+        volunteer2DisciplineService.findByVolunteerId(entity.id)
+            .then((disciplines) => setCurrent(disciplines.sort((d1, d2) => d1.discipline!.name.localeCompare(d2.discipline!.name))))
+    }
 
     function createCards(items: Volunteer2Discipline[]) {
         return items
@@ -69,10 +75,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
                         highlight: volunteer2Discipline.senior ?? false,
                         toggleHighlight: () => {
                             return toggleVolunteer2DisciplineSeniorFlag(volunteer2Discipline)
-                                .then(data => {
-                                    onChange(data);
-                                    return true;
-                                })
+                                .then(data => handleChange(data))
                         }
                     }}
                     menuItems={[
@@ -86,24 +89,28 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             })
     }
 
+    function handleChange(data: any) {
+        refresh();
+        onChange(data)
+    }
+
     function handleOpen(discipline_id: string): void {
         navigate(`/discipline/${discipline_id}`)
     }
 
-    function handleAdd(selected: string | null | undefined): Promise<boolean> {
+    function handleAdd(selected: string | null | undefined): void {
         const discipline = available.find(t => t.id === selected);
-        return addDisciplineToVolunteer(discipline!, entity)
-            .then(data => {
-                onChange(data);
-                return true;
-            })
-            .finally(() => setShowAddDialog(false))
+        addDisciplineToVolunteer(discipline!, entity)
+            .then(() => handleChange(true))
     }
 
     function handleRemoveConfirm(): void {
         if (selectedItem) {
             removeDisciplineFromVolunteer(selectedItem, entity)
-                .then(data => onChange(data))
+                .then(data => {
+                    handleChange(data);
+                    setOpenConfirmation(false);
+                })
         }
     }
 
@@ -112,14 +119,12 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             title='Disciplines'
             items={cards}
             cardHeaderSx={CARD_HEADER_SX}
-            onAdd={() => setShowAddDialog(true)}
+            addOpts={{
+                title: 'Add Tool',
+                available: available.map(v => ({ label: v.name, value: v.id })),
+                handleAdd: handleAdd
+            }}
         />
-        <SelectItemDialog
-            open={showAddDialog}
-            options={{ title: 'Add Tool' }}
-            records={available.map(v => ({ label: v.name, value: v.id }))}
-            onSubmit={handleAdd}
-            onCancel={() => setShowAddDialog(false)} />
         <ConfirmationDialog
             title="Confirm removing this discipline"
             open={openConfirmation}
