@@ -12,40 +12,11 @@ import {
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useParams } from 'react-router';
-import { ManagedListCard } from '../../components/ManagedListCard';
-import { VolunteerCard } from '../../components/VolunteerCard';
 import { EntityProps } from '../../components/utils';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
-import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
+import { VolunteersCard } from './VolunteersCard';
 
-const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
-
-  useEffect(() => {
-    if (entity) {
-      volunteer2DisciplineService.findByDisciplineId(entity.id)
-        .then((v2ds) => {
-          setCurrent(v2ds)
-        });
-    }
-  }, [entity]);
-
-  return (< >
-    <ManagedListCard
-      title='Volunteers'
-      items={current.map(v2d => <VolunteerCard key={v2d.volunteer_id}
-        entity={v2d.volunteer!}
-        highlightOptions={{
-          title: "Senior",
-          highlight: v2d.senior ?? false,
-        }}
-        cardStyles={{ width: 200 }} />)}
-      cardHeaderSx={{
-        background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
-      }}
-    />
-  </>)
-}
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" };
 
 const DisciplineDetails: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
 
@@ -94,4 +65,5 @@ const DisciplinePage = () => {
   )
 }
 
-export { DisciplineDetails, DisciplinePage }
+export { DisciplineDetails, DisciplinePage };
+

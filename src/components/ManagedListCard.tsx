@@ -1,35 +1,15 @@
-import { CloseCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { ConfirmationDialog } from "@digitalaidseattle/mui";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
-import { ReactNode, useState } from "react";
-
+import { ReactNode } from "react";
 
 export type ManagedListCardProps = {
     title: string;
     items: ReactNode[];
     cardHeaderSx?: any;
     onAdd?: () => void;
-    onDelete?: (index: number) => Promise<boolean>
 }
 
-export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, cardHeaderSx: cardHeaderSx, onAdd, onDelete }) => {
-
-    const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-    const [index, setIndex] = useState<number>(-1);
-
-    function confirmDelete(index: number) {
-        return () => {
-            setOpenConfirmation(true);
-            setIndex(index)
-        }
-    }
-
-    function handleConfirm() {
-        if (index > 0) {
-            onDelete && onDelete(index)
-                .then((success) => setOpenConfirmation(!success))
-        }
-    }
+export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, cardHeaderSx: cardHeaderSx, onAdd }) => {
 
     return (
         <Card>
@@ -67,32 +47,13 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                                     p: 0,
                                 }}
                                 elevation={3}>
-                               {onDelete &&  <IconButton
-                                    onClick={confirmDelete(idx)}
-                                    aria-label="favorite"
-                                    size="small"
-                                    sx={{
-                                        position: "absolute",
-                                        top: -12,
-                                        right: -12,
-                                        backgroundColor: "background.paper",
-                                        boxShadow: 3,
-                                        zIndex: 2,
-                                    }}>
-                                    <CloseCircleOutlined />
-                                </IconButton>}
+
                                 {item}
                             </Paper>
                             ))}
                         </Grid>
                     </Grid>
                 </Stack>
-                <ConfirmationDialog
-                    title="Confirm removing item"
-                    open={openConfirmation}
-                    message={"Are you sure?"}
-                    handleConfirm={handleConfirm}
-                    handleCancel={() => setOpenConfirmation(false)} />
             </CardContent>
         </Card>
     );

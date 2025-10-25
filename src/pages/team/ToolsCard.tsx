@@ -1,43 +1,89 @@
 
 // material-ui
-import { useEffect, useState } from 'react';
+import { ConfirmationDialog } from '@digitalaidseattle/mui';
+import { Chip, MenuItem, Stack } from '@mui/material';
+import { ReactNode, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
+import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import SelectVolunteerDialog from '../../components/SelectVolunteerDialog';
 import { EntityProps } from '../../components/utils';
-import { team2ToolService } from '../../services/dasTeam2ToolService';
+import { Team2Tool, team2ToolService } from '../../services/dasTeam2ToolService';
 import { Team } from '../../services/dasTeamService';
 import { Tool, toolService } from '../../services/dasToolsService';
-import { ToolCard } from './ToolCard';
+import { SupabaseStorage } from '../../services/supabaseStorage';
+import { removeToolFromTeam } from '../../actions/RemoveToolFromTeam';
+import SelectItemDialog from '../../components/SelectItemDialog';
 
+const storage = new SupabaseStorage();
+
+const STATUS_COMP: { [key: string]: JSX.Element } = {
+  'active': <Chip label='Active' color='primary' />,
+  'inactive': <Chip label='Inactive' color='default' />
+}
 export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
-  const [current, setCurrent] = useState<Tool[]>([]);
+  const [current, setCurrent] = useState<Team2Tool[]>([]);
+  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
+  const [tools, setTools] = useState<Tool[]>([]);
   const [available, setAvailable] = useState<Tool[]>([]);
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [cards, setCards] = useState<ReactNode[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Tool>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (entity) {
       toolService.getAll()
-        .then((active) => {
-          team2ToolService.findToolsByTeamId(entity.id)
-            .then(tools => {
-              setCurrent(tools);
-              const teamToolIds = tools.map(tool => tool.id) ?? [];
-              const temp = active
-                .filter(tool => !teamToolIds.includes(tool.id))
-                .sort((t1, t2) => t1.name.localeCompare(t2.name))
-              setAvailable(temp)
-            })
-        });
+        .then(tools => setTools(tools));
+      team2ToolService.findByTeamId(entity.id)
+        .then(t2ts => {
+          setCurrent(t2ts.sort((t1, t2) => t1.tool!.name.localeCompare(t2.tool!.name)));
+        })
     }
   }, [entity]);
 
-  function handleRemove(index: number): Promise<boolean> {
-    return team2ToolService.removeToolFromTeam(current[index], entity!)
-      .then(() => {
-        onChange(true);
-        return true;
+  useEffect(() => {
+    const currentIds = current.map(t => t.tool_id);
+    setAvailable(tools
+      .filter(t => !currentIds.includes(t.id))
+      .sort((t1, t2) => t1.name.localeCompare(t2.name)))
+    setCards(createCards(current))
+  }, [tools, current]);
+
+  function createCards(items: Team2Tool[]) {
+    return items
+      .map(v2t => {
+        const tool = v2t.tool!;
+        return <ListCard
+          key={v2t.tool_id}
+          title={v2t.tool!.name}
+          avatarImageSrc={storage.getUrl(`logos/${v2t.tool_id}`)}
+          menuItems={[
+            <MenuItem onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
+            <MenuItem onClick={() => {
+              setSelectedItem(tool);
+              setOpenConfirmation(true);
+            }}>Remove...</MenuItem>]
+          }
+          cardContent={
+            <Stack>
+              {STATUS_COMP[tool.status]}
+            </Stack>
+          }
+        />
       })
+  }
+
+  function handleOpen(tool_id: string): void {
+    navigate(`/tool/${tool_id}`)
+  }
+
+  function handleRemove(): void {
+    if (selectedItem) {
+      removeToolFromTeam(selectedItem, entity!)
+        .then(() => onChange(true))
+    }
   }
 
   function handleAdd(value: string | null | undefined): Promise<boolean> {
@@ -59,17 +105,20 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
       <ManagedListCard
         title='Tools'
         cardHeaderSx={CARD_HEADER_SX}
-        items={current.map(vol => <ToolCard key={vol.id}
-          entity={vol}
-          cardStyles={{ width: 200 }} />)}
+        items={cards}
         onAdd={() => setShowAddDialog(true)}
-        onDelete={handleRemove}
       />
-      <SelectVolunteerDialog
+      <SelectItemDialog
         open={showAddDialog}
         options={{ title: 'Add tool' }}
         records={available.map(tool => ({ label: tool.name, value: tool.id }))}
         onSubmit={handleAdd}
         onCancel={() => setShowAddDialog(false)} />
+      <ConfirmationDialog
+        title="Confirm removing this tools"
+        open={openConfirmation}
+        message={"Are you sure?"}
+        handleConfirm={handleRemove}
+        handleCancel={() => setOpenConfirmation(false)} />
     </>)
 }

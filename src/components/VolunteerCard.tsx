@@ -40,6 +40,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
         <Card
             key={volunteer.id}
             sx={{
+                padding: 1,
                 flex: '1',
                 minWidth: { xs: '100%', sm: '17rem' },
                 maxWidth: 240,
