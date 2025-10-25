@@ -6,7 +6,7 @@
  */
 import { Error, Login, MainLayout, MarkdownPage, MinimalLayout } from '@digitalaidseattle/mui';
 
-import DisciplinePage from './discipline';
+import { DisciplinePage } from './discipline';
 import DisciplinesPage from './disciplines';
 import MigrationPage from './migration';
 import { PartnerPage } from './partner';

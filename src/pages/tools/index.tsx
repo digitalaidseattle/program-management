@@ -61,12 +61,14 @@ const ToolsPage = () => {
 
   return (
     <ListDetailPage
-      pageInfo={pageInfo}
       title='Tools'
-      columns={columns}
+      pageInfo={pageInfo}
       onChange={onChange}
       tableOpts={
-        { onRowDoubleClick: handleRowDoubleClick }
+        {
+          columns: columns,
+          onRowDoubleClick: handleRowDoubleClick
+        }
       }
       gridOpts={{
         cardRenderer: entity => <ListCard

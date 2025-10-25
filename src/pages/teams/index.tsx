@@ -74,9 +74,7 @@ const TeamsPage = () => {
     <ListDetailPage
       pageInfo={pageInfo}
       title='Teams'
-      columns={columns}
       onChange={onChange}
-
       gridOpts={{
         cardRenderer: entity => <ListCard
           key={entity.id}
@@ -86,7 +84,10 @@ const TeamsPage = () => {
         />
       }}
       tableOpts={
-        { onRowDoubleClick: handleRowDoubleClick }
+        {
+          columns: columns,
+          onRowDoubleClick: handleRowDoubleClick
+        }
       }
       listOpts={{
         listItemRenderer: entity => <ListCard

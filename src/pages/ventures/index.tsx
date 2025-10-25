@@ -71,12 +71,14 @@ const VenturesPage = () => {
 
   return (
     <ListDetailPage
-      pageInfo={pageInfo}
       title='Ventures'
-      columns={columns}
+      pageInfo={pageInfo}
       onChange={onChange}
       tableOpts={
-        { onRowDoubleClick: handleRowDoubleClick }
+        {
+          columns: columns,
+          onRowDoubleClick: handleRowDoubleClick
+        }
       }
       listOpts={{
         listItemRenderer: entity => <VentureCard entity={entity} />,

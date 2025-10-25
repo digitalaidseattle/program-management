@@ -128,13 +128,16 @@ const VolunteersPage = () => {
   return (
     <>
       <ListDetailPage
-        pageInfo={pageInfo}
         title="Volunteers"
-        columns={columns}
+        pageInfo={pageInfo}
         toolbar={toolbar}
         onChange={onChange}
-        tableOpts={{ onRowDoubleClick: handleRowDoubleClick }}
-        gridOpts={{ cardRenderer: entity => <VolunteerCard key={entity.id} entity={entity} /> }}
+        tableOpts={
+          {
+            columns: columns,
+            onRowDoubleClick: handleRowDoubleClick
+          }
+        } gridOpts={{ cardRenderer: entity => <VolunteerCard key={entity.id} entity={entity} /> }}
         listOpts={{
           listItemRenderer: entity => <VolunteerListItem entity={entity} />,
           detailRenderer: entity => <VolunteerDetails entity={entity} onChange={entity => refreshEntity(entity)} />,

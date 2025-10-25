@@ -92,12 +92,14 @@ const PartnersPage = () => {
 
   return (
     <ListDetailPage
-      pageInfo={pageInfo}
       title='Partners'
-      columns={columns}
+      pageInfo={pageInfo}
       onChange={onChange}
       tableOpts={
-        { onRowDoubleClick: handleRowDoubleClick }
+        {
+          columns: columns,
+          onRowDoubleClick: handleRowDoubleClick
+        }
       }
       gridOpts={{ cardRenderer: entity => <PartnerCard entity={entity} /> }}
       listOpts={{

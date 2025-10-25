@@ -67,10 +67,12 @@ const DisciplinesPage = () => {
     <ListDetailPage
       title='Disciplines'
       pageInfo={pageInfo}
-      columns={columns}
       onChange={onChange}
       tableOpts={
-        { onRowDoubleClick: handleRowDoubleClick }
+        {
+          columns: columns,
+          onRowDoubleClick: handleRowDoubleClick
+        }
       }
       gridOpts={{
         cardRenderer: entity => <ListCard
