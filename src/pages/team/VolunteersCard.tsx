@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router';
 import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import SelectItemDialog from '../../components/SelectItemDialog';
 import { EntityProps } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team } from '../../services/dasTeamService';
