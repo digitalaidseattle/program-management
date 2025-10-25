@@ -1,15 +1,14 @@
 
 // material-ui
+import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { Avatar, Box } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Tool, toolService } from '../../services/dasToolsService';
-import { ToolCard } from './ToolCard';
-import { Avatar, Box } from '@mui/material';
-import { useState } from 'react';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
-import { useNavigate } from 'react-router';
 import { SupabaseStorage } from '../../services/supabaseStorage';
-import { ListItem } from './ListItem';
 import { ToolDetails } from '../tool';
 
 const supabaseStorage = new SupabaseStorage();
@@ -43,6 +42,8 @@ const columns: GridColDef<Tool[][number]>[] = [
 
 ];
 
+const storage = new SupabaseStorage();
+
 const ToolsPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Tool>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
@@ -67,9 +68,19 @@ const ToolsPage = () => {
       tableOpts={
         { onRowDoubleClick: handleRowDoubleClick }
       }
-      gridOpts={{ cardRenderer: entity => <ToolCard entity={entity} /> }}
+      gridOpts={{
+        cardRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={storage.getUrl(`/logos/${entity.id}`)}
+          cardAction={() => handleRowDoubleClick({ id: entity.id })}
+        />
+      }}
       listOpts={{
-        listItemRenderer: entity => <ListItem entity={entity} />,
+        listItemRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={storage.getUrl(`/logos/${entity.id}`)} />,
         detailRenderer: entity => <ToolDetails entity={entity} onChange={() => alert('nrfpt')} />,
       }}
     />

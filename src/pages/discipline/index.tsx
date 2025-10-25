@@ -47,19 +47,7 @@ const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity }) => {
   </>)
 }
 
-const DisciplinePage = () => {
-  const [entity, setEntity] = useState<Discipline>();
-  const { id } = useParams<string>();
-
-  useEffect(() => {
-    if (id) {
-      disciplineService.getById(id)
-        .then((en) => {
-          console.log(en)
-          setEntity(en!)
-        });
-    }
-  }, [id]);
+const DisciplineDetails: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
 
   return (entity &&
     <Stack gap={2}>
@@ -79,9 +67,31 @@ const DisciplinePage = () => {
           <Markdown>{entity.details}</Markdown>
         </CardContent>
       </Card>
-      <VolunteersCard entity={entity} onChange={() => alert('not implemented!')} />
+      <VolunteersCard entity={entity} onChange={onChange} />
     </Stack>
   )
 }
 
-export default DisciplinePage;
+const DisciplinePage = () => {
+  const [entity, setEntity] = useState<Discipline>();
+  const { id } = useParams<string>();
+
+  useEffect(() => {
+    if (id) {
+      refresh()
+    }
+  }, [id]);
+
+  function refresh() {
+    if (id) {
+      disciplineService.getById(id)
+        .then((en) => setEntity(en!));
+    }
+  }
+
+  return (entity &&
+    <DisciplineDetails entity={entity} onChange={refresh} />
+  )
+}
+
+export { DisciplineDetails, DisciplinePage }

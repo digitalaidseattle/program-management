@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router";
-import { Avatar, Card, CardActionArea, CardContent, CardHeader, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, CardContent, CardHeader, Chip, Typography } from "@mui/material";
 import { Team } from "../services/dasTeamService";
 import { SupabaseStorage } from "../services/supabaseStorage";
 import { EntityCardProps } from "./utils";
 
 const supabaseStorage = new SupabaseStorage();
-
+const STATUS_COMP: { [key: string]: JSX.Element } = {
+    'Active': <Chip label='Active' color='primary' />,
+    'constant': <Chip label='Constant' color='success' />,
+    'yet to begin': <Chip label='Not ready' color='warning' />,
+}
 export const TeamCard: React.FC<EntityCardProps<Team>> = ({ entity: team, cardStyles }) => {
     const navigate = useNavigate();
     return (
@@ -40,7 +44,7 @@ export const TeamCard: React.FC<EntityCardProps<Team>> = ({ entity: team, cardSt
                         paddingBottom: '1rem !important',
                     }}
                 >
-                    <Typography>{team.slack_channel}</Typography>
+                    {STATUS_COMP[team.status]}
                 </CardContent>
             </CardActionArea>
         </Card >

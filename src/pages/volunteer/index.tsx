@@ -1,3 +1,9 @@
+/**
+ *  volunteer/index.tsx
+ *
+ *  @copyright 2024 Digital Aid Seattle
+ *
+ */
 
 // material-ui
 import {
@@ -9,139 +15,14 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { ManagedListCard } from '../../components/ManagedListCard';
-import { TeamCard } from '../../components/TeamCard';
 import { EntityProps } from '../../components/utils';
-import { Discipline } from '../../services/dasDisciplineService';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
-import { team2VolunteerService } from '../../services/dasTeam2VolunteerService';
-import { Team } from '../../services/dasTeamService';
-import { Tool } from '../../services/dasToolsService';
-import { volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
-import { volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { DisciplineCard } from '../disciplines/DisciplineCard';
-import { ToolCard } from '../tools/ToolCard';
-import { VentureCard } from '../ventures/VentureCard';
+import { DisciplinesCard } from './DisplinesCard';
+import { TeamsCard } from './TeamsCard';
+import { ToolsCard } from './ToolsCard';
+import { VenturesCard } from './venturesCard';
 
-const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Team[]>([]);
-
-  useEffect(() => {
-    if (entity) {
-      team2VolunteerService.findTeamsByVolunteerId(entity.id)
-        .then((teams) => {
-          setCurrent(teams)
-        });
-    }
-  }, [entity]);
-
-
-  return (< >
-    <ManagedListCard
-      title='Teams'
-      items={current.map(team => <TeamCard key={team.id}
-        entity={team}
-        cardStyles={{ width: 200 }} />)}
-      cardHeaderSx={{
-        background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
-      }}
-    />
-    {/* <SelectTeamDialog
-        open={showAddDialog}
-        options={{ title: 'Add volunteer' }}
-        records={available.map(v => ({ label: v.profile!.name, value: v.id }))}
-        onSubmit={handleAdd}
-        onCancel={() => setShowAddDialog(false)} /> */}
-  </>)
-}
-
-const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Discipline[]>([]);
-
-  useEffect(() => {
-    if (entity) {
-      volunteer2DisciplineService.findDisciplinesByVolunteerId(entity.id)
-        .then((disciplines) => setCurrent(disciplines));
-    }
-  }, [entity]);
-
-  return (< >
-    <ManagedListCard
-      title='Disciplines'
-      items={current.map(discipline => <DisciplineCard key={discipline.id}
-        entity={discipline}
-        cardStyles={{ width: 200 }} />)}
-      cardHeaderSx={{
-        background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
-      }}
-    />
-    {/* <SelectTeamDialog
-        open={showAddDialog}
-        options={{ title: 'Add volunteer' }}
-        records={available.map(v => ({ label: v.profile!.name, value: v.id }))}
-        onSubmit={handleAdd}
-        onCancel={() => setShowAddDialog(false)} /> */}
-  </>)
-}
-
-const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Tool[]>([]);
-
-  useEffect(() => {
-    if (entity) {
-      volunteer2ToolService.findToolsByVolunteerId(entity.id)
-        .then((tools) => {
-          setCurrent(tools)
-        });
-    }
-  }, [entity]);
-
-
-  return (< >
-    <ManagedListCard
-      title='Tools'
-      items={current.map(tool => <ToolCard key={tool.id}
-        entity={tool}
-        cardStyles={{ width: 200 }} />)}
-      cardHeaderSx={{
-        background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
-      }}
-    />
-    {/* <SelectTeamDialog
-        open={showAddDialog}
-        options={{ title: 'Add volunteer' }}
-        records={available.map(v => ({ label: v.profile!.name, value: v.id }))}
-        onSubmit={handleAdd}
-        onCancel={() => setShowAddDialog(false)} /> */}
-  </>)
-}
-
-const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Staffing[]>([]);
-
-  useEffect(() => {
-    if (entity) {
-      staffingService.findByVolunteerId(entity.id)
-        .then((staffing) => {
-          console.log(staffing)
-          setCurrent(staffing)
-        });
-    }
-  }, [entity]);
-
-  return (< >
-    <ManagedListCard
-      title='Ventures'
-      items={current.map(staffing => <VentureCard key={staffing.venture!.id}
-        entity={staffing.venture!}
-        cardStyles={{ width: 200 }} />)}
-      cardHeaderSx={{
-        background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
-      }}
-    />
-  </>)
-}
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" }
 
 const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
 

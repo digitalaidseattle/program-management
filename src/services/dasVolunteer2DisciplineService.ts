@@ -18,7 +18,7 @@ type Volunteer2Discipline = {
     senior: boolean,
     details: string,
     volunteer?: Volunteer,
-    discripline?: Discipline
+    discipline?: Discipline
 }
 
 const ASSOC_TABLE = 'volunteer2discipline';
@@ -26,6 +26,15 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
 
     constructor() {
         super(ASSOC_TABLE)
+    }
+
+    update(volunteer2Discipline: Volunteer2Discipline, updates: Partial<Volunteer2Discipline>): Promise<Volunteer2Discipline> {
+        return supabaseClient
+            .from(this.tableName)
+            .update(updates)
+            .eq('volunteer_id', volunteer2Discipline.volunteer_id)
+            .eq('discipline_id', volunteer2Discipline.discipline_id)
+            .select();
     }
 
     addDisciplineToVolunteer(discipline: Discipline, volunteer: Volunteer): Promise<boolean> {
@@ -72,6 +81,14 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
             .select('*, volunteer(*, profile(*))')
             .eq('discipline_id', disciplineId)
             .then((resp: any) => resp.data)
+    }
+
+    findByVolunteerId(volunteerId: Identifier): Promise<Volunteer2Discipline[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, discipline(*)')
+            .eq('volunteer_id', volunteerId)
+            .then(async (resp: any) => await resp.data)
     }
 
 }

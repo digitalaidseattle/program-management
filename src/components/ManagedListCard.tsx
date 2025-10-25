@@ -67,7 +67,7 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                                     p: 0,
                                 }}
                                 elevation={3}>
-                                <IconButton
+                               {onDelete &&  <IconButton
                                     onClick={confirmDelete(idx)}
                                     aria-label="favorite"
                                     size="small"
@@ -80,7 +80,7 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                                         zIndex: 2,
                                     }}>
                                     <CloseCircleOutlined />
-                                </IconButton>
+                                </IconButton>}
                                 {item}
                             </Paper>
                             ))}

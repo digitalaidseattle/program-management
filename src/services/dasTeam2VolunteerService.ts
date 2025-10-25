@@ -15,7 +15,9 @@ import { Volunteer } from "./dasVolunteerService";
 type Team2Volunteer = {
     team_id: string,
     volunteer_id: string,
-    leader: boolean
+    leader: boolean,
+    team?: Team,
+    volunteer?: Volunteer
 }
 
 const TABLE_TEAM_2_VOLUNTER = 'team2volunteer';
@@ -23,6 +25,15 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
 
     constructor() {
         super(TABLE_TEAM_2_VOLUNTER)
+    }
+
+    update(team2Volunteer: Team2Volunteer, updates: Partial<Team2Volunteer>): Promise<Team2Volunteer> {
+        return supabaseClient
+            .from(this.tableName)
+            .update(updates)
+            .eq('team_id', team2Volunteer.team_id)
+            .eq('volunteer_id', team2Volunteer.volunteer_id)
+            .select();
     }
 
     addVolunteerTeamLeader(volunteer: Volunteer, team: Team, leader: true): Promise<boolean> {
@@ -81,6 +92,21 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             }))
     }
 
+    findByVolunteerId(volunteerId: Identifier): Promise<Team2Volunteer[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, team(*)')
+            .eq('volunteer_id', volunteerId)
+            .then((resp: any) => resp.data);
+    }
+
+    findByTeamId(teamId: string): Promise<Team2Volunteer[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, volunteer(*, profile(*))')
+            .eq('team_id', teamId)
+            .then((resp: any) => resp.data);
+    }
 }
 
 

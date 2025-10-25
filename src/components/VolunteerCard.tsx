@@ -18,12 +18,13 @@ type EntityCardProps<T> = {
     };
     cardStyles?: any;
 }
-const STATUS_COLORS = {
-    'Cadre': 'primary',
-    'Contributor': 'success',
-    'past': 'warning',
-    'taking a break': 'default',
-} as any;
+
+const STATUS_COMP: { [key: string]: JSX.Element } = {
+    'Cadre': <Chip label='Cadre' color='primary' />,
+    'Contributor': <Chip label='Contributor' color='success' />,
+    'past': <Chip label='Past' color='warning' />,
+    'taking a break': <Chip label='Taking a break' color='default' />
+}
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -33,7 +34,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
 
     function changeHighlight() {
         alert(`TODO toggle ${volunteer.profile!.name}`);
-        
+
     }
     return (
         <Card
@@ -85,7 +86,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                     }
                     <Typography variant='h4'>{volunteer.profile!.name}</Typography>
                 </Stack>
-                <Chip label={volunteer.status} color={STATUS_COLORS[volunteer.status]} />
+                {STATUS_COMP[volunteer.status]}
             </CardContent>
         </Card >
     )

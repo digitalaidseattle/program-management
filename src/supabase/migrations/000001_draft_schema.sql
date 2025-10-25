@@ -148,6 +148,7 @@ DROP TABLE IF EXISTS volunteer2tool;
 CREATE TABLE volunteer2tool (
     volunteer_id uuid not null,
     tool_id uuid not null,
+    expert boolean,
     constraint volunteer2tool_pkey primary key (volunteer_id, tool_id),
     constraint volunteer2tool_tool_id_fkey foreign KEY (tool_id) references tool (id),
     constraint volunteer2tool_volunteer_id_fkey foreign KEY (volunteer_id) references volunteer (id)

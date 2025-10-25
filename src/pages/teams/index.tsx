@@ -1,15 +1,14 @@
 
 // material-ui
-import { GridColDef } from '@mui/x-data-grid';
-import ListDetailPage from '../../components/ListDetailPage';
-import { Team, teamService } from '../../services/dasTeamService';
-import { TeamCard } from '../../components/TeamCard';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { Avatar, Box } from '@mui/material';
+import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Avatar, Box } from '@mui/material';
+import { ListCard } from '../../components/ListCard';
+import ListDetailPage from '../../components/ListDetailPage';
+import { Team, teamService } from '../../services/dasTeamService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
-import { ListItem } from './ListItem';
 import { TeamDetails } from '../team';
 
 const supabaseStorage = new SupabaseStorage();
@@ -77,13 +76,24 @@ const TeamsPage = () => {
       title='Teams'
       columns={columns}
       onChange={onChange}
-      gridOpts={{ cardRenderer: entity => <TeamCard key={entity.id} entity={entity} /> }}
+
+      gridOpts={{
+        cardRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={supabaseStorage.getUrl(`/icons/${entity.id}`)}
+          cardAction={() => handleRowDoubleClick({ id: entity.id })}
+        />
+      }}
       tableOpts={
         { onRowDoubleClick: handleRowDoubleClick }
       }
       listOpts={{
-        listItemRenderer: entity => <ListItem entity={entity} />,
-        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')}/>,
+        listItemRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={supabaseStorage.getUrl(`/icons/${entity.id}`)} />,
+        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />,
       }}
 
     />
