@@ -24,6 +24,7 @@ import {
 // project import
 import { PageInfo } from '@digitalaidseattle/supabase';
 import { Staffing } from '../services/dasStaffingService';
+import { STAFFING_COMP } from '../pages/ventures/ventureUtils';
 
 // ==============================|| Tickets Grid ||============================== //
 
@@ -39,12 +40,6 @@ export const StaffingTable: React.FC<StaffingTableProps> = ({ items }) => {
     const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'status', sort: 'desc' }])
     const [pageInfo, setPageInfo] = useState<PageInfo<any>>({ rows: items, totalRowCount: items.length });
     const apiRef = useGridApiRef();
-
-
-    const POSITION_COLORS = {
-        'Please fill': 'primary',
-        'Proposed': 'success',
-    } as any;
 
     useEffect(() => {
         setPageInfo({ rows: items, totalRowCount: items.length })
@@ -65,7 +60,7 @@ export const StaffingTable: React.FC<StaffingTableProps> = ({ items }) => {
                 headerName: 'Status',
                 width: 150,
                 renderCell: (param: GridRenderCellParams) => {
-                    return <Chip label={param.row.status} color={POSITION_COLORS[param.row.status]} />
+                    return (param.row.status ? STAFFING_COMP[param.row.status] : <Chip label={'N/A'} color={'error'} />)
                 }
             },
             {

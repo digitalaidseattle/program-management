@@ -188,3 +188,13 @@ CREATE TABLE team2tool (
     constraint team2tool_team_id_fkey foreign KEY (team_id) references team (id),
     constraint team2tool_tool_id_fkey foreign KEY (tool_id) references tool (id)
 );
+
+CREATE TABLE venture_report (
+    id UUID PRIMARY KEY,
+    venture_id uuid REFERENCES venture(id),
+    reported_by text,
+    changes_by_partner text,
+    successes text,
+    staffing_need text,
+    staffing_issues text
+);

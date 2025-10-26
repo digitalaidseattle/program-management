@@ -1,7 +1,7 @@
 
 // material-ui
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Chip, Stack } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -10,6 +10,7 @@ import ListDetailPage from '../../components/ListDetailPage';
 import { Venture, ventureService } from '../../services/dasVentureService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
 import { VentureDetails } from '../venture';
+import { STATUS_COMP } from './ventureUtils';
 
 const supabaseStorage = new SupabaseStorage();
 
@@ -17,7 +18,6 @@ const columns: GridColDef<Venture[][number]>[] = [
   {
     field: 'logo',
     headerName: '',
-    width: 100,
     renderCell: (params) => (
       <Box
         sx={{
@@ -38,7 +38,12 @@ const columns: GridColDef<Venture[][number]>[] = [
     ),
   },
   { field: 'venture_code', headerName: 'Title', width: 300 },
-  { field: 'status', headerName: 'Status', width: 200 },
+  {
+    field: 'status', headerName: 'Status', width: 200,
+    renderCell: (params) => (
+      params.row.status ? STATUS_COMP[params.row.status] : <Chip label='N/A' color='default' />
+    ),
+  },
   {
     field: 'partner.name', headerName: 'Partner', width: 200,
     renderCell: (params) => params.row.partner!.name
@@ -80,6 +85,19 @@ const VenturesPage = () => {
           onRowDoubleClick: handleRowDoubleClick
         }
       }
+      gridOpts={{
+        cardRenderer: entity => <ListCard
+          key={entity.id}
+          title={entity.venture_code}
+          avatarImageSrc={supabaseStorage.getUrl(`logos/${entity.partner!.id}`)}
+          cardAction={() => handleRowDoubleClick({ id: entity.id })}
+          cardContent={
+            <Stack>
+              {entity.status ? STATUS_COMP[entity.status] : <Chip label='N/A' color='default' />}
+            </Stack>
+          }
+        />
+      }}
       listOpts={{
         listItemRenderer: entity => <ListCard
           key={entity.id}
@@ -87,6 +105,7 @@ const VenturesPage = () => {
           avatarImageSrc={supabaseStorage.getUrl(`logos/${entity.partner!.id}`)} />,
         detailRenderer: entity => <VentureDetails entity={entity} onChange={() => alert('nrfpt')} />,
       }}
+
     />
   );
 };

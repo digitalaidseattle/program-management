@@ -1,6 +1,7 @@
 
 // material-ui
 import {
+  Box,
   Breadcrumbs,
   Link,
   Stack,
@@ -10,11 +11,12 @@ import {
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { StaffingTable } from '../../components/StaffingTable';
+import { TabbedCard } from '../../components/TabbedCard';
 import { EntityProps } from '../../components/utils';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { Venture, ventureService } from '../../services/dasVentureService';
 
-const VolunteersCard: React.FC<EntityProps<Venture>> = ({ entity }) => {
+const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [current, setCurrent] = useState<Staffing[]>([]);
 
   useEffect(() => {
@@ -26,20 +28,31 @@ const VolunteersCard: React.FC<EntityProps<Venture>> = ({ entity }) => {
     }
   }, [entity]);
 
-  return (< >
-    <StaffingTable title="Staffing" items={current} />
-  </>)
+  return <StaffingTable title="Staffing" items={current} />
 }
 
 const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) => {
+
+  function handleStaffingChange(evt: any) {
+    onChange(evt)
+  };
+
   return (entity &&
     <>
       <Stack gap={3}>
         <TextField id="outlined-basic" label="Name" variant="outlined" value={entity.venture_code} />
       </Stack>
-      <VolunteersCard entity={entity} onChange={onChange} />
+      <>
+        <TabbedCard panels={
+          [
+            { label: 'Staffing', children: <StaffingPanel entity={entity} onChange={handleStaffingChange} /> },
+            { label: 'Report', children: <Box> RRR </Box> },
+          ]
+        } />
+      </>
     </>
   )
+
 }
 
 const VenturePage = () => {
