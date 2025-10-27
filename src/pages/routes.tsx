@@ -11,7 +11,6 @@ import DisciplinesPage from './disciplines';
 import MigrationPage from './migration';
 import { PartnerPage } from './partner';
 import PartnersPage from './partners';
-import SchedulingPage from './scheduling';
 import { TeamPage } from './team';
 import TeamsPage from './teams';
 import { ToolPage } from './tool';
@@ -36,10 +35,6 @@ const routes = [
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
-      },
-      {
-        path: "scheduling",
-        element: <SchedulingPage />,
       },
       {
         path: "volunteers",

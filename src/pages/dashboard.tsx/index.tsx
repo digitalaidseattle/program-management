@@ -1,4 +1,6 @@
+import { Card, CardContent, CardHeader } from "@mui/material";
 import Markdown from "react-markdown";
+import { SchedulingWidget } from "../../components/SchedulingWidget";
 
 const DashboardPage = () => {
     const hometext = `
@@ -12,9 +14,17 @@ You should expect to find things like:
 `
 
     return (
-        <Markdown>
-            {hometext}
-        </Markdown>
+        <>
+            <Card>
+                <CardHeader title="Create Scheduling Links" />
+                <CardContent>
+                    <SchedulingWidget />
+                </CardContent>
+            </Card>
+            <Markdown>
+                {hometext}
+            </Markdown>
+        </>
     );
 };
 
