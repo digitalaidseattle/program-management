@@ -107,7 +107,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
     <ManagedListCard
       title='Tools'
       items={cards}
-      cardHeaderSx={CARD_HEADER_SX}
+      headerSx={CARD_HEADER_SX}
       addOpts={{
         title: 'Add Tool',
         available: available.map(v => ({ label: v.name, value: v.id })),

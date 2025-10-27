@@ -111,7 +111,7 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
   return (<>
     <ManagedListCard
       title='Members'
-      cardHeaderSx={CARD_HEADER_SX}
+      headerSx={CARD_HEADER_SX}
       items={cards}
       addOpts={{
         title: 'Add volunteer',

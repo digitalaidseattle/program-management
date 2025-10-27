@@ -120,7 +120,7 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
     <ManagedListCard
       title='Teams'
       items={cards}
-      cardHeaderSx={CARD_HEADER_SX}
+      headerSx={CARD_HEADER_SX}
       addOpts={{
         title: 'Join Team',
         available: available.map(v => ({ label: v.name, value: v.id })),

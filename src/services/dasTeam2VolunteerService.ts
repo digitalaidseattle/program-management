@@ -27,16 +27,17 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
         super(TABLE_TEAM_2_VOLUNTER)
     }
 
-    update(team2Volunteer: Team2Volunteer, updates: Partial<Team2Volunteer>): Promise<Team2Volunteer> {
+    async update(team2Volunteer: Team2Volunteer, updates: Partial<Team2Volunteer>): Promise<Team2Volunteer> {
         return supabaseClient
             .from(this.tableName)
             .update(updates)
             .eq('team_id', team2Volunteer.team_id)
             .eq('volunteer_id', team2Volunteer.volunteer_id)
-            .select();
+            .select()
+            .then((resp: any) => resp.data);
     }
 
-    addVolunteerTeamLeader(volunteer: Volunteer, team: Team, leader: true): Promise<boolean> {
+    async addVolunteerTeamLeader(volunteer: Volunteer, team: Team, leader: true): Promise<Team2Volunteer> {
         return supabaseClient
             .from(this.tableName)
             .update(
@@ -44,11 +45,11 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             )
             .eq('volunteer_id', volunteer.id)
             .eq('team_id', team.id)
-            .select();
+            .select()
+            .then((resp: any) => resp.data);
     }
 
-    addVolunteerToTeam(volunteer: Volunteer, team: Team): Promise<boolean> {
-        console.log(volunteer, team)
+    async addVolunteerToTeam(volunteer: Volunteer, team: Team): Promise<Team2Volunteer> {
         return supabaseClient
             .from(this.tableName)
             .insert(
@@ -58,10 +59,11 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
                     leader: false
                 }
             )
-            .select();
+            .select()
+            .then((resp: any) => resp.data);
     }
 
-    removeVolunteerFromTeam(volunteer: Volunteer, team: Team): Promise<boolean> {
+    async removeVolunteerFromTeam(volunteer: Volunteer, team: Team): Promise<boolean> {
         return supabaseClient
             .from(this.tableName)
             .delete()
@@ -70,7 +72,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             .then(() => true)
     }
 
-    findTeamsByVolunteerId(volunteerId: Identifier): Promise<Team[]> {
+    async findTeamsByVolunteerId(volunteerId: Identifier): Promise<Team[]> {
         return supabaseClient
             .from(this.tableName)
             .select('*, team(*)')
@@ -78,7 +80,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             .then((resp: any) => resp.data.map((d: any) => d.team))
     }
 
-    findVolunteersByTeamId(teamId: Identifier): Promise<Volunteer[]> {
+    async findVolunteersByTeamId(teamId: Identifier): Promise<Volunteer[]> {
         return supabaseClient
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
@@ -92,7 +94,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             }))
     }
 
-    findByVolunteerId(volunteerId: Identifier): Promise<Team2Volunteer[]> {
+    async findByVolunteerId(volunteerId: Identifier): Promise<Team2Volunteer[]> {
         return supabaseClient
             .from(this.tableName)
             .select('*, team(*)')
@@ -100,7 +102,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             .then((resp: any) => resp.data);
     }
 
-    findByTeamId(teamId: string): Promise<Team2Volunteer[]> {
+    async findByTeamId(teamId: string): Promise<Team2Volunteer[]> {
         return supabaseClient
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')

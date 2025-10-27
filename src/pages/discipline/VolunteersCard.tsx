@@ -114,7 +114,7 @@ export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onCh
         <ManagedListCard
             title='Volunteers'
             items={cards}
-            cardHeaderSx={CARD_HEADER_SX}
+            headerSx={CARD_HEADER_SX}
             addOpts={{
                 title: 'Add volunteer',
                 available: available.map(v => ({ label: v.profile!.name, value: v.id })),

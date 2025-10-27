@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 
 // material-ui
 import {
+    Box,
     Button,
     Dialog,
     DialogActions,
@@ -21,19 +22,20 @@ import {
 } from '@mui/material';
 
 const DEFAULT_TITLE = 'Select Item';
-interface AddEntityDialogProps {
+interface SelectItemDialogProps {
     open: boolean,
     records: {
         label: string,
         value: string
     }[],
-    options: {
+    options?: {
         title?: string,
+        description?: string
     }
     onSubmit: (selected: string | null | undefined) => void
     onCancel: () => void
 }
-const SelectItemDialog: React.FC<AddEntityDialogProps> = ({ open, records, options, onSubmit, onCancel }) => {
+const SelectItemDialog: React.FC<SelectItemDialogProps> = ({ open, records, options, onSubmit, onCancel }) => {
 
     const [selected, setSelected] = useState<string>('');
 
@@ -50,8 +52,9 @@ const SelectItemDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
         open={open}
         onClose={onCancel}
     >
-        <DialogTitle><Typography fontSize={24}>{options ? options.title : DEFAULT_TITLE}</Typography></DialogTitle>
+        <DialogTitle><Typography fontSize={24}>{(options && options.title) ? options.title : DEFAULT_TITLE}</Typography></DialogTitle>
         <DialogContent>
+            {options && options.description && <Box>{options.description}</Box> }
             <Stack spacing={2} margin={2}>
                 <FormControl fullWidth>
                     <Select

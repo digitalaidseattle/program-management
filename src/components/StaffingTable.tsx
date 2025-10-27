@@ -24,7 +24,7 @@ import {
 // project import
 import { PageInfo } from '@digitalaidseattle/supabase';
 import { Staffing } from '../services/dasStaffingService';
-import { STAFFING_COMP } from '../pages/ventures/ventureUtils';
+import { STAFFING_COMP } from '../pages/ventures/Utils';
 
 // ==============================|| Tickets Grid ||============================== //
 

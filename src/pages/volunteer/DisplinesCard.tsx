@@ -118,9 +118,9 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
         <ManagedListCard
             title='Disciplines'
             items={cards}
-            cardHeaderSx={CARD_HEADER_SX}
+            headerSx={CARD_HEADER_SX}
             addOpts={{
-                title: 'Add Tool',
+                title: 'Add Discipline',
                 available: available.map(v => ({ label: v.name, value: v.id })),
                 handleAdd: handleAdd
             }}

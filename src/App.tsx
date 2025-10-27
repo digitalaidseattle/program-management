@@ -7,6 +7,8 @@
 // project import
 import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 import {
   AuthServiceProvider,
   StorageServiceProvider,
@@ -22,6 +24,7 @@ import {
 
 import "./App.css";
 import { TemplateConfig } from './TemplateConfig';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
@@ -33,7 +36,9 @@ const App: React.FC = () => {
       <StorageServiceProvider storageService={new SupabaseStorageService()} >
         <UserContextProvider>
           <LayoutConfigurationProvider configuration={TemplateConfig()}>
-            <RouterProvider router={router} />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <RouterProvider router={router} />
+            </LocalizationProvider>
           </LayoutConfigurationProvider>
         </UserContextProvider>
       </StorageServiceProvider>

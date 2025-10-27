@@ -6,8 +6,11 @@
  */
 
 // material-ui
+import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import {
   Breadcrumbs,
+  Card,
+  CardContent,
   Link,
   Stack,
   TextField,
@@ -26,21 +29,77 @@ export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597
 
 const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
 
+  const fields = [
+    {
+      name: 'profile.name', label: 'Name', type: 'custom', disabled: false,
+      inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
+        return <TextField key={idx} id="outlined-basic" label="Name" variant="outlined" value={entity.profile!.name} />
+      }
+    },
+    {
+      name: 'profile.first_name', label: 'First Name', type: 'string', disabled: false,
+      inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
+        return <TextField key={idx} id="outlined-basic" label="First Name" variant="outlined" value={entity.profile!.first_name} />
+      }
+    },
+    {
+      name: 'profile.last_name', label: 'Last Name', type: 'string', disabled: false,
+      inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
+        return <TextField key={idx} id="outlined-basic" label="First Name" variant="outlined" value={entity.profile!.last_name} />
+      }
+    },
+    {
+      name: 'join_date', label: 'Join Date', type: 'date', disabled: false
+    },
+    {
+      name: "status",
+      label: 'Status',
+      type: 'select',
+      options: [
+        { label: 'New Prospect', value: "new prospect" },
+        { label: 'Cadre', value: "Cadre" },
+        { label: 'Contributor', value: "Contributor" },
+        { label: 'Board only', value: "Board only" },
+        { label: 'Past', value: "past" },
+        { label: 'Rejected', value: "rejected" },
+        { label: 'On Break', value: "taking a break" },
+        { label: 'On Call', value: "on call" },
+        { label: 'Offboarding Cadre', value: "Offboarding Cadre" },
+        { label: 'Offboarding Contributor', value: "Offboarding Contributor" },
+        { label: 'Onboarding', value: "Onboarding" },
+      ],
+      disabled: false,
+    },
+    {
+      name: "linkedin",
+      label: 'LinkedIn',
+      type: 'string',
+      disabled: false,
+    },
+  ]
+
+  function handleChange(field: string, value: any) {
+    // stringify & parse needed for string keys
+    const updatedChanges = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
+    console.log(updatedChanges)
+    // setProject({
+    //   ...project,
+    //   ...updatedChanges
+    // });
+    // setDirty(true);
+  }
   return (entity &&
-    <>
-      <Stack gap={3}>
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={entity.profile!.name} />
-        <TextField id="outlined-basic" label="First Name" variant="outlined" value={entity.profile!.first_name} />
-        <TextField id="outlined-basic" label="Last Name" variant="outlined" value={entity.profile!.last_name} />
-        <TextField id="outlined-basic" label="Join Date" variant="outlined" value={entity.join_date} />
-        <TextField id="outlined-basic" label="Status" variant="outlined" value={entity.status} />
-        <TextField id="outlined-basic" label="LinkedIn" variant="outlined" value={entity.linkedin} />
-      </Stack>
+    <Stack gap={1} >
+      <Card >
+        <CardContent>
+          <InputForm entity={entity} inputFields={fields} onChange={handleChange} />
+        </CardContent>
+      </Card>
       <TeamsCard entity={entity} onChange={onChange} />
       <DisciplinesCard entity={entity} onChange={onChange} />
       <ToolsCard entity={entity} onChange={onChange} />
       <VenturesCard entity={entity} onChange={onChange} />
-    </>
+    </Stack>
   )
 }
 

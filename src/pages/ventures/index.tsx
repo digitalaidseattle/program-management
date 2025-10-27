@@ -10,7 +10,7 @@ import ListDetailPage from '../../components/ListDetailPage';
 import { Venture, ventureService } from '../../services/dasVentureService';
 import { SupabaseStorage } from '../../services/supabaseStorage';
 import { VentureDetails } from '../venture';
-import { STATUS_COMP } from './ventureUtils';
+import { STATUS_COMP } from './Utils';
 
 const supabaseStorage = new SupabaseStorage();
 

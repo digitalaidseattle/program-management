@@ -6,7 +6,7 @@ import SelectItemDialog from "./SelectItemDialog";
 export type ManagedListCardProps = {
     title: string;
     items: ReactNode[];
-    cardHeaderSx?: any;
+    headerSx?: any;
     addOpts?: {
         title: string;
         available: { label: string, value: string }[];
@@ -14,7 +14,7 @@ export type ManagedListCardProps = {
     }
 }
 
-export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, cardHeaderSx: cardHeaderSx, addOpts }) => {
+export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, headerSx: cardHeaderSx, addOpts }) => {
     const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
 
     function handSubmit(selected: string | null | undefined) {

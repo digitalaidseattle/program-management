@@ -60,7 +60,7 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
     <ManagedListCard
       title='Ventures'
       items={cards}
-      cardHeaderSx={CARD_HEADER_SX}
+      headerSx={CARD_HEADER_SX}
     />
   </>)
 }

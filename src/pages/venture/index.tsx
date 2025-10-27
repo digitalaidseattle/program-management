@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { StaffingTable } from '../../components/StaffingTable';
-import { TabbedCard } from '../../components/TabbedCard';
+import { TabbedPanelsCard } from '../../components/TabbedPanelsCard';
 import { EntityProps } from '../../components/utils';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { Venture, ventureService } from '../../services/dasVentureService';
@@ -43,10 +43,10 @@ const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
         <TextField id="outlined-basic" label="Name" variant="outlined" value={entity.venture_code} />
       </Stack>
       <>
-        <TabbedCard panels={
+        <TabbedPanelsCard panels={
           [
-            { label: 'Staffing', children: <StaffingPanel entity={entity} onChange={handleStaffingChange} /> },
-            { label: 'Report', children: <Box> RRR </Box> },
+            { header: 'Staffing', children: <StaffingPanel entity={entity} onChange={handleStaffingChange} /> },
+            { header: 'Report', children: <Box> RRR </Box> },
           ]
         } />
       </>
