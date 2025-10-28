@@ -5,9 +5,9 @@
  *
  */
 // project import
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import {
   AuthServiceProvider,
@@ -16,15 +16,15 @@ import {
 } from "@digitalaidseattle/core";
 import { LayoutConfigurationProvider } from "@digitalaidseattle/mui";
 
-import { routes } from './pages/routes';
 import {
   SupabaseAuthService,
   SupabaseStorageService
 } from '@digitalaidseattle/supabase';
+import { routes } from './pages/routes';
 
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import "./App.css";
 import { TemplateConfig } from './TemplateConfig';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 

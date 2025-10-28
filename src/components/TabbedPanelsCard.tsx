@@ -20,6 +20,7 @@ interface TabPanelProps {
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, dir, ...other }) => {
     return (
         <Box
+            key={index}
             role="tabpanel"
             hidden={value !== index}
             id={`profile-tabpanel-${index}`}
@@ -72,7 +73,7 @@ const TabbedPanels: React.FC<TabbedCardProps> = ({ panels }) => {
                     ))}
                 </Tabs>
                 {panels.map((p, idx) => (
-                    <TabPanel value={activeTab} index={idx} dir={theme.direction}>
+                    <TabPanel key={idx} value={activeTab} index={idx} dir={theme.direction}>
                         {p.children}
                     </TabPanel>
                 ))}

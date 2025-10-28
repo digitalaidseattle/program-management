@@ -17,11 +17,13 @@ import { ToolPage } from './tool';
 import ToolsPage from './tools';
 import { VenturePage } from './venture';
 import VenturesPage from './ventures';
-import MeetingPage from './meeting';
+import { MeetingPage } from './meeting';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
 import DashboardPage from './dashboard.tsx';
 import Markdown from 'react-markdown';
+import PlenaryPage from './plenary/index.tsx';
+import MeetingsPage from './meetings/index.tsx';
 
 const routes = [
   {
@@ -89,6 +91,10 @@ const routes = [
         element: <MigrationPage />,
       },
       {
+        path: "meetings",
+        element: <MeetingsPage />,
+      },
+      {
         path: "meeting/:id",
         element: <MeetingPage />,
       },
@@ -107,6 +113,10 @@ const routes = [
       {
         path: "reporting",
         element: <Markdown># The Reporting page is under construction.</Markdown>,
+      },
+      {
+        path: "plenary",
+        element: <PlenaryPage />,
       }
     ]
   },

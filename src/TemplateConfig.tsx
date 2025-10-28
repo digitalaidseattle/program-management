@@ -1,11 +1,13 @@
 
 
 import {
+    CalendarOutlined,
     HeartOutlined,
     HomeOutlined,
     MehOutlined,
     PaperClipOutlined,
     RocketOutlined,
+    ScheduleOutlined,
     SearchOutlined,
     TeamOutlined,
     ToolOutlined,
@@ -29,6 +31,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/',
                 icon: <HomeOutlined />
+            },
+            {
+                id: 'plenary',
+                title: 'Plenary',
+                type: 'item',
+                url: '/plenary',
+                icon: <ScheduleOutlined />
             }]
     }
 
@@ -99,6 +108,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/disciplines',
                 icon: <ToolOutlined />
+            },
+            {
+                id: 'meetings',
+                title: 'Meetings',
+                type: 'item',
+                url: '/meetings',
+                icon: <CalendarOutlined />
             }
         ]
     } as MenuItem;

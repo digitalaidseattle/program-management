@@ -198,3 +198,42 @@ CREATE TABLE venture_report (
     staffing_need text,
     staffing_issues text
 );
+
+DROP TABLE IF EXISTS meeting;
+
+CREATE TABLE meeting (
+    id UUID PRIMARY KEY,
+    name text,
+    type text,
+    date Date,
+    meeting_url text,
+    status text,
+    notes text
+);
+
+DROP TABLE IF EXISTS meeting_attendee;
+
+CREATE TABLE meeting_attendee (
+    id UUID PRIMARY KEY,
+    meeting_id uuid REFERENCES meeting(id),
+    profile_id uuid REFERENCES profile(id),
+    present boolean,
+    email text,
+    constraint meeting_attendee_pkey primary key (id),
+    constraint meeting_attendee_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE,
+    constraint meeting_attendee_profile_id_fkey foreign KEY (profile_id) references profile (id) on delete CASCADE,
+);
+
+DROP TABLE IF EXISTS meeting_topic;
+
+CREATE TABLE meeting_topic (
+    id UUID PRIMARY KEY,
+    meeting_id uuid REFERENCES meeting(id),
+    type text,
+    title text,
+    description text,
+    created_by text,
+    discussed boolean,
+    constraint meeting_topic_pkey primary key (id),
+    constraint meeting_topic_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE
+);

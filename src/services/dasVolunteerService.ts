@@ -44,7 +44,18 @@ type Volunteer = {
     profile_id: string,
     airtable_id: string,
     affliation: string,
-    status: string,
+    status: "Cadre" |
+    "new prospect" |
+    "past" |
+    "Cadre" |
+    "taking a break" |
+    "on call" |
+    "rejected" |
+    "Offboarding Cadre" |
+    "Onboarding" |
+    "Board only" |
+    "Contributor" |
+    "Offboarding Contributor",
     join_date: string,
     position: string,
     disciplines: string[],
