@@ -23,17 +23,18 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 
   const [topics, setTopics] = useState<MeetingTopic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<MeetingTopic>();
+  const [isNew, setIsNew] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const inputFields: InputOption[] = [
     {
-      name: "title",
+      name: "message",
       label: 'Title',
       type: 'string',
       disabled: false,
     },
     {
-      name: "created_by",
+      name: "source",
       label: 'Team',
       type: 'string',
       disabled: false,
@@ -49,12 +50,9 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
   function newTopic(): void {
     const topic = meetingTopicService.empty(meeting!.id);
     topic.type = 'team';
-    meetingTopicService.insert(topic)
-      .then(inserted => {
-        onChange(inserted);
-        setSelectedTopic(inserted);
-        setShowDialog(true);
-      })
+    setSelectedTopic(topic);
+    setShowDialog(true);
+    setIsNew(true);
   }
 
   function deleteTopic(topic: MeetingTopic | null): void {
@@ -66,8 +64,13 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 
   function handleTopicChange(topic: MeetingTopic | null): void {
     if (topic) {
-      meetingTopicService.update(topic.id, topic)
-        .then(updated => onChange(updated))
+      if (isNew) {
+        meetingTopicService.insert(topic)
+          .then(inserted => onChange(inserted))
+      } else {
+        meetingTopicService.update(topic.id, topic)
+          .then(updated => onChange(updated))
+      }
     }
     setShowDialog(false);
     setSelectedTopic(undefined);
@@ -87,14 +90,14 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
           </TableHead>
           <TableBody>
             {topics.map(topic => (
-              <TableRow onDoubleClick={() => { setSelectedTopic(topic); setShowDialog(true) }} key={topic.id}>
+              <TableRow onDoubleClick={() => { setSelectedTopic(topic); setIsNew(false); setShowDialog(true) }} key={topic.id}>
                 <TableCell>
                   <IconButton size={'small'} color='error' onClick={() => deleteTopic(topic)}>
                     <DeleteOutlined />
                   </IconButton>
                 </TableCell>
-                <TableCell>{topic.title}</TableCell>
-                <TableCell>{topic.created_by}</TableCell>
+                <TableCell>{topic.message}</TableCell>
+                <TableCell>{topic.source}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -102,7 +105,7 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
       </CardContent>
       <InputFormDialog
         open={showDialog}
-        title={'Update topic'}
+        title={isNew ? 'Add topic' : 'Update topic'}
         inputFields={inputFields}
         entity={selectedTopic!}
         onChange={handleTopicChange} />

@@ -14,9 +14,8 @@ import { EntityProps } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team, teamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
+import { useStorageService } from '@digitalaidseattle/core';
 
-const storage = new SupabaseStorage();
 const STATUS_COMP: { [key: string]: JSX.Element } = {
   'Active': <Chip label='Active' color='primary' />,
   'constant': <Chip label='Constant' color='success' />,
@@ -31,6 +30,7 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   const [selectedItem, setSelectedItem] = useState<Team>();
 
   const navigate = useNavigate();
+  const storageService = useStorageService()!;
 
   useEffect(() => {
     teamService.getAll()
@@ -63,7 +63,7 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
         return <ListCard
           key={t2v.team!.id}
           title={t2v.team!.name}
-          avatarImageSrc={storage.getUrl(`icons/${t2v.team!.id}`)}
+          avatarImageSrc={storageService.getUrl(`icons/${t2v.team!.id}`)}
           cardContent={
             <Stack>
               {t2v.team!.status

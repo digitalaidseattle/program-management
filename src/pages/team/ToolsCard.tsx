@@ -1,5 +1,6 @@
 
 // material-ui
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { Chip, MenuItem, Stack } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
@@ -12,9 +13,7 @@ import { EntityProps } from '../../components/utils';
 import { Team2Tool, team2ToolService } from '../../services/dasTeam2ToolService';
 import { Team } from '../../services/dasTeamService';
 import { Tool, toolService } from '../../services/dasToolsService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
 
-const storage = new SupabaseStorage();
 
 const STATUS_COMP: { [key: string]: JSX.Element } = {
   'active': <Chip label='Active' color='primary' />,
@@ -29,6 +28,7 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
   const [selectedItem, setSelectedItem] = useState<Tool>();
 
   const navigate = useNavigate();
+  const storageService = useStorageService()!;
 
   useEffect(() => {
     toolService.getAll()
@@ -63,7 +63,7 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
         return <ListCard
           key={v2t.tool_id}
           title={v2t.tool!.name}
-          avatarImageSrc={storage.getUrl(`logos/${v2t.tool_id}`)}
+          avatarImageSrc={storageService.getUrl(`logos/${v2t.tool_id}`)}
           menuItems={[
             <MenuItem onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
             <MenuItem onClick={() => {

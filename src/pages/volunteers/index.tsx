@@ -1,6 +1,7 @@
 
 // material-ui
 import { PlusCircleOutlined } from '@ant-design/icons';
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { PageInfo, QueryModel, supabaseClient } from '@digitalaidseattle/supabase';
 import {
@@ -19,72 +20,15 @@ import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { VolunteerCard } from '../../components/VolunteerCard';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
 import { VolunteerDetails } from '../volunteer';
 
-const supabaseStorage = new SupabaseStorage();
 
-const columns: GridColDef<Volunteer[][number]>[] = [
-  {
-    field: 'profile.pic',
-    headerName: '',
-    width: 100,
-    renderCell: (params) => (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Avatar
-          alt={params.row.profile ? params.row.profile.name : ''}
-          src={supabaseStorage.getUrl(`profiles/${params.row.profile!.id}`)}
-          sx={{ width: 40, height: 40, objectFit: 'contain' }}
-          variant="rounded"
-        />
-      </Box>
-    ),
-    sortable: false,
-    filterable: false,
-  },
-  {
-    field: 'profile.name', headerName: 'Name', width: 175,
-    renderCell: (params) => params.row.profile!.name
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    width: 150,
-    valueGetter: (value) => value
-  },
-  {
-    field: 'das_email',
-    headerName: 'DAS Email',
-    width: 250,
-  },
-  {
-    field: 'github',
-    headerName: 'Github',
-    width: 200,
-  },
-  {
-    field: 'linkedin',
-    headerName: 'Linked In',
-    width: 250,
-  },
-  {
-    field: 'position',
-    headerName: 'Position',
-    width: 300,
-  }
-];
+
 
 const VolunteersPage = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [pageInfo, setPageInfo] = useState<PageInfo<Volunteer>>({ rows: [], totalRowCount: 0 });
+  const storageService = useStorageService()!;
 
   useEffect(() => {
     supabaseClient.storage.
@@ -92,7 +36,63 @@ const VolunteersPage = () => {
       .list('profiles')
       .then((resp: any) => console.log('log', resp))
   }, [])
-
+  const columns: GridColDef<Volunteer[][number]>[] = [
+    {
+      field: 'profile.pic',
+      headerName: '',
+      width: 100,
+      renderCell: (params) => (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Avatar
+            alt={params.row.profile ? params.row.profile.name : ''}
+            src={storageService.getUrl(`profiles/${params.row.profile!.id}`)}
+            sx={{ width: 40, height: 40, objectFit: 'contain' }}
+            variant="rounded"
+          />
+        </Box>
+      ),
+      sortable: false,
+      filterable: false,
+    },
+    {
+      field: 'profile.name', headerName: 'Name', width: 175,
+      renderCell: (params) => params.row.profile!.name
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 150,
+      valueGetter: (value) => value
+    },
+    {
+      field: 'das_email',
+      headerName: 'DAS Email',
+      width: 250,
+    },
+    {
+      field: 'github',
+      headerName: 'Github',
+      width: 200,
+    },
+    {
+      field: 'linkedin',
+      headerName: 'Linked In',
+      width: 250,
+    },
+    {
+      field: 'position',
+      headerName: 'Position',
+      width: 300,
+    }
+  ];
 
   function toolbar() {
     return (
@@ -111,7 +111,7 @@ const VolunteersPage = () => {
   }
 
   function onChange(queryModel?: QueryModel) {
-    volunteerService.find(queryModel)
+    volunteerService.find(queryModel!)
       .then(pageInfo => setPageInfo(pageInfo))
   }
 
@@ -144,7 +144,7 @@ const VolunteersPage = () => {
           listItemRenderer: entity => <ListCard
             key={entity.id}
             title={entity.profile!.name}
-            avatarImageSrc={supabaseStorage.getUrl(`profiles/${entity.profile!.id}`)} />,
+            avatarImageSrc={storageService.getUrl(`profiles/${entity.profile!.id}`)} />,
           detailRenderer: entity => <VolunteerDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
         }}
       />

@@ -8,7 +8,7 @@ import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import { Button, Dialog, DialogActions, DialogContent, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-// material-ui
+// @deprecated - use @digitalaidseattle/mui InputFormDialog instead when it is udpated
 
 interface InputFormDialogProps<T> {
     open: boolean;
@@ -37,7 +37,6 @@ function InputFormDialog<T>({ open, title, inputFields, entity, onChange }: Inpu
             ...clone,
             ...updatedChanges
         });
-        console.log(merged);
         setClone(merged);
         setDirty(true);
     }
@@ -47,7 +46,7 @@ function InputFormDialog<T>({ open, title, inputFields, entity, onChange }: Inpu
     }
 
     const handleCancel = () => {
-        onChange(clone!);
+        onChange(null);
     }
 
     return (

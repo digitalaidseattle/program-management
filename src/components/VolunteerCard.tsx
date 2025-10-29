@@ -5,10 +5,10 @@
  *
  */
 import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { useStorageService } from "@digitalaidseattle/core";
 import { Card, CardContent, CardMedia, Chip, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Volunteer } from "../services/dasVolunteerService";
-import { SupabaseStorage } from "../services/supabaseStorage";
 
 type EntityCardProps<T> = {
     entity: T;
@@ -26,11 +26,10 @@ const STATUS_COMP: { [key: string]: JSX.Element } = {
     'taking a break': <Chip label='Taking a break' color='default' />
 }
 
-const supabaseStorage = new SupabaseStorage();
 
 export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: volunteer, highlightOptions, cardStyles }) => {
     const navigate = useNavigate();
-
+    const storageService = useStorageService()!;
 
     function changeHighlight() {
         alert(`TODO toggle ${volunteer.profile!.name}`);
@@ -57,7 +56,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                     objectFit: 'contain',
                     cursor: 'pointer'
                 }}
-                src={supabaseStorage.getUrl(`profiles/${volunteer.profile!.id}`)}
+                src={storageService.getUrl(`profiles/${volunteer.profile!.id}`)}
                 title={volunteer.profile!.name + ' photo'}
                 onClick={() => navigate(`/volunteer/${volunteer.id}`)}
             />

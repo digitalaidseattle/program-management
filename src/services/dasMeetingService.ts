@@ -24,10 +24,11 @@ type MeetingTopic = {
     id: string,
     meeting_id: string;
     type: 'icebreaker' | 'shoutout' | 'team' | 'intro' | 'anniversary',
-    title: string,
-    description: string,
-    created_by: string,
-    discussed: boolean
+    subject_id: string[]; // ids for intro/anniversary/shoutouts
+    subject: string; // alertnate subject
+    message: string;
+    source: string; // who/team submitted it
+    discussed: boolean;
 }
 
 type Meeting = {
@@ -72,7 +73,7 @@ class MeetingService extends SupabaseEntityService<Meeting> {
     }
 
 }
-const ATTENDEE_SELECT = '*, profile(*)';
+
 class MeetingAttendeeService extends SupabaseEntityService<MeetingAttendee> {
 
     public constructor() {
@@ -101,11 +102,20 @@ class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
             id: uuid(),
             meeting_id: meetingId,
             type: 'team',
-            title: '',
-            description: '',
-            created_by: '',
+            subject_id: [],
+            subject: '',
+            message: '',
+            source: '', 
             discussed: false
         }
+    }
+
+    async findIntros(): Promise<MeetingTopic[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*')
+            .eq('type', 'intro')
+            .then((resp: any) => resp.data);
     }
 
 }

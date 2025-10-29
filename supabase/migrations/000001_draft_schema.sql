@@ -226,14 +226,15 @@ CREATE TABLE meeting_attendee (
 
 DROP TABLE IF EXISTS meeting_topic;
 
-CREATE TABLE meeting_topic (
-    id UUID PRIMARY KEY,
-    meeting_id uuid REFERENCES meeting(id),
-    type text,
-    title text,
-    description text,
-    created_by text,
-    discussed boolean,
-    constraint meeting_topic_pkey primary key (id),
-    constraint meeting_topic_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE
-);
+create table public.meeting_topic (
+  id uuid not null,
+  meeting_id uuid null,
+  type text null,
+  subject_id uuid[] null,
+  message text null,
+  source text null,
+  discussed boolean null,
+  subject text null,
+  constraint meeting_topic_pkey primary key (id),
+  constraint meeting_topic_meeting_id_fkey foreign KEY (meeting_id) references meeting (id)
+) 

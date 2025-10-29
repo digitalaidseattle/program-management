@@ -1,3 +1,4 @@
+import { useStorageService } from "@digitalaidseattle/core";
 import { ConfirmationDialog } from "@digitalaidseattle/mui";
 import { Chip, MenuItem, Stack } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
@@ -12,9 +13,7 @@ import { EntityProps } from "../../components/utils";
 import { Discipline, disciplineService } from "../../services/dasDisciplineService";
 import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
 import { Volunteer } from "../../services/dasVolunteerService";
-import { SupabaseStorage } from "../../services/supabaseStorage";
 
-const storage = new SupabaseStorage();
 const DISCIPLINE_STATUS_COMP: { [key: string]: JSX.Element } = {
     'Public': <Chip label='Public' color='success' />,
     'Internal': <Chip label='Internal' color='primary' />
@@ -29,6 +28,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
     const [selectedItem, setSelectedItem] = useState<Discipline>();
 
     const navigate = useNavigate();
+    const storageService = useStorageService()!;
 
     useEffect(() => {
         disciplineService.getAll()
@@ -62,7 +62,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
                 return <ListCard
                     key={volunteer2Discipline.discipline_id}
                     title={volunteer2Discipline.discipline!.name}
-                    avatarImageSrc={storage.getUrl(`icons/${volunteer2Discipline.discipline_id}`)}
+                    avatarImageSrc={storageService.getUrl(`icons/${volunteer2Discipline.discipline_id}`)}
                     cardContent={
                         <Stack>
                             {discipline.status

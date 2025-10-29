@@ -12,9 +12,7 @@ import { EntityProps } from '../../components/utils';
 import { Discipline } from '../../services/dasDisciplineService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
-
-const storage = new SupabaseStorage();
+import { useStorageService } from '@digitalaidseattle/core';
 
 export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
@@ -25,6 +23,7 @@ export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onCh
     const [selectedItem, setSelectedItem] = useState<Volunteer>();
 
     const navigate = useNavigate();
+    const storageService = useStorageService()!;
 
     useEffect(() => {
         volunteerService.getActive()
@@ -58,7 +57,7 @@ export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onCh
                 return <ListCard
                     key={t2d.volunteer_id}
                     title={t2d.volunteer!.profile!.name}
-                    avatarImageSrc={storage.getUrl(`profiles/${t2d.volunteer!.profile!.id}`)}
+                    avatarImageSrc={storageService.getUrl(`profiles/${t2d.volunteer!.profile!.id}`)}
                     cardContent={
                         <Stack>
                             {t2d.volunteer!.position}

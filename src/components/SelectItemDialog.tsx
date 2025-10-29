@@ -4,9 +4,10 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+// @deprecated - use @digitalaidseattle/mui SelectItemDialog instead when it is udpated
+
 import React, { useState } from 'react';
 
-// material-ui
 import {
     Box,
     Button,
@@ -54,7 +55,7 @@ const SelectItemDialog: React.FC<SelectItemDialogProps> = ({ open, records, opti
     >
         <DialogTitle><Typography fontSize={24}>{(options && options.title) ? options.title : DEFAULT_TITLE}</Typography></DialogTitle>
         <DialogContent>
-            {options && options.description && <Box>{options.description}</Box> }
+            {options && options.description && <Box>{options.description}</Box>}
             <Stack spacing={2} margin={2}>
                 <FormControl fullWidth>
                     <Select

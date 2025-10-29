@@ -30,10 +30,14 @@ import { TemplateConfig } from './TemplateConfig';
 
 const router = createBrowserRouter(routes);
 
+const authService = new SupabaseAuthService();
+export const storageService = new SupabaseStorageService('program-management');
+console.log(authService, storageService);
+
 const App: React.FC = () => {
   return (
-    <AuthServiceProvider authService={new SupabaseAuthService()} >
-      <StorageServiceProvider storageService={new SupabaseStorageService()} >
+    <AuthServiceProvider authService={authService} >
+      <StorageServiceProvider storageService={storageService} >
         <UserContextProvider>
           <LayoutConfigurationProvider configuration={TemplateConfig()}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>

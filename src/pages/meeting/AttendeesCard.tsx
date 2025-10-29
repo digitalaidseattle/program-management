@@ -13,14 +13,12 @@ import { useEffect, useState } from 'react';
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import SelectItemDialog from '../../components/SelectItemDialog';
 import { EntityProps } from '../../components/utils';
 import { Meeting, MeetingAttendee, meetingAttendeeService } from '../../services/dasMeetingService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
-import { useNotifications } from '@digitalaidseattle/core';
+import { useNotifications, useStorageService } from '@digitalaidseattle/core';
+import SelectItemDialog from '../../components/SelectItemDialog';
 
-const supabaseStorage = new SupabaseStorage();
 
 function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     const [attendees, setAttendees] = useState<MeetingAttendee[]>([]);
@@ -28,6 +26,7 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     const [showConfirmationDialog, setShowConfirmationDialog] = useState<boolean>(false);
 
     const [available, setAvailable] = useState<Volunteer[]>([]);
+    const storageService = useStorageService()!;
 
     const columns: GridColDef<MeetingAttendee[][number]>[] = [
         {
@@ -61,7 +60,7 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                 >
                     <Avatar
                         alt={params.row.profile ? params.row.profile.name : ''}
-                        src={supabaseStorage.getUrl(`profiles/${params.row.profile!.id}`)}
+                        src={storageService.getUrl(`profiles/${params.row.profile!.id}`)}
                         sx={{ width: 40, height: 40, objectFit: 'contain' }}
                         variant="rounded"
                     />
@@ -165,7 +164,12 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                 slots={{ toolbar: CustomToolbar }}
                 showToolbar={true}
             />
-            <SelectItemDialog open={showDialog}
+            <SelectItemDialog
+                open={showDialog}
+                options={{
+                    title: 'Add a volunteer',
+                    description: 'Select a Cadre or Contributor to add as an attendee to this meeting.'
+                }}
                 records={available.map(v => ({ label: v.profile!.name, value: v.id }))}
                 onSubmit={handleAddAttendee}
                 onCancel={() => setShowDialog(false)} />

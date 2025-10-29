@@ -13,7 +13,9 @@ import dayjs from 'dayjs';
 export async function createPlenaryMeeting(): Promise<Meeting | null> {
 
     // TODO
-    // check previous plenary meeting copy unviewed topics etc.
+    // check previous plenary meeting move unviewed topics/intros/anniversaries.
+    // add new intros
+    // add new anniversaries
 
     const nextTuesday = dayjs()
         .day(2)

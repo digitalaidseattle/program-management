@@ -11,10 +11,10 @@ import {
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { StaffingTable } from '../../components/StaffingTable';
-import { TabbedPanelsCard } from '../../components/TabbedPanelsCard';
 import { EntityProps } from '../../components/utils';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { Venture, ventureService } from '../../services/dasVentureService';
+import { TabbedPanelsCard } from '@digitalaidseattle/mui';
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [current, setCurrent] = useState<Staffing[]>([]);

@@ -16,32 +16,33 @@ import { useContext, useEffect, useState } from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
 import { UserContext } from '@digitalaidseattle/core';
 import { InputOption } from '@digitalaidseattle/mui';
-import InputFormDialog from '../../components/InputFormDialog';
 import { EntityProps } from '../../components/utils';
 import { Meeting, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
+import InputFormDialog from '../../components/InputFormDialog';
 
 function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 
   const [topics, setTopics] = useState<MeetingTopic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<MeetingTopic>();
+  const [isNew, setIsNew] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const { user } = useContext(UserContext);
 
   const inputFields: InputOption[] = [
     {
-      name: "title",
+      name: "subject",
       label: 'Who',
       type: 'string',
       disabled: false,
     },
     {
-      name: "description",
+      name: "message",
       label: 'Why',
       type: 'string',
       disabled: false,
     },
     {
-      name: "created_by",
+      name: "source",
       label: 'From',
       type: 'string',
       disabled: false,
@@ -57,13 +58,10 @@ function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
   function newTopic(): void {
     const topic = meetingTopicService.empty(meeting!.id);
     topic.type = 'shoutout';
-    topic.created_by = user?.user_metadata!.name!;
-    meetingTopicService.insert(topic)
-      .then(inserted => {
-        onChange(inserted);
-        setSelectedTopic(inserted);
-        setShowDialog(true);
-      })
+    topic.source = user?.user_metadata!.name!;
+    setSelectedTopic(topic);
+    setIsNew(true);
+    setShowDialog(true);
   }
 
   function deleteTopic(topic: MeetingTopic | null): void {
@@ -75,8 +73,13 @@ function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 
   function handleTopicChange(topic: MeetingTopic | null): void {
     if (topic) {
-      meetingTopicService.update(topic.id, topic)
-        .then(updated => onChange(updated))
+      if (isNew) {
+        meetingTopicService.insert(topic)
+          .then(inserted => onChange(inserted))
+      } else {
+        meetingTopicService.update(topic.id, topic)
+          .then(updated => onChange(updated))
+      }
     }
     setShowDialog(false);
     setSelectedTopic(undefined);
@@ -97,15 +100,15 @@ function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
           </TableHead>
           <TableBody>
             {topics.map(topic => (
-              <TableRow onDoubleClick={() => { setSelectedTopic(topic); setShowDialog(true) }} key={topic.id}>
+              <TableRow onDoubleClick={() => { setSelectedTopic(topic); setIsNew(false); setShowDialog(true) }} key={topic.id}>
                 <TableCell>
                   <IconButton size={'small'} color='error' onClick={() => deleteTopic(topic)}>
                     <DeleteOutlined />
                   </IconButton>
                 </TableCell>
-                <TableCell>{topic.title}</TableCell>
-                <TableCell>{topic.description}</TableCell>
-                <TableCell>{topic.created_by}</TableCell>
+                <TableCell>{topic.subject}</TableCell>
+                <TableCell>{topic.message}</TableCell>
+                <TableCell>{topic.source}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -113,10 +116,11 @@ function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
       </CardContent>
       <InputFormDialog
         open={showDialog}
-        title={'Update the Shout Out'}
+        title={isNew ? 'Add a Shout Out' : 'Update the Shout Out'}
         inputFields={inputFields}
         entity={selectedTopic!}
-        onChange={handleTopicChange} />
+        onChange={handleTopicChange}
+      />
     </Card>
   );
 }

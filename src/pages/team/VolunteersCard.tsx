@@ -1,9 +1,11 @@
 
 // material-ui
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem, Stack } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { CARD_HEADER_SX } from '.';
 import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
@@ -11,10 +13,6 @@ import { EntityProps } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team } from '../../services/dasTeamService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
-import { CARD_HEADER_SX } from '.';
-
-const storage = new SupabaseStorage();
 
 export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
@@ -25,6 +23,7 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
   const [selectedItem, setSelectedItem] = useState<Volunteer>();
 
   const navigate = useNavigate();
+  const storageService = useStorageService()!;
 
   useEffect(() => {
     volunteerService.getActive()
@@ -56,7 +55,7 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
         return <ListCard
           key={t2v.volunteer_id}
           title={t2v.volunteer!.profile!.name}
-          avatarImageSrc={storage.getUrl(`profiles/${t2v.volunteer!.profile!.id}`)}
+          avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.profile!.id}`)}
           cardContent={
             <Stack>
               {t2v.volunteer!.position}

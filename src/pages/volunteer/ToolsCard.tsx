@@ -1,5 +1,6 @@
 
 // material-ui
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
@@ -12,9 +13,7 @@ import { EntityProps } from '../../components/utils';
 import { Tool, toolService } from '../../services/dasToolsService';
 import { Volunteer2Tool, volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer } from '../../services/dasVolunteerService';
-import { SupabaseStorage } from '../../services/supabaseStorage';
 
-const storage = new SupabaseStorage();
 
 export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Volunteer2Tool[]>([]);
@@ -25,6 +24,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   const [selectedItem, setSelectedItem] = useState<Tool>();
 
   const navigate = useNavigate();
+  const storageService = useStorageService()!;
 
   useEffect(() => {
     toolService.getAll()
@@ -60,7 +60,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
         return <ListCard
           key={v2t.tool_id}
           title={v2t.tool!.name}
-          avatarImageSrc={storage.getUrl(`logos/${v2t.tool_id}`)}
+          avatarImageSrc={storageService.getUrl(`logos/${v2t.tool_id}`)}
 
           highlightOptions={{
             title: "Expert",
