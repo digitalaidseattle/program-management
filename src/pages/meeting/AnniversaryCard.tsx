@@ -77,7 +77,8 @@ function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) 
                         <TableRow>
                             <TableCell width={'50px'}></TableCell>
                             <TableCell width={'20%'} >Who</TableCell>
-                            <TableCell >Message</TableCell>
+                            <TableCell>Message</TableCell>
+                            <TableCell>Discussed</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -90,6 +91,7 @@ function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) 
                                 </TableCell>
                                 <TableCell>{topic.subject}</TableCell>
                                 <TableCell>{topic.message}</TableCell>
+                                <TableCell>{topic.discussed ? 'yes' : 'no'}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

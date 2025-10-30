@@ -84,8 +84,9 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
           <TableHead>
             <TableRow>
               <TableCell width={'50px'}></TableCell>
-              <TableCell >Title</TableCell>
               <TableCell width={'20%'}>Team/Person</TableCell>
+              <TableCell>Message</TableCell>
+              <TableCell width={'20%'}>Discussed</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -96,8 +97,9 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                     <DeleteOutlined />
                   </IconButton>
                 </TableCell>
-                <TableCell>{topic.message}</TableCell>
                 <TableCell>{topic.source}</TableCell>
+                <TableCell>{topic.message}</TableCell>
+                <TableCell>{topic.discussed ? 'yes' : 'no'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -4,10 +4,12 @@ import {
     Card,
     CardContent, CardHeader,
     CardMedia,
+    Checkbox,
     Grid,
     IconButton,
+    Paper,
     Stack,
-    Table, TableBody, TableCell, TableHead, TableRow,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Typography
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -23,6 +25,7 @@ import { useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
+import CollapsibleCard from "../../components/CollasibleCard";
 
 function shuffle<T>(array: T[]): T[] {
     const result = [...array]; // make a copy (avoid mutating original)
@@ -53,12 +56,7 @@ function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopi
         <Card sx={{ margin: 2, width: 200, maxHeight: 400, minHeight: 300 }} >
             <CardHeader
                 title={topic.subject}
-                action={
-                    <IconButton
-                        onClick={() => markAsDiscussed()}  >
-                        <CloseCircleOutlined />
-                    </ IconButton   >
-                } />
+                action={<Checkbox checked={topic.discussed} onClick={() => markAsDiscussed()} />} />
             <CardMedia
                 component="img"
                 sx={{
@@ -91,8 +89,7 @@ function IntrosCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
         slidesToScroll: 1,
     }
     return (
-        <Card>
-            <CardHeader title='Intros' />
+        <CollapsibleCard title='Intros' >
             <CardContent sx={{ paddingTop: 0 }}>
                 <Slider {...settings}>
                     {topics.map((t, idx) => (
@@ -100,11 +97,11 @@ function IntrosCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                     ))}
                 </Slider>
             </CardContent>
-        </Card>
+        </CollapsibleCard>
     )
 }
 
-function AnniversayCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     const [topics, setTopics] = useState<MeetingTopic[]>([]);
 
     useEffect(() => {
@@ -122,8 +119,7 @@ function AnniversayCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
         slidesToScroll: 1,
     }
     return (
-        <Card >
-            <CardHeader title='Anniversaries' />
+        <CollapsibleCard title='Anniversaries'>
             <CardContent sx={{ paddingTop: 0 }}>
                 <Slider {...settings}>
                     {topics.map((t, idx) => (
@@ -131,7 +127,91 @@ function AnniversayCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                     ))}
                 </Slider>
             </CardContent>
-        </Card>
+        </CollapsibleCard>
+    )
+}
+
+function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const [topics, setTopics] = useState<MeetingTopic[]>([]);
+
+    useEffect(() => {
+        // Any setup if needed when meeting changes
+        setTopics((meeting.meeting_topic ?? [])
+            .filter(t => t.type === 'shoutout' && !t.discussed));
+    }, [meeting]);
+
+    function markAsDiscussed(topic: MeetingTopic) {
+        meetingTopicService.update(topic.id!, { discussed: true })
+            .then((updated) => onChange(updated))
+    }
+
+    return (
+        <CollapsibleCard title='Shout Outs'>
+            <CardContent>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width={'50px'}></TableCell>
+                            <TableCell width={'30%'}>Who</TableCell>
+                            <TableCell>Why</TableCell>
+                            <TableCell width={'20%'}>From</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {topics.map((so, idx) => (
+                            <TableRow key={idx}>
+                                <TableCell><Checkbox checked={so.discussed} onClick={() => markAsDiscussed(so)} /></TableCell>
+                                <TableCell>{so.subject}</TableCell>
+                                <TableCell>{so.message}</TableCell>
+                                <TableCell>{so.source}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </CollapsibleCard>
+    )
+}
+
+function TeamCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const [topics, setTopics] = useState<MeetingTopic[]>([]);
+
+    useEffect(() => {
+        // Any setup if needed when meeting changes
+        setTopics((meeting.meeting_topic ?? [])
+            .filter(t => t.type === 'team' && !t.discussed));
+    }, [meeting]);
+
+
+    function markAsDiscussed(topic: MeetingTopic) {
+        meetingTopicService.update(topic.id!, { discussed: true })
+            .then((updated) => onChange(updated))
+    }
+
+    return (
+        <CollapsibleCard title='Topics'>
+            <CardContent>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width={'50%'}></TableCell>
+                            <TableCell width={'25%'}>Team</TableCell>
+                            <TableCell width={'75%'}>Description</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {topics.map((topic, idx) => (
+                            <TableRow key={idx}>
+                                <TableCell><Checkbox checked={topic.discussed}
+                                    onClick={() => markAsDiscussed(topic)} /></TableCell>
+                                <TableCell>{topic.source}</TableCell>
+                                <TableCell>{topic.message}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </CollapsibleCard>
     )
 }
 
@@ -139,8 +219,6 @@ const PlenaryPage = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [attendees, setAttendees] = useState<MeetingAttendee[]>([]);
     const [iceBreaker, setIceBreaker] = useState<string>('');
-    const [shoutOuts, setShoutOuts] = useState<MeetingTopic[]>([]);
-    const [topics, setTopics] = useState<MeetingTopic[]>([]);
     const [meeting, setMeeting] = useState<Meeting>();
     const storageService = useStorageService()!;
 
@@ -169,11 +247,7 @@ const PlenaryPage = () => {
         if (meeting) {
             const ice = (meeting.meeting_topic ?? []).find(t => t.type === 'icebreaker');
             setIceBreaker(ice ? ice.message : '')
-            const shouts = (meeting.meeting_topic ?? []).filter(t => t.type === 'shoutout');
-            setShoutOuts(shouts);
             setAttendees(shuffle(meeting.meeting_attendee ?? []))
-            const topics = (meeting.meeting_topic ?? []).filter(t => t.type === 'team');
-            setTopics(topics);
         }
     }, [meeting])
 
@@ -216,56 +290,13 @@ const PlenaryPage = () => {
             </Grid>
             <Grid item xs={10}>
                 <Stack gap={1} >
-                    <Card>
-                        <CardHeader title='Ice Breaker' />
+                    <CollapsibleCard title='Ice Breaker'>
                         <CardContent>{iceBreaker}</CardContent>
-                    </Card>
+                    </CollapsibleCard>
                     <IntrosCard entity={meeting} onChange={() => refresh()} />
-                    <AnniversayCard entity={meeting} onChange={() => refresh()} />
-                    <Card>
-                        <CardHeader title='Shout Outs' />
-                        <CardContent>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell width={'30%'}>Who</TableCell>
-                                        <TableCell>Why</TableCell>
-                                        <TableCell width={'20%'}>From</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {shoutOuts.map((so, idx) => (
-                                        <TableRow key={idx}>
-                                            <TableCell width={'20%'}>{so.subject}</TableCell>
-                                            <TableCell >{so.message}</TableCell>
-                                            <TableCell width={'20%'}>{so.source}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader title='Topics' />
-                        <CardContent>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell width={'75%'}>Description</TableCell>
-                                        <TableCell width={'25%'}>From</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {topics.map((topic, idx) => (
-                                        <TableRow key={idx}>
-                                            <TableCell>{topic.message}</TableCell>
-                                            <TableCell>{topic.source}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                    <AnniversariesCard entity={meeting} onChange={() => refresh()} />
+                    <ShoutoutsCard entity={meeting} onChange={() => refresh()} />
+                    <TeamCard entity={meeting} onChange={() => refresh()} />
                 </Stack>
             </Grid>
         </Grid >
