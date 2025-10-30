@@ -281,6 +281,14 @@ skip_nonce_check = false
 [auth.web3.solana]
 enabled = false
 
+# Use Google Auth as a third-party provider alongside Supabase Auth.
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_GOOGLE_CLIENT_ID)" # Replace with your Google Client ID
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)" # Use environment variable for security
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+url = "http://localhost:3000"
+
 # Use Firebase Auth as a third-party provider alongside Supabase Auth.
 [auth.third_party.firebase]
 enabled = false

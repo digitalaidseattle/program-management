@@ -1,6 +1,5 @@
 import {
     Box,
-    Button,
     Card,
     CardContent, CardHeader,
     CardMedia,
@@ -12,7 +11,7 @@ import {
     TableHead, TableRow,
     Typography
 } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ListCard } from "../../components/ListCard";
 import { Meeting, MeetingAttendee, meetingService, MeetingTopic, meetingTopicService } from "../../services/dasMeetingService";
 
@@ -21,9 +20,9 @@ import { Volunteer, volunteerService } from "../../services/dasVolunteerService"
 
 import { useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
-import CollapsibleCard from "../../components/CollasibleCard";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import CollapsibleCard from "../../components/CollasibleCard";
 import ImHereButton from "../../components/ImHereButton";
 
 function shuffle<T>(array: T[]): T[] {
