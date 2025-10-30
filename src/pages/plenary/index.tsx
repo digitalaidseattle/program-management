@@ -6,26 +6,23 @@ import {
     CardMedia,
     Checkbox,
     Grid,
-    IconButton,
-    Paper,
     Stack,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    Table, TableBody, TableCell,
+    TableHead, TableRow,
     Typography
 } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
-import Slider from "react-slick";
 import { ListCard } from "../../components/ListCard";
 import { Meeting, MeetingAttendee, meetingService, MeetingTopic, meetingTopicService } from "../../services/dasMeetingService";
 
-import { CloseCircleOutlined } from "@ant-design/icons";
 import { EntityProps } from "../../components/utils";
 import { Volunteer, volunteerService } from "../../services/dasVolunteerService";
 
 import { useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
-import 'slick-carousel/slick/slick-theme.css';
-import 'slick-carousel/slick/slick.css';
 import CollapsibleCard from "../../components/CollasibleCard";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 function shuffle<T>(array: T[]): T[] {
     const result = [...array]; // make a copy (avoid mutating original)
@@ -35,6 +32,7 @@ function shuffle<T>(array: T[]): T[] {
     }
     return result;
 }
+
 
 function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopic>) {
     const [volunteer, setVolunteer] = useState<Volunteer>();
@@ -53,7 +51,7 @@ function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopi
     }
 
     return (volunteer &&
-        <Card sx={{ margin: 2, width: 200, maxHeight: 400, minHeight: 300 }} >
+        <Card sx={{ margin: 2, width: 200, maxHeight: 400 }} >
             <CardHeader
                 title={topic.subject}
                 action={<Checkbox checked={topic.discussed} onClick={() => markAsDiscussed()} />} />
@@ -70,62 +68,45 @@ function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopi
         </Card>)
 }
 
-function IntrosCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
-    const [topics, setTopics] = useState<MeetingTopic[]>([]);
-
-    useEffect(() => {
-        // Any setup if needed when meeting changes
-        setTopics((meeting.meeting_topic ?? [])
-            .filter(t => t.type === 'intro' && !t.discussed));
-    }, [meeting]);
-
-    // Slider configuration with custom arrows and responsive settings
-    const settings = {
-        outerWidth: 200,
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 1,
-    }
-    return (
-        <CollapsibleCard title='Intros' >
-            <CardContent sx={{ paddingTop: 0 }}>
-                <Slider {...settings}>
-                    {topics.map((t, idx) => (
-                        <VolunteerTopicCard key={idx} entity={t} onChange={onChange} />
-                    ))}
-                </Slider>
-            </CardContent>
-        </CollapsibleCard>
-    )
+interface VolunteersCarouselCardProps {
+    title: string;
+    topics: MeetingTopic[];
+    onChange: (updated: any) => void;
 }
-
-function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
-    const [topics, setTopics] = useState<MeetingTopic[]>([]);
-
-    useEffect(() => {
-        // Any setup if needed when meeting changes
-        setTopics((meeting.meeting_topic ?? []).filter(t => t.type === 'anniversary'));
-    }, [meeting]);
-
-    // Slider configuration with custom arrows and responsive settings
-    const settings = {
-        outerWidth: 200,
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 4,
-        slidesToScroll: 1,
-    }
+function VolunteersCarouselCard({ title, topics, onChange }: VolunteersCarouselCardProps) {
     return (
-        <CollapsibleCard title='Anniversaries'>
+        <CollapsibleCard title={title} >
             <CardContent sx={{ paddingTop: 0 }}>
-                <Slider {...settings}>
+                <Carousel
+                    additionalTransfrom={0}
+                    arrows
+                    containerClass="container"
+                    infinite={false}
+                    responsive={{
+                        desktop: {
+                            breakpoint: {
+                                max: 3000,
+                                min: 1024
+                            },
+                            items: 4,
+                            partialVisibilityGutter: 40
+                        },
+                        mobile: {
+                            breakpoint: {
+                                max: 464,
+                                min: 0
+                            },
+                            items: 1,
+                            partialVisibilityGutter: 30
+                        }
+                    }}
+                    rewind={false}
+                    showDots={true}
+                >
                     {topics.map((t, idx) => (
                         <VolunteerTopicCard key={idx} entity={t} onChange={onChange} />
                     ))}
-                </Slider>
+                </Carousel>
             </CardContent>
         </CollapsibleCard>
     )
@@ -222,7 +203,7 @@ const PlenaryPage = () => {
     const [meeting, setMeeting] = useState<Meeting>();
     const storageService = useStorageService()!;
 
-    // The slider is forcing monitoring of drawer state to adjust width
+    // The carousel is forcing monitoring of drawer state to adjust width
     const { drawerOpen } = useContext(DrawerOpenContext)
     const layout = useLayoutConfiguration();
     const [width, setWidth] = useState<string>();
@@ -293,8 +274,16 @@ const PlenaryPage = () => {
                     <CollapsibleCard title='Ice Breaker'>
                         <CardContent>{iceBreaker}</CardContent>
                     </CollapsibleCard>
-                    <IntrosCard entity={meeting} onChange={() => refresh()} />
-                    <AnniversariesCard entity={meeting} onChange={() => refresh()} />
+                    <VolunteersCarouselCard
+                        title="Introductions"
+                        topics={(meeting.meeting_topic ?? [])
+                            .filter(t => t.type === 'intro' && !t.discussed)}
+                        onChange={() => refresh()} />
+                    <VolunteersCarouselCard
+                        title="Annversaries"
+                        topics={(meeting.meeting_topic ?? [])
+                            .filter(t => t.type === 'anniversary' && !t.discussed)}
+                        onChange={() => refresh()} />
                     <ShoutoutsCard entity={meeting} onChange={() => refresh()} />
                     <TeamCard entity={meeting} onChange={() => refresh()} />
                 </Stack>
