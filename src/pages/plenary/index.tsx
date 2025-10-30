@@ -33,6 +33,7 @@ function shuffle<T>(array: T[]): T[] {
     return result;
 }
 
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #b384c3ff 111.48%, #440c46ff -11.18%)" };
 
 function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopic>) {
     const [volunteer, setVolunteer] = useState<Volunteer>();
@@ -75,7 +76,7 @@ interface VolunteersCarouselCardProps {
 }
 function VolunteersCarouselCard({ title, topics, onChange }: VolunteersCarouselCardProps) {
     return (
-        <CollapsibleCard title={title} >
+        <CollapsibleCard title={title} headerSx={CARD_HEADER_SX}>
             <CardContent sx={{ paddingTop: 0 }}>
                 <Carousel
                     additionalTransfrom={0}
@@ -127,7 +128,7 @@ function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     }
 
     return (
-        <CollapsibleCard title='Shout Outs'>
+        <CollapsibleCard title='Shout Outs' headerSx={CARD_HEADER_SX}>
             <CardContent>
                 <Table>
                     <TableHead>
@@ -170,7 +171,7 @@ function TeamCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     }
 
     return (
-        <CollapsibleCard title='Topics'>
+        <CollapsibleCard title='Topics' headerSx={CARD_HEADER_SX}>
             <CardContent>
                 <Table>
                     <TableHead>
@@ -246,7 +247,7 @@ const PlenaryPage = () => {
                     }}
                 >
                     <Typography variant="h2">{meeting.name}</Typography>
-                    <Button variant="contained">I'm here</Button>
+                    <Button variant="contained" sx={{ backgroundColor: "#b384c3ff" }}>I'm here</Button>
                 </Box>
             </Grid>
             <Grid item xs={2}>
@@ -271,7 +272,7 @@ const PlenaryPage = () => {
             </Grid>
             <Grid item xs={10}>
                 <Stack gap={1} >
-                    <CollapsibleCard title='Ice Breaker'>
+                    <CollapsibleCard title='Ice Breaker' headerSx={CARD_HEADER_SX}>
                         <CardContent>{iceBreaker}</CardContent>
                     </CollapsibleCard>
                     <VolunteersCarouselCard

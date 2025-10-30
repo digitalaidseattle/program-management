@@ -1,4 +1,4 @@
-import { DownOutlined, MoreOutlined } from "@ant-design/icons";
+import { DownOutlined } from "@ant-design/icons";
 import {
     Card,
     CardHeader,
