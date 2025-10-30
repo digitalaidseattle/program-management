@@ -7,6 +7,7 @@ import {
     Checkbox,
     Grid,
     Stack,
+    SxProps,
     Table, TableBody, TableCell,
     TableHead, TableRow,
     Typography
@@ -23,6 +24,7 @@ import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mu
 import CollapsibleCard from "../../components/CollasibleCard";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import ImHereButton from "../../components/ImHereButton";
 
 function shuffle<T>(array: T[]): T[] {
     const result = [...array]; // make a copy (avoid mutating original)
@@ -89,7 +91,7 @@ function VolunteersCarouselCard({ title, topics, onChange }: VolunteersCarouselC
                                 max: 3000,
                                 min: 1024
                             },
-                            items: 4,
+                            items: 3,
                             partialVisibilityGutter: 40
                         },
                         mobile: {
@@ -176,7 +178,7 @@ function TeamCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell width={'50%'}></TableCell>
+                            <TableCell width={'50px'}></TableCell>
                             <TableCell width={'25%'}>Team</TableCell>
                             <TableCell width={'75%'}>Description</TableCell>
                         </TableRow>
@@ -197,12 +199,42 @@ function TeamCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     )
 }
 
-const PlenaryPage = () => {
-    const containerRef = useRef<HTMLDivElement>(null);
+function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: (updated: any) => void }) {
     const [attendees, setAttendees] = useState<MeetingAttendee[]>([]);
+    const storageService = useStorageService()!;
+
+    useEffect(() => {
+        if (meeting) {
+            const present = (meeting.meeting_attendee ?? [])
+                .filter(ma => ma.present);
+            setAttendees(shuffle(present ?? []))
+        }
+    }, [meeting])
+
+    return (
+        <Box sx={{ height: 'calc(100vh - 200px)' }}>
+            <Box
+                sx={{
+                    height: "100%",             // fill parent container height
+                    overflowY: "auto",          // enable vertical scroll
+                    overflowX: "hidden",        // hide horizontal scroll (optional)
+                    boxSizing: "border-box",    // include padding in height calc
+                }}
+            >
+                {attendees.map((attendee, idx) =>
+                (
+                    <ListCard key={`${idx}`}
+                        title={attendee.profile!.name}
+                        avatarImageSrc={storageService.getUrl(`profiles/${attendee.profile!.id}`)} />
+                ))}
+            </Box>
+        </Box>
+    )
+}
+
+const PlenaryPage = () => {
     const [iceBreaker, setIceBreaker] = useState<string>('');
     const [meeting, setMeeting] = useState<Meeting>();
-    const storageService = useStorageService()!;
 
     // The carousel is forcing monitoring of drawer state to adjust width
     const { drawerOpen } = useContext(DrawerOpenContext)
@@ -229,12 +261,10 @@ const PlenaryPage = () => {
         if (meeting) {
             const ice = (meeting.meeting_topic ?? []).find(t => t.type === 'icebreaker');
             setIceBreaker(ice ? ice.message : '')
-            setAttendees(shuffle(meeting.meeting_attendee ?? []))
         }
     }, [meeting])
 
     return (meeting &&
-
         <Grid container spacing={2} sx={{ width: { width } }}>
             <Grid item xs={12}>
                 <Box
@@ -247,30 +277,16 @@ const PlenaryPage = () => {
                     }}
                 >
                     <Typography variant="h2">{meeting.name}</Typography>
-                    <Button variant="contained" sx={{ backgroundColor: "#b384c3ff" }}>I'm here</Button>
+                    <ImHereButton
+                        meeting={meeting}
+                        sx={{ backgroundColor: '#b384c3ff' }}
+                        onChange={() => refresh()} />
                 </Box>
             </Grid>
-            <Grid item xs={2}>
-                <Box sx={{ height: 'calc(100vh - 200px)' }}>
-                    <Box
-                        ref={containerRef}
-                        sx={{
-                            height: "100%",             // fill parent container height
-                            overflowY: "auto",          // enable vertical scroll
-                            overflowX: "hidden",        // hide horizontal scroll (optional)
-                            boxSizing: "border-box",    // include padding in height calc
-                        }}
-                    >
-                        {attendees.map((attendee, idx) =>
-                        (
-                            <ListCard key={`${idx}`}
-                                title={attendee.profile!.name}
-                                avatarImageSrc={storageService.getUrl(`profiles/${attendee.profile!.id}`)} />
-                        ))}
-                    </Box>
-                </Box>
+            <Grid item xs={3}>
+                <AttendeesCard meeting={meeting} onChange={() => refresh()} />
             </Grid>
-            <Grid item xs={10}>
+            <Grid item xs={9}>
                 <Stack gap={1} >
                     <CollapsibleCard title='Ice Breaker' headerSx={CARD_HEADER_SX}>
                         <CardContent>{iceBreaker}</CardContent>
