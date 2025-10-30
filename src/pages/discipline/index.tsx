@@ -12,54 +12,13 @@ import {
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useParams } from 'react-router';
-import { ManagedListCard } from '../../components/ManagedListCard';
-import { VolunteerCard } from '../../components/VolunteerCard';
 import { EntityProps } from '../../components/utils';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
-import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
+import { VolunteersCard } from './VolunteersCard';
 
-const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" };
 
-  useEffect(() => {
-    if (entity) {
-      volunteer2DisciplineService.findByDisciplineId(entity.id)
-        .then((v2ds) => {
-          setCurrent(v2ds)
-        });
-    }
-  }, [entity]);
-
-  return (< >
-    <ManagedListCard
-      title='Volunteers'
-      items={current.map(v2d => <VolunteerCard key={v2d.volunteer_id}
-        entity={v2d.volunteer!}
-        highlightOptions={{
-          title: "Senior",
-          highlight: v2d.senior ?? false,
-        }}
-        cardStyles={{ width: 200 }} />)}
-      cardHeaderSx={{
-        background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)"
-      }}
-    />
-  </>)
-}
-
-const DisciplinePage = () => {
-  const [entity, setEntity] = useState<Discipline>();
-  const { id } = useParams<string>();
-
-  useEffect(() => {
-    if (id) {
-      disciplineService.getById(id)
-        .then((en) => {
-          console.log(en)
-          setEntity(en!)
-        });
-    }
-  }, [id]);
+const DisciplineDetails: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
 
   return (entity &&
     <Stack gap={2}>
@@ -79,9 +38,32 @@ const DisciplinePage = () => {
           <Markdown>{entity.details}</Markdown>
         </CardContent>
       </Card>
-      <VolunteersCard entity={entity} onChange={() => alert('not implemented!')} />
+      <VolunteersCard entity={entity} onChange={onChange} />
     </Stack>
   )
 }
 
-export default DisciplinePage;
+const DisciplinePage = () => {
+  const [entity, setEntity] = useState<Discipline>();
+  const { id } = useParams<string>();
+
+  useEffect(() => {
+    if (id) {
+      refresh()
+    }
+  }, [id]);
+
+  function refresh() {
+    if (id) {
+      disciplineService.getById(id)
+        .then((en) => setEntity(en!));
+    }
+  }
+
+  return (entity &&
+    <DisciplineDetails entity={entity} onChange={refresh} />
+  )
+}
+
+export { DisciplineDetails, DisciplinePage };
+

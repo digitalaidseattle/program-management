@@ -1,19 +1,12 @@
-# Digital Aid Seattle Admin Template
+# Digital Aid Seattle - Program Management
 
-This template forms the basis for line-of-business web applications.  Frequently, partners need a simple CRUD interface for applications like:
-* inventory management
-* project/task tracking
-* document submittal
+This web application facilitates the daily operation of DAS (Digital Aid Seattle).  The application provides access to:
 
-The template supports these application types by providing an application shell with common features such as:
-* authentication
-* dialogs for data entry
-* data tables
-* form validation
-* file uploads
-* drag-and-drop
-
-A venture squad will be able to copy this template and modify it to suit their venture's need.
+1. Personal dashboard
+2. Profile management
+3. Team management
+4. Meeting management
+5. DAS references
 
 ## Dependencies
 The template is built with:
@@ -23,19 +16,54 @@ The template is built with:
 * Vite
 * Supabase
 
-## Modification
+## Installation
+These are instructions to run the DAS Program Management application on your local workstation.  By default, the application will use Supabase's cloud server.  Included are instructions to start and use a local Supabase server.
 
-### How do I connect to Supabase?
-Environment variables for the connecting to Supabase must be added to the hosting platform as well as the `.env.local` file.  Squad members must obtain the supabase url and auth_anon_key for accessing the Supabase project.
+### Prequisites
+- Connectivity to the internet
+- Node JS, at least version 22
+- Git
 
-### How do I change the menu items?
-Contents of the navbar, the drawer of links on the left of the application window, can be modified by changing the contents of `/src/menu-items/index.tsx`.
+### Setting up code base
+1. Clone this repository, if you are using a shell:
+   ```
+   git clone https://github.com/digitalaidseattle/program-management
+   ```
+2. Request access to Proton to get environment files for this application.
+3. Download environment variables for local development from DAS' Proton account.
+4. Put the file in the root directory of this project.
+5. Rename the file to .env.local
+6. Download module dependencies by invoking:
+   ```
+   npm run dev
+   ```
+7. Start the application on your workstation:
+   ```
+   npm run dev
+   ```
+2. Open http://localhost:3000 to view the app.
 
-### How do I change the toolbar items?
-Contents of the toolbar, the links at the top the application window and left of the profile button, can be modified by changing the contents of `/src/toolbar-items/index.tsx`. The file `/src/sections/tickets/TicketToolbarItem` contains an example of what can be done with a toolbar item.
+### Using a local Supabase server (Optional)
+Supabase provide mechanisms to use a local server, which provides authentication, file storage, and database functions.  
 
-### How do I add a page to the application?
-Since the template uses `react-router-dom` for application routing, there is no requirement to placement new pages in the `pages` folder.  It is by convention that new pages are placed there.  For the page to be included in the application `src/pages/routes.tsx` must be updated to include the new page.
+#### Prequisites
+- **[Docker](https://www.docker.com/)**
+- **[Supabase CLI](https://supabase.com/docs/guides/local-development)**
 
-### Where does the partner logo get changed?
-The logo, displayed in the upper left hand of the application window and elsewhere, can be modified in `/src/components/Logo/Logo.tsx`.  The image files should be placed in the `/src/assets/images/` directory.
+#### Setup Instructions
+1. Open Docker app and wait until it is running
+2. Initialize Supabse:
+   ```
+   supabase init
+   ```
+   > **Note:**  `supabase init` may overwrite the docker file `config.toml`. .env` when running the app locally.  Restore the file from the repository.
+3. Start local Supabase:
+   ```
+   supabase start
+   ```
+4. Update `.env.local` to use the local Supabase server.
+   1. Get the anon key from the local Supabase studio
+   2. Change the anon key in `.env.local` to use local key
+5. To stop the local supabase:
+   ```
+   supabase stop

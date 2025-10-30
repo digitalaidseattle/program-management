@@ -1,13 +1,15 @@
 /**
- *  taskDialog.tsx
+ *  SelectItemDialog.tsx
  *
- *  @copyright 2024 Digital Aid Seattle
+ *  @copyright 2025 Digital Aid Seattle
  *
  */
+// @deprecated - use @digitalaidseattle/mui SelectItemDialog instead when it is udpated
+
 import React, { useState } from 'react';
 
-// material-ui
 import {
+    Box,
     Button,
     Dialog,
     DialogActions,
@@ -20,21 +22,21 @@ import {
     Typography
 } from '@mui/material';
 
-type MenuItem = {
-    label: string,
-    value: string
-}
-
-interface AddEntityDialogProps {
+const DEFAULT_TITLE = 'Select Item';
+interface SelectItemDialogProps {
     open: boolean,
-    records: MenuItem[],
-    options: {
+    records: {
+        label: string,
+        value: string
+    }[],
+    options?: {
         title?: string,
+        description?: string
     }
     onSubmit: (selected: string | null | undefined) => void
     onCancel: () => void
 }
-const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, options, onSubmit, onCancel }) => {
+const SelectItemDialog: React.FC<SelectItemDialogProps> = ({ open, records, options, onSubmit, onCancel }) => {
 
     const [selected, setSelected] = useState<string>('');
 
@@ -51,8 +53,9 @@ const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
         open={open}
         onClose={onCancel}
     >
-        <DialogTitle><Typography fontSize={24}>{options ? options.title : 'Edit'}</Typography></DialogTitle>
+        <DialogTitle><Typography fontSize={24}>{(options && options.title) ? options.title : DEFAULT_TITLE}</Typography></DialogTitle>
         <DialogContent>
+            {options && options.description && <Box>{options.description}</Box>}
             <Stack spacing={2} margin={2}>
                 <FormControl fullWidth>
                     <Select
@@ -60,7 +63,10 @@ const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
                         value={selected ?? ''}
                         onChange={(evt) => handleChange(evt)} >
                         {(records ?? [])
-                            .map((item: MenuItem) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}
+                            .map((item: {
+                                value: string,
+                                label: string
+                            }) => <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)}
                     </Select>
                 </FormControl>
             </Stack>
@@ -78,4 +84,4 @@ const SelectToolDialog: React.FC<AddEntityDialogProps> = ({ open, records, optio
         </DialogActions>
     </Dialog>)
 }
-export default SelectToolDialog;
+export default SelectItemDialog;

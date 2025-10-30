@@ -1,4 +1,3 @@
-import { Entity } from "@digitalaidseattle/core";
 
 /**
  *  utils.ts
@@ -6,12 +5,12 @@ import { Entity } from "@digitalaidseattle/core";
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-export type EntityProps<T extends Entity> = {
+export type EntityProps<T> = {
     entity: T;
     onChange: (evt: any) => void;
 }
 
-export type EntityCardProps<T extends Entity> = {
+export type EntityCardProps<T> = {
     entity: T
     cardStyles?: any
 }

@@ -5,8 +5,10 @@
  *
  */
 // project import
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import React from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
 import {
   AuthServiceProvider,
   StorageServiceProvider,
@@ -14,12 +16,13 @@ import {
 } from "@digitalaidseattle/core";
 import { LayoutConfigurationProvider } from "@digitalaidseattle/mui";
 
-import { routes } from './pages/routes';
 import {
   SupabaseAuthService,
   SupabaseStorageService
 } from '@digitalaidseattle/supabase';
+import { routes } from './pages/routes';
 
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import "./App.css";
 import { TemplateConfig } from './TemplateConfig';
 
@@ -27,13 +30,19 @@ import { TemplateConfig } from './TemplateConfig';
 
 const router = createBrowserRouter(routes);
 
+const authService = new SupabaseAuthService();
+export const storageService = new SupabaseStorageService('program-management');
+console.log(authService, storageService);
+
 const App: React.FC = () => {
   return (
-    <AuthServiceProvider authService={new SupabaseAuthService()} >
-      <StorageServiceProvider storageService={new SupabaseStorageService()} >
+    <AuthServiceProvider authService={authService} >
+      <StorageServiceProvider storageService={storageService} >
         <UserContextProvider>
           <LayoutConfigurationProvider configuration={TemplateConfig()}>
-            <RouterProvider router={router} />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <RouterProvider router={router} />
+            </LocalizationProvider>
           </LayoutConfigurationProvider>
         </UserContextProvider>
       </StorageServiceProvider>

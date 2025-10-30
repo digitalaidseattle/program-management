@@ -14,6 +14,8 @@ import { AssociativeTableService } from "./associativeTableService";
 type Team2Tool = {
     team_id: string,
     tool_id: string,
+    tool?: Tool,
+    team?: Team
 }
 
 const ASSOC_TABLE = 'team2tool';
@@ -23,7 +25,7 @@ class DASTeam2ToolService extends AssociativeTableService<Team2Tool> {
         super(ASSOC_TABLE)
     }
 
-    addToolToTeam(tool: Tool, team: Team): Promise<boolean> {
+    async addToolToTeam(tool: Tool, team: Team): Promise<Team2Tool> {
         return supabaseClient
             .from(this.tableName)
             .insert(
@@ -32,10 +34,11 @@ class DASTeam2ToolService extends AssociativeTableService<Team2Tool> {
                     team_id: team.id,
                 }
             )
-            .select();
+            .select()
+            .then((resp: any) => resp.data)
     }
 
-    removeToolFromTeam(tool: Tool, team: Team): Promise<boolean> {
+    async removeToolFromTeam(tool: Tool, team: Team): Promise<boolean> {
         return supabaseClient
             .from(this.tableName)
             .delete()
@@ -44,7 +47,7 @@ class DASTeam2ToolService extends AssociativeTableService<Team2Tool> {
             .then(() => true)
     }
 
-    findToolsByTeamId(teamId: Identifier): Promise<Tool[]> {
+    async findToolsByTeamId(teamId: Identifier): Promise<Tool[]> {
         return supabaseClient
             .from(this.tableName)
             .select('*, tool(*)')
@@ -52,6 +55,13 @@ class DASTeam2ToolService extends AssociativeTableService<Team2Tool> {
             .then((resp: any) => resp.data.map((d: any) => d.tool))
     }
 
+    async findByTeamId(teamId: Identifier): Promise<Team2Tool[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, tool(*)')
+            .eq('team_id', teamId)
+            .then((resp: any) => resp.data)
+    }
 }
 
 const team2ToolService = new DASTeam2ToolService();

@@ -12,7 +12,7 @@ import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
 
 const DEFAULT_LINK_COUNT = 10
-const SchedulingPage = () => {
+export const SchedulingWidget = () => {
     const searchParams = useSearchParams()[0];
     const authService = useAuthService();
     const notifications = useNotifications();
@@ -137,5 +137,3 @@ const SchedulingPage = () => {
         </Box>
     );
 }
-
-export default SchedulingPage;
