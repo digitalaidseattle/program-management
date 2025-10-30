@@ -148,6 +148,7 @@ DROP TABLE IF EXISTS volunteer2tool;
 CREATE TABLE volunteer2tool (
     volunteer_id uuid not null,
     tool_id uuid not null,
+    expert boolean,
     constraint volunteer2tool_pkey primary key (volunteer_id, tool_id),
     constraint volunteer2tool_tool_id_fkey foreign KEY (tool_id) references tool (id),
     constraint volunteer2tool_volunteer_id_fkey foreign KEY (volunteer_id) references volunteer (id)
@@ -187,3 +188,53 @@ CREATE TABLE team2tool (
     constraint team2tool_team_id_fkey foreign KEY (team_id) references team (id),
     constraint team2tool_tool_id_fkey foreign KEY (tool_id) references tool (id)
 );
+
+CREATE TABLE venture_report (
+    id UUID PRIMARY KEY,
+    venture_id uuid REFERENCES venture(id),
+    reported_by text,
+    changes_by_partner text,
+    successes text,
+    staffing_need text,
+    staffing_issues text
+);
+
+DROP TABLE IF EXISTS meeting;
+
+CREATE TABLE meeting (
+    id UUID PRIMARY KEY,
+    name text,
+    type text,
+    date Date,
+    meeting_url text,
+    status text,
+    notes text
+);
+
+DROP TABLE IF EXISTS meeting_attendee;
+
+CREATE TABLE meeting_attendee (
+    id UUID PRIMARY KEY,
+    meeting_id uuid REFERENCES meeting(id),
+    profile_id uuid REFERENCES profile(id),
+    present boolean,
+    email text,
+    constraint meeting_attendee_pkey primary key (id),
+    constraint meeting_attendee_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE,
+    constraint meeting_attendee_profile_id_fkey foreign KEY (profile_id) references profile (id) on delete CASCADE,
+);
+
+DROP TABLE IF EXISTS meeting_topic;
+
+create table public.meeting_topic (
+  id uuid not null,
+  meeting_id uuid null,
+  type text null,
+  subject_id uuid[] null,
+  message text null,
+  source text null,
+  discussed boolean null,
+  subject text null,
+  constraint meeting_topic_pkey primary key (id),
+  constraint meeting_topic_meeting_id_fkey foreign KEY (meeting_id) references meeting (id)
+) 

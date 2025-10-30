@@ -6,6 +6,7 @@
  */
 
 import { v4 as uuid } from 'uuid';
+import { storageService } from '../App';
 import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
 import { partnerService } from './dasPartnerService';
@@ -20,7 +21,6 @@ import { ventureService } from './dasVentureService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from './dasVolunteer2DisciplineService';
 import { Volunteer2Tool, volunteer2ToolService } from './dasVolunteer2ToolService';
 import { Volunteer, volunteerService } from "./dasVolunteerService";
-import { SupabaseStorage } from './supabaseStorage';
 
 const VOLUNTEER_TABLE = 'tblqGbhGVH6v36xwA';
 const DISCIPLINES_TABLE = 'tblAL15eUBFRIrdVH';
@@ -321,7 +321,6 @@ class MigrationService {
     }
 
     async downloadVolunteerPics(): Promise<void> {
-        const supabaseStorage = new SupabaseStorage();
 
         const volunteers = await volunteerService.getAll();
         await new AirtableService(VOLUNTEER_TABLE)
@@ -335,7 +334,7 @@ class MigrationService {
                             fetch(url)
                                 .then(resp => resp.blob()
                                     .then(blob => {
-                                        supabaseStorage.upload(`profiles/${volunteer.profile!.id}`, blob)
+                                        storageService.upload(`profiles/${volunteer.profile!.id}`, blob)
                                             .then((data: any) => console.log(data))
                                     })
                                 )
@@ -398,8 +397,6 @@ class MigrationService {
     }
 
     async downloadPartnerLogos(): Promise<void> {
-        const supabaseStorage = new SupabaseStorage();
-
         const partners = await partnerService.getAll();
         await new AirtableService(PARTNERS_TABLE)
             .getAll()
@@ -413,7 +410,7 @@ class MigrationService {
                             fetch(url)
                                 .then(resp => resp.blob()
                                     .then(blob => {
-                                        supabaseStorage.upload(`logos/${partner.id}`, blob)
+                                        storageService.upload(`logos/${partner.id}`, blob)
                                             .then((data: any) => console.log(data))
                                     })
                                 )
@@ -426,8 +423,6 @@ class MigrationService {
     }
 
     async downloadToolLogos(): Promise<void> {
-        const supabaseStorage = new SupabaseStorage();
-
         const tools = await toolService.getAll();
         await new AirtableService(TOOLS_TABLE)
             .getAll()
@@ -440,7 +435,7 @@ class MigrationService {
                             fetch(url)
                                 .then(resp => resp.blob()
                                     .then(blob => {
-                                        supabaseStorage.upload(`logos/${tool.id}`, blob)
+                                        storageService.upload(`logos/${tool.id}`, blob)
                                             .then((data: any) => console.log(data))
                                     })
                                 )
@@ -453,8 +448,6 @@ class MigrationService {
     }
 
     async downloadTeamIcons(): Promise<void> {
-        const supabaseStorage = new SupabaseStorage();
-
         const teams = await teamService.getAll();
         await new AirtableService(TEAM_TABLE)
             .getAll()
@@ -467,7 +460,7 @@ class MigrationService {
                             fetch(url)
                                 .then(resp => resp.blob()
                                     .then(blob => {
-                                        supabaseStorage.upload(`icons/${team.id}`, blob)
+                                        storageService.upload(`icons/${team.id}`, blob)
                                             .then((data: any) => console.log(data))
                                     })
                                 )
@@ -480,8 +473,6 @@ class MigrationService {
     }
 
     async downloadDisciplineIcons(): Promise<void> {
-        const supabaseStorage = new SupabaseStorage();
-
         const disciplines = await disciplineService.getAll();
         await new AirtableService(DISCIPLINES_TABLE)
             .getAll()
@@ -494,7 +485,7 @@ class MigrationService {
                             fetch(url)
                                 .then(resp => resp.blob()
                                     .then(blob => {
-                                        supabaseStorage.upload(`icons/${discipline.id}`, blob)
+                                        storageService.upload(`icons/${discipline.id}`, blob)
                                             .then((data: any) => console.log(data))
                                     })
                                 )

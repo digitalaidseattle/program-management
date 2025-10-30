@@ -1,9 +1,11 @@
 
 
 import {
+    CalendarOutlined,
     HeartOutlined,
     HomeOutlined,
     MehOutlined,
+    PaperClipOutlined,
     RocketOutlined,
     ScheduleOutlined,
     SearchOutlined,
@@ -22,13 +24,19 @@ export const TemplateConfig = () => {
         id: 'home-dashboard',
         title: 'Home',
         type: 'group',
-        icon: <HomeOutlined />,
         children: [
             {
-                id: 'scheduling',
-                title: 'Scheduling',
+                id: 'dashboard',
+                title: 'Home',
                 type: 'item',
-                url: '/scheduling',
+                url: '/',
+                icon: <HomeOutlined />
+            },
+            {
+                id: 'plenary',
+                title: 'Plenary',
+                type: 'item',
+                url: '/plenary',
                 icon: <ScheduleOutlined />
             }]
     }
@@ -39,11 +47,11 @@ export const TemplateConfig = () => {
         type: 'group',
         children: [
             {
-                id: 'evaluations',
-                title: 'Evaluations',
+                id: 'reporting',
+                title: 'Reporting',
                 type: 'item',
-                url: '/',
-                icon: <SearchOutlined />
+                url: '/reporting',
+                icon: <PaperClipOutlined />
             },
             {
                 id: 'staffing',
@@ -100,6 +108,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/disciplines',
                 icon: <ToolOutlined />
+            },
+            {
+                id: 'meetings',
+                title: 'Meetings',
+                type: 'item',
+                url: '/meetings',
+                icon: <CalendarOutlined />
             }
         ]
     } as MenuItem;
@@ -113,14 +128,14 @@ export const TemplateConfig = () => {
                 id: 'applicants',
                 title: 'Applicants',
                 type: 'item',
-                url: '/',
+                url: '/applicants',
                 icon: <SearchOutlined />
             },
             {
                 id: 'proctors',
                 title: 'Proctors',
                 type: 'item',
-                url: '/staffing',
+                url: '/proctors',
                 icon: <MehOutlined />
             }
         ]

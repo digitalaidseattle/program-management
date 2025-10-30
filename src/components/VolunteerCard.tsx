@@ -5,10 +5,10 @@
  *
  */
 import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { useStorageService } from "@digitalaidseattle/core";
 import { Card, CardContent, CardMedia, Chip, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Volunteer } from "../services/dasVolunteerService";
-import { SupabaseStorage } from "../services/supabaseStorage";
 
 type EntityCardProps<T> = {
     entity: T;
@@ -18,27 +18,28 @@ type EntityCardProps<T> = {
     };
     cardStyles?: any;
 }
-const STATUS_COLORS = {
-    'Cadre': 'primary',
-    'Contributor': 'success',
-    'past': 'warning',
-    'taking a break': 'default',
-} as any;
 
-const supabaseStorage = new SupabaseStorage();
+const STATUS_COMP: { [key: string]: JSX.Element } = {
+    'Cadre': <Chip label='Cadre' color='primary' />,
+    'Contributor': <Chip label='Contributor' color='success' />,
+    'past': <Chip label='Past' color='warning' />,
+    'taking a break': <Chip label='Taking a break' color='default' />
+}
+
 
 export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: volunteer, highlightOptions, cardStyles }) => {
     const navigate = useNavigate();
-
+    const storageService = useStorageService()!;
 
     function changeHighlight() {
         alert(`TODO toggle ${volunteer.profile!.name}`);
-        
+
     }
     return (
         <Card
             key={volunteer.id}
             sx={{
+                padding: 1,
                 flex: '1',
                 minWidth: { xs: '100%', sm: '17rem' },
                 maxWidth: 240,
@@ -55,7 +56,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                     objectFit: 'contain',
                     cursor: 'pointer'
                 }}
-                src={supabaseStorage.getUrl(`profiles/${volunteer.profile!.id}`)}
+                src={storageService.getUrl(`profiles/${volunteer.profile!.id}`)}
                 title={volunteer.profile!.name + ' photo'}
                 onClick={() => navigate(`/volunteer/${volunteer.id}`)}
             />
@@ -85,7 +86,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                     }
                     <Typography variant='h4'>{volunteer.profile!.name}</Typography>
                 </Stack>
-                <Chip label={volunteer.status} color={STATUS_COLORS[volunteer.status]} />
+                {STATUS_COMP[volunteer.status]}
             </CardContent>
         </Card >
     )

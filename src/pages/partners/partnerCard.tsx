@@ -4,6 +4,7 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+import { Entity, useStorageService } from '@digitalaidseattle/core';
 import {
     Card,
     CardActionArea,
@@ -13,17 +14,15 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { Partner } from '../../services/dasPartnerService';
-import { Entity } from '@digitalaidseattle/core';
-import { SupabaseStorage } from '../../services/supabaseStorage';
 
 type EntityCardProps<T extends Entity> = {
     entity: T
     cardStyles?: any
 }
 
-const supabaseStorage = new SupabaseStorage();
 export const PartnerCard: React.FC<EntityCardProps<Partner>> = ({ entity: partner, cardStyles }) => {
     const navigate = useNavigate();
+    const storageService = useStorageService()!;
 
     return (
         <Card
@@ -46,7 +45,7 @@ export const PartnerCard: React.FC<EntityCardProps<Partner>> = ({ entity: partne
                         maxWidth: 300,
                         objectFit: 'contain',
                     }}
-                    src={supabaseStorage.getUrl(`logos/${partner.id}`)}
+                    src={storageService.getUrl(`logos/${partner.id}`)}
                     title={partner.name + ' logo'}
                 />
                 <CardContent

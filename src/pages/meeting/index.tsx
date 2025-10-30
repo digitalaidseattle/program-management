@@ -2,18 +2,38 @@
 // material-ui
 import {
   Breadcrumbs,
-  Card,
-  CardContent,
-  CardHeader,
   Link,
   Stack,
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import Markdown from 'react-markdown';
-import { useParams } from 'react-router';
-import { Meeting, meetingService } from '../../services/dasMeetingService';
 
+import { useParams } from 'react-router';
+import { EntityProps } from '../../components/utils';
+import { Meeting, meetingService } from '../../services/dasMeetingService';
+import { AnniversariesCard } from './AnniversaryCard';
+import { AttendeesCard } from './AttendeesCard';
+import { DetailsCard } from './DetailsCard';
+import { IntrosCard } from './IntrosCard';
+import { ShoutoutsCard } from './ShoutoutsCard';
+import { TopicsCard } from './TopicsCard';
+import { TabbedPanels } from '@digitalaidseattle/mui';
+
+const MeetingDetails: React.FC<EntityProps<Meeting>> = ({ entity: meeting, onChange }) => {
+  return (meeting &&
+    <>
+      <Typography variant='h2'>{meeting.name}</Typography>
+      <TabbedPanels panels={[
+        { header: 'Details', children: <DetailsCard entity={meeting} onChange={onChange} /> },
+        { header: 'Shout Outs', children: <ShoutoutsCard entity={meeting} onChange={onChange} /> },
+        { header: 'Topics', children: <TopicsCard entity={meeting} onChange={onChange} /> },
+        { header: 'Attendees', children: <AttendeesCard entity={meeting} onChange={onChange} /> },
+        { header: 'Intros', children: <IntrosCard entity={meeting} onChange={onChange} /> },
+        { header: 'Anniversaries', children: <AnniversariesCard entity={meeting} onChange={onChange} /> }
+      ]} />
+    </>
+  )
+}
 
 const MeetingPage = () => {
   const [entity, setEntity] = useState<Meeting>();
@@ -21,13 +41,16 @@ const MeetingPage = () => {
 
   useEffect(() => {
     if (id) {
-      meetingService.getById(id)
-        .then((en) => {
-          console.log(en)
-          setEntity(en!)
-        });
+      refresh();
     }
   }, [id]);
+
+  function refresh() {
+    if (id) {
+      meetingService.getById(id)
+        .then((en) => setEntity(en!));
+    }
+  }
 
   return (entity &&
     <Stack gap={2}>
@@ -40,33 +63,9 @@ const MeetingPage = () => {
         </Link>
         <Typography>Meeting Name</Typography>
       </Breadcrumbs>
-      <Typography variant='h2'>Meeting Name</Typography>
-      <Card>
-        <CardHeader title='Ice breaker' />
-        <CardContent>
-          <Markdown></Markdown>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader title='Attendees' />
-        <CardContent>
-          <Markdown>check list</Markdown>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader title='Agenda' />
-        <CardContent>
-          <Markdown>check list</Markdown>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader title='Topics' />
-        <CardContent>
-          <Markdown>check list</Markdown>
-        </CardContent>
-      </Card>
+      <MeetingDetails entity={entity} onChange={() => refresh()} />
     </Stack>
   )
 }
 
-export default MeetingPage;
+export { MeetingDetails, MeetingPage };
