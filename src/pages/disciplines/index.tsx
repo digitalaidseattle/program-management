@@ -11,6 +11,7 @@ import ListDetailPage from '../../components/ListDetailPage';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { DisciplineDetails } from '../discipline';
 
+
 const DisciplinesPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
 
