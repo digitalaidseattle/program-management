@@ -63,7 +63,7 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
               <InputForm
                 entity={entity}
                 inputFields={inputFields}
-                onChange={function (_field: string, _value: any): void { throw new Error('Function not implemented.'); }}>
+                onChange={function (field: string, value: any): void { throw new Error('Function not implemented.'); }}>
               </InputForm>
             </CardContent>
           </Card>
@@ -78,6 +78,7 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
       <VolunteersCard entity={entity} onChange={onChange} />
       <ToolsCard entity={entity} onChange={onChange} />
     </Stack>
+    </Stack>
   )
 }
 
@@ -87,8 +88,10 @@ const TeamPage = () => {
 
   useEffect(() => {
     refresh(null);
+    refresh(null);
   }, [id]);
 
+  function refresh(_evt: any) {
   function refresh(_evt: any) {
     if (id) {
       teamService.getById(id, '*')
