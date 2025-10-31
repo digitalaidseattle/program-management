@@ -63,7 +63,7 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
               <InputForm
                 entity={entity}
                 inputFields={inputFields}
-                onChange={function (_field: string, _value: any): void { throw new Error('Function not implemented.'); }}>
+                onChange={function (field: string, value: any): void { throw new Error('Function not implemented.'); }}>
               </InputForm>
             </CardContent>
           </Card>
