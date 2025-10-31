@@ -4,7 +4,7 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Button, Card, CardContent, CardHeader } from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { EntityProps } from "../../components/utils";
