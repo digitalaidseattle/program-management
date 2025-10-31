@@ -211,18 +211,19 @@ CREATE TABLE meeting (
     notes text
 );
 
-DROP TABLE IF EXISTS meeting_attendee;
+-- DROP TABLE IF EXISTS meeting_attendee;
 
-CREATE TABLE meeting_attendee (
-    id UUID PRIMARY KEY,
-    meeting_id uuid REFERENCES meeting(id),
-    profile_id uuid REFERENCES profile(id),
-    present boolean,
-    email text,
-    constraint meeting_attendee_pkey primary key (id),
-    constraint meeting_attendee_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE,
-    constraint meeting_attendee_profile_id_fkey foreign KEY (profile_id) references profile (id) on delete CASCADE,
-);
+
+-- CREATE TABLE meeting_attendee (
+--     id UUID PRIMARY KEY,
+--     meeting_id uuid REFERENCES meeting(id),
+--     profile_id uuid REFERENCES profile(id),
+--     present boolean,
+--     email text,
+--     constraint meeting_attendee_pkey primary key (id),
+--     constraint meeting_attendee_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE,
+--     constraint meeting_attendee_profile_id_fkey foreign KEY (profile_id) references profile (id) on delete CASCADE
+-- );
 
 DROP TABLE IF EXISTS meeting_topic;
 
