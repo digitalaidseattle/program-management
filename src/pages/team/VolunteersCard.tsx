@@ -2,7 +2,7 @@
 // material-ui
 import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { MenuItem, Stack } from '@mui/material';
+import { Box, MenuItem, Stack } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
