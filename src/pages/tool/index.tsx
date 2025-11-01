@@ -10,30 +10,52 @@ import {
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { Tool, toolService } from '../../services/dasToolsService';
 import Markdown from 'react-markdown';
+import { useParams } from 'react-router';
+import { EditField } from '../../components/EditField';
 import { EntityProps } from '../../components/utils';
+import { Tool, toolService } from '../../services/dasToolsService';
 
+const ToolDetails: React.FC<EntityProps<Tool>> = ({ entity, onChange }) => {
 
-const ToolDetails: React.FC<EntityProps<Tool>> = ({ entity }) => {
+  function update(field: string, value: string): void {
+    const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
+    toolService.update(entity.id, changes)
+      .then(updated => {
+        onChange(updated);
+      });
+  }
+
   return (entity &&
-    <Stack gap={2}>
-      <Typography variant='h2'>{entity.name}</Typography>
-      <Card>
-        <CardHeader title='Overview' />
-        <CardContent>
-          <Markdown>{entity.overview}</Markdown>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader title='Description' />
-        <CardContent>
-          <Markdown>{entity.description}</Markdown>
-        </CardContent>
-      </Card>
-    </Stack>
+    <Card sx={{ padding: 0 }}>
+      <CardHeader
+        title={
+          <EditField
+            value={entity.name}
+            display={<Typography sx={{ fontSize: 24, fontWeight: 600 }}>{entity.name}</Typography>}
+            onChange={(updated: string) => update('name', updated)} />
+        }
+      />
+
+      <CardContent>
+        <EditField
+          value={entity.overview}
+          header='Overview'
+          multiline={true}
+          display={<Markdown>{entity.overview ?? 'N/A'}</Markdown>}
+          onChange={(newText) => update('overview', newText)} />
+
+        <EditField
+          header='Description'
+          value={entity.description}
+          multiline={true}
+          display={<Markdown>{entity.description ?? 'N/A'}</Markdown>}
+          onChange={(newText) => update('description', newText)} />
+
+      </CardContent>
+    </Card >
   )
+
 }
 
 const ToolPage = () => {
@@ -72,4 +94,5 @@ const ToolPage = () => {
 
 
 
-export { ToolDetails, ToolPage }
+export { ToolDetails, ToolPage };
+

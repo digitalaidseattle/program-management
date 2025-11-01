@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useParams } from 'react-router';
+import { EditField } from '../../components/EditField';
 import { EntityProps } from '../../components/utils';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { VolunteersCard } from './VolunteersCard';
@@ -20,26 +21,38 @@ export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597
 
 const DisciplineDetails: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
 
+  function update(field: string, value: string): void {
+    const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
+    disciplineService.update(entity.id, changes)
+      .then(updated => {
+        onChange(updated);
+      });
+  }
+
   return (entity &&
-    <Stack gap={2}>
-      <Breadcrumbs>
-        <Link color="inherit" href="/">
-          Home
-        </Link>
-        <Link color="inherit" href="/disciplines">
-          Disciplines
-        </Link>
-        <Typography>{entity.name}</Typography>
-      </Breadcrumbs>
-      <Typography variant='h2'>{entity.name}</Typography>
-      <Card>
-        <CardHeader title="Details" />
+    <>
+      <Card sx={{ padding: 0 }}>
+        <CardHeader
+          title={
+            <EditField
+              value={entity.name}
+              display={entity.name}
+              onChange={(updated: string) => update('name', updated)} />
+          }
+        />
+
         <CardContent>
-          <Markdown>{entity.details}</Markdown>
+          <EditField
+            value={entity.details}
+            multiline={true}
+            header='Details'
+            display={<Markdown>{entity.details ?? 'N/A'}</Markdown>}
+            onChange={(newText) => update('details', newText)} />
+
         </CardContent>
-      </Card>
+      </Card >
       <VolunteersCard entity={entity} onChange={onChange} />
-    </Stack>
+    </>
   )
 }
 
@@ -61,7 +74,19 @@ const DisciplinePage = () => {
   }
 
   return (entity &&
-    <DisciplineDetails entity={entity} onChange={refresh} />
+    <Stack gap={2}>
+      <Breadcrumbs>
+        <Link color="inherit" href="/">
+          Home
+        </Link>
+        <Link color="inherit" href="/disciplines">
+          Disciplines
+        </Link>
+        <Typography>{entity.name}</Typography>
+      </Breadcrumbs>
+      <DisciplineDetails entity={entity} onChange={refresh} />
+    </Stack>
+
   )
 }
 
