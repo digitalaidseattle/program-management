@@ -16,13 +16,17 @@ import { EntityProps } from '../../components/utils';
 import { Team, teamService } from '../../services/dasTeamService';
 import { VolunteersCard } from './VolunteersCard';
 import { ToolsCard } from './ToolsCard';
+import { SlackButton } from '../../components/SlackButton';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
 const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   return (entity &&
     <>
-      <Typography variant='h2'>{entity.name}</Typography>
+      <Stack direction={'row'}>
+        <SlackButton url={entity.slack_channel} />
+        <Typography variant='h2'>{entity.name}</Typography>
+      </Stack>
       <Card>
         <CardHeader
           titleTypographyProps={{ fontSize: 24 }}
