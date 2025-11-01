@@ -43,7 +43,7 @@ export const EditField: React.FC<EditTextProps> = ({ header, display, value, mul
             edit
                 ? (
                     <Stack width={'100%'}>
-                        <Box>
+                        <Stack direction={'row'}>
                             {typeof header === 'string'
                                 ? <Typography sx={{ fontWeight: 600, fontSize: 20 }}>{header}</Typography>
                                 : header}
@@ -53,7 +53,7 @@ export const EditField: React.FC<EditTextProps> = ({ header, display, value, mul
                             <IconButton size="small" color="success" onClick={doSave}>
                                 <CheckCircleOutlined />
                             </IconButton>
-                        </Box>
+                        </Stack>
                         <TextField
                             type="text"
                             value={text}
@@ -65,9 +65,8 @@ export const EditField: React.FC<EditTextProps> = ({ header, display, value, mul
                     </Stack>
                 )
                 : (
-                    <Box>
+                    <Box width={'100%'}>
                         <Box sx={{
-                            width: "100%",
                             cursor: 'pointer',
                             '&': {
                                 '&:hover': {
