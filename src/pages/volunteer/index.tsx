@@ -76,7 +76,7 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       type: 'string',
       disabled: false,
     },
-  ]
+  ] as InputOption[];
 
   function handleChange(field: string, value: any) {
     // stringify & parse needed for string keys

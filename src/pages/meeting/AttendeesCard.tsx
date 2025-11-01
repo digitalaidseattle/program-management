@@ -11,14 +11,12 @@ import {
 import { useEffect, useState } from 'react';
 
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { ConfirmationDialog } from '@digitalaidseattle/mui';
+import { ConfirmationDialog, SelectItemDialog } from '@digitalaidseattle/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { EntityProps } from '../../components/utils';
 import { Meeting, MeetingAttendee, meetingAttendeeService } from '../../services/dasMeetingService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { useNotifications, useStorageService } from '@digitalaidseattle/core';
-import SelectItemDialog from '../../components/SelectItemDialog';
-
 
 function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     const [attendees, setAttendees] = useState<MeetingAttendee[]>([]);
