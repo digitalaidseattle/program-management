@@ -12,7 +12,7 @@ import { Meeting, meetingService } from '../../services/dasMeetingService';
 import { Team, teamService } from '../../services/dasTeamService';
 import { MeetingDetails } from '../meeting';
 import SelectItemDialog from '../../components/SelectItemDialog';
-import { createTeamMeeting } from '../../actions/createTeamMeeting';
+import { createTeamMeeting } from '../../actions/CreateTeamMeeting';
 
 const columns: GridColDef<Meeting[][number]>[] = [
 
