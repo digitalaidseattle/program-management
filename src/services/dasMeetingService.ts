@@ -10,6 +10,7 @@ import { Profile } from "./dasProfileService";
 import { Identifier } from "@digitalaidseattle/core";
 import { v4 as uuid } from 'uuid';
 import { Volunteer } from "./dasVolunteerService";
+import { Team } from "./dasTeamService";
 
 type MeetingAttendee = {
     id: string;
@@ -41,6 +42,8 @@ type Meeting = {
     meeting_url: string;
     status: 'new' | 'concluded';
     notes: string;
+    team_id: string;
+    team?: Team;
 }
 
 const MEETING_SELECT = '*, meeting_attendee(*, profile(*)), meeting_topic(*)';
