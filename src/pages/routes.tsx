@@ -28,7 +28,7 @@ import MeetingsPage from './meetings/index.tsx';
 const routes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: <MainLayout sx={{ p: 1 }} />,
     children: [
       {
         path: "/",
