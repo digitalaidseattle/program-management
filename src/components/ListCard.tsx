@@ -98,24 +98,25 @@ export const ListCard = ({
                     {cardContent}
                 </CardContent>
             }
-            {highlightOptions && <CardActions disableSpacing>
-                <Tooltip title={highlightOptions.title}>
-                    <IconButton
-                        onClick={(event) => {
-                            event.preventDefault();
-                            highlightOptions.toggleHighlight();
-                        }}
-                        aria-label="favorite"
-                        size="small"
-                    >
-                        {highlightOptions.highlight
-                            ? <StarFilled style={{ color: '#bea907ff' }} />
-                            : <StarOutlined style={{ color: 'gray' }} />
-                        }
-                        &nbsp;{`${highlightOptions.title}`}
-                    </IconButton>
-                </Tooltip>
-            </CardActions>}
+            {highlightOptions &&
+                <CardActions disableSpacing>
+                    <Tooltip title={highlightOptions.title}>
+                        <IconButton
+                            onClick={(event) => {
+                                event.preventDefault();
+                                highlightOptions.toggleHighlight();
+                            }}
+                            aria-label="favorite"
+                            size="small"
+                        >
+                            {highlightOptions.highlight
+                                ? <StarFilled style={{ color: '#bea907ff' }} />
+                                : <StarOutlined style={{ color: 'gray' }} />
+                            }
+                            &nbsp;{`${highlightOptions.title}`}
+                        </IconButton>
+                    </Tooltip>
+                </CardActions>}
         </Card >
     )
 }
