@@ -112,5 +112,6 @@ const TeamPage = () => {
   )
 }
 
+
 export { TeamDetails, TeamPage };
 

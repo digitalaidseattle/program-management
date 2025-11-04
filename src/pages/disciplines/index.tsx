@@ -11,40 +11,40 @@ import ListDetailPage from '../../components/ListDetailPage';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { DisciplineDetails } from '../discipline';
 
+const storageService = useStorageService()!;
+
+const columns: GridColDef<Discipline[][number]>[] = [
+  {
+    field: 'icon',
+    headerName: '',
+    width: 100,
+    renderCell: (params) => (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Avatar
+          src={storageService.getUrl(`icons/${params.row.id}`)}
+          alt={`${params.row.name} icon`}
+          sx={{ width: 40, height: 40, objectFit: 'contain' }}
+          variant="rounded"
+        />
+      </Box>
+    ),
+  },
+  { field: 'name', headerName: 'Name', width: 200 },
+  { field: 'details', headerName: 'Details', width: 800 },
+
+];
 
 const DisciplinesPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
-
   const navigate = useNavigate();
-  const storageService = useStorageService()!;
-
-  const columns: GridColDef<Discipline[][number]>[] = [
-    {
-      field: 'icon',
-      headerName: '',
-      width: 100,
-      renderCell: (params) => (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Avatar
-            src={storageService.getUrl(`icons/${params.row.id}`)}
-            alt={`${params.row.name} icon`}
-            sx={{ width: 40, height: 40, objectFit: 'contain' }}
-            variant="rounded"
-          />
-        </Box>
-      ),
-    },
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'details', headerName: 'Details', minWidth:400}
-  ];
 
   function onChange(queryModel?: QueryModel) {
     if (queryModel) {
@@ -88,6 +88,5 @@ const DisciplinesPage = () => {
     />
   );
 };
-
 
 export default DisciplinesPage;
