@@ -33,19 +33,12 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                         ...cardHeaderSx
                     }}
                     title={title}
-                    avatar={
-                        addOpts && <IconButton aria-label={`add ${title}`}
-                            color="primary"
+                    action={
+                        addOpts && <IconButton color="primary" aria-label={`add ${title}`}
                             onClick={() => setShowAddDialog(true)}>
                             <PlusCircleOutlined />
                         </IconButton>
                     }>
-                    <Stack direction={'row'} alignItems={'center'}>
-                        <Typography variant='h3'>{title}</Typography>
-                        <IconButton color="primary" aria-label="add" >
-                            <PlusCircleOutlined />
-                        </IconButton>
-                    </Stack>
                 </CardHeader>
                 <CardContent >
                     <Stack gap={2} margin={2}>
