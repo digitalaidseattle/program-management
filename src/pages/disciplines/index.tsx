@@ -90,6 +90,6 @@ const DisciplinesPage = () => {
       />
     );
   };
+}
 
-
-  export default DisciplinesPage;
+export default DisciplinesPage;
