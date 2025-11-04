@@ -17,19 +17,22 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Meeting, MeetingAttendee, meetingService, MeetingTopic, meetingTopicService } from "../../services/dasMeetingService";
 
-import { EntityProps } from "../../components/utils";
+import { dateToString, EntityProps } from "../../components/utils";
 
-import { CheckCircleOutlined, CloseCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { useStorageService } from "@digitalaidseattle/core";
+import { CheckCircleOutlined, CloseCircleOutlined, PlusCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { RefreshContext, useStorageService } from "@digitalaidseattle/core";
 import dayjs from "dayjs";
 import { useParams } from "react-router";
 import ImHereButton from "../../components/ImHereButton";
+import { Forecast, OKR, Team, teamService } from "../../services/dasTeamService";
+import Markdown from "react-markdown";
 
 
-export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #44d054ff 111.48%, #b6e3c2ff -11.18%)" };
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
+
 
 function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     const [topics, setTopics] = useState<MeetingTopic[]>([]);
@@ -45,19 +48,28 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
             .then((updated) => onChange(updated))
     }
 
+    function addTopic() {
+        const newTopic = meetingTopicService.empty(meeting.id);
+        meetingTopicService.insert(newTopic)
+            .then((updated) => onChange(updated))
+    }
+
     return (meeting &&
         <Card >
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                title={'Topics'} />
-            <CardContent>
-                <Table>
+                title={'Topics'}
+                action={
+                    <IconButton onClick={() => addTopic()}>
+                        <PlusCircleOutlined />
+                    </IconButton>} />
+            <CardContent sx={{ padding: 0 }}>
+                <Table >
                     <TableBody>
                         {topics.map((topic, idx) => (
                             <TableRow key={idx}>
-                                <TableCell><Checkbox checked={topic.discussed}
+                                <TableCell width={25}><Checkbox checked={topic.discussed}
                                     onClick={() => markAsDiscussed(topic)} /></TableCell>
-                                <TableCell>{topic.source}</TableCell>
                                 <TableCell>{topic.message}</TableCell>
                             </TableRow>
                         ))}
@@ -68,25 +80,91 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 }
 
 function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
+    const [team, setTeam] = useState<Team>();
+    const [okrs, setOkrs] = useState<OKR[]>([]);
+
+    useEffect(() => {
+        if (meeting) {
+            teamService.getById(meeting.team_id)
+                .then(t => setTeam(t!))
+        }
+    }, [meeting]);
+
+    useEffect(() => {
+        if (team) {
+            setOkrs(team.okr ?? []);
+        }
+    }, [team]);
+
     return (meeting &&
         <Card >
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                title={'OKRs'} />
-            <CardContent>
-                <Typography>OKRs go here</Typography>
+                title={'OKRs'}
+                action={<>
+                    <IconButton>
+                        <PlusCircleOutlined />
+                    </IconButton>
+                </>} />
+            <CardContent sx={{ padding: 0 }}>
+                <Table>
+                    <TableBody>
+                        {okrs.map((okr, idx) => (
+                            <TableRow key={idx}>
+                                <TableCell>{dateToString(okr.start_date)}</TableCell>
+                                <TableCell>{dateToString(okr.end_date)}</TableCell>
+                                <TableCell>
+                                    <Markdown>
+                                        {okr.description}
+                                    </Markdown>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </CardContent>
-        </Card>)
+        </Card>
+    )
 }
 
-function ForecastsCard({ entity: meeting}: EntityProps<Meeting>) {
+function ForecastsCard({ entity: meeting }: EntityProps<Meeting>) {
+    const [team, setTeam] = useState<Team>();
+    const [forecasts, setForecasts] = useState<Forecast[]>([]);
+
+    useEffect(() => {
+        if (meeting) {
+            teamService.getById(meeting.team_id)
+                .then(t => setTeam(t!))
+        }
+    }, [meeting]);
+
+    useEffect(() => {
+        if (team) {
+            setForecasts((team.forecast ?? [])
+                .filter(f => dayjs(f.end_date).isAfter(dayjs()))
+                .sort((a, b) => a.end_date.getTime() - b.end_date.getTime()))
+        }
+    }, [team]);
     return (meeting &&
         <Card >
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                title={'Forecasts'} />
+                title={'Forecasts'} action={
+                    <IconButton>
+                        <PlusCircleOutlined />
+                    </IconButton>} />
             <CardContent>
-                <Typography>Forecasts go here</Typography>
+                <Table>
+                    <TableBody>
+                        {forecasts.map((forecast, idx) => (
+                            <TableRow key={idx}>
+                                <TableCell>{dateToString(forecast.start_date)}</TableCell>
+                                <TableCell>{dateToString(forecast.end_date)}</TableCell>
+                                <TableCell>{forecast.description}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </CardContent>
         </Card>)
 }
@@ -96,16 +174,23 @@ function NotesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     const [pristine, setPristine] = useState<boolean>(true);
 
     useEffect(() => {
-        if (meeting) {
+        // allow updates only if not editing
+        if (meeting && pristine) {
             setNotes(meeting.notes);
             setPristine(true);
         }
     }, [meeting]);
 
+    function cancel(): void {
+        setNotes(meeting.notes);
+        setPristine(true);
+    }
+
     function save(): void {
         meetingService.update(meeting.id, { notes: notes })
             .then(updated => {
-                onChange(updated)
+                setPristine(true);
+                onChange(updated);
             })
     }
 
@@ -115,11 +200,16 @@ function NotesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
             setNotes(text)
         }
     }
+
     return (
         <Card>
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                title={'Notes'} />
+                title={'Notes'}
+                action={!pristine && <>
+                    <IconButton disabled={pristine} color="error" onClick={() => cancel()}><CloseCircleOutlined /></IconButton>
+                    <IconButton disabled={pristine} color="success" onClick={() => save()}><CheckCircleOutlined /></IconButton>
+                </>} />
             <CardContent>
                 <TextField
                     value={notes}
@@ -135,9 +225,6 @@ function NotesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                     onChange={(evt) => handleChange(evt.target.value)}
                 />
             </CardContent>
-            <CardActions>
-                <Button disabled={pristine} onClick={() => save()}>Save</Button>
-            </CardActions>
         </Card>
     )
 }
@@ -148,6 +235,7 @@ function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onC
 
     useEffect(() => {
         if (meeting) {
+            console.log(meeting.meeting_attendee)
             setAttendees(meeting.meeting_attendee!)
         }
     }, [meeting])
@@ -181,9 +269,20 @@ function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onC
                             sx={{ width: 40, height: 40, objectFit: 'contain' }}
                             variant="rounded" />}
                         action={
-                            <IconButton aria-label="more button" disabled={true} >
-                                {attendee.status === 'present' ? <CheckCircleOutlined /> : attendee.status === 'absent' ? <CloseCircleOutlined /> : <QuestionCircleOutlined />}
-                            </IconButton>}
+                            <>
+                                {attendee.status === 'present' &&
+                                    <IconButton aria-label="present icon" color="success" disabled={true} >
+                                        <CheckCircleOutlined />
+                                    </IconButton>}
+                                {attendee.status === 'absent' &&
+                                    <IconButton aria-label="absent icon" color="error" disabled={true} >
+                                        <CloseCircleOutlined />
+                                    </IconButton>}
+                                {(attendee.status === null || attendee.status === 'unknown') &&
+                                    <IconButton aria-label="unknown icon" disabled={true} >
+                                        <QuestionCircleOutlined />
+                                    </IconButton>}
+                            </>}
                     />
                 </Card >)
                 )}
@@ -208,13 +307,13 @@ function NextMeetingCard({ entity: meeting }: EntityProps<Meeting>) {
 const TeamMeetingPage = () => {
     const [meeting, setMeeting] = useState<Meeting>();
     const { id } = useParams<string>();
+    const { refresh } = useContext(RefreshContext);
 
     useEffect(() => {
-        refresh();
-    }, [id]);
+        refreshMeeting();
+    }, [id, refresh]);
 
-
-    function refresh() {
+    function refreshMeeting() {
         if (id) {
             meetingService.getById(id)
                 .then(meeting => setMeeting(meeting!));
@@ -222,41 +321,36 @@ const TeamMeetingPage = () => {
     }
 
     return (meeting &&
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center", // vertically center
-                        p: 2,
-                        backgroundColor: "background.paper",
-                    }}
-                >
-                    <Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>
-                    <ImHereButton
-                        meeting={meeting}
-                        onChange={() => refresh()} />
-                </Box>
-            </Grid>
-            <Grid item xs={3}>
-                <Stack gap={2}>
-                    <AttendeesCard entity={meeting} onChange={() => refresh()} />
-                    <NextMeetingCard entity={meeting} onChange={() => refresh()} />
-                </Stack>
-            </Grid>
-            <Grid item xs={5}>
-                <Stack gap={2}>
-                    <TopicsCard entity={meeting} onChange={() => refresh()} />
-                    <ForecastsCard entity={meeting} onChange={() => refresh()} />
-                    <OKRsCard entity={meeting} onChange={() => refresh()} />
-                </Stack>
-            </Grid>
-            <Grid item xs={4}>
-                <NotesCard entity={meeting} onChange={() => refresh()} />
-            </Grid>
-
-        </Grid >
+        <Card>
+            <CardHeader
+                sx={{ backgroundColor: CARD_HEADER_SX }}
+                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>}
+                action={<ImHereButton
+                    meeting={meeting}
+                    onChange={() => refreshMeeting()} />}
+            >
+            </CardHeader>
+            <CardContent>
+                <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                        <Stack gap={2}>
+                            <AttendeesCard entity={meeting} onChange={() => refreshMeeting()} />
+                            <NextMeetingCard entity={meeting} onChange={() => refreshMeeting()} />
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Stack gap={2}>
+                            <TopicsCard entity={meeting} onChange={() => refreshMeeting()} />
+                            <ForecastsCard entity={meeting} onChange={() => refreshMeeting()} />
+                            <OKRsCard entity={meeting} onChange={() => refreshMeeting()} />
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <NotesCard entity={meeting} onChange={() => refreshMeeting()} />
+                    </Grid>
+                </Grid >
+            </CardContent>
+        </Card>
     );
 };
 

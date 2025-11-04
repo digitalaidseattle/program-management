@@ -105,7 +105,7 @@ class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
             id: uuid(),
             meeting_id: meetingId,
             type: 'team',
-            subject_id: [],
+            subject_id: [], //deprecated
             subject: '',
             message: '',
             source: '', 
