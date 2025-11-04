@@ -5,7 +5,7 @@
  *
  */
 
-import { Button, SxProps, Tooltip, Typography } from "@mui/material";
+import { Button, SxProps, Typography } from "@mui/material";
 import { Meeting, MeetingAttendee, meetingAttendeeService } from "../services/dasMeetingService";
 import { useAuthService } from "@digitalaidseattle/core";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ import { CheckOutlined } from "@ant-design/icons";
 function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProps, onChange: (ma: MeetingAttendee) => void }) {
     const auth = useAuthService();
     const [meetingAttendee, setMeetingAttendee] = useState<MeetingAttendee>();
+    const [status, setStatus] = useState<string>();
 
     useEffect(() => {
         auth.getUser()
@@ -24,6 +25,13 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
             });
     }, [auth, meeting]);
 
+    useEffect(() => {
+        console.log(meetingAttendee)
+        if (meetingAttendee) {
+            setStatus(meetingAttendee.status ?? 'unknown')
+        }
+    }, [meetingAttendee]);
+
     function handleClick() {
         if (meetingAttendee) {
             meetingAttendeeService.update(meetingAttendee.id, { status: 'present' })
@@ -31,19 +39,21 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
         }
     }
 
-    switch (status) {
-        case 'present':
-            return <CheckOutlined style={{ color: 'success', fontSize: '24px' }} />
-        case 'not present':
-            return (<Button variant="outlined"
-                sx={{ ...sx }}
-                onClick={() => handleClick()}> I'm here</Button>);
-        case 'unknown':
-            return (
-                <Typography variant="h2" sx={{ color: 'red', ...sx }}>
-                    You are not registered for this meeting.</Typography >);
-        default:
-            return (null);
-
+    function render() {
+        switch (status) {
+            case 'present':
+                return <CheckOutlined style={{ color: 'success', fontSize: '24px' }} />
+            case 'absent':
+            case 'unknown':
+                return (<Button variant="outlined"
+                    sx={{ ...sx }}
+                    onClick={() => handleClick()}> I'm here</Button>);
+            default:
+                return (
+                    <Typography variant="h2" sx={{ color: 'red', ...sx }}>
+                        You are not registered for this meeting.</Typography >);
+        }
+    }
+    return render();
 }
 export default ImHereButton;
