@@ -8,7 +8,7 @@
 import { BarsOutlined, IdcardOutlined, TableOutlined } from "@ant-design/icons";
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
-import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardHeader, Divider, IconButton, Stack, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { EntityGrid } from "./EntityGrid";
@@ -38,21 +38,23 @@ export function ListDetailPage<T extends Entity>({
 }: ListDetailPageProps<T>) {
     const [showType, setShowType] = useState<string>('table');
     return (
-        <>
-            <Stack direction={'row'} gap={1}>
-                <Typography variant='h2'>{title}</Typography>
-                <IconButton onClick={() => setShowType('table')}>
-                    <TableOutlined />
-                </IconButton>
-                <IconButton onClick={() => setShowType('grid')}>
-                    <IdcardOutlined />
-                </IconButton>
-                <IconButton onClick={() => setShowType('list')}>
-                    <BarsOutlined />
-                </IconButton>
-            </Stack>
-            <Divider />
-            <Box sx={{ margin: 1 }}>
+        <Card >
+            <CardHeader
+                title={
+                    <Stack direction={'row'} gap={1}>
+                        <Typography variant='h2'>{title}</Typography>
+                        <IconButton onClick={() => setShowType('table')}>
+                            <TableOutlined />
+                        </IconButton>
+                        <IconButton onClick={() => setShowType('grid')}>
+                            <IdcardOutlined />
+                        </IconButton>
+                        <IconButton onClick={() => setShowType('list')}>
+                            <BarsOutlined />
+                        </IconButton>
+                    </Stack>
+                }></CardHeader>
+            <CardContent sx={{ p: 0 }}>
                 {showType === 'grid' && gridOpts &&
                     <EntityGrid
                         pageInfo={pageInfo}
@@ -74,8 +76,8 @@ export function ListDetailPage<T extends Entity>({
                         listItemRenderer={listOpts.listItemRenderer}
                         detailRenderer={listOpts.detailRenderer}
                     />}
-            </Box>
-        </>
+            </CardContent>
+        </Card>
     );
 };
 

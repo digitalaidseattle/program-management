@@ -29,7 +29,7 @@ import TeamMeetingPage from './team-meeting/index.tsx';
 const routes = [
   {
     path: "/",
-    element: <MainLayout />,
+    element: <MainLayout sx={{ p: 1 }} />,
     children: [
       {
         path: "/",
