@@ -14,7 +14,7 @@ import { CheckOutlined } from "@ant-design/icons";
 function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProps, onChange: (ma: MeetingAttendee) => void }) {
     const auth = useAuthService();
     const [meetingAttendee, setMeetingAttendee] = useState<MeetingAttendee>();
-    const [status, setStatus] = useState<string>();
+    const [status, setStatus] = useState<string>('unknown');
 
     useEffect(() => {
         auth.getUser()
@@ -26,7 +26,6 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
     }, [auth, meeting]);
 
     useEffect(() => {
-        console.log(meetingAttendee)
         if (meetingAttendee) {
             setStatus(meetingAttendee.status ?? 'unknown')
         }

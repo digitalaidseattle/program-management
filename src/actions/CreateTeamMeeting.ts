@@ -22,7 +22,7 @@ export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
 
     const meeting: Meeting = {
         id: uuid(),
-        name: `Team Meeting: ${team.name}`,
+        name: `${team.name} Team Meeting`,
         type: 'team',
         date: nextMeeting,
         meeting_url: 'https://meet.google.com/swr-ixuh-xdc',
