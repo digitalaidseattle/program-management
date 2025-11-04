@@ -5,12 +5,11 @@
  *
  */
 
-import { Button, SxProps, Typography } from "@mui/material";
+import { Button, SxProps, Tooltip, Typography } from "@mui/material";
 import { Meeting, MeetingAttendee, meetingAttendeeService } from "../services/dasMeetingService";
 import { useAuthService } from "@digitalaidseattle/core";
 import { useEffect, useState } from "react";
 import { CheckOutlined } from "@ant-design/icons";
-
 
 function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProps, onChange: (ma: MeetingAttendee) => void }) {
     const auth = useAuthService();
@@ -23,7 +22,7 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
                     setMeetingAttendee(meeting.meeting_attendee.find(ma => ma.email.toLowerCase() === user.email.toLowerCase()))
                 }
             });
-    }, [auth]);
+    }, [auth, meeting]);
 
     function handleClick() {
         if (meetingAttendee) {
@@ -32,19 +31,23 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
         }
     }
 
-    if (meetingAttendee) {
-        if (meetingAttendee.status == 'present') {
-            return <CheckOutlined style={{ color: 'success', fontSize: '24px' }} />
+    function getButton(attendee?: MeetingAttendee) {
+        if (attendee) {
+            if (attendee.status === "present") {
+                return <Tooltip title='Marked as present' ><CheckOutlined style={{ color: 'green', fontSize: '24px' }} /></Tooltip>
+            } else {
+                return (<Button variant="outlined"
+                    sx={{ ...sx }}
+                    onClick={() => handleClick()}> I'm here</Button>)
+            }
         } else {
-            return (<Button variant="outlined"
-                sx={{ ...sx }}
-                onClick={() => handleClick()}> I'm here</Button>);
+            return (
+                <Typography sx={{ color: 'red', ...sx }}>
+                    You are not registered for this meeting.</Typography >)
         }
     }
-    else {
-        return (
-            <Typography sx={{ color: 'red', ...sx }}>
-                You are not registered for this meeting.</Typography >);
-    }
+
+    return getButton(meetingAttendee)
+
 }
 export default ImHereButton;
