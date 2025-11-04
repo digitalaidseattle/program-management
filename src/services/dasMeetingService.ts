@@ -67,8 +67,8 @@ class MeetingService extends SupabaseEntityService<Meeting> {
             .select(MEETING_SELECT)
             .eq('type', 'plenary')
             .eq('status', 'new')
-            .single()
-            .then((resp: any) => resp.data);
+            .order('date', { ascending: false })
+            .then((resp: any) => resp.data[0]);
     }
 
     async getById(entityId: Identifier, select?: string): Promise<Meeting | null> {
@@ -108,7 +108,7 @@ class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
             subject_id: [], //deprecated
             subject: '',
             message: '',
-            source: '', 
+            source: '',
             discussed: false
         }
     }
