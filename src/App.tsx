@@ -30,9 +30,8 @@ import { TemplateConfig } from './TemplateConfig';
 
 const router = createBrowserRouter(routes);
 
-const authService = new SupabaseAuthService();
+export const authService = new SupabaseAuthService();
 export const storageService = new SupabaseStorageService('program-management');
-console.log(authService, storageService);
 
 const App: React.FC = () => {
   return (

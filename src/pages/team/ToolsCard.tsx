@@ -58,15 +58,15 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
 
   function createCards(items: Team2Tool[]) {
     return items
-      .map(v2t => {
+      .map((v2t, idx) => {
         const tool = v2t.tool!;
         return <ListCard
-          key={v2t.tool_id}
+          key={`${idx}`}
           title={v2t.tool!.name}
           avatarImageSrc={storageService.getUrl(`logos/${v2t.tool_id}`)}
           menuItems={[
-            <MenuItem onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
-            <MenuItem onClick={() => {
+            <MenuItem key={'open'} onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
+            <MenuItem key={'remove'} onClick={() => {
               setSelectedItem(tool);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>]

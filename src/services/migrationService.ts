@@ -15,7 +15,7 @@ import { roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
 import { Team2Tool, team2ToolService } from './dasTeam2ToolService';
 import { team2VolunteerService } from './dasTeam2VolunteerService';
-import { teamService } from './dasTeamService';
+import { Forecast, forecastService, OKR, okrService, teamService } from './dasTeamService';
 import { toolService } from './dasToolsService';
 import { ventureService } from './dasVentureService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from './dasVolunteer2DisciplineService';
@@ -30,6 +30,8 @@ const PARTNERS_TABLE = 'tblqttKinLZJ2JXo7';
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE
 const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
+const OKR_TABLE = 'tblBEgmnxKDyycRX6';
+const FORECAST_TABLE = 'tblbIMTclZeJ6IA4i';
 
 class MigrationService {
 
@@ -50,7 +52,9 @@ class MigrationService {
         'Partner Logos': this.downloadPartnerLogos,
         'Tool Logos': this.downloadToolLogos,
         'Team Logos': this.downloadTeamIcons,
-        'Discipline Logos': this.downloadDisciplineIcons
+        'Discipline Logos': this.downloadDisciplineIcons,
+        'OKRs': this.migrateOkrs,
+        'Forecast': this.migrateForecasts
     }
 
     migrateVentures(): Promise<void> {
@@ -367,7 +371,6 @@ class MigrationService {
             })
     }
 
-
     migrateStaffingNeeds(): Promise<void> {
         return new AirtableService(STAFFING_TABLE).getAll()
             .then(records => {
@@ -393,6 +396,52 @@ class MigrationService {
                     return supa
                 }))
                     .then(transformed => staffingService.batchInsert(transformed))
+            })
+    }
+
+    async migrateOkrs(): Promise<void> {
+        return new AirtableService(OKR_TABLE).getAll()
+            .then(records => {
+                Promise.all(records.map(async r => {
+                    const team = r['Teams'] ? await teamService.findByAirtableId(r['Teams'][0]) : null;
+                    const supa = ({
+                        id: uuid(),
+                        team_id: team?.id,
+                        airtable_id: r.id,
+                        title: r['Title'],
+                        description: r['Details'],
+                        health_rating: r['Health Rating'],
+                        start_date: r['Start Date'],
+                        end_date: r['End Date'],
+                    }) as OKR;
+                    return supa
+                }))
+                    .then(transformed => okrService.batchInsert(transformed))
+            })
+    }
+
+    async migrateForecasts(): Promise<void> {
+        return new AirtableService(FORECAST_TABLE).getAll()
+            .then(records => {
+                Promise.all(records
+                    .filter(r => !JSON.stringify(r).includes('#ERROR'))
+                    .map(async r => {
+                        const team = r['Team'] ? await teamService.findByAirtableId(r['Team'][0]) : null;
+                        const supa = ({
+                            id: uuid(),
+                            team_id: team?.id,
+                            airtable_id: r.id,
+                            title: r['Entry'],
+                            description: r['Forecast'],
+                            performance: r['Performance?'],
+                            start_date: r['Start date'],
+                            end_date: r['Delivery date'],
+                        }) as Forecast;
+                        return supa
+                    }))
+                    .then(transformed => {
+                        forecastService.batchInsert(transformed)
+                    })
             })
     }
 

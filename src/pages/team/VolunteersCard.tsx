@@ -51,32 +51,34 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
 
   function createCards(items: Team2Volunteer[]) {
     return items
-      .map(t2v => {
-        return <ListCard
-          key={t2v.volunteer_id}
-          title={t2v.volunteer!.profile!.name}
-          avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.profile!.id}`)}
-          cardContent={
-            <Stack>
-              {t2v.volunteer!.position}
-            </Stack>
-          }
-          highlightOptions={{
-            title: "Team Lead",
-            highlight: t2v.leader ?? false,
-            toggleHighlight: () => {
-              return toggleVolunteer2TeamLeaderFlag(t2v)
-                .then(data => handleChange(data))
+      .map((t2v, idx) => {
+        return (
+          <ListCard
+            key={`${idx}`}
+            title={t2v.volunteer!.profile!.name}
+            avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.profile!.id}`)}
+            cardContent={
+              <Stack>
+                {t2v.volunteer!.position}
+              </Stack>
             }
-          }}
-          menuItems={[
-            <MenuItem onClick={() => handleOpen(t2v.volunteer_id)}> Open</MenuItem >,
-            <MenuItem onClick={() => {
-              setSelectedItem(t2v.volunteer);
-              setOpenConfirmation(true);
-            }}>Remove...</MenuItem>]
-          }
-        />
+            highlightOptions={{
+              title: "Team Lead",
+              highlight: t2v.leader ?? false,
+              toggleHighlight: () => {
+                return toggleVolunteer2TeamLeaderFlag(t2v)
+                  .then(data => handleChange(data))
+              }
+            }}
+            menuItems={[
+              <MenuItem key={'open'} onClick={() => handleOpen(t2v.volunteer_id)}> Open</MenuItem >,
+              <MenuItem key={'remove'} onClick={() => {
+                setSelectedItem(t2v.volunteer);
+                setOpenConfirmation(true);
+              }}>Remove...</MenuItem>]
+            }
+          />
+        )
       })
   }
 

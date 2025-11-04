@@ -5,9 +5,8 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Partner } from "./dasPartnerService";
-
 
 type Venture = {
     id: string
@@ -34,6 +33,10 @@ class VentureService extends SupabaseEntityService<Venture> {
 
     getAll(count?: number, select?: string): Promise<Venture[]> {
         return super.getAll(count, select ?? DEFAULT_SELECT);
+    }
+
+    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Venture): Promise<PageInfo<Venture>> {
+        return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
     }
 
     async findByAirtableId(airtableId: string): Promise<Venture> {
