@@ -17,13 +17,12 @@ import { EntityProps } from '../../components/utils';
 import { Team, teamService } from '../../services/dasTeamService';
 import { ForecastsCard } from './ForecastsCard';
 import { ToolsCard } from './ToolsCard';
-import { VolunteersCard } from './VolunteersCard';
 import { OKRsCard } from './OKRsCard';
+import { VolunteersCard } from './VolunteersCard';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
 const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
-
   const inputFields: InputOption[] = [
     {
       label: 'Purpose',
