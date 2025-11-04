@@ -78,7 +78,6 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
       <VolunteersCard entity={entity} onChange={onChange} />
       <ToolsCard entity={entity} onChange={onChange} />
     </Stack>
-    </Stack>
   )
 }
 
@@ -88,10 +87,8 @@ const TeamPage = () => {
 
   useEffect(() => {
     refresh(null);
-    refresh(null);
   }, [id]);
 
-  function refresh(_evt: any) {
   function refresh(_evt: any) {
     if (id) {
       teamService.getById(id, '*')
@@ -114,6 +111,7 @@ const TeamPage = () => {
     </Stack>
   )
 }
+
 
 export { TeamDetails, TeamPage };
 
