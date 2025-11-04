@@ -11,8 +11,8 @@ import ListDetailPage from '../../components/ListDetailPage';
 import { Meeting, meetingService } from '../../services/dasMeetingService';
 import { Team, teamService } from '../../services/dasTeamService';
 import { MeetingDetails } from '../meeting';
-import SelectItemDialog from '../../components/SelectItemDialog';
 import { createTeamMeeting } from '../../actions/CreateTeamMeeting';
+import { SelectItemDialog } from '@digitalaidseattle/mui';
 
 const columns: GridColDef<Meeting[][number]>[] = [
 
