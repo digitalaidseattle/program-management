@@ -34,7 +34,7 @@ function shuffle<T>(array: T[]): T[] {
     return result;
 }
 
-export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #b384c3ff 111.48%, #440c46ff -11.18%)" };
+export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #ce80e8ff -11.18%, #e5d9e5ff 111.48%)" };
 
 function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopic>) {
     const [volunteer, setVolunteer] = useState<Volunteer>();
@@ -211,7 +211,9 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
     }, [meeting])
 
     return (
-        <Box sx={{ height: 'calc(100vh - 200px)' }}>
+        <Card sx={{ height: 'calc(100vh - 200px)' }}>
+            <CardHeader title="Attendees"
+                sx={CARD_HEADER_SX} />
             <Box
                 sx={{
                     height: "100%",             // fill parent container height
@@ -227,7 +229,7 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
                         avatarImageSrc={storageService.getUrl(`profiles/${attendee.profile!.id}`)} />
                 ))}
             </Box>
-        </Box>
+        </Card>
     )
 }
 
@@ -239,6 +241,7 @@ const PlenaryPage = () => {
     const { drawerOpen } = useContext(DrawerOpenContext)
     const layout = useLayoutConfiguration();
     const [width, setWidth] = useState<string>();
+
     useEffect(() => {
         if (drawerOpen) {
             setWidth(`calc(100% - ${layout.configuration.drawerWidth}px)`)
@@ -264,47 +267,41 @@ const PlenaryPage = () => {
     }, [meeting])
 
     return (meeting &&
-        <Grid container spacing={2} sx={{ width: { width } }}>
-            <Grid item xs={12}>
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center", // vertically center
-                        p: 2,
-                        backgroundColor: "background.paper",
-                    }}
-                >
-                    <Typography variant="h2">{meeting.name}</Typography>
-                    <ImHereButton
-                        meeting={meeting}
-                        sx={{ backgroundColor: '#b384c3ff' }}
-                        onChange={() => refresh()} />
-                </Box>
-            </Grid>
-            <Grid item xs={3}>
-                <AttendeesCard meeting={meeting} onChange={() => refresh()} />
-            </Grid>
-            <Grid item xs={9}>
-                <Stack gap={1} >
-                    <CollapsibleCard title='Ice Breaker' headerSx={CARD_HEADER_SX}>
-                        <CardContent>{iceBreaker}</CardContent>
-                    </CollapsibleCard>
-                    <VolunteersCarouselCard
-                        title="Introductions"
-                        topics={(meeting.meeting_topic ?? [])
-                            .filter(t => t.type === 'intro' && !t.discussed)}
-                        onChange={() => refresh()} />
-                    <VolunteersCarouselCard
-                        title="Annversaries"
-                        topics={(meeting.meeting_topic ?? [])
-                            .filter(t => t.type === 'anniversary' && !t.discussed)}
-                        onChange={() => refresh()} />
-                    <ShoutoutsCard entity={meeting} onChange={() => refresh()} />
-                    <TeamCard entity={meeting} onChange={() => refresh()} />
-                </Stack>
-            </Grid>
-        </Grid >
+        <Card sx={{ margin: 0, width: { width } }}>
+            <CardHeader
+                sx={CARD_HEADER_SX}
+                title={<Typography variant="h2">{meeting.name}</Typography>}
+                action={<ImHereButton
+                    meeting={meeting}
+                    onChange={() => refresh()} />}
+            />
+            <CardContent sx={{ padding: 1 }}>
+                <Grid container spacing={1} >
+                    <Grid item xs={3}>
+                        <AttendeesCard meeting={meeting} onChange={() => refresh()} />
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Stack gap={1} >
+                            <CollapsibleCard title='Ice Breaker' headerSx={CARD_HEADER_SX}>
+                                <CardContent>{iceBreaker}</CardContent>
+                            </CollapsibleCard>
+                            <VolunteersCarouselCard
+                                title="Introductions"
+                                topics={(meeting.meeting_topic ?? [])
+                                    .filter(t => t.type === 'intro' && !t.discussed)}
+                                onChange={() => refresh()} />
+                            <VolunteersCarouselCard
+                                title="Annversaries"
+                                topics={(meeting.meeting_topic ?? [])
+                                    .filter(t => t.type === 'anniversary' && !t.discussed)}
+                                onChange={() => refresh()} />
+                            <ShoutoutsCard entity={meeting} onChange={() => refresh()} />
+                            <TeamCard entity={meeting} onChange={() => refresh()} />
+                        </Stack>
+                    </Grid>
+                </Grid >
+            </CardContent>
+        </Card>
     );
 };
 
