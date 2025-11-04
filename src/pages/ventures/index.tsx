@@ -54,10 +54,6 @@ const VenturesPage = () => {
     { field: 'painpoint', headerName: 'Painpoint', width: 200 },
   ];
 
-const VenturesPage = () => {
-  const [pageInfo, setPageInfo] = useState<PageInfo<Venture>>({ rows: [], totalRowCount: 0 });
-  const navigate = useNavigate();
-
   function onChange(queryModel?: QueryModel) {
     if (queryModel) {
       ventureService.find(queryModel)
