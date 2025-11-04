@@ -205,7 +205,7 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
     useEffect(() => {
         if (meeting) {
             const present = (meeting.meeting_attendee ?? [])
-                .filter(ma => ma.present);
+                .filter(ma => ma.status=== 'present');
             setAttendees(shuffle(present ?? []))
         }
     }, [meeting])

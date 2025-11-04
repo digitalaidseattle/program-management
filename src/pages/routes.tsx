@@ -24,6 +24,7 @@ import DashboardPage from './dashboard.tsx';
 import Markdown from 'react-markdown';
 import PlenaryPage from './plenary/index.tsx';
 import MeetingsPage from './meetings/index.tsx';
+import TeamMeetingPage from './team-meeting/index.tsx';
 
 const routes = [
   {
@@ -117,6 +118,10 @@ const routes = [
       {
         path: "plenary",
         element: <PlenaryPage />,
+      },
+      {
+        path: "team-meeting/:id",
+        element: <TeamMeetingPage />,
       }
     ]
   },
