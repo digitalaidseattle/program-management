@@ -52,10 +52,12 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
             return (<Button variant="outlined"
                 sx={{ ...sx }}
                 onClick={() => handleClick()}> I'm here</Button>);
-        default:
+        case 'unknown':
             return (
                 <Typography variant="h2" sx={{ color: 'red', ...sx }}>
                     You are not registered for this meeting.</Typography >);
+        default:
+            return (null);
 
     };
 }
