@@ -67,7 +67,7 @@ function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
         </Card>)
 }
 
-function OKRsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
     return (meeting &&
         <Card >
             <CardHeader
@@ -79,7 +79,7 @@ function OKRsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
         </Card>)
 }
 
-function ForecastsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+function ForecastsCard({ entity: meeting}: EntityProps<Meeting>) {
     return (meeting &&
         <Card >
             <CardHeader
@@ -192,7 +192,7 @@ function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onC
     )
 }
 
-function NextMeetingCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+function NextMeetingCard({ entity: meeting }: EntityProps<Meeting>) {
     return (meeting &&
         <Card >
             <CardHeader

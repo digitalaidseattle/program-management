@@ -7,7 +7,7 @@
 
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
-import { Meeting, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
+import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
 import { Team } from '../services/dasTeamService';
 
 export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
@@ -36,9 +36,9 @@ export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
             id: uuid(),
             meeting_id: meeting.id,
             profile_id: v.profile!.id,
-            present: false,
+            status: 'unknown',
             email: v.das_email,
-        }))
+        } as MeetingAttendee))
 
     await meetingService.insert(meeting);
     await meetingAttendeeService.batchInsert(attendees);
