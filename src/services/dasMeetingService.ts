@@ -17,7 +17,7 @@ type MeetingAttendee = {
     meeting_id: string;
     profile_id: string;
     profile?: Profile;
-    present: boolean;
+    status: 'present' | 'absent' | 'unknown';
     email: string;
 }
 
@@ -89,7 +89,7 @@ class MeetingAttendeeService extends SupabaseEntityService<MeetingAttendee> {
             meeting_id: meeting.id,
             profile_id: volunteer.profile!.id,
             email: volunteer.das_email,
-            present: false
+            status: 'unknown'
         });
     }
 }

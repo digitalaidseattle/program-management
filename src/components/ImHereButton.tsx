@@ -15,7 +15,6 @@ import { CheckOutlined } from "@ant-design/icons";
 function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProps, onChange: (ma: MeetingAttendee) => void }) {
     const auth = useAuthService();
     const [meetingAttendee, setMeetingAttendee] = useState<MeetingAttendee>();
-    const [status, setStatus] = useState<string>();
 
     useEffect(() => {
         auth.getUser()
@@ -26,37 +25,26 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
             });
     }, [auth]);
 
-    useEffect(() => {
-        if (meetingAttendee) {
-            if (meetingAttendee.present) {
-                setStatus("present");
-            } else {
-                setStatus("not present");
-            }
-        } else {
-            setStatus("invalid");
-        }
-    }, [meetingAttendee]);
-
     function handleClick() {
         if (meetingAttendee) {
-            meetingAttendeeService.update(meetingAttendee.id, { present: true })
+            meetingAttendeeService.update(meetingAttendee.id, { status: 'present' })
                 .then((updated) => onChange(updated))
         }
     }
 
-    switch (status) {
-        case 'present':
+    if (meetingAttendee) {
+        if (meetingAttendee.status == 'present') {
             return <CheckOutlined style={{ color: 'success', fontSize: '24px' }} />
-        case 'not present':
+        } else {
             return (<Button variant="outlined"
                 sx={{ ...sx }}
                 onClick={() => handleClick()}> I'm here</Button>);
-        default:
-            return (
-                <Typography variant="h2" sx={{ color: 'red', ...sx }}>
-                    You are not registered for this meeting.</Typography >);
-
-    };
+        }
+    }
+    else {
+        return (
+            <Typography sx={{ color: 'red', ...sx }}>
+                You are not registered for this meeting.</Typography >);
+    }
 }
 export default ImHereButton;
