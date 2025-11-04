@@ -1,6 +1,6 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SelectItemDialog } from "@digitalaidseattle/mui";
-import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack } from "@mui/material";
 import { ReactNode, useState } from "react";
 
 export type ManagedListCardProps = {
