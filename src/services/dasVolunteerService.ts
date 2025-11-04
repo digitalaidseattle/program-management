@@ -7,7 +7,6 @@
 
 import { Identifier } from "@digitalaidseattle/core";
 import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Profile } from "./dasProfileService";
 
 type AirtableVolunteer = {
@@ -73,7 +72,7 @@ type Volunteer = {
 }
 
 const DEFAULT_SELECT = '*, profile!inner(*)';
-class VolunteerService extends PMEntityService<Volunteer> {
+class VolunteerService extends SupabaseEntityService<Volunteer> {
     public constructor() {
         super("volunteer");
     }
