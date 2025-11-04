@@ -8,12 +8,12 @@
 import { BarsOutlined, IdcardOutlined, TableOutlined } from "@ant-design/icons";
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
-import { Box, Card, CardContent, CardHeader, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, IconButton, Stack, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { EntityGrid } from "./EntityGrid";
-import { EntityTable } from "./EntityTable";
 import { EntityList } from "./EntityList";
+import { EntityTable } from "./EntityTable";
 
 export type ListDetailPageProps<T extends Entity> = {
     pageInfo: PageInfo<T>;
