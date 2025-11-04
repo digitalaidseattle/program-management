@@ -267,20 +267,11 @@ function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onC
                             sx={{ width: 40, height: 40, objectFit: 'contain' }}
                             variant="rounded" />}
                         action={
-                            <>
-                                {attendee.status === 'present' &&
-                                    <IconButton aria-label="present icon" color="success" disabled={true} >
-                                        <CheckCircleOutlined />
-                                    </IconButton>}
-                                {attendee.status === 'absent' &&
-                                    <IconButton aria-label="absent icon" color="error" disabled={true} >
-                                        <CloseCircleOutlined />
-                                    </IconButton>}
-                                {(attendee.status === null || attendee.status === 'unknown') &&
-                                    <IconButton aria-label="unknown icon" disabled={true} >
-                                        <QuestionCircleOutlined />
-                                    </IconButton>}
-                            </>}
+                            <Box sx={{ marginTop: 1.5}}>
+                                {attendee.status === 'present' && <CheckCircleOutlined style={{ color: 'green', fontSize: '20px' }} />}
+                                {attendee.status === 'absent' && <CheckCircleOutlined style={{ color: 'red', fontSize: '20px' }} />}
+                                {(attendee.status === null || attendee.status === 'unknown') && <QuestionCircleOutlined style={{ color: 'gray', fontSize: '20px' }} />}
+                            </Box>}
                     />
                 </Card >)
                 )}
