@@ -11,7 +11,6 @@ import ListDetailPage from '../../components/ListDetailPage';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { DisciplineDetails } from '../discipline';
 
-
 const DisciplinesPage = () => {
 
   const storageService = useStorageService()!;
