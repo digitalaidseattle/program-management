@@ -1,13 +1,11 @@
 
 // material-ui
 import { InputForm, InputOption } from '@digitalaidseattle/mui';
-import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import {
   Breadcrumbs,
   Card,
   CardContent,
   CardHeader,
-  Grid,
   Grid,
   Link,
   Stack,
@@ -18,9 +16,9 @@ import { useParams } from 'react-router';
 import { EntityProps } from '../../components/utils';
 import { Team, teamService } from '../../services/dasTeamService';
 import { ForecastsCard } from './ForecastsCard';
+import { OKRsCard } from './OKRsCard';
 import { ToolsCard } from './ToolsCard';
 import { VolunteersCard } from './VolunteersCard';
-import { OKRsCard } from './OKRsCard';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
@@ -65,7 +63,7 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
               <InputForm
                 entity={entity}
                 inputFields={inputFields}
-                onChange={function (field: string, value: any): void { throw new Error('Function not implemented.'); }}>
+                onChange={function (_field: string, _value: any): void { throw new Error('Function not implemented.'); }}>
               </InputForm>
             </CardContent>
           </Card>
