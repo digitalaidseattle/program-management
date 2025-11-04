@@ -45,7 +45,18 @@ type Volunteer = {
     profile_id: string,
     airtable_id: string,
     affliation: string,
-    status: string,
+    status: "Cadre" |
+    "new prospect" |
+    "past" |
+    "Cadre" |
+    "taking a break" |
+    "on call" |
+    "rejected" |
+    "Offboarding Cadre" |
+    "Onboarding" |
+    "Board only" |
+    "Contributor" |
+    "Offboarding Contributor",
     join_date: string,
     position: string,
     disciplines: string[],
@@ -62,7 +73,8 @@ type Volunteer = {
 }
 
 const DEFAULT_SELECT = '*, profile!inner(*)';
-class VolunteerService extends PMEntityService<Volunteer> {
+class VolunteerService extends SupabaseEntityService<Volunteer> {
+
     public constructor() {
         super("volunteer");
     }
@@ -72,6 +84,14 @@ class VolunteerService extends PMEntityService<Volunteer> {
             .from(this.tableName)
             .select(DEFAULT_SELECT)
             .in('status', ['Cadre', 'Contributor'])
+            .then((resp: any) => resp.data);
+    }
+
+    async findCadreVolunteers(): Promise<Volunteer[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .in('status', ['Cadre'])
             .then((resp: any) => resp.data);
     }
 
@@ -92,18 +112,10 @@ class VolunteerService extends PMEntityService<Volunteer> {
             .then((resp: any) => resp.data);
     }
 
-    async find(queryModel?: QueryModel, select?: string, mapper?: (json: any) => Volunteer): Promise<PageInfo<Volunteer>> {
-        if (queryModel) {
-            return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
-        } else {
-            return this.getAll()
-                .then(vols => {
-                    return {
-                        rows: vols, totalRowCount: vols.length
-                    }
-                })
-        }
+    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Volunteer): Promise<PageInfo<Volunteer>> {
+        return super.find(queryModel!, select ?? DEFAULT_SELECT, mapper);
     }
+
 }
 
 const volunteerService = new VolunteerService();

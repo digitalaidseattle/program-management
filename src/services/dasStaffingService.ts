@@ -30,7 +30,7 @@ type Staffing = {
     volunteer?: Volunteer;
 }
 
-const DEFAULT_SELECT = "*, venture(*)"
+const DEFAULT_SELECT = "*, volunteer(*, profile(*))"
 class StaffingService extends SupabaseEntityService<Staffing> {
     public constructor() {
         super("staffing");
@@ -40,20 +40,20 @@ class StaffingService extends SupabaseEntityService<Staffing> {
         return super.getAll(count, select ?? DEFAULT_SELECT);
     }
 
-    findByVolunteerId(volunteerId: Identifier): Promise<Staffing[]> {
+    async findByVolunteerId(volunteerId: Identifier): Promise<Staffing[]> {
         return supabaseClient
             .from(this.tableName)
-            .select(DEFAULT_SELECT)
+            .select("*, venture(*, partner(*)), role(*)")
             .eq('volunteer_id', volunteerId)
-            .then((resp: any) => resp.data)
+            .then((resp: any) => resp.data as Staffing[])
     }
 
-    findByVentureId(ventureId: Identifier): Promise<Staffing[]> {
+    async findByVentureId(ventureId: Identifier): Promise<Staffing[]> {
         return supabaseClient
             .from(this.tableName)
             .select("*, volunteer(*, profile(*)), role(*)")
             .eq('venture_id', ventureId)
-            .then((resp: any) => resp.data)
+            .then((resp: any) => resp.data as Staffing[]);
     }
 }
 

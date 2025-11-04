@@ -6,21 +6,24 @@
  */
 import { Error, Login, MainLayout, MarkdownPage, MinimalLayout } from '@digitalaidseattle/mui';
 
-import DisciplinePage from './discipline';
+import { DisciplinePage } from './discipline';
 import DisciplinesPage from './disciplines';
 import MigrationPage from './migration';
 import { PartnerPage } from './partner';
 import PartnersPage from './partners';
-import SchedulingPage from './scheduling';
 import { TeamPage } from './team';
 import TeamsPage from './teams';
 import { ToolPage } from './tool';
 import ToolsPage from './tools';
 import { VenturePage } from './venture';
 import VenturesPage from './ventures';
-import MeetingPage from './meeting';
+import { MeetingPage } from './meeting';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
+import DashboardPage from './dashboard.tsx';
+import Markdown from 'react-markdown';
+import PlenaryPage from './plenary/index.tsx';
+import MeetingsPage from './meetings/index.tsx';
 
 const routes = [
   {
@@ -28,12 +31,12 @@ const routes = [
     element: <MainLayout />,
     children: [
       {
-        path: "privacy",
-        element: <MarkdownPage filepath='privacy.md' />,
+        path: "/",
+        element: <DashboardPage />
       },
       {
-        path: "scheduling",
-        element: <SchedulingPage />,
+        path: "privacy",
+        element: <MarkdownPage filepath='privacy.md' />,
       },
       {
         path: "volunteers",
@@ -88,8 +91,32 @@ const routes = [
         element: <MigrationPage />,
       },
       {
+        path: "meetings",
+        element: <MeetingsPage />,
+      },
+      {
         path: "meeting/:id",
         element: <MeetingPage />,
+      },
+      {
+        path: "applicants",
+        element: <Markdown># The Applicants page is under construction.</Markdown>,
+      },
+      {
+        path: "proctors",
+        element: <Markdown># The Proctors page is under construction.</Markdown>,
+      },
+      {
+        path: "staffing",
+        element: <Markdown># The Staffing page is under construction.</Markdown>,
+      },
+      {
+        path: "reporting",
+        element: <Markdown># The Reporting page is under construction.</Markdown>,
+      },
+      {
+        path: "plenary",
+        element: <PlenaryPage />,
       }
     ]
   },
