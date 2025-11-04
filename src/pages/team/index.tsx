@@ -17,40 +17,12 @@ import { EntityProps } from '../../components/utils';
 import { Team, teamService } from '../../services/dasTeamService';
 import { ForecastsCard } from './ForecastsCard';
 import { ToolsCard } from './ToolsCard';
-import { SlackButton } from '../../components/SlackButton';
+import { OKRsCard } from './OKRsCard';
+import { VolunteersCard } from './VolunteersCard';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
 const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
-  return (entity &&
-    <>
-      <Stack direction={'row'}>
-        <SlackButton url={entity.slack_channel} />
-        <Typography variant='h2'>{entity.name}</Typography>
-      </Stack>
-      <Card>
-        <CardHeader
-          titleTypographyProps={{ fontSize: 24 }}
-          title='Purpose'>
-        </CardHeader>
-        <CardContent>
-          <Markdown>
-            {entity.purpose}
-          </Markdown>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader
-          titleTypographyProps={{ fontSize: 24 }}
-          title='What is NOT included in this Team?'>
-        </CardHeader>
-        <CardContent>
-          <Markdown>
-            {entity.not_included}
-          </Markdown>
-        </CardContent>
-      </Card>
-
   const inputFields: InputOption[] = [
     {
       label: 'Purpose',
