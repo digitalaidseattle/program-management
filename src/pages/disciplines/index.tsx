@@ -29,7 +29,7 @@ const columns: GridColDef<Discipline[][number]>[] = [
         }}
       >
         <Avatar
-          src={supabaseStorage.getUrl(`icons/${params.row.id}`)}
+          src={storageService.getUrl(`icons/${params.row.id}`)}
           alt={`${params.row.name} icon`}
           sx={{ width: 40, height: 40, objectFit: 'contain' }}
           variant="rounded"

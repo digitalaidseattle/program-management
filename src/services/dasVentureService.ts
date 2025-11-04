@@ -27,7 +27,7 @@ type Venture = {
 }
 
 const DEFAULT_SELECT = "*, partner(*)"
-class VentureService extends PMEntityService<Venture> {
+class VentureService extends SupabaseEntityService<Venture> {
     public constructor() {
         super("venture");
     }
