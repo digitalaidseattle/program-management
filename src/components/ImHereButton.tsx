@@ -31,6 +31,7 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
         }
     }
 
+<<<<<<< HEAD
     function getButton(attendee?: MeetingAttendee) {
         if (attendee) {
             if (attendee.status === "present") {
@@ -48,6 +49,21 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
     }
 
     return getButton(meetingAttendee)
+=======
+    switch (status) {
+        case 'present':
+            return <CheckOutlined style={{ color: 'success', fontSize: '24px' }} />
+        case 'not present':
+            return (<Button variant="outlined"
+                sx={{ ...sx }}
+                onClick={() => handleClick()}> I'm here</Button>);
+        case 'unknown':
+            return (
+                <Typography variant="h2" sx={{ color: 'red', ...sx }}>
+                    You are not registered for this meeting.</Typography >);
+        default:
+            return (null);
+>>>>>>> a6267dc (fix plenary)
 
 }
 export default ImHereButton;
