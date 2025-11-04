@@ -1,3 +1,9 @@
+/**
+ *  ManagedListCard.tsx
+ *
+ *  @copyright 2025 Digital Aid Seattle
+ *
+ */
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SelectItemDialog } from "@digitalaidseattle/mui";
 import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack } from "@mui/material";
