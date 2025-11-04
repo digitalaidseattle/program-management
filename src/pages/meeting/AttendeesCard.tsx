@@ -107,9 +107,11 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                         <PlusCircleOutlined />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Adds all volunteers." onClick={() => setShowConfirmationDialog(true)}>
-                    <Button variant="outlined">Add Everyone...</Button>
-                </Tooltip>
+                {meeting.type === 'plenary' &&
+                    <Tooltip title="Adds all volunteers." onClick={() => setShowConfirmationDialog(true)}>
+                        <Button variant="outlined">Add Everyone...</Button>
+                    </Tooltip>
+                }
             </Toolbar>
         );
     }

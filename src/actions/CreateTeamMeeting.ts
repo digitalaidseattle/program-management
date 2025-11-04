@@ -5,36 +5,33 @@
  *
  */
 
+import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
-import { volunteerService } from "../services/dasVolunteerService";
-import dayjs from 'dayjs';
+import { Team } from '../services/dasTeamService';
 
-export async function createPlenaryMeeting(): Promise<Meeting | null> {
+export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
 
     // TODO
-    // check previous plenary meeting move unviewed topics/intros/anniversaries.
-    // add new intros
-    // add new anniversaries
+    // check previous team meeting move unviewed topics
+    // advance date by a week
 
-    const nextTuesday = dayjs()
-        .day(2)
+    const nextMeeting = dayjs()
         .set('hour', 18).set('minute', 0).set('second', 0)
         .toDate();
 
     const meeting: Meeting = {
         id: uuid(),
-        name: 'Plenary',
-        type: 'plenary',
-        date: nextTuesday,
+        name: `${team.name} Team Meeting`,
+        type: 'team',
+        date: nextMeeting,
         meeting_url: 'https://meet.google.com/swr-ixuh-xdc',
         status: 'new',
         notes: '',
-        team_id: '',
+        team_id: team.id,
     }
 
-    const volunteers = await volunteerService.getActive()
-    const attendees = volunteers.filter(v => v.status === 'Cadre')
+    const attendees = team.volunteer!
         .map(v => ({
             id: uuid(),
             meeting_id: meeting.id,

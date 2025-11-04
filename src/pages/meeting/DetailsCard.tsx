@@ -9,7 +9,7 @@ import {
     Stack,
     TextField
 } from '@mui/material';
-import { DatePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import { useContext, useEffect, useState } from 'react';
 
 import { UserContext } from '@digitalaidseattle/core';
@@ -68,23 +68,25 @@ const DetailsCard: React.FC<EntityProps<Meeting>> = ({ entity: meeting, onChange
                                 onChange={(evt) => handleMeetingChange('name', evt.target.value)}
                             />
                         </FormControl>
-                        <DatePicker
+                        <DateTimePicker
                             label='Meeting Date'
                             value={dayjs(meeting.date)}
                             onChange={(value) => handleMeetingChange('date', value!.toDate())} />
-                        <FormControl fullWidth >
-                            <TextField
-                                id={'icebreaker'}
-                                name={'icebreaker'}
-                                type="text"
-                                label={'Ice Breaker'}
-                                rows={1}
-                                value={iceBreakerTopic ? iceBreakerTopic.message : ''}
-                                fullWidth
-                                variant="outlined"
-                                onChange={(evt) => handleIcebreakerChange('message', evt.target.value)}
-                            />
-                        </FormControl>
+                        {meeting.type === 'plenary' &&
+                            <FormControl fullWidth >
+                                <TextField
+                                    id={'icebreaker'}
+                                    name={'icebreaker'}
+                                    type="text"
+                                    label={'Ice Breaker'}
+                                    rows={1}
+                                    value={iceBreakerTopic ? iceBreakerTopic.message : ''}
+                                    fullWidth
+                                    variant="outlined"
+                                    onChange={(evt) => handleIcebreakerChange('message', evt.target.value)}
+                                />
+                            </FormControl>
+                        }
                     </Stack>
                 </CardContent>
             </Card>

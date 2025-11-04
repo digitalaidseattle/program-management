@@ -60,6 +60,10 @@ class TeamService extends SupabaseEntityService<Team> {
         super("team");
     }
 
+    getAll(count?: number, select?: string): Promise<Team[]> {
+        return super.getAll(count, select ?? DEFAULT_SELECT);
+    }
+
     getById(entityId: Identifier, _select?: string): Promise<Team | null> {
         return super.getById(entityId, DEFAULT_SELECT)
     }

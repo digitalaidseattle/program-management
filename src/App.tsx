@@ -11,6 +11,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import {
   AuthServiceProvider,
+  RefreshContextProvider,
   StorageServiceProvider,
   UserContextProvider
 } from "@digitalaidseattle/core";
@@ -40,7 +41,9 @@ const App: React.FC = () => {
         <UserContextProvider>
           <LayoutConfigurationProvider configuration={TemplateConfig()}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <RouterProvider router={router} />
+              <RefreshContextProvider >
+                <RouterProvider router={router} />
+              </RefreshContextProvider>
             </LocalizationProvider>
           </LayoutConfigurationProvider>
         </UserContextProvider>

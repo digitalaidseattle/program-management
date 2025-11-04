@@ -10,13 +10,14 @@ import { Profile } from "./dasProfileService";
 import { Identifier } from "@digitalaidseattle/core";
 import { v4 as uuid } from 'uuid';
 import { Volunteer } from "./dasVolunteerService";
+import { Team } from "./dasTeamService";
 
 type MeetingAttendee = {
     id: string;
     meeting_id: string;
     profile_id: string;
     profile?: Profile;
-    present: boolean;
+    status: 'present' | 'absent' | 'unknown';
     email: string;
 }
 
@@ -41,6 +42,8 @@ type Meeting = {
     meeting_url: string;
     status: 'new' | 'concluded';
     notes: string;
+    team_id: string;
+    team?: Team;
 }
 
 const MEETING_SELECT = '*, meeting_attendee(*, profile(*)), meeting_topic(*)';
@@ -86,7 +89,7 @@ class MeetingAttendeeService extends SupabaseEntityService<MeetingAttendee> {
             meeting_id: meeting.id,
             profile_id: volunteer.profile!.id,
             email: volunteer.das_email,
-            present: false
+            status: 'unknown'
         });
     }
 }
@@ -102,7 +105,7 @@ class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
             id: uuid(),
             meeting_id: meetingId,
             type: 'team',
-            subject_id: [],
+            subject_id: [], //deprecated
             subject: '',
             message: '',
             source: '',
