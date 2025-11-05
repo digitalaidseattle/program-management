@@ -42,7 +42,7 @@ type Meeting = {
     meeting_url: string;
     status: 'new' | 'concluded';
     notes: string;
-    team_id: string;
+    team_id?: string;
     team?: Team;
 }
 
