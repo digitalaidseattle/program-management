@@ -1,13 +1,9 @@
 /**
- *  dasStaffingService.ts
+ *  proctorService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-
-import Airtable, { FieldSet, Record, Records } from 'airtable';
-
-import { AirtableEntityService } from "@digitalaidseattle/airtable";
 
 type Proctor = {
     id: string,
@@ -15,48 +11,70 @@ type Proctor = {
     email: string,
 }
 
-const applicantAirtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_APPLICANT_PAT });
-const PROCTOR_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_PROCTOR_TABLE;
-const LINK_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_SCHEDULE_LINK_TABLE;
+// @ts-ignore - Environment variables are defined at runtime
+const CODA_API_TOKEN = import.meta.env.VITE_CODA_API_TOKEN;
+// @ts-ignore
+const CODA_DOC_ID = import.meta.env.VITE_CODA_DOC_ID;
+// @ts-ignore
+const PROCTOR_TABLE_ID = import.meta.env.VITE_CODA_PROCTOR_TABLE_ID;
+// @ts-ignore
+const LINK_TABLE_ID = import.meta.env.VITE_CODA_SCHEDULE_LINK_TABLE_ID;
 
-class ProctorService extends AirtableEntityService<Proctor> {
+const CODA_COLUMNS = {
+    proctor: { name: 'Name', email: 'Email' },
+    links: { url: 'Scheduling link', status: 'Status', interviewer: 'Interviewer' }
+} as const;
+const DEFAULT_LINK_STATUS = 'Available';
 
-    public constructor() {
-        super(applicantAirtableClient, PROCTOR_TABLE);
-        this.base = applicantAirtableClient.base(import.meta.env.VITE_AIRTABLE_APPLICANT_BASE_ID);
-    }
-
-    transform(r: Record<FieldSet>): Proctor {
-        return {
-            id: r.id,
-            name: r.fields['Name'],
-            email: r.fields['OS email']
-        } as Proctor
-    }
-
-    transformEntity(_entity: Partial<Proctor>): Partial<FieldSet> {
-        //TODO
-        const fields: Partial<FieldSet> = {};
-
-        return fields;
-    }
+class ProctorService {
 
     async findByEmail(email: string): Promise<Proctor | null> {
-        const filter = `LOWER({OS email}) = "${email.toLowerCase()}"`
-        const proctors = await this.getAll(1, filter);
-        return proctors.length == 0 ? null : proctors[0];
+        const { codaService } = await import('../../services/codaService');
+        
+        const rows = await codaService.getRows(PROCTOR_TABLE_ID);
+        
+        if (!rows || rows.length === 0) {
+            return null;
+        }
+        
+        const emailLower = email.toLowerCase();
+        const row = rows.find(r => {
+            const values = r.values || {};
+            const emailValue = Object.values(values).find(v => 
+                typeof v === 'string' && v.toLowerCase() === emailLower
+            );
+            return emailValue !== undefined;
+        });
+        
+        if (!row) {
+            return null;
+        }
+        
+        const values = row.values || {};
+        const emailValue = Object.values(values).find(v => 
+            typeof v === 'string' && v.toLowerCase() === emailLower
+        ) as string || '';
+        const nameValue = Object.values(values).find(v => 
+            typeof v === 'string' && v !== emailValue && v.trim().length > 0
+        ) as string || '';
+        
+        return {
+            id: row.id,
+            name: nameValue,
+            email: emailValue
+        } as Proctor;
     }
 
-    async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<Records<FieldSet>> {
-        const records = bookingLinks.map((link) => ({
-            fields: {
-                'Scheduling link': link,
-                'Status': 'Available',
-                'Interviewer': [proctor.id]
-            }
+    async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<any> {
+        const rows = bookingLinks.map((link) => ({
+            cells: [
+                { column: CODA_COLUMNS.links.url, value: link },
+                { column: CODA_COLUMNS.links.status, value: DEFAULT_LINK_STATUS },
+                { column: CODA_COLUMNS.links.interviewer, value: proctor.name }
+            ]
         }));
-        const booked = await this.base(LINK_TABLE).create(records);
-        return booked
+        const { codaService } = await import('../../services/codaService');
+        return codaService.createRows(LINK_TABLE_ID, rows);
     }
 
 }

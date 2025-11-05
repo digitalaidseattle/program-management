@@ -26,8 +26,7 @@ export const SchedulingWidget = () => {
     const [thinking, setThinking] = useState<boolean>(false);
 
     const redirectUri = useMemo(() => {
-        // return `${window.location.origin}/api/calendly/oauth/callback`;
-        return `${window.location.origin}/scheduling`;
+        return `${window.location.origin}`;
     }, []);
 
     useEffect(() => {
@@ -35,36 +34,36 @@ export const SchedulingWidget = () => {
         if (authCode) {
             calendlyService.exchangeCodeForToken(authCode, redirectUri)
                 .then(accessToken => setAccessToken(accessToken))
+                .catch(() => {
+                    notifications.error('Failed to authenticate with Calendly. Please try again.');
+                });
         }
+        
         authService.getUser()
             .then(user => {
                 if (user) {
-                    proctorService
-                        .findByEmail(user.email)
-                        .then(proctor => setSelectedProctor(proctor))
+                    proctorService.findByEmail(user.email)
+                        .then(proctor => setSelectedProctor(proctor));
                 }
-            })
-    }, []);
+            });
+    }, [searchParams, redirectUri, authService, notifications]);
 
     useEffect(() => {
-        setActiveStep(accessToken ? 1 : 0)
+        setActiveStep(accessToken ? 1 : 0);
+        
         if (accessToken && selectedProctor) {
-            try {
-                calendlyService.getUser(accessToken)
-                    .then(user => {
-                        calendlyService.getEventTypes(accessToken, user.resource.uri)
-                            .then(events => {
-                                setEvents(events)
-                                setInterviewEventUri(events.length > 0 ? events[0].uri : null)
-                            })
-                    })
-            } catch (err) {
-                console.error(err)
-                notifications.error('Your authentication with Calendly expired. Try it again.');
-                setAccessToken(null);
-            }
+            calendlyService.getUser(accessToken)
+                .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
+                .then(events => {
+                    setEvents(events);
+                    setInterviewEventUri(events.length > 0 ? events[0].uri : null);
+                })
+                .catch(() => {
+                    notifications.error('Your authentication with Calendly expired. Try it again.');
+                    setAccessToken(null);
+                });
         }
-    }, [accessToken, selectedProctor]);
+    }, [accessToken, selectedProctor, notifications]);
 
     async function authenticate() {
         const calendlyUri = calendlyService.getAuthUri(redirectUri);
@@ -81,8 +80,7 @@ export const SchedulingWidget = () => {
                     notifications.success('Your links have been created.')
                 }
             } catch (err) {
-                console.error(err);
-                notifications.error('Your authentication with Calendly expired. Try it again.');
+                notifications.error('Failed to create booking links. Please try again.');
             } finally {
                 setThinking(false);
             }
@@ -123,7 +121,7 @@ export const SchedulingWidget = () => {
                                     labelId='num-links-label'
                                     sx={{ width: '150px' }}
                                     value={numLinks}
-                                    label="Choose number of links<"
+                                    label="Choose number of links"
                                     onChange={(evt) => setNumLinks(evt.target.value as number)}>
                                     {[1, 2, 3, 5, 10].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
                                 </Select>
