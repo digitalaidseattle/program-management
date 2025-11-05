@@ -13,6 +13,9 @@ import { Team, teamService } from '../../services/dasTeamService';
 import { MeetingDetails } from '../meeting';
 import { createTeamMeeting } from '../../actions/CreateTeamMeeting';
 import { SelectItemDialog } from '@digitalaidseattle/mui';
+import { createAdhocMeeting } from '../../actions/CreateAdhocMeeting';
+import { useAuthService } from '@digitalaidseattle/core';
+import { volunteerService } from '../../services/dasVolunteerService';
 
 const columns: GridColDef<Meeting[][number]>[] = [
 
@@ -42,13 +45,12 @@ function MeetingToolbar(): ReactNode {
   const [teams, setTeams] = useState<Team[]>([]);
   const [openTeamDialog, setOpenTeamDialog] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  const authService = useAuthService()
 
   useEffect(() => {
     teamService.getAll()
       .then(ts => setTeams(ts.sort((a, b) => a.name.localeCompare(b.name))));
   }, []);
-
 
   async function newPlenary() {
     const meeting = await createPlenaryMeeting();
@@ -72,6 +74,25 @@ function MeetingToolbar(): ReactNode {
     }
   }
 
+  async function newAdhoc() {
+    const user = await authService.getUser();
+
+    if (!user) {
+      throw new Error(`User not logged in.`);
+    }
+
+    const volunteer = await volunteerService.findByDasEmail(user.email)
+    if (!volunteer) {
+      throw new Error(`Volunteer not found: ${user.email}`);
+    }
+
+    const meeting = await createAdhocMeeting(volunteer)
+    if (!meeting) {
+      throw new Error(`Cound not create the meeting`);
+    }
+    navigate(`/meeting/${meeting.id}`)
+  }
+
   return (
     <Stack direction='row' alignItems={'center'}>
 
@@ -81,7 +102,7 @@ function MeetingToolbar(): ReactNode {
           <Button onClick={() => newPlenary()}>Plenary</Button>
           <Button onClick={() => alert('Not ready')}>Leadership</Button>
           <Button onClick={() => setOpenTeamDialog(true)}>Team</Button>
-          <Button onClick={() => alert('Not ready')}>Adhoc</Button>
+          <Button onClick={() => newAdhoc()}>Adhoc</Button>
         </ButtonGroup>
       </Toolbar>
       <SelectItemDialog

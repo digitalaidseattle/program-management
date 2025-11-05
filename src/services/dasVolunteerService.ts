@@ -97,15 +97,24 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
         return super.getById(id, DEFAULT_SELECT);
     }
 
-    getAll(_count?: number, _select?: string): Promise<Volunteer[]> {
+    async getAll(_count?: number, _select?: string): Promise<Volunteer[]> {
         return super.getAll(undefined, DEFAULT_SELECT);
     }
 
-    async findByAirtableId(airtableId: string): Promise<AirtableVolunteer> {
+    async findByAirtableId(airtableId: string): Promise<Volunteer> {
         return await supabaseClient
             .from(this.tableName)
             .select(DEFAULT_SELECT)
             .eq('airtable_id', airtableId)
+            .single()
+            .then((resp: any) => resp.data);
+    }
+
+    async findByDasEmail(email: string): Promise<Volunteer> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .ilike('das_email', email)
             .single()
             .then((resp: any) => resp.data);
     }
