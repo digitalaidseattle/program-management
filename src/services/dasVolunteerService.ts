@@ -9,36 +9,6 @@ import { Identifier } from "@digitalaidseattle/core";
 import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Profile } from "./dasProfileService";
 
-type AirtableVolunteer = {
-    id: string,
-    airtable_id: string,
-    name: string,
-    firstName: string,
-    lastName: string,
-    affliation: string,
-    status: string,
-    ventures: string,
-    joinDate: string,
-    ventureDate: string,
-    ventureStatus: string,
-    position: string,
-    disciplines: string[],
-    tools: string[],
-    personalEmail: string,
-    phone: string,
-    pic: string,
-
-    github: string,
-    dasEmail: string,
-    slackId: string,
-    location: string,
-    hopeToGive: string,
-    hopeToGet: string,
-    communicationPreferences: string,
-    linkedin: string,
-
-}
-
 type Volunteer = {
     id: string,
     profile_id: string,
