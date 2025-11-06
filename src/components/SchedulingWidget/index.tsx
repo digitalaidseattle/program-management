@@ -27,10 +27,18 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
+<<<<<<< HEAD
     const redirectUri = useMemo(() => {
         return `${window.location.origin}`;
     }, []);
 
+=======
+    const proctorLoadedRef = useRef(false);
+    const eventsLoadedRef = useRef(false);
+    const oauthProcessedRef = useRef(false);
+
+    // Load proctor once on mount
+>>>>>>> 1b0e18d (error fixes)
     useEffect(() => {
         const authCode = searchParams.get('code');
         if (authCode) {
@@ -50,6 +58,24 @@ export const SchedulingWidget = () => {
             });
     }, [searchParams, redirectUri, authService, notifications]);
 
+<<<<<<< HEAD
+=======
+    // Handle OAuth callback once
+    useEffect(() => {
+        const authCode = searchParams.get('code');
+        if (authCode && !oauthProcessedRef.current && !accessToken) {
+            oauthProcessedRef.current = true;
+            calendlyService.exchangeCodeForToken(authCode, window.location.origin)
+                .then(token => setAccessToken(token))
+                .catch(() => {
+                    notifications.error('Failed to authenticate with Calendly. Please try again.');
+                    oauthProcessedRef.current = false;
+                });
+        }
+    }, [searchParams, notifications, accessToken]);
+
+    // Update step and load events once when both are ready
+>>>>>>> 1b0e18d (error fixes)
     useEffect(() => {
         setActiveStep(accessToken ? 1 : 0);
         
