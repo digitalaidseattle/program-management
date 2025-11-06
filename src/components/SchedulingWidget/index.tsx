@@ -6,7 +6,7 @@
  */
 import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
@@ -14,8 +14,7 @@ import { SchedulingLink, SchedulingLinkService } from './schedulingLinkService';
 
 const DEFAULT_LINK_COUNT = 10
 export const SchedulingWidget = () => {
-    const schedulingLinkService = SchedulingLinkService.newInstance();
-    const [searchParams] = useSearchParams();
+    const searchParams = useSearchParams()[0];
     const authService = useAuthService();
     const notifications = useNotifications();
 
@@ -28,14 +27,20 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
-    const proctorLoadedRef = useRef(false);
-    const eventsLoadedRef = useRef(false);
-    const oauthProcessedRef = useRef<string | null>(null);
+    const redirectUri = useMemo(() => {
+        return `${window.location.origin}`;
+    }, []);
 
-    // Load proctor once on mount using authenticated user's email
     useEffect(() => {
-        if (proctorLoadedRef.current) return;
-        proctorLoadedRef.current = true;
+        const authCode = searchParams.get('code');
+        if (authCode) {
+            calendlyService.exchangeCodeForToken(authCode, redirectUri)
+                .then(accessToken => setAccessToken(accessToken))
+                .catch(() => {
+                    notifications.error('Failed to authenticate with Calendly. Please try again.');
+                });
+        }
+        
         authService.getUser()
             .then(user => {
                 if (user) {
@@ -43,41 +48,12 @@ export const SchedulingWidget = () => {
                         .then(proctor => setSelectedProctor(proctor));
                 }
             });
-    }, [authService]);
+    }, [searchParams, redirectUri, authService, notifications]);
 
-    useEffect(() => {
-        fetchData();
-    }, [selectedProctor]);
-
-
-    // Handle OAuth callback once - process code and clean URL
-    useEffect(() => {
-        const authCode = searchParams.get('code');
-        if (authCode && oauthProcessedRef.current !== authCode && !accessToken) {
-            setLoading(true);
-            oauthProcessedRef.current = authCode;
-            calendlyService.exchangeCodeForToken(authCode, window.location.origin)
-                .then(token => {
-                    setAccessToken(token);
-                    // Remove code from URL to prevent re-processing on reload
-                    const url = new URL(window.location.href);
-                    url.searchParams.delete('code');
-                    window.history.replaceState({}, '', url.toString());
-                })
-                .catch(() => {
-                    notifications.error('Failed to authenticate with Calendly. Please try again.');
-                    oauthProcessedRef.current = null;
-                })
-                .finally(() => setLoading(false));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // Update step and load events once when both are ready
     useEffect(() => {
         setActiveStep(accessToken ? 1 : 0);
-        if (accessToken && selectedProctor && !eventsLoadedRef.current) {
-            eventsLoadedRef.current = true;
+        
+        if (accessToken && selectedProctor) {
             calendlyService.getUser(accessToken)
                 .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
                 .then(events => {
@@ -87,7 +63,6 @@ export const SchedulingWidget = () => {
                 .catch(() => {
                     notifications.error('Your authentication with Calendly expired. Try it again.');
                     setAccessToken(null);
-                    eventsLoadedRef.current = false;
                 });
         }
     }, [accessToken, selectedProctor, notifications]);
@@ -102,7 +77,7 @@ export const SchedulingWidget = () => {
     }
 
     async function authenticate() {
-        const calendlyUri = calendlyService.getAuthUri(window.location.origin);
+        const calendlyUri = calendlyService.getAuthUri(redirectUri);
         window.location.replace(calendlyUri);
     }
 
