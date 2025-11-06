@@ -17,6 +17,8 @@ type MeetingAttendee = {
     meeting_id: string;
     profile_id: string;
     profile?: Profile;
+    team_id?: string;  // leadership meeting
+    team?: string;
     status: 'present' | 'absent' | 'unknown';
     email: string;
 }
@@ -26,7 +28,7 @@ type MeetingTopic = {
     meeting_id: string;
     type: 'icebreaker' | 'shoutout' | 'team' | 'intro' | 'anniversary',
     subject_id: string[]; // ids for intro/anniversary/shoutouts
-    subject: string; // alertnate subject
+    subject: string; // alternate subject
     message: string;
     source: string; // who/team submitted it
     discussed: boolean;
@@ -48,6 +50,7 @@ type Meeting = {
 
 const MEETING_SELECT = '*, meeting_attendee(*, profile(*)), meeting_topic(*)';
 class MeetingService extends SupabaseEntityService<Meeting> {
+
     public constructor() {
         super("meeting");
     }
@@ -61,11 +64,11 @@ class MeetingService extends SupabaseEntityService<Meeting> {
             .then((resp: any) => resp.data);
     }
 
-    async getCurrentPlenary(): Promise<Meeting> {
+    async getCurrent(type: string): Promise<Meeting> {
         return await supabaseClient
             .from(this.tableName)
             .select(MEETING_SELECT)
-            .eq('type', 'plenary')
+            .eq('type', type)
             .eq('status', 'new')
             .order('date', { ascending: false })
             .then((resp: any) => resp.data[0]);

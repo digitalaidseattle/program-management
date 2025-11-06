@@ -3,26 +3,55 @@ import {
     Box,
     Card,
     CardHeader,
-    SxProps
+    SxProps,
+    Typography,
+    useTheme
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { Meeting, MeetingAttendee } from "../../services/dasMeetingService";
 
 
 import { CheckCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useStorageService } from "@digitalaidseattle/core";
+import { Team, teamService } from "../../services/dasTeamService";
+import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { CARD_HEADER_SX } from "./utils";
 
 
 function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onChange: (updated: any) => void }) {
+    const theme = useTheme();
+
+    const [teams, setTeams] = useState<Team[]>([]);
     const [attendees, setAttendees] = useState<MeetingAttendee[]>([]);
+
+    const { selectedAttendee, setSelectedAttendee } = useContext(SelectedAttendeeContext);
     const storageService = useStorageService()!;
+
+    useEffect(() => {
+        teamService.getAll()
+            .then(t => setTeams(t));
+    }, [])
 
     useEffect(() => {
         if (meeting) {
             setAttendees(meeting.meeting_attendee!)
         }
     }, [meeting])
+
+    function getTitle(attendee: MeetingAttendee): ReactNode {
+        switch (meeting.type) {
+            case 'leadership':
+                const found = teams.find(t => t.id === attendee.team_id);
+                return (
+                    <Box>
+                        <Typography sx={{ fontWeight: 600 }}>{found ? found.name : ''}</Typography>
+                        <Typography>{attendee.profile!.name}</Typography>
+                    </Box>
+                );
+            default:
+                return attendee.profile!.name;
+        }
+    }
 
     return (
         <Card>
@@ -42,11 +71,14 @@ function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onC
                     key={idx}
                     sx={{
                         width: "100%",
-                        boxShadow: 'none'
+                        boxShadow: 'none',
+                        background: selectedAttendee? attendee.id === selectedAttendee!.id ? theme.palette.grey[200] : 'none' : 'none'
                     }}
+
+                    onClick={() => setSelectedAttendee(attendee)}
                 >
                     <CardHeader
-                        title={attendee.profile!.name}
+                        title={getTitle(attendee)}
                         avatar={<Avatar
                             src={storageService.getUrl(`profiles/${attendee.profile!.id}`)}
                             alt={`${attendee.profile!.name} picture`}

@@ -22,10 +22,11 @@ import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
 import DashboardPage from './dashboard.tsx';
 import Markdown from 'react-markdown';
-import PlenaryPage from './plenary/index.tsx';
+import PlenaryPage from './view-meeting/PlenaryPage.tsx';
 import MeetingsPage from './meetings/index.tsx';
 import TeamMeetingPage from './view-meeting/TeamMeetingPage.tsx';
 import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
+import LeadershipMeetingPage from './view-meeting/LeadershipMeetingPage.tsx';
 
 const routes = [
   {
@@ -121,6 +122,10 @@ const routes = [
         element: <PlenaryPage />,
       },
       {
+        path: "leadership",
+        element: <LeadershipMeetingPage />,
+      },
+      {
         path: "team-meeting/:id",
         element: <TeamMeetingPage />,
       },
@@ -128,6 +133,7 @@ const routes = [
         path: "adhoc-meeting/:id",
         element: <AdhoceetingPage />,
       }
+
     ]
   },
   {

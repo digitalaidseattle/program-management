@@ -16,6 +16,7 @@ import { SelectItemDialog } from '@digitalaidseattle/mui';
 import { createAdhocMeeting } from '../../actions/CreateAdhocMeeting';
 import { useAuthService } from '@digitalaidseattle/core';
 import { volunteerService } from '../../services/dasVolunteerService';
+import { createLeadershipMeeting } from '../../actions/CreateLeadershipMeeting';
 
 const columns: GridColDef<Meeting[][number]>[] = [
 
@@ -32,10 +33,10 @@ const columns: GridColDef<Meeting[][number]>[] = [
   },
   {
     field: 'date',
-    headerName: 'Status',
+    headerName: 'Date',
   },
   {
-    field: 'meetingUrl',
+    field: 'meeting_url',
     headerName: 'Google Meet',
     width: 300,
   },
@@ -58,6 +59,16 @@ function MeetingToolbar(): ReactNode {
       navigate(`/meeting/${meeting.id}`)
     }
   }
+  async function newLeadership() {
+    const meeting = await createLeadershipMeeting();
+    if (meeting) {
+      navigate(`/meeting/${meeting.id}`)
+    }
+  }
+
+
+
+
 
   function handleSelectTeam(selection: string | null | undefined): any {
     if (selection) {
@@ -100,7 +111,7 @@ function MeetingToolbar(): ReactNode {
         <Typography>Add:</Typography>
         <ButtonGroup size="small" sx={{ height: 30 }} aria-label="outlined primary button group">
           <Button onClick={() => newPlenary()}>Plenary</Button>
-          <Button onClick={() => alert('Not ready')}>Leadership</Button>
+          <Button onClick={() => newLeadership()}>Leadership</Button>
           <Button onClick={() => setOpenTeamDialog(true)}>Team</Button>
           <Button onClick={() => newAdhoc()}>Adhoc</Button>
         </ButtonGroup>
