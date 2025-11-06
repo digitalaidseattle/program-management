@@ -23,7 +23,10 @@ jobs:
           echo VITE_AIRTABLE_APPLICANT_PAT=${{ secrets.AIRTABLE_APPLICANT_PAT }} >> .env
           echo VITE_CALENDLY_CLIENT_ID=${{ secrets.CALENDLY_CLIENT_ID }} >> .env
           echo VITE_CALENDLY_CLIENT_SECRET=${{ secrets.CALENDLY_CLIENT_SECRET }} >> .env
-
+          echo VITE_CODA_API_TOKEN=${{ secrets.CODA_API_TOKEN }} >> .env
+          echo VITE_CODA_DOC_ID=${{ secrets.CODA_DOC_ID }} >> .env
+          echo VITE_CODA_PROCTOR_TABLE_ID=${{ secrets.CODA_PROCTOR_TABLE_ID }} >> .env
+          echo VITE_CODA_SCHEDULE_LINK_TABLE_ID=${{ secrets.CODA_SCHEDULE_LINK_TABLE_ID }} >> .env
           cat .env
           npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0

@@ -6,14 +6,14 @@
  */
 import { useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
 
 const DEFAULT_LINK_COUNT = 10
 export const SchedulingWidget = () => {
-    const searchParams = useSearchParams()[0];
+    const [searchParams] = useSearchParams();
     const authService = useAuthService();
     const notifications = useNotifications();
 
@@ -25,49 +25,65 @@ export const SchedulingWidget = () => {
     const [interviewEventUri, setInterviewEventUri] = useState<string | null>(null);
     const [thinking, setThinking] = useState<boolean>(false);
 
-    const redirectUri = useMemo(() => {
-        // return `${window.location.origin}/api/calendly/oauth/callback`;
-        return `${window.location.origin}/scheduling`;
-    }, []);
+    const proctorLoadedRef = useRef(false);
+    const eventsLoadedRef = useRef(false);
+    const oauthProcessedRef = useRef<string | null>(null);
 
+    // Load proctor once on mount
     useEffect(() => {
-        const authCode = searchParams.get('code');
-        if (authCode) {
-            calendlyService.exchangeCodeForToken(authCode, redirectUri)
-                .then(accessToken => setAccessToken(accessToken))
-        }
+        if (proctorLoadedRef.current) return;
+        proctorLoadedRef.current = true;
         authService.getUser()
             .then(user => {
                 if (user) {
-                    proctorService
-                        .findByEmail(user.email)
-                        .then(proctor => setSelectedProctor(proctor))
+                    proctorService.findByEmail(user.email)
+                        .then(proctor => setSelectedProctor(proctor));
                 }
-            })
+            });
+    }, [authService]);
+
+    // Handle OAuth callback once - process code and clean URL
+    useEffect(() => {
+        const authCode = searchParams.get('code');
+        if (authCode && oauthProcessedRef.current !== authCode && !accessToken) {
+            oauthProcessedRef.current = authCode;
+            calendlyService.exchangeCodeForToken(authCode, window.location.origin)
+                .then(token => {
+                    setAccessToken(token);
+                    // Remove code from URL to prevent re-processing on reload
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('code');
+                    window.history.replaceState({}, '', url.toString());
+                })
+                .catch(() => {
+                    notifications.error('Failed to authenticate with Calendly. Please try again.');
+                    oauthProcessedRef.current = null;
+                });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Update step and load events once when both are ready
     useEffect(() => {
-        setActiveStep(accessToken ? 1 : 0)
-        if (accessToken && selectedProctor) {
-            try {
-                calendlyService.getUser(accessToken)
-                    .then(user => {
-                        calendlyService.getEventTypes(accessToken, user.resource.uri)
-                            .then(events => {
-                                setEvents(events)
-                                setInterviewEventUri(events.length > 0 ? events[0].uri : null)
-                            })
-                    })
-            } catch (err) {
-                console.error(err)
-                notifications.error('Your authentication with Calendly expired. Try it again.');
-                setAccessToken(null);
-            }
+        setActiveStep(accessToken ? 1 : 0);
+        if (accessToken && selectedProctor && !eventsLoadedRef.current) {
+            eventsLoadedRef.current = true;
+            calendlyService.getUser(accessToken)
+                .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
+                .then(events => {
+                    setEvents(events);
+                    setInterviewEventUri(events.length > 0 ? events[0].uri : null);
+                })
+                .catch(() => {
+                    notifications.error('Your authentication with Calendly expired. Try it again.');
+                    setAccessToken(null);
+                    eventsLoadedRef.current = false;
+                });
         }
-    }, [accessToken, selectedProctor]);
+    }, [accessToken, selectedProctor, notifications]);
 
     async function authenticate() {
-        const calendlyUri = calendlyService.getAuthUri(redirectUri);
+        const calendlyUri = calendlyService.getAuthUri(window.location.origin);
         window.location.replace(calendlyUri);
     }
 
@@ -81,8 +97,7 @@ export const SchedulingWidget = () => {
                     notifications.success('Your links have been created.')
                 }
             } catch (err) {
-                console.error(err);
-                notifications.error('Your authentication with Calendly expired. Try it again.');
+                notifications.error('Failed to create booking links. Please try again.');
             } finally {
                 setThinking(false);
             }
@@ -123,7 +138,7 @@ export const SchedulingWidget = () => {
                                     labelId='num-links-label'
                                     sx={{ width: '150px' }}
                                     value={numLinks}
-                                    label="Choose number of links<"
+                                    label="Choose number of links"
                                     onChange={(evt) => setNumLinks(evt.target.value as number)}>
                                     {[1, 2, 3, 5, 10].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
                                 </Select>

@@ -1,13 +1,11 @@
 /**
- *  dasStaffingService.ts
+ *  proctorService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
  */
 
-import Airtable, { FieldSet, Record, Records } from 'airtable';
-
-import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import { CodaRow } from '../../services/codaService';
 
 type Proctor = {
     id: string,
@@ -15,48 +13,54 @@ type Proctor = {
     email: string,
 }
 
-const applicantAirtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_APPLICANT_PAT });
-const PROCTOR_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_PROCTOR_TABLE;
-const LINK_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_SCHEDULE_LINK_TABLE;
+// @ts-ignore - Environment variables are defined at runtime
+const PROCTOR_TABLE_ID = import.meta.env.VITE_CODA_PROCTOR_TABLE_ID;
+// @ts-ignore
+const LINK_TABLE_ID = import.meta.env.VITE_CODA_SCHEDULE_LINK_TABLE_ID;
 
-class ProctorService extends AirtableEntityService<Proctor> {
+const NAME_KEY = 'c-x0QRJJXWk9';
+const EMAIL_KEY = 'c-FZ2nIGJhbt';
 
-    public constructor() {
-        super(applicantAirtableClient, PROCTOR_TABLE);
-        this.base = applicantAirtableClient.base(import.meta.env.VITE_AIRTABLE_APPLICANT_BASE_ID);
+const CODA_COLUMNS = {
+    links: { url: 'Scheduling link', status: 'Status', interviewer: 'Interviewer' }
+} as const;
+const DEFAULT_LINK_STATUS = 'Available';
+
+class ProctorService {
+    mapJson(row: CodaRow): Proctor {
+        const proctor = {
+            id: row.id,
+            name: row.values[NAME_KEY] || '',
+            email: row.values[EMAIL_KEY] || ''
+        } as Proctor;
+        return proctor;
     }
 
-    transform(r: Record<FieldSet>): Proctor {
-        return {
-            id: r.id,
-            name: r.fields['Name'],
-            email: r.fields['OS email']
-        } as Proctor
-    }
-
-    transformEntity(_entity: Partial<Proctor>): Partial<FieldSet> {
-        //TODO
-        const fields: Partial<FieldSet> = {};
-
-        return fields;
+    async getAll(): Promise<Proctor[]> {
+        const { codaService } = await import('../../services/codaService');
+        const rows = await codaService.getRows(PROCTOR_TABLE_ID);
+        const proctors = rows
+            .map(row => this.mapJson(row))
+            .filter(p => p.name !== '' && p.email !== '');
+        return proctors;
     }
 
     async findByEmail(email: string): Promise<Proctor | null> {
-        const filter = `LOWER({OS email}) = "${email.toLowerCase()}"`
-        const proctors = await this.getAll(1, filter);
-        return proctors.length == 0 ? null : proctors[0];
+        const proctors = await this.getAll();
+        const emailLower = email.toLowerCase();
+        return proctors.find(p => p.email.toLowerCase() === emailLower) || null;
     }
 
-    async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<Records<FieldSet>> {
-        const records = bookingLinks.map((link) => ({
-            fields: {
-                'Scheduling link': link,
-                'Status': 'Available',
-                'Interviewer': [proctor.id]
-            }
+    async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<any> {
+        const rows = bookingLinks.map((link) => ({
+            cells: [
+                { column: CODA_COLUMNS.links.url, value: link },
+                { column: CODA_COLUMNS.links.status, value: DEFAULT_LINK_STATUS },
+                { column: CODA_COLUMNS.links.interviewer, value: proctor.name }
+            ]
         }));
-        const booked = await this.base(LINK_TABLE).create(records);
-        return booked
+        const { codaService } = await import('../../services/codaService');
+        return codaService.createRows(LINK_TABLE_ID, rows);
     }
 
 }
