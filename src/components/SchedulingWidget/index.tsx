@@ -27,7 +27,7 @@ export const SchedulingWidget = () => {
 
     const proctorLoadedRef = useRef(false);
     const eventsLoadedRef = useRef(false);
-    const oauthProcessedRef = useRef(false);
+    const oauthProcessedRef = useRef<string | null>(null);
 
     // Load proctor once on mount
     useEffect(() => {
@@ -42,19 +42,26 @@ export const SchedulingWidget = () => {
             });
     }, [authService]);
 
-    // Handle OAuth callback once
+    // Handle OAuth callback once - process code and clean URL
     useEffect(() => {
         const authCode = searchParams.get('code');
-        if (authCode && !oauthProcessedRef.current && !accessToken) {
-            oauthProcessedRef.current = true;
+        if (authCode && oauthProcessedRef.current !== authCode && !accessToken) {
+            oauthProcessedRef.current = authCode;
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
-                .then(token => setAccessToken(token))
+                .then(token => {
+                    setAccessToken(token);
+                    // Remove code from URL to prevent re-processing on reload
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('code');
+                    window.history.replaceState({}, '', url.toString());
+                })
                 .catch(() => {
                     notifications.error('Failed to authenticate with Calendly. Please try again.');
-                    oauthProcessedRef.current = false;
+                    oauthProcessedRef.current = null;
                 });
         }
-    }, [searchParams, notifications, accessToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Update step and load events once when both are ready
     useEffect(() => {
