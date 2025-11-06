@@ -205,7 +205,7 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
     useEffect(() => {
         if (meeting) {
             const present = (meeting.meeting_attendee ?? [])
-                .filter(ma => ma.status=== 'present');
+                .filter(ma => ma.status === 'present');
             setAttendees(shuffle(present ?? []))
         }
     }, [meeting])
@@ -226,7 +226,8 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
                 (
                     <ListCard key={`${idx}`}
                         title={attendee.profile!.name}
-                        avatarImageSrc={storageService.getUrl(`profiles/${attendee.profile!.id}`)} />
+                        avatarImageSrc={storageService.getUrl(`profiles/${attendee.profile!.id}`)}
+                    />
                 ))}
             </Box>
         </Card>
@@ -255,7 +256,7 @@ const PlenaryPage = () => {
     }, []);
 
     function refresh() {
-        meetingService.getCurrentPlenary()
+        meetingService.getCurrent('plenary')
             .then(plenary => setMeeting(plenary));
     }
 
