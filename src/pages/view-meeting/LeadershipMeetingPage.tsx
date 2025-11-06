@@ -21,7 +21,6 @@ import { Meeting, MeetingAttendee, meetingService } from "../../services/dasMeet
 import { Team, teamService } from "../../services/dasTeamService";
 import { AttendeesCard } from "./AttendeesCard";
 import { ForecastsCard } from "./ForecastsCard";
-import { NextMeetingCard } from "./NextMeetingCard";
 import { NotesCard } from "./NotesCard";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { TopicsCard } from "./TopicsCard";

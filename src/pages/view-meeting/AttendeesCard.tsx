@@ -13,10 +13,9 @@ import { Meeting, MeetingAttendee } from "../../services/dasMeetingService";
 
 import { CheckCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useStorageService } from "@digitalaidseattle/core";
-import { CARD_HEADER_SX } from "./utils";
 import { Team, teamService } from "../../services/dasTeamService";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
-import { grey } from "@ant-design/colors";
+import { CARD_HEADER_SX } from "./utils";
 
 
 function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onChange: (updated: any) => void }) {
