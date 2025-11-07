@@ -38,7 +38,8 @@ type Meeting = {
     id: string;
     name: string;
     type: 'plenary' | 'leadership' | 'team' | 'adhoc';
-    date: Date;
+    start_date: Date;
+    end_date: Date;
     meeting_attendee?: MeetingAttendee[];
     meeting_topic?: MeetingTopic[];
     meeting_url: string;
@@ -70,7 +71,7 @@ class MeetingService extends SupabaseEntityService<Meeting> {
             .select(MEETING_SELECT)
             .eq('type', type)
             .eq('status', 'new')
-            .order('date', { ascending: false })
+            .order('start_date', { ascending: false })
             .then((resp: any) => resp.data[0]);
     }
 

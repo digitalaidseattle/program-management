@@ -1,13 +1,8 @@
 import {
-    Box,
-    Button,
     Card,
     CardContent, CardHeader,
-    Checkbox,
     Grid,
     Stack,
-    Toolbar,
-    Tooltip,
     Typography
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -20,11 +15,11 @@ import { Meeting, MeetingAttendee, meetingService } from "../../services/dasMeet
 import { Team, teamService } from "../../services/dasTeamService";
 import { AttendeesCard } from "./AttendeesCard";
 import { ForecastsCard } from "./ForecastsCard";
+import { MeetingToolbar } from "./MeetingToolbar";
 import { NotesCard } from "./NotesCard";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { TopicsCard } from "./TopicsCard";
 import { CARD_HEADER_SX } from "./utils";
-import { MeetingToolbar } from "./MeetingToolbar";
 
 const LeadershipMeetingPage = () => {
     const [meeting, setMeeting] = useState<Meeting>();
@@ -69,7 +64,7 @@ const LeadershipMeetingPage = () => {
             <Card>
                 <CardHeader
                     sx={{ backgroundColor: CARD_HEADER_SX }}
-                    title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>}
+                    title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.start_date).format('MM/DD/YYYY')}</Typography>}
                     action={<ImHereButton
                         meeting={meeting}
                         onChange={() => refreshMeeting()} />}

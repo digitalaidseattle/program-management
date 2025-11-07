@@ -12,19 +12,19 @@ import { Volunteer } from '../services/dasVolunteerService';
 
 export async function createAdhocMeeting(volunteer: Volunteer): Promise<Meeting | null> {
 
-    const nextMeeting = dayjs()
+    const startTime = dayjs()
         .set('minute', 0)
-        .set('second', 0)
-        .toDate();
+        .set('second', 0);
 
     const meeting: Meeting = {
         id: uuid(),
         name: `Meeting`,
         type: 'adhoc',
-        date: nextMeeting,
+        start_date: startTime.toDate(),
+        end_date: startTime.add(25, 'm').toDate(),
         meeting_url: 'https://meet.google.com/swr-ixuh-xdc',
         status: 'new',
-        notes: ''
+        notes: '',
     }
 
     const attendee = ({

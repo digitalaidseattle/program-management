@@ -36,8 +36,8 @@ function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) 
         const cadre = await volunteerService.findCadreVolunteers();
         meetingTopicService.findIntros()
             .then(topics => {
-                const start6 = dayjs(meeting.date).subtract(7, 'month');
-                const end6 = dayjs(meeting.date).subtract(6, 'month');
+                const start6 = dayjs(meeting.start_date).subtract(7, 'month');
+                const end6 = dayjs(meeting.start_date).subtract(6, 'month');
                 const sixMonthAnniversaries = cadre
                     .filter(v => !topics.find(t => t.subject_id.includes(v.id)))
                     .filter(v => dayjs(v.join_date).isAfter(start6) && dayjs(v.join_date).isBefore(end6))

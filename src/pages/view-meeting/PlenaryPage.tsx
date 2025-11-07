@@ -1,6 +1,5 @@
 import {
     Avatar,
-    Box,
     Card,
     CardContent, CardHeader,
     CardMedia,
@@ -25,8 +24,8 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CollapsibleCard from "../../components/CollasibleCard";
 import ImHereButton from "../../components/ImHereButton";
-import { MeetingToolbar } from "./MeetingToolbar";
 import { ScrollList } from "../../components/ScrollList";
+import { MeetingToolbar } from "./MeetingToolbar";
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #ce80e8ff -11.18%, #e5d9e5ff 111.48%)" };
 
@@ -271,7 +270,7 @@ const PlenaryPage = () => {
         <Card sx={{ margin: 0, width: { width } }}>
             <CardHeader
                 sx={CARD_HEADER_SX}
-                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>}
+                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.start_date).format('MM/DD/YYYY')}</Typography>}
                 action={<ImHereButton
                     meeting={meeting}
                     onChange={() => refreshMeeting()} />}

@@ -16,15 +16,15 @@ export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
     // check previous team meeting move unviewed topics
     // advance date by a week
 
-    const nextMeeting = dayjs()
-        .set('hour', 18).set('minute', 0).set('second', 0)
-        .toDate();
+    const startTime = dayjs()
+        .set('hour', 18).set('minute', 0).set('second', 0);
 
     const meeting: Meeting = {
         id: uuid(),
         name: `${team.name} Team Meeting`,
         type: 'team',
-        date: nextMeeting,
+        start_date: startTime.toDate(),
+        end_date: startTime.add(50, 'm').toDate(),
         meeting_url: 'https://meet.google.com/swr-ixuh-xdc',
         status: 'new',
         notes: '',

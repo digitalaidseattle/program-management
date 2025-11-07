@@ -6,7 +6,6 @@
  */
 
 import {
-    Button,
     Card,
     CardContent, CardHeader,
     Grid,
@@ -31,10 +30,10 @@ import { useParams } from "react-router";
 import ImHereButton from "../../components/ImHereButton";
 import { Forecast, OKR, Team, teamService } from "../../services/dasTeamService";
 import { AttendeesCard } from "./AttendeesCard";
+import { MeetingToolbar } from "./MeetingToolbar";
 import { NotesCard } from "./NotesCard";
 import { TopicsCard } from "./TopicsCard";
 import { CARD_HEADER_SX } from "./utils";
-import { MeetingToolbar } from "./MeetingToolbar";
 
 function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
     const [team, setTeam] = useState<Team>();
@@ -146,7 +145,7 @@ const TeamMeetingPage = () => {
         <Card>
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>}
+                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.start_date).format('MM/DD/YYYY')}</Typography>}
                 action={<ImHereButton
                     meeting={meeting}
                     onChange={() => refreshMeeting()} />}

@@ -69,9 +69,13 @@ const DetailsCard: React.FC<EntityProps<Meeting>> = ({ entity: meeting, onChange
                             />
                         </FormControl>
                         <DateTimePicker
-                            label='Meeting Date'
-                            value={dayjs(meeting.date)}
-                            onChange={(value) => handleMeetingChange('date', value!.toDate())} />
+                            label='Start Date'
+                            value={dayjs(meeting.start_date)}
+                            onChange={(value) => handleMeetingChange('start_date', value!.toDate())} />
+                        <DateTimePicker
+                            label='End Date'
+                            value={dayjs(meeting.end_date)}
+                            onChange={(value) => handleMeetingChange('end_date', value!.toDate())} />
                         {meeting.type === 'plenary' &&
                             <FormControl fullWidth >
                                 <TextField
