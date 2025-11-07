@@ -11,25 +11,26 @@ type ScrollListProps<T> = {
     items: T[];
     listItemRenderer: (entity: T) => React.ReactNode;
     sx?: SxProps;
-    onSelect: (item: T) => void;
+    selectedItem?: T;
+    onSelect?: (item: T) => void;
 }
 
-export function ScrollList<T>({ items, listItemRenderer, sx, onSelect }: ScrollListProps<T>) {
+export function ScrollList<T,>({ items, listItemRenderer, sx, selectedItem, onSelect }: ScrollListProps<T>) {
+
     const containerRef = useRef<HTMLDivElement>(null);
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
     useEffect(() => {
-        if (items.length > 0) {
-            setSelectedIndex(0);
-        }
-    }, [items])
+        const found = items.findIndex(i => i === selectedItem);
+        setSelectedIndex(found);
+    }, [items, selectedItem])
 
     useEffect(() => {
         if (selectedIndex > -1) {
             itemRefs.current[selectedIndex]?.focus();
-            onSelect(items[selectedIndex])
+            onSelect && onSelect(items[selectedIndex])
         }
     }, [selectedIndex])
 
@@ -95,10 +96,7 @@ export function ScrollList<T>({ items, listItemRenderer, sx, onSelect }: ScrollL
                     onClick={() => handleClick(idx)}
                     sx={{
                         m: 0.5,
-                        borderRadius: 1,
-                        bgcolor: "white",
-                        boxShadow: 1,
-                        outline: "none",
+                        cursor: onSelect ? 'pointer' : 'default',
                         "&:focus": {
                             bgcolor: "primary.light",
                             color: "primary.contrastText",

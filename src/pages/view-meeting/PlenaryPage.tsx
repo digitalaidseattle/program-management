@@ -1,4 +1,5 @@
 import {
+    Avatar,
     Box,
     Card,
     CardContent, CardHeader,
@@ -11,28 +12,21 @@ import {
     TableHead, TableRow,
     Typography
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
-import { ListCard } from "../../components/ListCard";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { Meeting, MeetingAttendee, meetingService, MeetingTopic, meetingTopicService } from "../../services/dasMeetingService";
 
 import { EntityProps } from "../../components/utils";
 import { Volunteer, volunteerService } from "../../services/dasVolunteerService";
 
-import { useStorageService } from "@digitalaidseattle/core";
+import { RefreshContext, useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
+import dayjs from "dayjs";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CollapsibleCard from "../../components/CollasibleCard";
 import ImHereButton from "../../components/ImHereButton";
-
-function shuffle<T>(array: T[]): T[] {
-    const result = [...array]; // make a copy (avoid mutating original)
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1)); // random index
-        [result[i], result[j]] = [result[j], result[i]]; // swap
-    }
-    return result;
-}
+import { MeetingToolbar } from "./MeetingToolbar";
+import { ScrollList } from "../../components/ScrollList";
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #ce80e8ff -11.18%, #e5d9e5ff 111.48%)" };
 
@@ -206,30 +200,35 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
         if (meeting) {
             const present = (meeting.meeting_attendee ?? [])
                 .filter(ma => ma.status === 'present');
-            setAttendees(shuffle(present ?? []))
+            setAttendees(present)
         }
     }, [meeting])
+
+    function listItemRenderer(attendee: MeetingAttendee): ReactNode {
+        return (
+            <Card key={attendee.id}
+                sx={{
+                    width: "100%",
+                    boxShadow: 'none'
+                }}>
+                <CardHeader
+                    title={attendee.profile!.name}
+                    avatar={<Avatar
+                        src={storageService.getUrl(`profiles/${attendee.profile!.id}`)}
+                        alt={`${attendee.profile!.name} picture`}
+                        sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                        variant="rounded" />} />
+            </Card>
+        )
+    }
 
     return (
         <Card sx={{ height: 'calc(100vh - 200px)' }}>
             <CardHeader title="Attendees"
                 sx={CARD_HEADER_SX} />
-            <Box
-                sx={{
-                    height: "100%",             // fill parent container height
-                    overflowY: "auto",          // enable vertical scroll
-                    overflowX: "hidden",        // hide horizontal scroll (optional)
-                    boxSizing: "border-box",    // include padding in height calc
-                }}
-            >
-                {attendees.map((attendee, idx) =>
-                (
-                    <ListCard key={`${idx}`}
-                        title={attendee.profile!.name}
-                        avatarImageSrc={storageService.getUrl(`profiles/${attendee.profile!.id}`)}
-                    />
-                ))}
-            </Box>
+            <ScrollList
+                items={attendees}
+                listItemRenderer={listItemRenderer} />
         </Card>
     )
 }
@@ -242,6 +241,7 @@ const PlenaryPage = () => {
     const { drawerOpen } = useContext(DrawerOpenContext)
     const layout = useLayoutConfiguration();
     const [width, setWidth] = useState<string>();
+    const { refresh } = useContext(RefreshContext)
 
     useEffect(() => {
         if (drawerOpen) {
@@ -252,13 +252,8 @@ const PlenaryPage = () => {
     }, [layout, drawerOpen]);
 
     useEffect(() => {
-        refresh();
-    }, []);
-
-    function refresh() {
-        meetingService.getCurrent('plenary')
-            .then(plenary => setMeeting(plenary));
-    }
+        refreshMeeting();
+    }, [refresh]);
 
     useEffect(() => {
         if (meeting) {
@@ -267,19 +262,27 @@ const PlenaryPage = () => {
         }
     }, [meeting])
 
+    function refreshMeeting() {
+        meetingService.getCurrent('plenary')
+            .then(plenary => setMeeting(plenary));
+    }
+
     return (meeting &&
         <Card sx={{ margin: 0, width: { width } }}>
             <CardHeader
                 sx={CARD_HEADER_SX}
-                title={<Typography variant="h2">{meeting.name}</Typography>}
+                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>}
                 action={<ImHereButton
                     meeting={meeting}
-                    onChange={() => refresh()} />}
+                    onChange={() => refreshMeeting()} />}
             />
             <CardContent sx={{ padding: 1 }}>
                 <Grid container spacing={1} >
+                    <Grid item xs={12}>
+                        <MeetingToolbar entity={meeting} onChange={() => refreshMeeting()} />
+                    </Grid>
                     <Grid item xs={3}>
-                        <AttendeesCard meeting={meeting} onChange={() => refresh()} />
+                        <AttendeesCard meeting={meeting} onChange={() => refreshMeeting()} />
                     </Grid>
                     <Grid item xs={9}>
                         <Stack gap={1} >
@@ -290,14 +293,14 @@ const PlenaryPage = () => {
                                 title="Introductions"
                                 topics={(meeting.meeting_topic ?? [])
                                     .filter(t => t.type === 'intro' && !t.discussed)}
-                                onChange={() => refresh()} />
+                                onChange={() => refreshMeeting()} />
                             <VolunteersCarouselCard
                                 title="Annversaries"
                                 topics={(meeting.meeting_topic ?? [])
                                     .filter(t => t.type === 'anniversary' && !t.discussed)}
-                                onChange={() => refresh()} />
-                            <ShoutoutsCard entity={meeting} onChange={() => refresh()} />
-                            <TeamCard entity={meeting} onChange={() => refresh()} />
+                                onChange={() => refreshMeeting()} />
+                            <ShoutoutsCard entity={meeting} onChange={() => refreshMeeting()} />
+                            <TeamCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Stack>
                     </Grid>
                 </Grid >

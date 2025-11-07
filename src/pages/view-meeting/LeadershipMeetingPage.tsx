@@ -15,7 +15,6 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 import { RefreshContext } from "@digitalaidseattle/core";
-import googleMeet from "../../assets/images/icons/google-meet.png";
 import ImHereButton from "../../components/ImHereButton";
 import { Meeting, MeetingAttendee, meetingService } from "../../services/dasMeetingService";
 import { Team, teamService } from "../../services/dasTeamService";
@@ -25,6 +24,7 @@ import { NotesCard } from "./NotesCard";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { TopicsCard } from "./TopicsCard";
 import { CARD_HEADER_SX } from "./utils";
+import { MeetingToolbar } from "./MeetingToolbar";
 
 const LeadershipMeetingPage = () => {
     const [meeting, setMeeting] = useState<Meeting>();
@@ -63,18 +63,6 @@ const LeadershipMeetingPage = () => {
             .then(meeting => setMeeting(meeting));
     }
 
-    function handleStatusChange(newStatus: 'new' | 'concluded' | undefined): void {
-        if (meeting) {
-            meetingService.update(meeting?.id, { status: newStatus })
-                .then(() => refreshMeeting());
-        }
-    }
-
-    function handleOpenMeet(): void {
-        if (meeting) {
-            window.open(meeting.meeting_url, '_blank', 'rel=noopener noreferrer')
-        }
-    }
 
     return (meeting &&
         <SelectedAttendeeContext.Provider value={{ selectedAttendee, setSelectedAttendee }}>
@@ -91,20 +79,7 @@ const LeadershipMeetingPage = () => {
                     <Grid container spacing={2} >
                         <Grid item xs={12}>
                             <Card>
-                                <Toolbar sx={{ gap: 2 }}>
-                                    <Tooltip title={`Open Google meeing, ${meeting.meeting_url}, in a new window.`}>
-                                        <Button variant="outlined" onClick={() => handleOpenMeet()}>
-                                            <img height={26} src={googleMeet} />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title={`Create a new meeting.`}>
-                                        <Button variant="outlined" onClick={() => alert('One day this will show a dialog to clone this meeting.')}>New</Button>
-                                    </Tooltip>
-                                    <Box style={{ flexGrow: 1 }} />
-                                    <Box><Checkbox value={meeting.status === 'concluded'}
-                                        disabled={meeting.status === 'concluded'}
-                                        onClick={() => handleStatusChange('concluded')} />Concluded</Box>
-                                </Toolbar>
+                                <MeetingToolbar entity={meeting} onChange={() => refreshMeeting()} />
                             </Card>
                         </Grid>
                         <Grid item xs={3}>

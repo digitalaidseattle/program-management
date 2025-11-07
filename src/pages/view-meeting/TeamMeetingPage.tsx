@@ -1,4 +1,12 @@
+/**
+ *  Meeting.tsx
+ *
+ *  @copyright 2025 Digital Aid Seattle
+ *
+ */
+
 import {
+    Button,
     Card,
     CardContent, CardHeader,
     Grid,
@@ -25,8 +33,8 @@ import { Forecast, OKR, Team, teamService } from "../../services/dasTeamService"
 import { AttendeesCard } from "./AttendeesCard";
 import { NotesCard } from "./NotesCard";
 import { TopicsCard } from "./TopicsCard";
-import { NextMeetingCard } from "./NextMeetingCard";
 import { CARD_HEADER_SX } from "./utils";
+import { MeetingToolbar } from "./MeetingToolbar";
 
 function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
     const [team, setTeam] = useState<Team>();
@@ -146,10 +154,14 @@ const TeamMeetingPage = () => {
             </CardHeader>
             <CardContent>
                 <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Card>
+                            <MeetingToolbar entity={meeting} onChange={() => refreshMeeting()} />
+                        </Card>
+                    </Grid>
                     <Grid item xs={3}>
                         <Stack gap={2}>
                             <AttendeesCard entity={meeting} onChange={() => refreshMeeting()} />
-                            <NextMeetingCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Stack>
                     </Grid>
                     <Grid item xs={5}>

@@ -38,15 +38,11 @@ const App: React.FC = () => {
   return (
     <AuthServiceProvider authService={authService} >
       <StorageServiceProvider storageService={storageService} >
-        <UserContextProvider>
-          <LayoutConfigurationProvider configuration={TemplateConfig()}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <RefreshContextProvider >
-                <RouterProvider router={router} />
-              </RefreshContextProvider>
-            </LocalizationProvider>
-          </LayoutConfigurationProvider>
-        </UserContextProvider>
+        <LayoutConfigurationProvider configuration={TemplateConfig()}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <RouterProvider router={router} />
+          </LocalizationProvider>
+        </LayoutConfigurationProvider>
       </StorageServiceProvider>
     </AuthServiceProvider>
   );

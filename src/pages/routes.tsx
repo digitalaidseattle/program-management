@@ -132,8 +132,11 @@ const routes = [
       {
         path: "adhoc-meeting/:id",
         element: <AdhoceetingPage />,
-      }
-
+      },
+      {
+        path: "team-meeting",
+        element: <TeamMeetingPage />,
+      },
     ]
   },
   {
