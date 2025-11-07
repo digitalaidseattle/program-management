@@ -211,7 +211,7 @@ CREATE TABLE meeting (
     notes text
 );
 
--- DROP TABLE IF EXISTS meeting_attendee;
+DROP TABLE IF EXISTS meeting_attendee;
 
 create table public.meeting_attendee (
   id uuid not null,
