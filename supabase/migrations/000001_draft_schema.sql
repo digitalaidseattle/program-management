@@ -213,17 +213,16 @@ CREATE TABLE meeting (
 
 -- DROP TABLE IF EXISTS meeting_attendee;
 
-
--- CREATE TABLE meeting_attendee (
---     id UUID PRIMARY KEY,
---     meeting_id uuid REFERENCES meeting(id),
---     profile_id uuid REFERENCES profile(id),
---     present boolean,
---     email text,
---     constraint meeting_attendee_pkey primary key (id),
---     constraint meeting_attendee_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE,
---     constraint meeting_attendee_profile_id_fkey foreign KEY (profile_id) references profile (id) on delete CASCADE
--- );
+create table public.meeting_attendee (
+  id uuid not null,
+  meeting_id uuid null,
+  profile_id uuid null,
+  present boolean null,
+  email text null,
+  constraint meeting_attendee_pkey primary key (id),
+  constraint meeting_attendee_meeting_id_fkey foreign KEY (meeting_id) references meeting (id) on delete CASCADE,
+  constraint meeting_attendee_profile_id_fkey foreign KEY (profile_id) references profile (id)
+);
 
 DROP TABLE IF EXISTS meeting_topic;
 
