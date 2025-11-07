@@ -31,7 +31,6 @@ const ForecastsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
         <Card>
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                titleTypographyProps={{ fontSize: 24 }}
                 title={"Forecasts" + `${entity ? ": " + entity.name : ''}`}
                 subheader='Current forecasts.'
             >

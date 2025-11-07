@@ -37,7 +37,7 @@ export const TemplateConfig = () => {
 
     const meetings =
     {
-        id: 'home-dashboard',
+        id: 'meetins-group',
         title: 'Meetings',
         type: 'group',
         children: [
@@ -60,7 +60,7 @@ export const TemplateConfig = () => {
                 id: 'team',
                 title: 'Team',
                 type: 'item',
-                url: '/team',
+                url: '/team-meeting',
                 icon: <CompassOutlined />
             }]
     }
