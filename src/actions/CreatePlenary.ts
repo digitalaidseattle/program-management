@@ -17,20 +17,20 @@ export async function createPlenaryMeeting(): Promise<Meeting | null> {
     // add new intros
     // add new anniversaries
 
-    const nextTuesday = dayjs()
+    const startTime = dayjs()
         .day(2)
-        .set('hour', 18).set('minute', 0).set('second', 0)
-        .toDate();
+        .set('hour', 18).set('minute', 0).set('second', 0);
 
     const meeting: Meeting = {
         id: uuid(),
         name: 'Plenary',
         type: 'plenary',
-        date: nextTuesday,
+        start_date: startTime.toDate(),
+        end_date: startTime.add(50, 'm').toDate(),
         meeting_url: 'https://meet.google.com/swr-ixuh-xdc',
         status: 'new',
         notes: '',
-        team_id: '',
+        team_id: undefined
     }
 
     const volunteers = await volunteerService.getActive()

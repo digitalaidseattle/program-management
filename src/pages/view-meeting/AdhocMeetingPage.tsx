@@ -39,7 +39,7 @@ const AdhoceetingPage = () => {
         <Card>
             <CardHeader
                 sx={{ backgroundColor: CARD_HEADER_SX }}
-                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.date).format('MM/DD/YYYY')}</Typography>}
+                title={<Typography variant="h2">{meeting.name} : {dayjs(meeting.start_date).format('MM/DD/YYYY')}</Typography>}
                 action={<ImHereButton
                     meeting={meeting}
                     onChange={() => refreshMeeting()} />}

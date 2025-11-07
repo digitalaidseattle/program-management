@@ -17,6 +17,7 @@ import { createAdhocMeeting } from '../../actions/CreateAdhocMeeting';
 import { useAuthService } from '@digitalaidseattle/core';
 import { volunteerService } from '../../services/dasVolunteerService';
 import { createLeadershipMeeting } from '../../actions/CreateLeadershipMeeting';
+import dayjs from 'dayjs';
 
 const columns: GridColDef<Meeting[][number]>[] = [
 
@@ -155,7 +156,7 @@ const MeetingsPage = () => {
           onRowDoubleClick: handleRowDoubleClick
         }
       }
-      gridOpts={{ cardRenderer: entity => <ListCard key={entity.id} title={`${entity.name} ${entity.date}`} /> }}
+      gridOpts={{ cardRenderer: entity => <ListCard key={entity.id} title={`${entity.name} ${dayjs(entity.start_date).format('MM/DD/YYYY')}`} /> }}
       listOpts={{
         listItemRenderer: entity => <ListCard
           key={entity.id}
