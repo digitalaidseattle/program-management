@@ -4,18 +4,19 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Box, SxProps } from "@mui/material";
+import { Box, Stack, SxProps } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type ScrollListProps<T> = {
     items: T[];
     listItemRenderer: (entity: T) => React.ReactNode;
+    direction?: 'row' | 'column';
     sx?: SxProps;
     selectedItem?: T;
     onSelect?: (item: T) => void;
 }
 
-export function ScrollList<T,>({ items, listItemRenderer, sx, selectedItem, onSelect }: ScrollListProps<T>) {
+export function ScrollList<T,>({ items, listItemRenderer, direction = 'column', sx, selectedItem, onSelect }: ScrollListProps<T>) {
 
     const containerRef = useRef<HTMLDivElement>(null);
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -74,16 +75,29 @@ export function ScrollList<T,>({ items, listItemRenderer, sx, selectedItem, onSe
         setSelectedIndex(index);
     };
 
-    return (
-        <Box
-            ref={containerRef}
-            sx={{
+    function getSx(): SxProps {
+        return ('row' === direction)
+            ? ({
+                width: "100%",             // fill parent container height
+                overflowY: "hidden",          // enable vertical scroll
+                overflowX: "auto",        // hide horizontal scroll (optional)
+                boxSizing: "border-box",    // include padding in height calc
+                ...sx
+            })
+            : ({
                 height: "100%",             // fill parent container height
                 overflowY: "auto",          // enable vertical scroll
                 overflowX: "hidden",        // hide horizontal scroll (optional)
                 boxSizing: "border-box",    // include padding in height calc
                 ...sx
-            }}
+            });
+    }
+
+    return (
+        <Stack
+            direction={direction}
+            ref={containerRef}
+            sx={getSx()}
         >
             {items.map((entity, idx) =>
             (
@@ -108,6 +122,6 @@ export function ScrollList<T,>({ items, listItemRenderer, sx, selectedItem, onSe
                 </Box>
             )
             )}
-        </Box>
+        </Stack>
     )
 }

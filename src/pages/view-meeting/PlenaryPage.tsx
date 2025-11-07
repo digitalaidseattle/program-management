@@ -1,5 +1,6 @@
 import {
     Avatar,
+    Box,
     Card,
     CardContent, CardHeader,
     CardMedia,
@@ -20,8 +21,6 @@ import { Volunteer, volunteerService } from "../../services/dasVolunteerService"
 import { RefreshContext, useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
 import dayjs from "dayjs";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import CollapsibleCard from "../../components/CollasibleCard";
 import ImHereButton from "../../components/ImHereButton";
 import { ScrollList } from "../../components/ScrollList";
@@ -46,7 +45,7 @@ function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopi
     }
 
     return (volunteer &&
-        <Card sx={{ margin: 2, width: 200, maxHeight: 400 }} >
+        <Card sx={{  width: 200, maxHeight: 400 }} >
             <CardHeader
                 title={topic.subject}
                 action={<Checkbox checked={topic.discussed} onClick={() => markAsDiscussed()} />} />
@@ -72,36 +71,10 @@ function VolunteersCarouselCard({ title, topics, onChange }: VolunteersCarouselC
     return (
         <CollapsibleCard title={title} headerSx={CARD_HEADER_SX}>
             <CardContent sx={{ paddingTop: 0 }}>
-                <Carousel
-                    additionalTransfrom={0}
-                    arrows
-                    containerClass="container"
-                    infinite={false}
-                    responsive={{
-                        desktop: {
-                            breakpoint: {
-                                max: 3000,
-                                min: 1024
-                            },
-                            items: 3,
-                            partialVisibilityGutter: 40
-                        },
-                        mobile: {
-                            breakpoint: {
-                                max: 464,
-                                min: 0
-                            },
-                            items: 1,
-                            partialVisibilityGutter: 30
-                        }
-                    }}
-                    rewind={false}
-                    showDots={true}
-                >
-                    {topics.map((t, idx) => (
-                        <VolunteerTopicCard key={idx} entity={t} onChange={onChange} />
-                    ))}
-                </Carousel>
+                <ScrollList
+                    items={topics}
+                    listItemRenderer={(entity) => <VolunteerTopicCard entity={entity} onChange={onChange} />}
+                    direction="row" />
             </CardContent>
         </CollapsibleCard>
     )
