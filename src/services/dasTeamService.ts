@@ -57,15 +57,8 @@ type Team = {
 const DEFAULT_SELECT = "*, volunteer(*, profile(*)), okr(*), forecast(*)"
 class TeamService extends SupabaseEntityService<Team> {
     public constructor() {
-        super("team");
-    }
+        super("team", DEFAULT_SELECT);
 
-    getAll(count?: number, select?: string): Promise<Team[]> {
-        return super.getAll(count, select ?? DEFAULT_SELECT);
-    }
-
-    getById(entityId: Identifier, _select?: string): Promise<Team | null> {
-        return super.getById(entityId, DEFAULT_SELECT)
     }
 
     async findByAirtableId(airtableId: string): Promise<Team> {
@@ -75,10 +68,6 @@ class TeamService extends SupabaseEntityService<Team> {
             .eq('airtable_id', airtableId)
             .single()
             .then((resp: any) => resp.data);
-    }
-
-    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Team): Promise<PageInfo<Team>> {
-        return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
     }
 
 }

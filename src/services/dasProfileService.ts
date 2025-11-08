@@ -5,7 +5,7 @@
  *
  */
 
-import { SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 
 
 type Profile = {
@@ -18,10 +18,28 @@ type Profile = {
     location: string,
     pic: string
 }
-
+const DEFAULT_SELECT = "*";
 class ProfileService extends SupabaseEntityService<Profile> {
     public constructor() {
         super("profile");
+    }
+
+    async findByEmail(email: string): Promise<Profile> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .ilike('email', email.toLowerCase())
+            .single()
+            .then((resp: any) => resp.data);
+    }
+
+    async findByName(name: string): Promise<Profile> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .eq('name', name)
+            .single()
+            .then((resp: any) => resp.data);
     }
 }
 

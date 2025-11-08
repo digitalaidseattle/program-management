@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { storageService } from '../App';
 import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
-import { partnerService } from './dasPartnerService';
+import { partnerService, Profile2Partner, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
 import { roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
@@ -32,6 +32,7 @@ const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
 const OKR_TABLE = 'tblBEgmnxKDyycRX6';
 const FORECAST_TABLE = 'tblbIMTclZeJ6IA4i';
+const CONTACT_TABLE = 'tblWyd8yGHbKdchXs';
 
 class MigrationService {
 
@@ -54,7 +55,8 @@ class MigrationService {
         'Team Logos': this.downloadTeamIcons,
         'Discipline Logos': this.downloadDisciplineIcons,
         'OKRs': this.migrateOkrs,
-        'Forecast': this.migrateForecasts
+        'Forecast': this.migrateForecasts,
+        'Contacts': this.migrateContacts
     }
 
     migrateVentures(): Promise<void> {
@@ -543,6 +545,51 @@ class MigrationService {
                             console.warn(`no icon for aritable record: ${record.id}`)
                         }
                     })
+            })
+    }
+
+    async migrateContacts(): Promise<void> {
+        const partners = await partnerService.getAll();
+        await new AirtableService(CONTACT_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(async record => {
+                        // try {
+                        //     const profile = await profileService.findByName(record["Person"]);
+                        //     if (profile) {
+                        //         console.log('found', profile)
+                        //         await profileService.delete(profile.id);
+                        //     } else {
+                        //         console.error('no profile', record["Person"])
+                        //     }
+                        // } catch (err) {
+                        //     console.error(err)
+                        // }
+                        const partner = partners.find(p => (record["Partners/Allies"] ?? []).includes(p.airtable_id));
+                        if (partner) {
+                            const proposed = {
+                                id: uuid(),
+                                name: record["Person"],
+                                first_name: record["First name"],
+                                last_name: record["Last name"],
+                                email: record["Email"],
+                                phone: record["Phone"],
+                                location: record["Location"],
+                                pic: ""
+                            }
+                            const profile = await profileService.insert(proposed);
+                            const p2p = {
+                                partner_id: partner.id,
+                                profile_id: profile.id,
+                                title: record["Title"]
+                            }
+                            const inserted = await profile2PartnerService.insert(p2p);
+                            console.log(proposed, inserted);
+                        } else {
+                            console.warn(`no partner for contact: ${record.id}  ${record["Person"]}`)
+                        }
+                    });
             })
     }
 
