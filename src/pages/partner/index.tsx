@@ -1,3 +1,4 @@
+import { useStorageService } from '@digitalaidseattle/core';
 import {
   Avatar,
   Box,
@@ -13,11 +14,10 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { useStorageService } from '@digitalaidseattle/core';
-import { partnerService, Partner } from '../../services/dasPartnerService';
 import { EntityProps } from '../../components/utils';
+import { Partner, partnerService } from '../../services/dasPartnerService';
 
 // Row layout
 const FieldRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
@@ -55,20 +55,6 @@ const External = ({ href, children }: { href?: string; children: React.ReactNode
 const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => {
   const storage = useStorageService()!;
   const logoUrl = storage.getUrl(`logos/${partner.id}`);
-
-  // didn't find contact info
-  const contacts = useMemo(() => {
-    const c = partner?.contact || {};
-    return [
-      {
-        name: c.name || partner?.contact_name,
-        title: c.title || partner?.contact_title,
-        email: c.email || partner?.general_email,
-        phone: c.phone || partner?.general_phone,
-        avatarUrl: c.avatarUrl,
-      },
-    ].filter(Boolean);
-  }, [partner]);
 
   return (
     partner && (
@@ -198,11 +184,11 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
               <Card variant="outlined">
                 <CardHeader title="Contacts" />
                 <CardContent>
-                  {contacts.length ? (
+                  {(partner.contact ?? []).length ? (
                     <Stack gap={2}>
-                      {contacts.map((c, i) => (
+                      {(partner.contact ?? []).map((c, i) => (
                         <Stack key={i} direction="row" gap={2} alignItems="center">
-                          <Avatar src={c.avatarUrl}>{c.name?.[0]}</Avatar>
+                          <Avatar src={storage.getUrl(`profiles/${c.id}`)}>{c.name?.[0]}</Avatar>
                           <Box>
                             <Typography fontWeight={600}>{c.name}</Typography>
                             <Typography variant="body2" color="text.secondary">
