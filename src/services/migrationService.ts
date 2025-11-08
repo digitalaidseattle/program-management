@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { storageService } from '../App';
 import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
-import { partnerService, Profile2Partner, profile2PartnerService } from './dasPartnerService';
+import { partnerService, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
 import { roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';

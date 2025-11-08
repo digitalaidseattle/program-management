@@ -5,10 +5,9 @@
  *
  */
 
-import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { Profile } from "./dasProfileService";
+import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { AssociativeTableService } from "./associativeTableService";
-import { Identifier } from "@digitalaidseattle/core";
+import { Profile } from "./dasProfileService";
 
 type Partner = {
     id: string;
@@ -29,7 +28,7 @@ type Partner = {
     ally_utility: string,
     general_phone: string,
     internal_thoughts: string,
-    contact: Contact[]
+    contact?: Contact[]
 }
 
 type Profile2Partner = {
@@ -89,5 +88,5 @@ const partnerService = new PartnerService();
 const profile2PartnerService = new Profile2ProfileService();
 
 export { partnerService, profile2PartnerService };
-export type { Partner, Profile2Partner, Contact };
+export type { Contact, Partner, Profile2Partner };
 
