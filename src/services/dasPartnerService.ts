@@ -5,7 +5,10 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Profile } from "./dasProfileService";
+import { AssociativeTableService } from "./associativeTableService";
+import { Identifier } from "@digitalaidseattle/core";
 
 type Partner = {
     id: string;
@@ -25,14 +28,42 @@ type Partner = {
     foci: string[],
     ally_utility: string,
     general_phone: string,
-    internal_thoughts: string
+    internal_thoughts: string,
+    contact: Contact[]
 }
 
-const DEFAULT_SELECT = '*';
+type Profile2Partner = {
+    profile_id: string;
+    partner_id: string;
+    title: string;
+}
+
+type Contact = Profile & {
+    title: string;
+}
+
+const DEFAULT_SELECT = '*, profile2partner(*, profile(*))';
+
+function MAPPER(json: any): Partner {
+    const partner = {
+        ...json,
+        contact: json.profile2partner
+            .map((p2p: any) => (
+                {
+                    ...p2p.profile,
+                    title: p2p.title
+                }
+            ))
+    }
+    delete partner.profile2partner;
+    console.log(partner);
+    return partner;
+}
+
 class PartnerService extends SupabaseEntityService<Partner> {
 
     public constructor() {
-        super("partner");
+        super("partner", DEFAULT_SELECT, MAPPER);
     }
 
     async findByAirtableId(airtableId: string): Promise<Partner> {
@@ -43,9 +74,20 @@ class PartnerService extends SupabaseEntityService<Partner> {
             .single()
             .then((resp: any) => resp.data);
     }
+
 }
 
-const partnerService = new PartnerService()
-export { partnerService };
-export type { Partner };
+class Profile2ProfileService extends AssociativeTableService<Profile2Partner> {
+
+    public constructor() {
+        super("profile2partner");
+    }
+
+}
+
+const partnerService = new PartnerService();
+const profile2PartnerService = new Profile2ProfileService();
+
+export { partnerService, profile2PartnerService };
+export type { Partner, Profile2Partner, Contact };
 

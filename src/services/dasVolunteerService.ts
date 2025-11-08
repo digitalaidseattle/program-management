@@ -44,7 +44,7 @@ type Volunteer = {
 const DEFAULT_SELECT = '*, profile!inner(*)';
 class VolunteerService extends SupabaseEntityService<Volunteer> {
     public constructor() {
-        super("volunteer");
+        super("volunteer", DEFAULT_SELECT);
     }
 
     async getActive(): Promise<Volunteer[]> {
@@ -61,14 +61,6 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .select(DEFAULT_SELECT)
             .in('status', ['Cadre'])
             .then((resp: any) => resp.data);
-    }
-
-    async getById(id: Identifier): Promise<Volunteer | null> {
-        return super.getById(id, DEFAULT_SELECT);
-    }
-
-    async getAll(_count?: number, _select?: string): Promise<Volunteer[]> {
-        return super.getAll(undefined, DEFAULT_SELECT);
     }
 
     async findByAirtableId(airtableId: string): Promise<Volunteer> {
@@ -89,18 +81,6 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .then((resp: any) => resp.data);
     }
 
-    async find(queryModel?: QueryModel, select?: string, mapper?: (json: any) => Volunteer): Promise<PageInfo<Volunteer>> {
-        if (queryModel) {
-            return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
-        } else {
-            return this.getAll()
-                .then(vols => {
-                    return {
-                        rows: vols, totalRowCount: vols.length
-                    }
-                })
-        }
-    }
 }
 
 const volunteerService = new VolunteerService();

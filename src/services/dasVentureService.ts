@@ -28,15 +28,7 @@ type Venture = {
 const DEFAULT_SELECT = "*, partner(*)"
 class VentureService extends SupabaseEntityService<Venture> {
     public constructor() {
-        super("venture");
-    }
-
-    getAll(count?: number, select?: string): Promise<Venture[]> {
-        return super.getAll(count, select ?? DEFAULT_SELECT);
-    }
-
-    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Venture): Promise<PageInfo<Venture>> {
-        return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
+        super("venture", DEFAULT_SELECT);
     }
 
     async findByAirtableId(airtableId: string): Promise<Venture> {
