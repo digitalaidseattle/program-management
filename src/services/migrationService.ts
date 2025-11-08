@@ -56,7 +56,8 @@ class MigrationService {
         'Discipline Logos': this.downloadDisciplineIcons,
         'OKRs': this.migrateOkrs,
         'Forecast': this.migrateForecasts,
-        'Contacts': this.migrateContacts
+        'Contacts': this.migrateContacts,
+        'Contact Pics': this.downloadContactPics
     }
 
     migrateVentures(): Promise<void> {
@@ -593,6 +594,58 @@ class MigrationService {
             })
     }
 
+    //  had some issues with linking, so leaving just in case
+    async linkContacts(): Promise<void> {
+        const partners = await partnerService.getAll();
+        const profiles = await profileService.getAll();
+
+        await new AirtableService(CONTACT_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(async record => {
+                        const partner = partners.find(p => (record["Partners/Allies"] ?? []).includes(p.airtable_id));
+                        const profile = profiles.find(p => record["Person"] === p.name);
+                        if (partner && profile) {
+                            const p2p = {
+                                partner_id: partner.id,
+                                profile_id: profile.id,
+                                title: record["Title"]
+                            }
+                            const inserted = await profile2PartnerService.insert(p2p);
+                            console.log(inserted);
+                        } else {
+                            console.warn(`no partner or profile for contact: ${record.id}  ${record["Person"]}`)
+                        }
+                    });
+            })
+    }
+
+
+    async downloadContactPics(): Promise<void> {
+        const profiles = await profileService.getAll();
+        await new AirtableService(CONTACT_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(async record => {
+                        const profile = profiles.find(p => record["Person"] === p.name);
+                        const url = record['Pic'] ? record['Pic'][0].url : undefined;
+                        if (profile && url) {
+                            fetch(url)
+                                .then(resp => resp.blob()
+                                    .then(blob => {
+                                        storageService.upload(`profiles/${profile.id}`, blob)
+                                            .then((data: any) => console.log(`loaded ${profile.id}`, data))
+                                            .catch(err => console.error(err))
+                                    })
+                                )
+                        } else {
+                            console.warn(`no pic for aritable record: ${record.id}`, record)
+                        }
+                    });
+            })
+    }
 }
 const migrationService = new MigrationService();
 
