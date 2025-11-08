@@ -1,7 +1,6 @@
 
 // material-ui
 import {
-  Box,
   Breadcrumbs,
   Link,
   Stack,
@@ -15,6 +14,8 @@ import { EntityProps } from '../../components/utils';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { Venture, ventureService } from '../../services/dasVentureService';
 import { TabbedPanelsCard } from '@digitalaidseattle/mui';
+import VentureReportDisplay from '../../components/VentureReportDisplay';
+import { ventureReportService, VentureReport } from '../../services/dasVentureReportService';
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [current, setCurrent] = useState<Staffing[]>([]);
@@ -31,11 +32,34 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   return <StaffingTable title="Staffing" items={current} />
 }
 
+const ReportPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
+  const [reports, setReports] = useState<VentureReport[]>([]);
+
+  useEffect(() => {
+    if (entity) {
+      ventureReportService.findByVentureId(entity.id)
+        .then(data => setReports(data))
+        .catch(err => {
+          console.error('Failed to load venture reports', err);
+          setReports([]);
+        });
+    } else {
+      setReports([]);
+    }
+  }, [entity]);
+
+  return <VentureReportDisplay reports={reports} />;
+}
+
 const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) => {
 
   function handleStaffingChange(evt: any) {
     onChange(evt)
   };
+
+  function handleReportChange(evt: any) {
+    onChange(evt);
+  }
 
   return (entity &&
     <>
@@ -45,8 +69,13 @@ const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
       <>
         <TabbedPanelsCard panels={
           [
-            { header: 'Staffing', children: <StaffingPanel entity={entity} onChange={handleStaffingChange} /> },
-            { header: 'Report', children: <Box> RRR </Box> },
+            { 
+              header: 'Staffing', 
+              children: <StaffingPanel entity={entity} onChange={handleStaffingChange} /> },
+            {
+              header: 'Report',
+              children: <ReportPanel entity={entity} onChange={handleReportChange} />
+            },
           ]
         } />
       </>
@@ -86,4 +115,3 @@ const VenturePage = () => {
   )
 }
 export { VentureDetails, VenturePage };
-
