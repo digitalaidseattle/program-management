@@ -1,8 +1,8 @@
 // src/components/VentureReportDisplay.tsx
 import { useMemo, useState } from 'react'
-import { Box, Card, CardContent, Chip, Divider, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
-import { ventureReportSchema } from '../config/ventureReportSchema'
+import { Box, Card, CardContent, Divider, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
 import { VentureReport } from '../services/dasVentureReportService'
+import { HEALTH_STATUS_CHIPS, HEALTH_STATUS_INDICATOR_COLORS } from '../pages/venture/utils'
 
 interface VentureReportDisplayProps {
   reports: VentureReport[]
@@ -29,23 +29,90 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
     )
   }
 
+  type FieldComponent = 'Select' | 'TextField'
+
+  type FieldOption = { value: string, label: string }
+
+  type ReportFieldConfig = {
+    name: string,
+    label: string,
+    component: FieldComponent,
+    options?: FieldOption[]
+  }
+
+  // Define known fields/report questions here
+  // if field in db but not here it'll just be rendered as a TextField
+  // this orders the report too
+  const REPORT_FIELDS: readonly ReportFieldConfig[] = [
+    {
+      name: 'health',
+      label: 'Health',
+      component: 'Select',
+      options: [
+        { value: 'on_track', label: 'On Track' },
+        { value: 'at_risk', label: 'At Risk' },
+        { value: 'blocked', label: 'Blocked' },
+      ]
+    },
+    {
+      name: 'successes',
+      label: 'Successes',
+      component: 'TextField'
+    },
+    {
+      name: 'challenges',
+      label: 'Challenges/Problems',
+      component: 'TextField'
+    },
+    {
+      name: 'changes_by_partner',
+      label: 'Changes by Partner',
+      component: 'TextField'
+    },
+    {
+      name: 'staffing_need',
+      label: 'Staffing Needs',
+      component: 'TextField'
+    },
+    {
+      name: 'asks',
+      label: 'Asks',
+      component: 'TextField'
+    },
+    {
+      name: 'next_steps',
+      label: 'Next Steps',
+      component: 'TextField'
+    },
+  ] as const;
+
+  const toTitleCase = (value: string) => value
+    .split('_')
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+
+  const getFieldConfig = (fieldName: string): ReportFieldConfig => {
+    return REPORT_FIELDS.find(field => field.name === fieldName) ?? {
+      name: fieldName,
+      label: toTitleCase(fieldName),
+      component: 'TextField'
+    }
+  }
+
+  // find field label from list above or generate new one if not present
   const getFieldLabel = (fieldName: string): string => {
-    const field = ventureReportSchema.fields.find(f => f.name === fieldName)
-    return field?.label || fieldName
+    const field = getFieldConfig(fieldName)
+    return field.label
   }
 
   const formatValue = (fieldName: string, value: any): string => {
-    const field = ventureReportSchema.fields.find(f => f.name === fieldName)
-    
-    if (field?.component === 'Select') {
+    const field = getFieldConfig(fieldName)
+
+    if (field.component === 'Select') {
       const option = field.options?.find(opt => opt.value === value)
       return option?.label || value
     }
-    
-    if (field?.component === 'Switch') {
-      return value ? 'Yes' : 'No'
-    }
-    
+
     return value
   }
 
@@ -54,54 +121,21 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
 
-  const HEALTH_CHIP_STYLES: Record<string, { label: string, text: string, border: string, background: string }> = {
-    on_track: {
-      label: 'On Track',
-      text: '#13AD53',
-      border: '#80CA85',
-      background: '#E9FCE3'
-    },
-    at_risk: {
-      label: 'At Risk',
-      text: '#CF7617',
-      border: '#E8B473',
-      background: '#FFF4D5'
-    },
-    blocked: {
-      label: 'Blocked',
-      text: '#CF171D',
-      border: '#F1A2A6',
-      background: '#FCE3E4'
+  const getReportPeriodParts = (period?: string) => {
+    if (!period) {
+      return undefined
     }
-  };
-
-  const renderHealthChip = (value?: string) => {
-    if (!value) {
-      return null;
+    const date = new Date(period)
+    if (Number.isNaN(date.getTime())) {
+      return undefined
     }
-    const chipDef = HEALTH_CHIP_STYLES[value] ?? {
-      label: formatValue('health', value),
-      text: '#4f4f4f',
-      border: '#e0e0e0',
-      background: '#fafafa'
-    };
-    return (
-      <Chip
-        size="small"
-        label={chipDef.label}
-        sx={{
-          fontWeight: 600,
-          color: chipDef.text,
-          borderColor: chipDef.border,
-          backgroundColor: chipDef.background,
-          borderWidth: 1,
-          borderStyle: 'solid'
-        }}
-      />
-    );
-  };
+    return {
+      monthName: monthNames[date.getUTCMonth()],
+      year: date.getUTCFullYear()
+    }
+  }
 
-  const orderedFields = ['successes', 'challenges', 'changes_by_partner', 'staffing_need', 'asks', 'next_steps'];
+  const renderHealthChip = (status?: VentureReport['health']) => status ? (HEALTH_STATUS_CHIPS[status] ?? null) : null;
 
   const renderFieldSection = (key: string, value: any) => (
     <Box key={key} mb={2}>
@@ -116,29 +150,37 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
 
   const renderReportDetail = () => {
     if (!report) return null
-    const contentEntries = Object.entries(report.report_content ?? {}).filter(([key, value]) => key !== 'version' && value);
-    const orderedSections = orderedFields
-      .map(key => contentEntries.find(entry => entry[0] === key))
-      .filter((entry): entry is [string, any] => Boolean(entry));
-    const remainingSections = contentEntries.filter(([key]) =>
-      key !== 'health' && !orderedFields.includes(key)
-    );
+    
+    const knownFieldNames = REPORT_FIELDS.map(field => field.name)
+    const metadata = new Set(['id', 'venture_id', 'reported_by', 'report_period', 'health'])
+    const reportRecord = report as Record<string, any>
+
+    const knownEntries = REPORT_FIELDS
+      .filter(field => field.name !== 'health')
+      .map<[string, any]>((field) => [field.name, reportRecord[field.name]])
+      .filter(([, value]) => Boolean(value));
+
+    const fallbackEntries: [string, any][] = Object.entries(reportRecord)
+      .filter(([key, value]) => !knownFieldNames.includes(key) && !metadata.has(key) && Boolean(value))
+      .map(([key, value]) => [key, value])
+
+    const contentEntries = [...knownEntries, ...fallbackEntries]
+    const periodParts = getReportPeriodParts(report.report_period);
 
     return (
       <Card>
         <CardContent>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
             <Typography variant="h6">
-              {monthNames[report.report_month - 1]} {report.report_year} Report
+              {periodParts ? `${periodParts.monthName} ${periodParts.year} Report` : 'Report'}
             </Typography>
-            {renderHealthChip(report.report_content?.health)}
+            {renderHealthChip(report.health)}
           </Stack>
           <Typography variant="body2" color="text.secondary" mb={3}>
             Reported by: {report.reported_by}
           </Typography>
 
-          {orderedSections.map(([key, value]) => renderFieldSection(key, value))}
-          {remainingSections.map(([key, value]) => renderFieldSection(key, value))}
+          {contentEntries.map(([key, value]) => renderFieldSection(key, value))}
         </CardContent>
       </Card>
     )
@@ -152,8 +194,9 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
         </Typography>
         <List component="nav" sx={{ border: 1, borderColor: 'divider', borderRadius: 2 }}>
           {reports.map(period => {
-            const monthName = monthNames[period.report_month - 1]
-            const chipStyles = HEALTH_CHIP_STYLES[period.report_content?.health ?? ''] ?? { text: '#4f4f4f' }
+            const periodParts = getReportPeriodParts(period.report_period)
+            const label = periodParts ? `${periodParts.monthName} ${periodParts.year}` : 'Unknown Period'
+            const indicatorColor = (period.health && HEALTH_STATUS_INDICATOR_COLORS[period.health]) ?? '#4f4f4f'
             return (
               <ListItemButton
                 key={period.id}
@@ -163,14 +206,14 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
                 <ListItemText
                   primary={
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
-                      <Typography variant="body2">{`${monthName} ${period.report_year}`}</Typography>
+                      <Typography variant="body2">{label}</Typography>
                       <Box
                         component="span"
                         sx={{
                           width: 8,
                           height: 8,
                           borderRadius: '50%',
-                          backgroundColor: chipStyles.border,
+                          backgroundColor: indicatorColor,
                           display: 'inline-block'
                         }}
                       />

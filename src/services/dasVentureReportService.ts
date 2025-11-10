@@ -1,14 +1,20 @@
 import { Identifier } from "@digitalaidseattle/core";
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 
+export type HealthStatus = 'on_track' | 'at_risk' | 'blocked';
+
 export type VentureReport = {
     id: string;
     venture_id: string;
     reported_by: string;
-    created_at: string;
-    report_month: number;
-    report_year: number;
-    report_content: Record<string, any>;
+    report_period: string;
+    health: HealthStatus;
+    changes_by_partner?: string | null;
+    successes?: string | null;
+    challenges?: string | null;
+    asks?: string | null;
+    staffing_need?: string | null;
+    next_steps?: string | null;
 }
 
 class VentureReportService extends SupabaseEntityService<VentureReport> {
@@ -21,8 +27,7 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
             .from(this.tableName)
             .select("*")
             .eq("venture_id", ventureId)
-            .order("report_year", { ascending: false })
-            .order("report_month", { ascending: false });
+            .order("report_period", { ascending: false });
 
         if (error) {
             throw error;

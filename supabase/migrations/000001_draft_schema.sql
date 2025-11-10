@@ -189,17 +189,14 @@ CREATE TABLE team2tool (
     constraint team2tool_tool_id_fkey foreign KEY (tool_id) references tool (id)
 );
 
-DROP TABLE IF EXISTS venture_report;
-
 CREATE TABLE venture_report (
     id UUID PRIMARY KEY,
     venture_id uuid REFERENCES venture(id),
     reported_by text,
-    created_at timestamptz DEFAULT now(),
-    report_month integer not NULL CHECK (report_month >= 1 AND report_month <= 12),
-    report_year integer not NULL CHECK (report_year > 2000),
-    report_content jsonb NOT NULL,
-    UNIQUE(venture_id, report_year, report_month)
+    changes_by_partner text,
+    successes text,
+    staffing_need text,
+    staffing_issues text
 );
 
 DROP TABLE IF EXISTS meeting;
