@@ -15,10 +15,9 @@ import { useContext, useEffect, useState } from 'react';
 
 import { DeleteOutlined } from '@ant-design/icons';
 import { UserContext } from '@digitalaidseattle/core';
-import { InputOption } from '@digitalaidseattle/mui';
+import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import { EntityProps } from '../../components/utils';
 import { Meeting, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
-import InputFormDialog from '../../components/InputFormDialog';
 
 function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 

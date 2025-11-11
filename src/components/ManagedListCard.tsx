@@ -1,7 +1,13 @@
+/**
+ *  ManagedListCard.tsx
+ *
+ *  @copyright 2025 Digital Aid Seattle
+ *
+ */
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { SelectItemDialog } from "@digitalaidseattle/mui";
+import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack } from "@mui/material";
 import { ReactNode, useState } from "react";
-import SelectItemDialog from "./SelectItemDialog";
 
 export type ManagedListCardProps = {
     title: string;
@@ -33,19 +39,12 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                         ...cardHeaderSx
                     }}
                     title={title}
-                    avatar={
-                        addOpts && <IconButton aria-label={`add ${title}`}
-                            color="primary"
+                    action={
+                        addOpts && <IconButton color="primary" aria-label={`add ${title}`}
                             onClick={() => setShowAddDialog(true)}>
                             <PlusCircleOutlined />
                         </IconButton>
                     }>
-                    <Stack direction={'row'} alignItems={'center'}>
-                        <Typography variant='h3'>{title}</Typography>
-                        <IconButton color="primary" aria-label="add" >
-                            <PlusCircleOutlined />
-                        </IconButton>
-                    </Stack>
                 </CardHeader>
                 <CardContent >
                     <Stack gap={2} margin={2}>

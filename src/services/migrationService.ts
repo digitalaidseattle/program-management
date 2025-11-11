@@ -9,13 +9,13 @@ import { v4 as uuid } from 'uuid';
 import { storageService } from '../App';
 import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
-import { partnerService } from './dasPartnerService';
+import { partnerService, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
 import { roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
 import { Team2Tool, team2ToolService } from './dasTeam2ToolService';
 import { team2VolunteerService } from './dasTeam2VolunteerService';
-import { teamService } from './dasTeamService';
+import { Forecast, forecastService, OKR, okrService, teamService } from './dasTeamService';
 import { toolService } from './dasToolsService';
 import { ventureService } from './dasVentureService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from './dasVolunteer2DisciplineService';
@@ -30,6 +30,9 @@ const PARTNERS_TABLE = 'tblqttKinLZJ2JXo7';
 const VENTURES_TABLE = 'tblRpJek5SjacLaen'; // VENTURE SEEDS/PAINPOINTS TABLE
 const ROLES_TABLE = 'tblBNPY8DODvUU3ZA';
 const STAFFING_TABLE = 'tbllAEHFTFX5IZDZL';
+const OKR_TABLE = 'tblBEgmnxKDyycRX6';
+const FORECAST_TABLE = 'tblbIMTclZeJ6IA4i';
+const CONTACT_TABLE = 'tblWyd8yGHbKdchXs';
 
 class MigrationService {
 
@@ -50,7 +53,11 @@ class MigrationService {
         'Partner Logos': this.downloadPartnerLogos,
         'Tool Logos': this.downloadToolLogos,
         'Team Logos': this.downloadTeamIcons,
-        'Discipline Logos': this.downloadDisciplineIcons
+        'Discipline Logos': this.downloadDisciplineIcons,
+        'OKRs': this.migrateOkrs,
+        'Forecast': this.migrateForecasts,
+        'Contacts': this.migrateContacts,
+        'Contact Pics': this.downloadContactPics
     }
 
     migrateVentures(): Promise<void> {
@@ -367,7 +374,6 @@ class MigrationService {
             })
     }
 
-
     migrateStaffingNeeds(): Promise<void> {
         return new AirtableService(STAFFING_TABLE).getAll()
             .then(records => {
@@ -393,6 +399,52 @@ class MigrationService {
                     return supa
                 }))
                     .then(transformed => staffingService.batchInsert(transformed))
+            })
+    }
+
+    async migrateOkrs(): Promise<void> {
+        return new AirtableService(OKR_TABLE).getAll()
+            .then(records => {
+                Promise.all(records.map(async r => {
+                    const team = r['Teams'] ? await teamService.findByAirtableId(r['Teams'][0]) : null;
+                    const supa = ({
+                        id: uuid(),
+                        team_id: team?.id,
+                        airtable_id: r.id,
+                        title: r['Title'],
+                        description: r['Details'],
+                        health_rating: r['Health Rating'],
+                        start_date: r['Start Date'],
+                        end_date: r['End Date'],
+                    }) as OKR;
+                    return supa
+                }))
+                    .then(transformed => okrService.batchInsert(transformed))
+            })
+    }
+
+    async migrateForecasts(): Promise<void> {
+        return new AirtableService(FORECAST_TABLE).getAll()
+            .then(records => {
+                Promise.all(records
+                    .filter(r => !JSON.stringify(r).includes('#ERROR'))
+                    .map(async r => {
+                        const team = r['Team'] ? await teamService.findByAirtableId(r['Team'][0]) : null;
+                        const supa = ({
+                            id: uuid(),
+                            team_id: team?.id,
+                            airtable_id: r.id,
+                            title: r['Entry'],
+                            description: r['Forecast'],
+                            performance: r['Performance?'],
+                            start_date: r['Start date'],
+                            end_date: r['Delivery date'],
+                        }) as Forecast;
+                        return supa
+                    }))
+                    .then(transformed => {
+                        forecastService.batchInsert(transformed)
+                    })
             })
     }
 
@@ -497,6 +549,103 @@ class MigrationService {
             })
     }
 
+    async migrateContacts(): Promise<void> {
+        const partners = await partnerService.getAll();
+        await new AirtableService(CONTACT_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(async record => {
+                        // try {
+                        //     const profile = await profileService.findByName(record["Person"]);
+                        //     if (profile) {
+                        //         console.log('found', profile)
+                        //         await profileService.delete(profile.id);
+                        //     } else {
+                        //         console.error('no profile', record["Person"])
+                        //     }
+                        // } catch (err) {
+                        //     console.error(err)
+                        // }
+                        const partner = partners.find(p => (record["Partners/Allies"] ?? []).includes(p.airtable_id));
+                        if (partner) {
+                            const proposed = {
+                                id: uuid(),
+                                name: record["Person"],
+                                first_name: record["First name"],
+                                last_name: record["Last name"],
+                                email: record["Email"],
+                                phone: record["Phone"],
+                                location: record["Location"],
+                                pic: ""
+                            }
+                            const profile = await profileService.insert(proposed);
+                            const p2p = {
+                                partner_id: partner.id,
+                                profile_id: profile.id,
+                                title: record["Title"]
+                            }
+                            const inserted = await profile2PartnerService.insert(p2p);
+                            console.log(proposed, inserted);
+                        } else {
+                            console.warn(`no partner for contact: ${record.id}  ${record["Person"]}`)
+                        }
+                    });
+            })
+    }
+
+    //  had some issues with linking, so leaving just in case
+    async linkContacts(): Promise<void> {
+        const partners = await partnerService.getAll();
+        const profiles = await profileService.getAll();
+
+        await new AirtableService(CONTACT_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(async record => {
+                        const partner = partners.find(p => (record["Partners/Allies"] ?? []).includes(p.airtable_id));
+                        const profile = profiles.find(p => record["Person"] === p.name);
+                        if (partner && profile) {
+                            const p2p = {
+                                partner_id: partner.id,
+                                profile_id: profile.id,
+                                title: record["Title"]
+                            }
+                            const inserted = await profile2PartnerService.insert(p2p);
+                            console.log(inserted);
+                        } else {
+                            console.warn(`no partner or profile for contact: ${record.id}  ${record["Person"]}`)
+                        }
+                    });
+            })
+    }
+
+
+    async downloadContactPics(): Promise<void> {
+        const profiles = await profileService.getAll();
+        await new AirtableService(CONTACT_TABLE)
+            .getAll()
+            .then(records => {
+                records
+                    .forEach(async record => {
+                        const profile = profiles.find(p => record["Person"] === p.name);
+                        const url = record['Pic'] ? record['Pic'][0].url : undefined;
+                        if (profile && url) {
+                            fetch(url)
+                                .then(resp => resp.blob()
+                                    .then(blob => {
+                                        storageService.upload(`profiles/${profile.id}`, blob)
+                                            .then((data: any) => console.log(`loaded ${profile.id}`, data))
+                                            .catch(err => console.error(err))
+                                    })
+                                )
+                        } else {
+                            console.warn(`no pic for aritable record: ${record.id}`, record)
+                        }
+                    });
+            })
+    }
 }
 const migrationService = new MigrationService();
 

@@ -50,10 +50,9 @@ export const ListCard = ({
         <Card
             key={key}
             sx={{
+                boxShadow: 'none',
                 minWidth: { xs: '100%', sm: '17rem' },
                 maxWidth: 240,
-                boxShadow:
-                    '0px 4px 8px 0px rgba(52, 61, 62, 0.08), 0px 8px 16px 0px rgba(52, 61, 62, 0.08)',
                 ...cardStyles,
             }}
             onDoubleClick={cardAction ? cardAction : undefined}
@@ -98,24 +97,25 @@ export const ListCard = ({
                     {cardContent}
                 </CardContent>
             }
-            {highlightOptions && <CardActions disableSpacing>
-                <Tooltip title={highlightOptions.title}>
-                    <IconButton
-                        onClick={(event) => {
-                            event.preventDefault();
-                            highlightOptions.toggleHighlight();
-                        }}
-                        aria-label="favorite"
-                        size="small"
-                    >
-                        {highlightOptions.highlight
-                            ? <StarFilled style={{ color: '#bea907ff' }} />
-                            : <StarOutlined style={{ color: 'gray' }} />
-                        }
-                        &nbsp;{`${highlightOptions.title}`}
-                    </IconButton>
-                </Tooltip>
-            </CardActions>}
+            {highlightOptions &&
+                <CardActions disableSpacing>
+                    <Tooltip title={highlightOptions.title}>
+                        <IconButton
+                            onClick={(event) => {
+                                event.preventDefault();
+                                highlightOptions.toggleHighlight();
+                            }}
+                            aria-label="favorite"
+                            size="small"
+                        >
+                            {highlightOptions.highlight
+                                ? <StarFilled style={{ color: '#bea907ff' }} />
+                                : <StarOutlined style={{ color: 'gray' }} />
+                            }
+                            &nbsp;{`${highlightOptions.title}`}
+                        </IconButton>
+                    </Tooltip>
+                </CardActions>}
         </Card >
     )
 }

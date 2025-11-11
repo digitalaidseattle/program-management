@@ -2,6 +2,7 @@
 
 import {
     CalendarOutlined,
+    CompassOutlined,
     HeartOutlined,
     HomeOutlined,
     MehOutlined,
@@ -31,13 +32,36 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/',
                 icon: <HomeOutlined />
-            },
+            }]
+    }
+
+    const meetings =
+    {
+        id: 'meetins-group',
+        title: 'Meetings',
+        type: 'group',
+        children: [
+
             {
                 id: 'plenary',
                 title: 'Plenary',
                 type: 'item',
                 url: '/plenary',
                 icon: <ScheduleOutlined />
+            },
+            {
+                id: 'leadership',
+                title: 'Leadership',
+                type: 'item',
+                url: '/leadership',
+                icon: <CompassOutlined />
+            },
+            {
+                id: 'team',
+                title: 'Team',
+                type: 'item',
+                url: '/team-meeting',
+                icon: <CompassOutlined />
             }]
     }
 
@@ -146,7 +170,7 @@ export const TemplateConfig = () => {
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
-        menuItems: [home, ventures, recruiting, data],
+        menuItems: [home, meetings, ventures, recruiting, data],
         toolbarItems: [],
         version: packageJson.version,
     } as LayoutConfiguration);

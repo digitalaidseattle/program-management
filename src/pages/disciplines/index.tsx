@@ -12,11 +12,10 @@ import { Discipline, disciplineService } from '../../services/dasDisciplineServi
 import { DisciplineDetails } from '../discipline';
 
 
-
 const DisciplinesPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
-
   const navigate = useNavigate();
+
   const storageService = useStorageService()!;
 
   const columns: GridColDef<Discipline[][number]>[] = [
@@ -90,6 +89,5 @@ const DisciplinesPage = () => {
     />
   );
 };
-
 
 export default DisciplinesPage;

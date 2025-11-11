@@ -3,7 +3,7 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { PageInfo, QueryModel, supabaseClient } from '@digitalaidseattle/supabase';
+import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box,
@@ -14,7 +14,7 @@ import {
   Toolbar,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
@@ -22,20 +22,11 @@ import { VolunteerCard } from '../../components/VolunteerCard';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { VolunteerDetails } from '../volunteer';
 
-
-
-
 const VolunteersPage = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [pageInfo, setPageInfo] = useState<PageInfo<Volunteer>>({ rows: [], totalRowCount: 0 });
   const storageService = useStorageService()!;
 
-  useEffect(() => {
-    supabaseClient.storage.
-      from("program-management")
-      .list('profiles')
-      .then((resp: any) => console.log('log', resp))
-  }, [])
   const columns: GridColDef<Volunteer[][number]>[] = [
     {
       field: 'profile.pic',

@@ -10,13 +10,16 @@ import { Profile } from "./dasProfileService";
 import { Identifier } from "@digitalaidseattle/core";
 import { v4 as uuid } from 'uuid';
 import { Volunteer } from "./dasVolunteerService";
+import { Team } from "./dasTeamService";
 
 type MeetingAttendee = {
     id: string;
     meeting_id: string;
     profile_id: string;
     profile?: Profile;
-    present: boolean;
+    team_id?: string;  // leadership meeting
+    team?: string;
+    status: 'present' | 'absent' | 'unknown';
     email: string;
 }
 
@@ -25,7 +28,7 @@ type MeetingTopic = {
     meeting_id: string;
     type: 'icebreaker' | 'shoutout' | 'team' | 'intro' | 'anniversary',
     subject_id: string[]; // ids for intro/anniversary/shoutouts
-    subject: string; // alertnate subject
+    subject: string; // alternate subject
     message: string;
     source: string; // who/team submitted it
     discussed: boolean;
@@ -35,16 +38,20 @@ type Meeting = {
     id: string;
     name: string;
     type: 'plenary' | 'leadership' | 'team' | 'adhoc';
-    date: Date;
+    start_date: Date;
+    end_date: Date;
     meeting_attendee?: MeetingAttendee[];
     meeting_topic?: MeetingTopic[];
     meeting_url: string;
     status: 'new' | 'concluded';
     notes: string;
+    team_id?: string;
+    team?: Team;
 }
 
 const MEETING_SELECT = '*, meeting_attendee(*, profile(*)), meeting_topic(*)';
 class MeetingService extends SupabaseEntityService<Meeting> {
+
     public constructor() {
         super("meeting");
     }
@@ -58,14 +65,14 @@ class MeetingService extends SupabaseEntityService<Meeting> {
             .then((resp: any) => resp.data);
     }
 
-    async getCurrentPlenary(): Promise<Meeting> {
+    async getCurrent(type: string): Promise<Meeting> {
         return await supabaseClient
             .from(this.tableName)
             .select(MEETING_SELECT)
-            .eq('type', 'plenary')
+            .eq('type', type)
             .eq('status', 'new')
-            .single()
-            .then((resp: any) => resp.data);
+            .order('start_date', { ascending: false })
+            .then((resp: any) => resp.data[0]);
     }
 
     async getById(entityId: Identifier, select?: string): Promise<Meeting | null> {
@@ -86,7 +93,7 @@ class MeetingAttendeeService extends SupabaseEntityService<MeetingAttendee> {
             meeting_id: meeting.id,
             profile_id: volunteer.profile!.id,
             email: volunteer.das_email,
-            present: false
+            status: 'unknown'
         });
     }
 }
@@ -102,10 +109,10 @@ class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
             id: uuid(),
             meeting_id: meetingId,
             type: 'team',
-            subject_id: [],
+            subject_id: [], //deprecated
             subject: '',
             message: '',
-            source: '', 
+            source: '',
             discussed: false
         }
     }

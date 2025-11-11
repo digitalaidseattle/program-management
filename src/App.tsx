@@ -11,8 +11,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import {
   AuthServiceProvider,
-  StorageServiceProvider,
-  UserContextProvider
+  StorageServiceProvider
 } from "@digitalaidseattle/core";
 import { LayoutConfigurationProvider } from "@digitalaidseattle/mui";
 
@@ -30,21 +29,18 @@ import { TemplateConfig } from './TemplateConfig';
 
 const router = createBrowserRouter(routes);
 
-const authService = new SupabaseAuthService();
+export const authService = new SupabaseAuthService();
 export const storageService = new SupabaseStorageService('program-management');
-console.log(authService, storageService);
 
 const App: React.FC = () => {
   return (
     <AuthServiceProvider authService={authService} >
       <StorageServiceProvider storageService={storageService} >
-        <UserContextProvider>
-          <LayoutConfigurationProvider configuration={TemplateConfig()}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <RouterProvider router={router} />
-            </LocalizationProvider>
-          </LayoutConfigurationProvider>
-        </UserContextProvider>
+        <LayoutConfigurationProvider configuration={TemplateConfig()}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <RouterProvider router={router} />
+          </LocalizationProvider>
+        </LayoutConfigurationProvider>
       </StorageServiceProvider>
     </AuthServiceProvider>
   );
