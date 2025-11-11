@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react'
 import { Box, Card, CardContent, Divider, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
 import { VentureReport } from '../services/dasVentureReportService'
-import { HEALTH_STATUS_CHIPS, HEALTH_STATUS_INDICATOR_COLORS } from '../pages/venture/Utils'
+import { HEALTH_STATUS_CHIPS, HEALTH_STATUS_INDICATOR_COLORS } from '../components/StatusChip.tsx'
 
 interface VentureReportDisplayProps {
   reports: VentureReport[]
