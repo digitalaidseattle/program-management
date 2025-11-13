@@ -27,6 +27,7 @@ import MeetingsPage from './meetings/index.tsx';
 import TeamMeetingPage from './view-meeting/TeamMeetingPage.tsx';
 import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
 import LeadershipMeetingPage from './view-meeting/LeadershipMeetingPage.tsx';
+import StaffingPage from './staffing/StaffingPage.tsx';
 
 const routes = [
   {
@@ -111,7 +112,7 @@ const routes = [
       },
       {
         path: "staffing",
-        element: <Markdown># The Staffing page is under construction.</Markdown>,
+        element: <StaffingPage />,
       },
       {
         path: "reporting",
