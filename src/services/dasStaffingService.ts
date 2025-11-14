@@ -10,7 +10,7 @@ import { Venture } from "./dasVentureService";
 import { Role } from "./dasRoleService";
 import { Volunteer } from "./dasVolunteerService";
 import { Team } from "./dasTeamService";
-import { Identifier, User } from "@digitalaidseattle/core";
+import { Identifier } from "@digitalaidseattle/core";
 
 type Staffing = {
     id: string;
