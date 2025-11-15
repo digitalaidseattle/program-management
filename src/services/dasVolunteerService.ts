@@ -79,7 +79,6 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .single()
             .then((resp: any) => resp.data);
     }
-
 }
 
 const volunteerService = new VolunteerService();
