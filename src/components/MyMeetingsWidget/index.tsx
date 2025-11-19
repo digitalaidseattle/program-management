@@ -4,21 +4,31 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Card, CardContent, CardHeader, List, ListItem } from '@mui/material';
+import { PlusCircleOutlined } from '@ant-design/icons';
+import { LoadingContext, useNotifications } from '@digitalaidseattle/core';
+import { Card, CardContent, CardHeader, IconButton, List, ListItem } from '@mui/material';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useVolunteer } from '../../hooks/useVolunteer';
 import { Meeting, meetingAttendeeService } from '../../services/dasMeetingService';
+import AddMeetingDialog from '../AddMeetingDialog';
 
 export const MyMeetingsWidget = () => {
+    const navigate = useNavigate();
+    const notification = useNotifications();
+    const {  setLoading } = useContext(LoadingContext);
+
     const { volunteer } = useVolunteer();
     const [meetings, setMeetings] = useState<Meeting[]>([]);
+    const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
 
     useEffect(() => {
+        setLoading(true);
         if (volunteer) {
             findCurrentMeetings(volunteer.profile_id)
-                .then(meetings => setMeetings(meetings));
+                .then(meetings => setMeetings(meetings))
+                .finally(() => setLoading(false));
         }
     }, [volunteer]);
 
@@ -34,9 +44,19 @@ export const MyMeetingsWidget = () => {
             });
     }
 
+    function handleClose(evt: any) {
+        if (evt.meeting) {
+            notification.success('Meeting added.');
+            navigate(`/meeting/${evt.meeting.id}`);
+        }
+        setShowAddMeetingDialog(false);
+    }
+
     return (
         <Card >
-            <CardHeader title="My Meetings" />
+            <CardHeader
+                title="My Meetings"
+                action={<IconButton onClick={() => setShowAddMeetingDialog(true)}><PlusCircleOutlined /></IconButton>} />
             <CardContent>
                 <List>
                     {meetings.map(m =>
@@ -45,6 +65,11 @@ export const MyMeetingsWidget = () => {
                         </ListItem>
                     )}
                 </List>
+                <AddMeetingDialog
+                    title={'Add meeting'}
+                    meetingTypes={['adhoc', 'team']}
+                    onClose={handleClose}
+                    open={showAddMeetingDialog} />
             </CardContent>
         </Card>
     );
