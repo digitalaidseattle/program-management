@@ -20,7 +20,7 @@ import VenturesPage from './ventures';
 import { MeetingPage } from './meeting';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
-import DashboardPage from './dashboard.tsx';
+import DashboardPage from './dashboard/index.tsx';
 import Markdown from 'react-markdown';
 import PlenaryPage from './view-meeting/PlenaryPage.tsx';
 import MeetingsPage from './meetings/index.tsx';
@@ -139,6 +139,11 @@ const routes = [
         element: <TeamMeetingPage />,
       },
     ]
+  },
+  {
+    path: "/data",
+    element: <MainLayout sx={{ p: 1 }} />,
+    children: []
   },
   {
     path: "/",

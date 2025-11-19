@@ -15,6 +15,7 @@ import { Team } from "./dasTeamService";
 type MeetingAttendee = {
     id: string;
     meeting_id: string;
+    meeting?: Meeting;
     profile_id: string;
     profile?: Profile;
     team_id?: string;  // leadership meeting
@@ -95,6 +96,14 @@ class MeetingAttendeeService extends SupabaseEntityService<MeetingAttendee> {
             email: volunteer.das_email,
             status: 'unknown'
         });
+    }
+
+    async findByProfileId(id: string): Promise<MeetingAttendee[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, meeting(*)')
+            .eq('profile_id', id)
+            .then((resp: any) => resp.data);
     }
 }
 
