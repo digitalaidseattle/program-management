@@ -27,10 +27,12 @@ import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { AdhocMeetingPage } from './view-meeting/AdhocMeetingPage.tsx';
 import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
-import RolesPage from './roles/index.tsx';
-import { RolePage } from './role/index.tsx';
 import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
+import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
+import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
+import { RolePage } from './role/index.tsx';
+import RolesPage from './roles/index.tsx';
 
 const routes = [
   {
@@ -149,22 +151,7 @@ const routes = [
         path: "roles",
         element: <RolesPage />,
       },
-      {
-        path: "role/:id",
-        element: <RolePage />,
-      },
-      {
-        path: "roles",
-        element: <RolesPage />,
-      },
-      {
-        path: "role/:id",
-        element: <RolePage />,
-      },
-      {
-        path: "roles",
-        element: <RolesPage />,
-      },
+   
     ]
   },
   {
