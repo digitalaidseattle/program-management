@@ -96,13 +96,13 @@ export const TemplateConfig = () => {
                 id: 'people',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/volunteers',
+                url: '/data/volunteers',
                 icon: <UserOutlined />
             }, {
                 id: 'teams',
                 title: 'Teams',
                 type: 'item',
-                url: '/teams',
+                url: '/data/teams',
                 icon: <TeamOutlined />
             },
             {
@@ -123,21 +123,21 @@ export const TemplateConfig = () => {
                 id: 'tools',
                 title: 'Tools',
                 type: 'item',
-                url: '/tools',
+                url: '/data/tools',
                 icon: <ToolOutlined />
             },
             {
                 id: 'disciplines',
                 title: 'Disciplines',
                 type: 'item',
-                url: '/disciplines',
+                url: '/data/disciplines',
                 icon: <ToolOutlined />
             },
             {
                 id: 'meetings',
                 title: 'Meetings',
                 type: 'item',
-                url: '/meetings',
+                url: '/data/meetings',
                 icon: <CalendarOutlined />
             }
         ]

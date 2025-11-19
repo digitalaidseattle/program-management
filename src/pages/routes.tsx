@@ -42,14 +42,7 @@ const routes = [
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
       },
-      {
-        path: "volunteers",
-        element: <VolunteersPage />,
-      },
-      {
-        path: "volunteer/:id",
-        element: <VolunteerPage />,
-      },
+
       {
         path: "partners",
         element: <PartnersPage />,
@@ -57,14 +50,6 @@ const routes = [
       {
         path: "partner/:id",
         element: <PartnerPage />,
-      },
-      {
-        path: "teams",
-        element: <TeamsPage />,
-      },
-      {
-        path: "team/:id",
-        element: <TeamPage />,
       },
       {
         path: "ventures",
@@ -75,32 +60,8 @@ const routes = [
         element: <VenturePage />,
       },
       {
-        path: "tools",
-        element: <ToolsPage />,
-      },
-      {
-        path: "tool/:id",
-        element: <ToolPage />,
-      },
-      {
-        path: "disciplines",
-        element: <DisciplinesPage />,
-      },
-      {
-        path: "discipline/:id",
-        element: <DisciplinePage />,
-      },
-      {
         path: "migration",
         element: <MigrationPage />,
-      },
-      {
-        path: "meetings",
-        element: <MeetingsPage />,
-      },
-      {
-        path: "meeting/:id",
-        element: <MeetingPage />,
       },
       {
         path: "applicants",
@@ -138,6 +99,52 @@ const routes = [
         path: "team-meeting",
         element: <TeamMeetingPage />,
       },
+    ]
+  },
+  {
+    path: "/data/",
+    element: <MainLayout sx={{ p: 1 }} />,
+    children: [
+      {
+        path: "volunteers",
+        element: <VolunteersPage />,
+      },
+      {
+        path: "volunteer/:id",
+        element: <VolunteerPage />,
+      },
+      {
+        path: "teams",
+        element: <TeamsPage />,
+      },
+      {
+        path: "team/:id",
+        element: <TeamPage />,
+      },
+      {
+        path: "meetings",
+        element: <MeetingsPage />,
+      },
+      {
+        path: "meeting/:id",
+        element: <MeetingPage />,
+      },
+      {
+        path: "tools",
+        element: <ToolsPage />,
+      },
+      {
+        path: "tool/:id",
+        element: <ToolPage />,
+      },
+      {
+        path: "disciplines",
+        element: <DisciplinesPage />,
+      },
+      {
+        path: "discipline/:id",
+        element: <DisciplinePage />,
+      }
     ]
   },
   {
