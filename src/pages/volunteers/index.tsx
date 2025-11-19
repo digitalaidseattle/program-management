@@ -7,11 +7,9 @@ import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box,
-  Button,
-  ButtonGroup,
   IconButton,
   Stack,
-  Toolbar,
+  Toolbar
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';

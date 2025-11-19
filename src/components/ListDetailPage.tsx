@@ -5,14 +5,11 @@
  *
  */
 
-import { BarsOutlined, IdcardOutlined, TableOutlined } from "@ant-design/icons";
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
-import { Card, CardContent, CardHeader, IconButton, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, Stack, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
-import { EntityGrid } from "./EntityGrid";
-import { EntityList } from "./EntityList";
 import { EntityTable } from "./EntityTable";
 
 export type ListDetailPageProps<T extends Entity> = {
@@ -34,9 +31,9 @@ export type ListDetailPageProps<T extends Entity> = {
 }
 
 export function ListDetailPage<T extends Entity>({
-    pageInfo, title, toolbar, onChange, tableOpts, gridOpts, listOpts
+    pageInfo, title, toolbar, onChange, tableOpts
 }: ListDetailPageProps<T>) {
-    const [showType, setShowType] = useState<string>('table');
+    const [showType] = useState<string>('table');
     return (
         <Card >
             <CardHeader
