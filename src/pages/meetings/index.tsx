@@ -1,19 +1,18 @@
 
 // material-ui
+import { PlusCircleOutlined } from '@ant-design/icons';
+import { useNotifications } from '@digitalaidseattle/core';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
-import { IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { IconButton, Stack, Toolbar } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router';
 import AddMeetingDialog from '../../components/AddMeetingDialog';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Meeting, meetingService } from '../../services/dasMeetingService';
-import { Team, teamService } from '../../services/dasTeamService';
 import { MeetingDetails } from '../meeting';
-import { useNotifications } from '@digitalaidseattle/core';
-import { PlusCircleOutlined } from '@ant-design/icons';
 
 const columns: GridColDef<Meeting[][number]>[] = [
 
