@@ -17,16 +17,20 @@ import { AttendeesCard } from "./AttendeesCard";
 import { NotesCard } from "./NotesCard";
 import { TopicsCard } from "./TopicsCard";
 import { NextMeetingCard } from "./NextMeetingCard";
-import { CARD_HEADER_SX } from "./utils";
+import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
 
-const AdhoceetingPage = () => {
+function AdhocMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
     const [meeting, setMeeting] = useState<Meeting>();
     const { id } = useParams<string>();
     const { refresh } = useContext(RefreshContext);
 
     useEffect(() => {
+        setMeeting(initial!)
+    }, [initial]);
+
+    useEffect(() => {
         refreshMeeting();
-    }, [id, refresh]);
+    }, [refresh]);
 
     function refreshMeeting() {
         if (id) {
@@ -47,18 +51,18 @@ const AdhoceetingPage = () => {
             </CardHeader>
             <CardContent>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <Stack gap={2}>
                             <AttendeesCard entity={meeting} onChange={() => refreshMeeting()} />
                             <NextMeetingCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Stack>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid size={5}>
                         <Stack gap={2}>
                             <TopicsCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Stack>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid size={4}>
                         <NotesCard entity={meeting} onChange={() => refreshMeeting()} />
                     </Grid>
                 </Grid >
@@ -67,4 +71,16 @@ const AdhoceetingPage = () => {
     );
 };
 
-export default AdhoceetingPage;
+const AdhocMeetingPage = () => {
+    const [meeting, setMeeting] = useState<Meeting>();
+
+    useEffect(() => {
+        meetingService.getCurrent('plenary')
+            .then(plenary => setMeeting(plenary));
+    }, []);
+
+    return <AdhocMeetingDetails meeting={meeting} />
+
+};
+
+export { AdhocMeetingDetails, AdhocMeetingPage };

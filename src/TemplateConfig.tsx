@@ -3,8 +3,10 @@
 import {
     CalendarOutlined,
     CompassOutlined,
+    CrownOutlined,
     HeartOutlined,
     HomeOutlined,
+    KeyOutlined,
     MehOutlined,
     PaperClipOutlined,
     RocketOutlined,
@@ -41,7 +43,13 @@ export const TemplateConfig = () => {
         title: 'Meetings',
         type: 'group',
         children: [
-
+            {
+                id: 'team',
+                title: 'All Meetings',
+                type: 'item',
+                url: '/all-meetings',
+                icon: <CompassOutlined />
+            },
             {
                 id: 'plenary',
                 title: 'Plenary',
@@ -54,14 +62,7 @@ export const TemplateConfig = () => {
                 title: 'Leadership',
                 type: 'item',
                 url: '/leadership',
-                icon: <CompassOutlined />
-            },
-            {
-                id: 'team',
-                title: 'Team',
-                type: 'item',
-                url: '/team-meeting',
-                icon: <CompassOutlined />
+                icon: <CrownOutlined />
             }]
     }
 
@@ -131,7 +132,7 @@ export const TemplateConfig = () => {
                 title: 'Disciplines',
                 type: 'item',
                 url: '/disciplines',
-                icon: <ToolOutlined />
+                icon: <KeyOutlined />
             },
             {
                 id: 'meetings',
