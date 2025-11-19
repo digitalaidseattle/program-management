@@ -29,8 +29,6 @@ import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx'
 import StaffingPage from './staffing/StaffingPage.tsx';
 import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
-import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
-import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
 import { RolePage } from './role/index.tsx';
 import RolesPage from './roles/index.tsx';
 
@@ -122,6 +120,10 @@ const routes = [
       {
         path: "reporting",
         element: <Markdown># The Reporting page is under construction.</Markdown>,
+      },
+      {
+        path: "all-meetings",
+        element: <AllMeetingsPage />,
       },
       {
         path: "plenary",
