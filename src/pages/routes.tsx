@@ -29,6 +29,8 @@ import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx'
 import StaffingPage from './staffing/StaffingPage.tsx';
 import RolesPage from './roles/index.tsx';
 import { RolePage } from './role/index.tsx';
+import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
+import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
 
 const routes = [
   {

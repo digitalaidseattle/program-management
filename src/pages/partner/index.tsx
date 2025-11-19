@@ -73,7 +73,7 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
 
         <Grid container spacing={2}>
           {/* Left Column */}
-          <Grid size={6}>
+          <Grid size={6} >
             <Paper variant="outlined" sx={{ p: 2, height: '100%' }}>
               <Stack gap={2}>
                 {/* Partner logo */}
