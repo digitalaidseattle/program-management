@@ -5,39 +5,22 @@
  *
  */
 import { Card, CardContent, CardHeader, List, ListItem } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { Meeting, meetingAttendeeService } from '../../services/dasMeetingService';
-import { useAuthService } from '@digitalaidseattle/core';
-import { volunteerService } from '../../services/dasVolunteerService';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useVolunteer } from '../../hooks/useVolunteer';
+import { Meeting, meetingAttendeeService } from '../../services/dasMeetingService';
 
 export const MyMeetingsWidget = () => {
-    const authService = useAuthService();
-
-    const [profileId, setProfileId] = useState<string>();
+    const { volunteer } = useVolunteer();
     const [meetings, setMeetings] = useState<Meeting[]>([]);
 
     useEffect(() => {
-        if (authService) {
-            authService
-                .getUser()
-                .then(user => {
-                    if (user) {
-                        volunteerService
-                            .findByDasEmail(user.email)
-                            .then(volunteer => setProfileId(volunteer ? volunteer.profile_id : undefined))
-                    }
-                })
-        }
-    }, [authService]);
-
-    useEffect(() => {
-        if (profileId) {
-            findCurrentMeetings(profileId)
+        if (volunteer) {
+            findCurrentMeetings(volunteer.profile_id)
                 .then(meetings => setMeetings(meetings));
         }
-    }, [profileId]);
+    }, [volunteer]);
 
     function findCurrentMeetings(profileId: string): Promise<Meeting[]> {
         return meetingAttendeeService
