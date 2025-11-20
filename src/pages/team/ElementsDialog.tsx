@@ -122,7 +122,7 @@ function ElementsDialog<T extends Entity>({ open, elements, displayOptions, newF
             <DialogTitle sx={{ fontSize: 20, backgroundColor: CARD_HEADER_SX }}>{displayOptions.dialogTitle}</DialogTitle>
             <DialogContent>
                 <Grid container>
-                    <Grid xs={4}>
+                    <Grid size={4}>
                         <Stack direction={'row'} alignItems={'center'}>
                             <IconButton onClick={() => addElement()}>
                                 <PlusCircleOutlined />
@@ -143,7 +143,7 @@ function ElementsDialog<T extends Entity>({ open, elements, displayOptions, newF
                             />
                         </Box>
                     </Grid>
-                    <Grid xs={8}>
+                    <Grid size={8}>
                         {cloned &&
                             <Card>
                                 <CardHeader

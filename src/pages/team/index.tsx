@@ -52,7 +52,7 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
   return (entity &&
     <Stack gap={2}>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Card>
             <CardHeader
               titleTypographyProps={{ fontSize: 24 }}
@@ -67,7 +67,7 @@ const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <Stack spacing={2}>
             <OKRsCard entity={entity} onChange={onChange} />
             <ForecastsCard entity={entity} onChange={onChange} />
