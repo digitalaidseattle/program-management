@@ -18,6 +18,7 @@ import logo from "./assets/images/logo-light-icon.svg";
 
 import { LayoutConfiguration, MenuItem } from "@digitalaidseattle/mui";
 import packageJson from '../package.json';
+import { Link } from 'react-router-dom';
 
 export const TemplateConfig = () => {
     const home =
@@ -172,6 +173,14 @@ export const TemplateConfig = () => {
         drawerWidth: 240,
         menuItems: [home, meetings, ventures, recruiting, data],
         toolbarItems: [],
+        profileItems: [
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/privacy`}>
+                Privacy Policy
+            </Link>
+        ],
         version: packageJson.version,
     } as LayoutConfiguration);
 }

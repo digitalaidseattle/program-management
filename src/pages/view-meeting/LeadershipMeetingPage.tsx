@@ -72,21 +72,21 @@ const LeadershipMeetingPage = () => {
                 </CardHeader>
                 <CardContent>
                     <Grid container spacing={2} >
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <Card>
                                 <MeetingToolbar entity={meeting} onChange={() => refreshMeeting()} />
                             </Card>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid size={3}>
                             <AttendeesCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Grid>
-                        <Grid item xs={5}>
+                        <Grid size={5}>
                             <Stack gap={2}>
                                 <TopicsCard entity={meeting} onChange={() => refreshMeeting()} />
                                 <ForecastsCard entity={team!} onChange={(_evt: any) => refreshMeeting()} />
                             </Stack>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid size={4}>
                             <NotesCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Grid>
                     </Grid >

@@ -47,18 +47,18 @@ const AdhoceetingPage = () => {
             </CardHeader>
             <CardContent>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <Stack gap={2}>
                             <AttendeesCard entity={meeting} onChange={() => refreshMeeting()} />
                             <NextMeetingCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Stack>
                     </Grid>
-                    <Grid item xs={5}>
+                    <Grid size={5}>
                         <Stack gap={2}>
                             <TopicsCard entity={meeting} onChange={() => refreshMeeting()} />
                         </Stack>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid size={4}>
                         <NotesCard entity={meeting} onChange={() => refreshMeeting()} />
                     </Grid>
                 </Grid >
