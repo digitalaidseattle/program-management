@@ -22,6 +22,11 @@
     "@mui/x-data-grid": "^8.15.0",
     "@mui/x-tree-view": "^7.5.1",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 6cb2381 (trim modules)
 =======
 <<<<<<< HEAD
 =======
@@ -30,6 +35,7 @@
 =======
 >>>>>>> e101bd8 (All meetings)
     "airtable": "^0.12.2",
+<<<<<<< HEAD
     "datejs": "^1.0.0-rc3",
     "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
@@ -45,6 +51,10 @@
 >>>>>>> f01ed34 (trim modules)
 =======
 >>>>>>> e101bd8 (All meetings)
+=======
+=======
+>>>>>>> 7a20818 (trim modules)
+>>>>>>> 6cb2381 (trim modules)
     "uuid": "^13.0.0"
   },
   "devDependencies": {
