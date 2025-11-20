@@ -177,6 +177,12 @@ export const TemplateConfig = () => {
             <Link
                 style={{ 'textDecoration': 'none' }}
                 color="secondary"
+                to={`/profile`}>
+                Profile
+            </Link>,
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
                 to={`/privacy`}>
                 Privacy Policy
             </Link>

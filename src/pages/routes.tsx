@@ -28,6 +28,7 @@ import TeamMeetingPage from './view-meeting/TeamMeetingPage.tsx';
 import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
 import LeadershipMeetingPage from './view-meeting/LeadershipMeetingPage.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
+import { ProfilePage } from './profile/index.tsx';
 
 const routes = [
   {
@@ -37,6 +38,10 @@ const routes = [
       {
         path: "/",
         element: <DashboardPage />
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />,
       },
       {
         path: "privacy",
