@@ -23,7 +23,7 @@ export function MeetingToolbar({ entity: meeting, sx, onChange }: { entity: Meet
         }
     }
 
-    return (<Grid item xs={12}>
+    return (<Grid size={12}>
         <Card>
             <Toolbar sx={{ gap: 2, ...sx }}>
                 <Tooltip title={`Open Google meeing, ${meeting.meeting_url}, in a new window.`}>

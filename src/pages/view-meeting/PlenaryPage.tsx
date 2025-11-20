@@ -249,13 +249,13 @@ const PlenaryPage = () => {
             />
             <CardContent sx={{ padding: 1 }}>
                 <Grid container spacing={1} >
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <MeetingToolbar entity={meeting} onChange={() => refreshMeeting()} />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <AttendeesCard meeting={meeting} onChange={() => refreshMeeting()} />
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid size={9}>
                         <Stack gap={1} >
                             <CollapsibleCard title='Ice Breaker' headerSx={CARD_HEADER_SX}>
                                 <CardContent>{iceBreaker}</CardContent>
