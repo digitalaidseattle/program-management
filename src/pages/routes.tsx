@@ -29,6 +29,8 @@ import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
 import LeadershipMeetingPage from './view-meeting/LeadershipMeetingPage.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
 import { ProfilePage } from './profile/index.tsx';
+import RolesPage from './roles/index.tsx';
+import { RolePage } from './role/index.tsx';
 
 const routes = [
   {
@@ -142,6 +144,14 @@ const routes = [
       {
         path: "team-meeting",
         element: <TeamMeetingPage />,
+      },
+      {
+        path: "role/:id",
+        element: <RolePage />,
+      },
+      {
+        path: "roles",
+        element: <RolesPage />,
       },
     ]
   },
