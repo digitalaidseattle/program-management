@@ -6,6 +6,7 @@ import {
     CrownOutlined,
     HeartOutlined,
     HomeOutlined,
+    IdcardOutlined,
     KeyOutlined,
     MehOutlined,
     PaperClipOutlined,
@@ -136,6 +137,13 @@ export const TemplateConfig = () => {
                 icon: <KeyOutlined />
             },
             {
+                id: 'roles',
+                title: 'Roles',
+                type: 'item',
+                url: '/roles',
+                icon: <IdcardOutlined />
+            },
+            {
                 id: 'meetings',
                 title: 'Meetings',
                 type: 'item',
@@ -145,43 +153,43 @@ export const TemplateConfig = () => {
         ]
     } as MenuItem;
 
-    const recruiting = {
-        id: 'recruiting-dashboard',
-        title: 'Recruiting',
-        type: 'group',
-        children: [
-            {
-                id: 'applicants',
-                title: 'Applicants',
-                type: 'item',
-                url: '/applicants',
-                icon: <SearchOutlined />
-            },
-            {
-                id: 'proctors',
-                title: 'Proctors',
-                type: 'item',
-                url: '/proctors',
-                icon: <MehOutlined />
-            }
-        ]
-    } as MenuItem;
+const recruiting = {
+    id: 'recruiting-dashboard',
+    title: 'Recruiting',
+    type: 'group',
+    children: [
+        {
+            id: 'applicants',
+            title: 'Applicants',
+            type: 'item',
+            url: '/applicants',
+            icon: <SearchOutlined />
+        },
+        {
+            id: 'proctors',
+            title: 'Proctors',
+            type: 'item',
+            url: '/proctors',
+            icon: <MehOutlined />
+        }
+    ]
+} as MenuItem;
 
 
-    return ({
-        appName: 'DAS Program Management',
-        logoUrl: logo,
-        drawerWidth: 240,
-        menuItems: [home, meetings, ventures, recruiting, data],
-        toolbarItems: [],
-        profileItems: [
-            <Link
-                style={{ 'textDecoration': 'none' }}
-                color="secondary"
-                to={`/privacy`}>
-                Privacy Policy
-            </Link>
-        ],
-        version: packageJson.version,
-    } as LayoutConfiguration);
+return ({
+    appName: 'DAS Program Management',
+    logoUrl: logo,
+    drawerWidth: 240,
+    menuItems: [home, meetings, ventures, recruiting, data],
+    toolbarItems: [],
+    profileItems: [
+        <Link
+            style={{ 'textDecoration': 'none' }}
+            color="secondary"
+            to={`/privacy`}>
+            Privacy Policy
+        </Link>
+    ],
+    version: packageJson.version,
+} as LayoutConfiguration);
 }
