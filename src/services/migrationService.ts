@@ -663,7 +663,7 @@ class MigrationService {
                                 .then(resp => resp.blob()
                                     .then(blob => {
                                         storageService.removeFile(pic)
-                                            .then(resp => {
+                                            .then(() => {
                                                 storageService.upload(pic, blob)
                                                     .then((data: any) => console.log(`uploaded ${pic!}`, data))
                                                     .catch(err => console.error(err))
