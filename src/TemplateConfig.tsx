@@ -176,20 +176,20 @@ const recruiting = {
 } as MenuItem;
 
 
-    return ({
-        appName: 'DAS Program Management',
-        logoUrl: logo,
-        drawerWidth: 240,
-        menuItems: [home, meetings, ventures, recruiting, data],
-        toolbarItems: [],
-        profileItems: [
-            <Link
-                style={{ 'textDecoration': 'none' }}
-                color="secondary"
-                to={`/privacy`}>
-                Privacy Policy
-            </Link>
-        ],
-        version: packageJson.version,
-    } as LayoutConfiguration);
+return ({
+    appName: 'DAS Program Management',
+    logoUrl: logo,
+    drawerWidth: 240,
+    menuItems: [home, meetings, ventures, recruiting, data],
+    toolbarItems: [],
+    profileItems: [
+        <Link
+            style={{ 'textDecoration': 'none' }}
+            color="secondary"
+            to={`/privacy`}>
+            Privacy Policy
+        </Link>
+    ],
+    version: packageJson.version,
+} as LayoutConfiguration);
 }

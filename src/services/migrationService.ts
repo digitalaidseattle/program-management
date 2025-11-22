@@ -12,6 +12,7 @@ import { disciplineService } from './dasDisciplineService';
 import { partnerService, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
 import { Role, roleService } from './dasRoleService';
+import { Role, roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
 import { Team2Tool, team2ToolService } from './dasTeam2ToolService';
 import { team2VolunteerService } from './dasTeam2VolunteerService';
@@ -663,7 +664,7 @@ class MigrationService {
                                 .then(resp => resp.blob()
                                     .then(blob => {
                                         storageService.removeFile(pic)
-                                            .then(() => {
+                                            .then(resp => {
                                                 storageService.upload(pic, blob)
                                                     .then((data: any) => console.log(`uploaded ${pic!}`, data))
                                                     .catch(err => console.error(err))
