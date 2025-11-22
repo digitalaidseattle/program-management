@@ -157,6 +157,14 @@ const routes = [
         path: "roles",
         element: <RolesPage />,
       },
+      {
+        path: "role/:id",
+        element: <RolePage />,
+      },
+      {
+        path: "roles",
+        element: <RolesPage />,
+      },
     ]
   },
   {
