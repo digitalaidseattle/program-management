@@ -81,7 +81,7 @@ const ToolPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/tools">
+        <Link color="inherit" href="/data/tools">
           Tools
         </Link>
         <Typography>{entity.name}</Typography>

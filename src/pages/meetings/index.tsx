@@ -57,19 +57,15 @@ function MeetingToolbar(): ReactNode {
   async function newPlenary() {
     const meeting = await createPlenaryMeeting();
     if (meeting) {
-      navigate(`/meeting/${meeting.id}`)
+      navigate(`/data/meeting/${meeting.id}`)
     }
   }
   async function newLeadership() {
     const meeting = await createLeadershipMeeting();
     if (meeting) {
-      navigate(`/meeting/${meeting.id}`)
+      navigate(`/data/meeting/${meeting.id}`)
     }
   }
-
-
-
-
 
   function handleSelectTeam(selection: string | null | undefined): any {
     if (selection) {
@@ -78,7 +74,7 @@ function MeetingToolbar(): ReactNode {
         createTeamMeeting(team)
           .then(meeting => {
             if (meeting) {
-              navigate(`/meeting/${meeting.id}`)
+              navigate(`/data/meeting/${meeting.id}`)
             }
           })
           .finally(() => setOpenTeamDialog(false));
@@ -102,7 +98,7 @@ function MeetingToolbar(): ReactNode {
     if (!meeting) {
       throw new Error(`Cound not create the meeting`);
     }
-    navigate(`/meeting/${meeting.id}`)
+    navigate(`/data/meeting/${meeting.id}`)
   }
 
   return (
@@ -141,7 +137,7 @@ const MeetingsPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/meeting/${event.id}`)
+    navigate(`/data/meeting/${event.id}`)
   }
 
   return (
