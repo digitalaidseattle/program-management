@@ -5,25 +5,22 @@
  *
  */
 
-import { Button, SxProps, Typography } from "@mui/material";
-import { Meeting, MeetingAttendee, meetingAttendeeService } from "../services/dasMeetingService";
-import { useAuthService } from "@digitalaidseattle/core";
-import { useEffect, useState } from "react";
 import { CheckOutlined } from "@ant-design/icons";
+import { Button, SxProps, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useVolunteer } from "../hooks/useVolunteer";
+import { Meeting, MeetingAttendee, meetingAttendeeService } from "../services/dasMeetingService";
 
 function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProps, onChange: (ma: MeetingAttendee) => void }) {
-    const auth = useAuthService();
+    const { volunteer } = useVolunteer();
     const [meetingAttendee, setMeetingAttendee] = useState<MeetingAttendee>();
     const [status, setStatus] = useState<string>('unknown');
 
     useEffect(() => {
-        auth.getUser()
-            .then(user => {
-                if (user && meeting.meeting_attendee) {
-                    setMeetingAttendee(meeting.meeting_attendee.find(ma => ma.email.toLowerCase() === user.email.toLowerCase()))
-                }
-            });
-    }, [auth, meeting]);
+        if (volunteer && meeting.meeting_attendee) {
+            setMeetingAttendee(meeting.meeting_attendee.find(ma => ma.email.toLowerCase() === volunteer.das_email.toLowerCase()))
+        }
+    }, [volunteer, meeting]);
 
     useEffect(() => {
         if (meetingAttendee) {

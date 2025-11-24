@@ -8,12 +8,8 @@
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Profile } from "./dasProfileService";
 
-type Volunteer = {
-    id: string,
-    profile_id: string,
-    airtable_id: string,
-    affliation: string,
-    status: "Cadre" |
+type VolunteerStatusType =
+    "Cadre" |
     "new prospect" |
     "past" |
     "Cadre" |
@@ -24,8 +20,16 @@ type Volunteer = {
     "Onboarding" |
     "Board only" |
     "Contributor" |
-    "Offboarding Contributor",
-    join_date: string,
+    "Offboarding Contributor";
+
+
+type Volunteer = {
+    id: string,
+    profile_id: string,
+    airtable_id: string,
+    affliation: string,
+    status: VolunteerStatusType,
+    join_date: Date,
     position: string,
     disciplines: string[],
     tool_ids: string[],

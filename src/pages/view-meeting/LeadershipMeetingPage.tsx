@@ -7,9 +7,7 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
 
-import { RefreshContext } from "@digitalaidseattle/core";
 import ImHereButton from "../../components/ImHereButton";
 import { Meeting, MeetingAttendee, meetingService } from "../../services/dasMeetingService";
 import { Team, teamService } from "../../services/dasTeamService";
@@ -19,18 +17,22 @@ import { MeetingToolbar } from "./MeetingToolbar";
 import { NotesCard } from "./NotesCard";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { TopicsCard } from "./TopicsCard";
-import { CARD_HEADER_SX } from "./utils";
+import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
+import { RefreshContext } from "@digitalaidseattle/core";
 
-const LeadershipMeetingPage = () => {
+function LeadershipMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
     const [meeting, setMeeting] = useState<Meeting>();
-    const { id } = useParams<string>();
-    const { refresh } = useContext(RefreshContext);
     const [selectedAttendee, setSelectedAttendee] = useState<MeetingAttendee>();
     const [team, setTeam] = useState<Team>();
+    const { refresh } = useContext(RefreshContext)
+
+    useEffect(() => {
+        setMeeting(initial!)
+    }, [initial]);
 
     useEffect(() => {
         refreshMeeting();
-    }, [id, refresh]);
+    }, [refresh]);
 
     useEffect(() => {
         // handle refresh when an attendee is selected
@@ -54,10 +56,11 @@ const LeadershipMeetingPage = () => {
     }, [selectedAttendee]);
 
     function refreshMeeting() {
-        meetingService.getCurrent('leadership')
-            .then(meeting => setMeeting(meeting));
+        if (meeting) {
+            meetingService.getById(meeting.id)
+                .then(mt => setMeeting(mt!));
+        }
     }
-
 
     return (meeting &&
         <SelectedAttendeeContext.Provider value={{ selectedAttendee, setSelectedAttendee }}>
@@ -96,4 +99,16 @@ const LeadershipMeetingPage = () => {
     );
 };
 
-export default LeadershipMeetingPage;
+const LeadershipMeetingPage = () => {
+    const [meeting, setMeeting] = useState<Meeting>();
+
+    useEffect(() => {
+        meetingService.getCurrent('leadership')
+            .then(meet => setMeeting(meet));
+    }, []);
+
+    return <LeadershipMeetingDetails meeting={meeting} />
+
+};
+
+export { LeadershipMeetingDetails, LeadershipMeetingPage };

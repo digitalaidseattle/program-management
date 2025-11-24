@@ -17,16 +17,20 @@ import { AttendeesCard } from "./AttendeesCard";
 import { NotesCard } from "./NotesCard";
 import { TopicsCard } from "./TopicsCard";
 import { NextMeetingCard } from "./NextMeetingCard";
-import { CARD_HEADER_SX } from "./utils";
+import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
 
-const AdhoceetingPage = () => {
+function AdhocMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
     const [meeting, setMeeting] = useState<Meeting>();
     const { id } = useParams<string>();
     const { refresh } = useContext(RefreshContext);
 
     useEffect(() => {
+        setMeeting(initial!)
+    }, [initial]);
+
+    useEffect(() => {
         refreshMeeting();
-    }, [id, refresh]);
+    }, [refresh]);
 
     function refreshMeeting() {
         if (id) {
@@ -67,4 +71,16 @@ const AdhoceetingPage = () => {
     );
 };
 
-export default AdhoceetingPage;
+const AdhocMeetingPage = () => {
+    const [meeting, setMeeting] = useState<Meeting>();
+
+    useEffect(() => {
+        meetingService.getCurrent('plenary')
+            .then(plenary => setMeeting(plenary));
+    }, []);
+
+    return <AdhocMeetingDetails meeting={meeting} />
+
+};
+
+export { AdhocMeetingDetails, AdhocMeetingPage };
