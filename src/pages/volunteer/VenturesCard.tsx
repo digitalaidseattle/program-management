@@ -25,6 +25,8 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   }, [entity]);
 
   useEffect(() => {
+    console.log(current)
+
     setCards(createCards(current))
   }, [current]);
 
@@ -36,6 +38,7 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   function createCards(items: Staffing[]) {
     return items
       .map(staffing => {
+        console.log('staffing', staffing)
         return <ListCard
           key={staffing.venture_id}
           title={staffing.venture!.venture_code}
