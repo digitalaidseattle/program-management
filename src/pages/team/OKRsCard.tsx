@@ -1,20 +1,25 @@
 
 // material-ui
+import { useEffect, useState } from 'react';
 import {
-    Button,
     Card,
     CardContent,
-    CardHeader
+    CardHeader,
+    IconButton
 } from '@mui/material';
+import { EditOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import { EntityProps } from '../../components/utils';
 import { OKR, Team } from '../../services/dasTeamService';
-import { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
 import OKRsDialog from './OKRsDialog';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
-const OKRsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
+type OKRCardProps = EntityProps<Team> & {
+    editable?: boolean
+}
+
+const OKRsCard: React.FC<OKRCardProps> = ({ entity, onChange, editable = false }) => {
     const [okrs, setOkrs] = useState<OKR[]>([]);
     const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -29,11 +34,10 @@ const OKRsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
     return (entity &&
         <Card>
             <CardHeader
-                titleTypographyProps={{ fontSize: 24 }}
                 title='OKRs'
-                subheader='Current OKRs, click Edit to see all'
-                action={
-                    <Button onClick={() => setShowDialog(true)}>Edit</Button>
+                subheader={`Current OKRs${editable ? ', edit to see all' : ''}`}
+                action={editable &&
+                    <IconButton size={"small"} onClick={() => setShowDialog(true)}><EditOutlined /></IconButton>
                 }>
             </CardHeader>
             <CardContent>
