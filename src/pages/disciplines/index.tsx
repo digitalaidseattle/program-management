@@ -55,7 +55,7 @@ const DisciplinesPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/discipline/${event.id}`)
+    navigate(`/data/discipline/${event.id}`)
   }
 
   function refreshEntity(entity: Discipline) {

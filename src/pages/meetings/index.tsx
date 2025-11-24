@@ -40,18 +40,60 @@ const columns: GridColDef<Meeting[][number]>[] = [
 
 function MeetingToolbar(): ReactNode {
   const navigate = useNavigate();
-  const notification = useNotifications();
+  const authService = useAuthService()
 
-  const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
+  useEffect(() => {
+    teamService.getAll()
+      .then(ts => setTeams(ts.sort((a, b) => a.name.localeCompare(b.name))));
+  }, []);
 
-  function handleClose(evt: any) {
-    if (evt.meeting) {
-      notification.success('Meeting added.');
-      navigate(`/meeting/${evt.meeting.id}`);
+  async function newPlenary() {
+    const meeting = await createPlenaryMeeting();
+    if (meeting) {
+      navigate(`/data/meeting/${meeting.id}`)
+    }
+  }
+  async function newLeadership() {
+    const meeting = await createLeadershipMeeting();
+    if (meeting) {
+      navigate(`/data/meeting/${meeting.id}`)
+    }
+  }
+
+  function handleSelectTeam(selection: string | null | undefined): any {
+    if (selection) {
+      const team = teams.find(t => t.id === selection)
+      if (team) {
+        createTeamMeeting(team)
+          .then(meeting => {
+            if (meeting) {
+              navigate(`/data/meeting/${meeting.id}`)
+            }
+          })
+          .finally(() => setOpenTeamDialog(false));
+      }
     }
     setShowAddMeetingDialog(false);
   }
 
+  async function newAdhoc() {
+    const user = await authService.getUser();
+
+    if (!user) {
+      throw new Error(`User not logged in.`);
+    }
+
+    const volunteer = await volunteerService.findByDasEmail(user.email)
+    if (!volunteer) {
+      throw new Error(`Volunteer not found: ${user.email}`);
+    }
+
+    const meeting = await createAdhocMeeting(volunteer)
+    if (!meeting) {
+      throw new Error(`Cound not create the meeting`);
+    }
+    navigate(`/data/meeting/${meeting.id}`)
+  }
 
   return (
     <Stack direction='row' alignItems={'center'}>
@@ -79,7 +121,7 @@ const MeetingsPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/meeting/${event.id}`)
+    navigate(`/data/meeting/${event.id}`)
   }
 
   return (

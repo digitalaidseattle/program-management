@@ -1,3 +1,5 @@
+import { Meeting } from "../../services/dasMeetingService";
+
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
 
@@ -8,4 +10,8 @@ export function shuffle<T>(array: T[]): T[] {
         [result[i], result[j]] = [result[j], result[i]]; // swap
     }
     return result;
+}
+
+export interface MeetingDetailsProps {
+    meeting?: Meeting;
 }

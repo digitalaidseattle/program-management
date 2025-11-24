@@ -54,7 +54,7 @@ const ToolsPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/tool/${event.id}`)
+    navigate(`/data/tool/${event.id}`)
   }
 
   return (

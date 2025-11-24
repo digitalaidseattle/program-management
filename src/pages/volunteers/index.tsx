@@ -7,11 +7,9 @@ import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box,
-  Button,
-  ButtonGroup,
   IconButton,
   Stack,
-  Toolbar,
+  Toolbar
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
@@ -91,12 +89,6 @@ const VolunteersPage = () => {
         <Toolbar>
           <IconButton color='primary' onClick={() => setShowDialog(true)}><PlusCircleOutlined /></IconButton>
         </Toolbar>
-        <ButtonGroup size="small" sx={{ height: 30 }} aria-label="outlined primary button group">
-          <Button>Active</Button>
-          <Button>Cadre</Button>
-          <Button>Contributor</Button>
-          <Button>All</Button>
-        </ButtonGroup>
       </Stack>
     );
   }
@@ -109,7 +101,7 @@ const VolunteersPage = () => {
   const navigate = useNavigate();
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/volunteer/${event.id}`)
+    navigate(`/data/volunteer/${event.id}`)
   }
 
   function refreshEntity(entity: Volunteer) {

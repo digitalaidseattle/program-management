@@ -11,6 +11,7 @@ import { Identifier } from "@digitalaidseattle/core";
 import { v4 as uuid } from 'uuid';
 import { Volunteer } from "./dasVolunteerService";
 import { Team } from "./dasTeamService";
+import dayjs from "dayjs";
 
 type MeetingAttendee = {
     id: string;
@@ -79,6 +80,17 @@ class MeetingService extends SupabaseEntityService<Meeting> {
 
     async getById(entityId: Identifier, select?: string): Promise<Meeting | null> {
         return super.getById(entityId, select ?? MEETING_SELECT)
+    }
+
+    async findByMonth(month: Date): Promise<Meeting[]> {
+        const start_date = dayjs(month).startOf('month');
+        const end_date = start_date.add(1, 'month');
+        return await supabaseClient
+            .from(this.tableName)
+            .select(MEETING_SELECT)
+            .gte('start_date', start_date.toISOString())
+            .lt('start_date', end_date.toISOString())
+            .then((resp: any) => resp.data);
     }
 
 }
