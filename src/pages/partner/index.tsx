@@ -18,18 +18,8 @@ import { useParams } from 'react-router';
 import { useStorageService } from '@digitalaidseattle/core';
 import { partnerService, Partner, Contact } from '../../services/dasPartnerService';
 import { EntityProps } from '../../components/utils';
-
-// Row layout
-const FieldRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <Stack direction="row" gap={2} alignItems="flex-start">
-    <Box sx={{ width: 180 }}>
-      <Typography variant="body2" color="text.primary">
-        {label}
-      </Typography>
-    </Box>
-    <Box sx={{ flex: 1 }}>{children}</Box>
-  </Stack>
-);
+import { FieldRow } from '../../components/FieldRow';
+import { ExternalLink } from '../../components/ExternalLink';
 
 // DAS relationship with partner color
 const statusColor = (status?: string) => {
@@ -40,18 +30,6 @@ const statusColor = (status?: string) => {
   if (s.includes('hot') || s.includes('active')) return 'success' as const;
   return 'default' as const;
 };
-
-// External links
-const External = ({ href, children }: { href?: string; children: React.ReactNode }) =>
-  href ? (
-    <Link href={href} target="_blank" rel="noreferrer" underline="hover">
-      <Stack direction="row" gap={0.5} alignItems="center">
-        <span>{children}</span>
-      </Stack>
-    </Link>
-  ) : (
-    <Typography color="text.disabled">—</Typography>
-  );
 
 const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => {
   const storage = useStorageService()!;
@@ -119,7 +97,7 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
                   </FieldRow>
 
                   <FieldRow label="Website">
-                    <External href={partner.website}>{partner.website}</External>
+                    <ExternalLink href={partner.website}>{partner.website}</ExternalLink>
                   </FieldRow>
 
                   <FieldRow label="Status">
@@ -217,7 +195,7 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
                               <Stack direction="row" gap={2} mt={0.5}>
                                 <Typography variant="body2">
                                   {c.email ? (
-                                    <External href={`mailto:${c.email}`}>{c.email}</External>
+                                    <ExternalLink href={`mailto:${c.email}`}>{c.email}</ExternalLink>
                                   ) : (
                                     <Typography color="text.disabled">—</Typography>
                                   )}
@@ -236,9 +214,9 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
 
                   {/* Org general contact */}
                   <FieldRow label="General email">
-                    <External href={partner.ally_utility ? `mailto:${partner.ally_utility}` : undefined}>
+                    <ExternalLink href={partner.ally_utility ? `mailto:${partner.ally_utility}` : undefined}>
                       {partner.ally_utility || '—'}
-                    </External>
+                    </ExternalLink>
                   </FieldRow>
 
                   <FieldRow label="General phone">
@@ -255,7 +233,7 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
                 <CardContent>
                   <FieldRow label="Gdrive link URL">
                     <Stack gap={0.5}>
-                      <External href={partner.gdrive_link}>Open folder</External>
+                      <ExternalLink href={partner.gdrive_link}>Open folder</ExternalLink>
                     </Stack>
                   </FieldRow>
 
@@ -263,7 +241,7 @@ const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner }) => 
 
                   <FieldRow label="Overview link">
                     <Stack gap={0.5}>
-                      <External href={partner.overview_link}>Open overview</External>
+                      <ExternalLink href={partner.overview_link}>Open overview</ExternalLink>
                     </Stack>
                   </FieldRow>
                 </CardContent>
