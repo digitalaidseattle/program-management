@@ -32,6 +32,7 @@ import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
 import { RolePage } from './role/index.tsx';
 import ReferenceTeamsPage from './reference/teams/index.tsx';
+import RolesPage from './roles/index.tsx';
 
 const routes = [
   {
