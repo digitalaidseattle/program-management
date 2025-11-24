@@ -22,14 +22,15 @@ import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
 import DashboardPage from './dashboard.tsx';
 import Markdown from 'react-markdown';
-import PlenaryPage from './view-meeting/PlenaryPage.tsx';
 import MeetingsPage from './meetings/index.tsx';
-import TeamMeetingPage from './view-meeting/TeamMeetingPage.tsx';
-import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
-import LeadershipMeetingPage from './view-meeting/LeadershipMeetingPage.tsx';
+import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
+import { AdhocMeetingPage } from './view-meeting/AdhocMeetingPage.tsx';
+import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
-import RolesPage from './roles/index.tsx';
+import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
+import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
 import { RolePage } from './role/index.tsx';
+import RolesPage from './roles/index.tsx';
 
 const routes = [
   {
@@ -82,6 +83,10 @@ const routes = [
         element: <Markdown># The Reporting page is under construction.</Markdown>,
       },
       {
+        path: "all-meetings",
+        element: <AllMeetingsPage />,
+      },
+      {
         path: "plenary",
         element: <PlenaryPage />,
       },
@@ -95,11 +100,11 @@ const routes = [
       },
       {
         path: "adhoc-meeting/:id",
-        element: <AdhoceetingPage />,
+        element: <AdhocMeetingPage />,
       },
       {
-        path: "team-meeting",
-        element: <TeamMeetingPage />,
+        path: "all-meetings",
+        element: <AllMeetingsPage />,
       },
       {
         path: "role/:id",
@@ -109,6 +114,7 @@ const routes = [
         path: "roles",
         element: <RolesPage />,
       },
+   
     ]
   },
   {
