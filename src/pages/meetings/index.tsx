@@ -1,7 +1,6 @@
 
 // material-ui
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { useNotifications } from '@digitalaidseattle/core';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { IconButton, Stack, Toolbar } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
@@ -40,59 +39,14 @@ const columns: GridColDef<Meeting[][number]>[] = [
 
 function MeetingToolbar(): ReactNode {
   const navigate = useNavigate();
-  const authService = useAuthService()
 
-  useEffect(() => {
-    teamService.getAll()
-      .then(ts => setTeams(ts.sort((a, b) => a.name.localeCompare(b.name))));
-  }, []);
+  const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
 
-  async function newPlenary() {
-    const meeting = await createPlenaryMeeting();
-    if (meeting) {
-      navigate(`/data/meeting/${meeting.id}`)
-    }
-  }
-  async function newLeadership() {
-    const meeting = await createLeadershipMeeting();
-    if (meeting) {
-      navigate(`/data/meeting/${meeting.id}`)
-    }
-  }
-
-  function handleSelectTeam(selection: string | null | undefined): any {
-    if (selection) {
-      const team = teams.find(t => t.id === selection)
-      if (team) {
-        createTeamMeeting(team)
-          .then(meeting => {
-            if (meeting) {
-              navigate(`/data/meeting/${meeting.id}`)
-            }
-          })
-          .finally(() => setOpenTeamDialog(false));
-      }
+  function handleClose(evt: any) {
+    if (evt.meeting) {
+      navigate(`data/meeting/${evt.meeting.id}`);
     }
     setShowAddMeetingDialog(false);
-  }
-
-  async function newAdhoc() {
-    const user = await authService.getUser();
-
-    if (!user) {
-      throw new Error(`User not logged in.`);
-    }
-
-    const volunteer = await volunteerService.findByDasEmail(user.email)
-    if (!volunteer) {
-      throw new Error(`Volunteer not found: ${user.email}`);
-    }
-
-    const meeting = await createAdhocMeeting(volunteer)
-    if (!meeting) {
-      throw new Error(`Cound not create the meeting`);
-    }
-    navigate(`/data/meeting/${meeting.id}`)
   }
 
   return (
