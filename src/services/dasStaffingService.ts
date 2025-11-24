@@ -30,7 +30,7 @@ type Staffing = {
     volunteer?: Volunteer;
 }
 
-const DEFAULT_SELECT = "*, volunteer(*, profile(*)), role(*), venture(*), team(*)"
+const DEFAULT_SELECT = "*, volunteer(*, profile(*)), role(*), venture(*, partner(*)), team(*)"
 class StaffingService extends SupabaseEntityService<Staffing> {
     STATUSES = [
         "Proposed",

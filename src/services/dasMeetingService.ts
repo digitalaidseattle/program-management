@@ -36,10 +36,11 @@ type MeetingTopic = {
     discussed: boolean;
 }
 
+type MeetingType = "adhoc" | "team" | "plenary" | "leadership";
 type Meeting = {
     id: string;
     name: string;
-    type: 'plenary' | 'leadership' | 'team' | 'adhoc';
+    type: MeetingType;
     start_date: Date;
     end_date: Date;
     meeting_attendee?: MeetingAttendee[];
@@ -153,5 +154,5 @@ const meetingAttendeeService = new MeetingAttendeeService();
 const meetingTopicService = new MeetingTopicService();
 
 export { meetingService, meetingAttendeeService, meetingTopicService };
-export type { Meeting, MeetingAttendee, MeetingTopic };
+export type { Meeting, MeetingType, MeetingAttendee, MeetingTopic };
 
