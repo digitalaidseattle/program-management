@@ -3,6 +3,7 @@
 import {
     CalendarOutlined,
     CompassOutlined,
+    CrownOutlined,
     HeartOutlined,
     HomeOutlined,
     IdcardOutlined,
@@ -44,7 +45,13 @@ export const TemplateConfig = () => {
         title: 'Meetings',
         type: 'group',
         children: [
-
+            {
+                id: 'team',
+                title: 'All Meetings',
+                type: 'item',
+                url: '/all-meetings',
+                icon: <CompassOutlined />
+            },
             {
                 id: 'plenary',
                 title: 'Plenary',
@@ -57,14 +64,7 @@ export const TemplateConfig = () => {
                 title: 'Leadership',
                 type: 'item',
                 url: '/leadership',
-                icon: <CompassOutlined />
-            },
-            {
-                id: 'team',
-                title: 'Team',
-                type: 'item',
-                url: '/team-meeting',
-                icon: <CompassOutlined />
+                icon: <CrownOutlined />
             }]
     }
 
@@ -99,13 +99,13 @@ export const TemplateConfig = () => {
                 id: 'people',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/volunteers',
+                url: '/data/volunteers',
                 icon: <UserOutlined />
             }, {
                 id: 'teams',
                 title: 'Teams',
                 type: 'item',
-                url: '/teams',
+                url: '/data/teams',
                 icon: <TeamOutlined />
             },
             {
@@ -126,7 +126,7 @@ export const TemplateConfig = () => {
                 id: 'tools',
                 title: 'Tools',
                 type: 'item',
-                url: '/tools',
+                url: '/data/tools',
                 icon: <ToolOutlined />
             },
             {
@@ -147,7 +147,7 @@ export const TemplateConfig = () => {
                 id: 'meetings',
                 title: 'Meetings',
                 type: 'item',
-                url: '/meetings',
+                url: '/data/meetings',
                 icon: <CalendarOutlined />
             }
         ]

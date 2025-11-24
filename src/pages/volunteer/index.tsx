@@ -124,7 +124,7 @@ const VolunteerPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/volunteers">
+        <Link color="inherit" href="/data/volunteers">
           Volunteers
         </Link>
         <Typography>{entity.profile!.name}</Typography>

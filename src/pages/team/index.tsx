@@ -101,7 +101,7 @@ const TeamPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/teams">
+        <Link color="inherit" href="/data/teams">
           Teams
         </Link>
         <Typography>{entity.name}</Typography>

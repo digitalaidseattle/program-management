@@ -68,7 +68,7 @@ const TeamsPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/team/${event.id}`)
+    navigate(`/data/team/${event.id}`)
   }
 
   return (

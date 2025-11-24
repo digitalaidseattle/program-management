@@ -79,7 +79,7 @@ const DisciplinePage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/disciplines">
+        <Link color="inherit" href="/data/disciplines">
           Disciplines
         </Link>
         <Typography>{entity.name}</Typography>
