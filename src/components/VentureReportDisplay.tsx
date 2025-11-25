@@ -152,7 +152,7 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
     if (!report) return null
     
     const knownFieldNames = REPORT_FIELDS.map(field => field.name)
-    const metadata = new Set(['id', 'venture_id', 'reported_by', 'report_period', 'health'])
+    const metadata = new Set(['id', 'venture_id', 'reported_by', 'report_period', 'reporting_date', 'health'])
     const reportRecord = report as Record<string, any>
 
     const knownEntries = REPORT_FIELDS
@@ -176,8 +176,11 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
             </Typography>
             {renderHealthChip(report.health)}
           </Stack>
-          <Typography variant="body2" color="text.secondary" mb={3}>
+          <Typography variant="body2" color="text.secondary">
             Reported by: {report.reported_by}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            Reported on: {report.reporting_date ? new Date(report.reporting_date).toLocaleDateString() : 'Unknown'}
           </Typography>
 
           {contentEntries.map(([key, value]) => renderFieldSection(key, value))}

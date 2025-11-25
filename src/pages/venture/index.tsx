@@ -53,7 +53,7 @@ const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
 
   function handleStaffingChange(evt: any) {
     onChange(evt)
-  };
+  }
 
   function handleReportChange(evt: any) {
     onChange(evt);

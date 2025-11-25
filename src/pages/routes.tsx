@@ -27,6 +27,7 @@ import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { AdhocMeetingPage } from './view-meeting/AdhocMeetingPage.tsx';
 import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
+import ReportingPage from './reporting';
 import { ProfilePage } from './profile/index.tsx';
 import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
@@ -85,7 +86,7 @@ const routes = [
       },
       {
         path: "reporting",
-        element: <Markdown># The Reporting page is under construction.</Markdown>,
+        element: <ReportingPage />,
       },
       {
         path: "all-meetings",
