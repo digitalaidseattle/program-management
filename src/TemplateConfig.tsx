@@ -100,7 +100,7 @@ export const TemplateConfig = () => {
                 id: 'ref-volunteers',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/data/volunteers',
+                url: '/volunteers',
                 icon: <UserOutlined />
             }, {
                 id: 'ref-teams',
@@ -108,6 +108,12 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/teams',
                 icon: <TeamOutlined />
+            }, {
+                id: 'ref-tools',
+                title: 'Tools',
+                type: 'item',
+                url: '/tools',
+                icon: <ToolOutlined />
             }
         ]
     }
@@ -205,6 +211,12 @@ export const TemplateConfig = () => {
         menuItems: [home, meetings, ventures, recruiting, reference, data],
         toolbarItems: [],
         profileItems: [
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/profile`}>
+                Profile
+            </Link>,
             <Link
                 style={{ 'textDecoration': 'none' }}
                 color="secondary"

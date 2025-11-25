@@ -31,8 +31,10 @@ import { ProfilePage } from './profile/index.tsx';
 import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
 import { RolePage } from './role/index.tsx';
-import ReferenceTeamsPage from './reference/teams/index.tsx';
 import RolesPage from './roles/index.tsx';
+import ReferenceToolsPage from './reference/tools.tsx';
+import ReferenceTeamsPage from './reference/teams..tsx';
+import ReferenceVolunteersPage from './reference/volunteers.tsx';
 
 const routes = [
   {
@@ -124,6 +126,14 @@ const routes = [
         path: "teams",
         element: <ReferenceTeamsPage />,
       },
+      {
+        path: "tools",
+        element: <ReferenceToolsPage />,
+      },
+      {
+        path: "volunteers",
+        element: <ReferenceVolunteersPage />,
+      },
     ]
   },
   {
@@ -171,11 +181,6 @@ const routes = [
         element: <DisciplinePage />,
       }
     ]
-  },
-  {
-    path: "/data",
-    element: <MainLayout sx={{ p: 1 }} />,
-    children: []
   },
   {
     path: "/",

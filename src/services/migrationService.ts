@@ -481,20 +481,21 @@ class MigrationService {
             .getAll()
             .then(records => {
                 records
-                    .forEach(record => {
+                    .forEach(async record => {
                         const tool = tools.find(p => p.airtable_id === record.id);
-                        const url = record['logo'] ? record['logo'][0].url : undefined;
-                        if (tool && url) {
+                        if (tool) {
+                            const location = `logos/${tool.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['logo'] ? record['logo'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`logos/${tool.id}`, blob)
-                                            .then((data: any) => console.log(data))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await toolService.update(tool.id, { logo: location });
                                     })
                                 )
                         } else {
-                            console.log(record)
-                            console.warn(`no pic for aritable record: ${record.id}`)
+                            console.error(`no tool for aritable record: ${record.id}`, record)
                         }
                     })
             })
