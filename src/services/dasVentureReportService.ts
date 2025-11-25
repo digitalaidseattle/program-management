@@ -44,7 +44,7 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
     async findRecentReports(limit = 100): Promise<VentureReportWithVenture[]> {
         const { data, error } = await supabaseClient
             .from(this.tableName)
-            .select("*, venture:venture_id(id, venture_code, title)")
+            .select("*, venture:venture_id(*)")
             .order("report_period", { ascending: false })
             .limit(limit);
 
