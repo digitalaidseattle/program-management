@@ -6,6 +6,7 @@
  */
 
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { storageService } from "../App";
 
 
 type Profile = {
@@ -20,6 +21,7 @@ type Profile = {
 }
 const DEFAULT_SELECT = "*";
 class ProfileService extends SupabaseEntityService<Profile> {
+
     public constructor() {
         super("profile");
     }
@@ -40,6 +42,10 @@ class ProfileService extends SupabaseEntityService<Profile> {
             .eq('name', name)
             .single()
             .then((resp: any) => resp.data);
+    }
+
+    getPicUrl(profile: Profile): string | undefined {
+        return storageService.getUrl(`profiles/${profile.id}`);
     }
 }
 

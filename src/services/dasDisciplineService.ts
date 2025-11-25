@@ -6,6 +6,7 @@
  */
 
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { storageService } from "../App";
 
 
 type Discipline = {
@@ -16,7 +17,8 @@ type Discipline = {
     details: string,
     senior_ids: string[], // eligible to delete after final migration
     slack: string,
-    status: string
+    status: string,
+    icon?: string // remove optional one day
 }
 
 class DisciplineService extends SupabaseEntityService<Discipline> {
@@ -32,6 +34,16 @@ class DisciplineService extends SupabaseEntityService<Discipline> {
             .eq('airtable_id', airtableId)
             .single()
             .then((resp: any) => resp.data);
+    }
+
+    getIconUrl(entity: Discipline): string | undefined {
+        return storageService.getUrl(`icons/${entity.id}`);
+    }
+
+    getNextLocation(entity: Discipline): string {
+        const current = entity.icon ? entity.icon.split(':') : [];
+        const idx = current.length < 2 ? 1 : Number(current[1]);
+        return `icons/${entity.icon}:${idx}`; // idx helps deal with CDN
     }
 
 }

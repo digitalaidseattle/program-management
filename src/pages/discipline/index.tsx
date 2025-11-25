@@ -1,5 +1,10 @@
 
-// material-ui
+/**
+ *  discipline/index.tsx
+ *
+ *  @copyright 2025 Digital Aid Seattle
+ *
+ */
 import {
   Breadcrumbs,
   Card,
@@ -12,10 +17,11 @@ import {
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useParams } from 'react-router';
+
 import { EditField } from '../../components/EditField';
 import { EntityProps } from '../../components/utils';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
-import { VolunteersCard } from './VolunteersCard';
+import { VolunteersCard } from "./VolunteersCard";
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" };
 
@@ -86,7 +92,6 @@ const DisciplinePage = () => {
       </Breadcrumbs>
       <DisciplineDetails entity={entity} onChange={refresh} />
     </Stack>
-
   )
 }
 

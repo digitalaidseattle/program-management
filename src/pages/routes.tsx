@@ -35,6 +35,7 @@ import RolesPage from './roles/index.tsx';
 import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceTeamsPage from './reference/teams..tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
+import ReferenceDisciplinesPage from './reference/disciplines.tsx';
 
 const routes = [
   {
@@ -134,6 +135,11 @@ const routes = [
         path: "volunteers",
         element: <ReferenceVolunteersPage />,
       },
+      {
+        path: "disciplines",
+        element: <ReferenceDisciplinesPage />,
+      },
+
     ]
   },
   {
