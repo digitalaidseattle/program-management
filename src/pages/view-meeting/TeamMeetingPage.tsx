@@ -33,7 +33,7 @@ import { AttendeesCard } from "./AttendeesCard";
 import { MeetingToolbar } from "./MeetingToolbar";
 import { NotesCard } from "./NotesCard";
 import { TopicsCard } from "./TopicsCard";
-import { CARD_HEADER_SX } from "./utils";
+import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
 
 function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
     const [team, setTeam] = useState<Team>();
@@ -101,6 +101,7 @@ function ForecastsCard({ entity: meeting }: EntityProps<Meeting>) {
                 .sort((a, b) => a.end_date.getTime() - b.end_date.getTime()))
         }
     }, [team]);
+
     return (meeting &&
         <Card >
             <CardHeader
@@ -125,18 +126,16 @@ function ForecastsCard({ entity: meeting }: EntityProps<Meeting>) {
         </Card>)
 }
 
-const TeamMeetingPage = () => {
+function TeamMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
     const [meeting, setMeeting] = useState<Meeting>();
-    const { id } = useParams<string>();
-    const { refresh } = useContext(RefreshContext);
 
     useEffect(() => {
-        refreshMeeting();
-    }, [id, refresh]);
+        setMeeting(initial!)
+    }, [initial]);
 
     function refreshMeeting() {
-        if (id) {
-            meetingService.getById(id)
+        if (meeting) {
+            meetingService.getById(meeting.id)
                 .then(meeting => setMeeting(meeting!));
         }
     }
@@ -179,4 +178,22 @@ const TeamMeetingPage = () => {
     );
 };
 
-export default TeamMeetingPage;
+const TeamMeetingPage = () => {
+    const [meeting, setMeeting] = useState<Meeting>();
+    const { id } = useParams<string>();
+    const { refresh } = useContext(RefreshContext);
+
+    useEffect(() => {
+        refreshMeeting();
+    }, [id, refresh]);
+
+    function refreshMeeting() {
+        if (id) {
+            meetingService.getById(id)
+                .then(meeting => setMeeting(meeting!));
+        }
+    }
+
+    return <TeamMeetingDetails meeting={meeting} />
+}
+export { TeamMeetingDetails, TeamMeetingPage };

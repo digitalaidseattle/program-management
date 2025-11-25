@@ -49,21 +49,19 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                 <CardContent >
                     <Stack gap={2} margin={2}>
                         <Grid container gap={2}>
-                            <Grid container gap={2}>
-                                {items.map((item, idx) =>
-                                (<Paper
-                                    key={idx}
-                                    sx={{
-                                        position: "relative", // make card the positioning parent
-                                        overflow: "visible", // allow the floating icon to overflow the card
-                                        borderRadius: 2,
-                                        p: 0,
-                                    }}
-                                    elevation={3}>
-                                    {item}
-                                </Paper>
-                                ))}
-                            </Grid>
+                            {items.map((item, idx) =>
+                            (<Paper
+                                key={idx}
+                                sx={{
+                                    position: "relative", // make card the positioning parent
+                                    overflow: "visible", // allow the floating icon to overflow the card
+                                    borderRadius: 2,
+                                    p: 0,
+                                }}
+                                elevation={3}>
+                                {item}
+                            </Paper>
+                            ))}
                         </Grid>
                     </Stack>
                 </CardContent>

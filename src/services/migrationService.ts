@@ -11,7 +11,7 @@ import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
 import { partnerService, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
-import { roleService } from './dasRoleService';
+import { Role, roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
 import { Team2Tool, team2ToolService } from './dasTeam2ToolService';
 import { team2VolunteerService } from './dasTeam2VolunteerService';
@@ -57,7 +57,8 @@ class MigrationService {
         'OKRs': this.migrateOkrs,
         'Forecast': this.migrateForecasts,
         'Contacts': this.migrateContacts,
-        'Contact Pics': this.downloadContactPics
+        'Contact Pics': this.downloadContactPics,
+        'Update roles': this.updateRoles,
     }
 
     migrateVentures(): Promise<void> {
@@ -230,7 +231,7 @@ class MigrationService {
                         name: record['Role'],
                         status: record['Status'],
                         urgency: record['Urgency']
-                    })
+                    } as unknown as Role)
                 });
                 roleService.batchInsert(transformed)
             })
@@ -646,6 +647,46 @@ class MigrationService {
                     });
             })
     }
+
+    async updateRoles(): Promise<void> {
+        return new AirtableService(ROLES_TABLE).getAll()
+            .then(records => {
+                records.forEach(async record => {
+                    const supa = await roleService.findByAirtableId(record.id)
+                    if (supa) {
+
+                        const url = record['image'] ? record['image'][0].url : null;
+                        const pic = `icons/${supa.id}:1`;
+                        if (url) {
+                            console.log(record, url, pic)
+                            fetch(url)
+                                .then(resp => resp.blob()
+                                    .then(blob => {
+                                        storageService.removeFile(pic)
+                                            .then(() => {
+                                                storageService.upload(pic, blob)
+                                                    .then((data: any) => console.log(`uploaded ${pic!}`, data))
+                                                    .catch(err => console.error(err))
+                                            })
+                                    }))
+                        }
+                        roleService.update(supa.id!,
+                            {
+                                pic: pic,
+                                headline: record['Headline'], // 'Headline'
+                                location: record['Location'],  // 'Location'
+                                responsibilities: record['Responsibilities'], // 'Responsibilities
+                                qualifications: record['Preferred Qualifications'], /// 'Preferred Qualifications
+                                key_attributes: record['Key attributes for success'], //Key attributes for success
+                                tags: record['Role tags']
+                            }
+                        )
+                    }
+                });
+            })
+    }
+
+
 }
 const migrationService = new MigrationService();
 

@@ -71,7 +71,7 @@ const MeetingPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/meetings">
+        <Link color="inherit" href="/data/meetings">
           Meetings
         </Link>
         <Typography>Meeting Name</Typography>

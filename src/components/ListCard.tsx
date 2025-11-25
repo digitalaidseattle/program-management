@@ -10,7 +10,6 @@ import { useState } from "react";
 
 
 type ListCardProps = {
-    key: string;
     title: string;
     avatarImageSrc?: string;
     cardStyles?: any;
@@ -25,7 +24,6 @@ type ListCardProps = {
 }
 
 export const ListCard = ({
-    key,
     title,
     avatarImageSrc,
     cardStyles,
@@ -48,7 +46,6 @@ export const ListCard = ({
 
     return (
         <Card
-            key={key}
             sx={{
                 boxShadow: 'none',
                 minWidth: { xs: '100%', sm: '17rem' },

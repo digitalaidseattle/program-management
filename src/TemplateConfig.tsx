@@ -3,8 +3,11 @@
 import {
     CalendarOutlined,
     CompassOutlined,
+    CrownOutlined,
     HeartOutlined,
     HomeOutlined,
+    IdcardOutlined,
+    KeyOutlined,
     MehOutlined,
     PaperClipOutlined,
     RocketOutlined,
@@ -42,7 +45,13 @@ export const TemplateConfig = () => {
         title: 'Meetings',
         type: 'group',
         children: [
-
+            {
+                id: 'team',
+                title: 'All Meetings',
+                type: 'item',
+                url: '/all-meetings',
+                icon: <CompassOutlined />
+            },
             {
                 id: 'plenary',
                 title: 'Plenary',
@@ -55,14 +64,7 @@ export const TemplateConfig = () => {
                 title: 'Leadership',
                 type: 'item',
                 url: '/leadership',
-                icon: <CompassOutlined />
-            },
-            {
-                id: 'team',
-                title: 'Team',
-                type: 'item',
-                url: '/team-meeting',
-                icon: <CompassOutlined />
+                icon: <CrownOutlined />
             }]
     }
 
@@ -97,13 +99,13 @@ export const TemplateConfig = () => {
                 id: 'people',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/volunteers',
+                url: '/data/volunteers',
                 icon: <UserOutlined />
             }, {
                 id: 'teams',
                 title: 'Teams',
                 type: 'item',
-                url: '/teams',
+                url: '/data/teams',
                 icon: <TeamOutlined />
             },
             {
@@ -124,7 +126,7 @@ export const TemplateConfig = () => {
                 id: 'tools',
                 title: 'Tools',
                 type: 'item',
-                url: '/tools',
+                url: '/data/tools',
                 icon: <ToolOutlined />
             },
             {
@@ -132,48 +134,61 @@ export const TemplateConfig = () => {
                 title: 'Disciplines',
                 type: 'item',
                 url: '/disciplines',
-                icon: <ToolOutlined />
+                icon: <KeyOutlined />
+            },
+            {
+                id: 'roles',
+                title: 'Roles',
+                type: 'item',
+                url: '/roles',
+                icon: <IdcardOutlined />
             },
             {
                 id: 'meetings',
                 title: 'Meetings',
                 type: 'item',
-                url: '/meetings',
+                url: '/data/meetings',
                 icon: <CalendarOutlined />
             }
         ]
     } as MenuItem;
 
-    const recruiting = {
-        id: 'recruiting-dashboard',
-        title: 'Recruiting',
-        type: 'group',
-        children: [
-            {
-                id: 'applicants',
-                title: 'Applicants',
-                type: 'item',
-                url: '/applicants',
-                icon: <SearchOutlined />
-            },
-            {
-                id: 'proctors',
-                title: 'Proctors',
-                type: 'item',
-                url: '/proctors',
-                icon: <MehOutlined />
-            }
-        ]
-    } as MenuItem;
+const recruiting = {
+    id: 'recruiting-dashboard',
+    title: 'Recruiting',
+    type: 'group',
+    children: [
+        {
+            id: 'applicants',
+            title: 'Applicants',
+            type: 'item',
+            url: '/applicants',
+            icon: <SearchOutlined />
+        },
+        {
+            id: 'proctors',
+            title: 'Proctors',
+            type: 'item',
+            url: '/proctors',
+            icon: <MehOutlined />
+        }
+    ]
+} as MenuItem;
 
 
-    return ({
+  return ({
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
         menuItems: [home, meetings, ventures, recruiting, data],
         toolbarItems: [],
         profileItems: [
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/profile`}>
+                Profile
+            </Link>,
             <Link
                 style={{ 'textDecoration': 'none' }}
                 color="secondary"
