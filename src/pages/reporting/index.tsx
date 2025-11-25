@@ -24,7 +24,10 @@ import { HEALTH_STATUS_CHIPS, HEALTH_STATUS_INDICATOR_COLORS } from '../../compo
 
 const ReportingPage = () => {
   const [reports, setReports] = useState<VentureReportWithVenture[]>([]);
+
+  //TODO: Look into loadingContext
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
 
@@ -137,6 +140,7 @@ const ReportingPage = () => {
               <Typography color="error">{error}</Typography>
             </Box>
           )}
+          {/* #TODO Look into DataGrid instead */}
           {!loading && !error && (
             <Table>
               <TableHead>
