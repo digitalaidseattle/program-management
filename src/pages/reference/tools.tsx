@@ -5,7 +5,6 @@
  *
  */
 
-import { useStorageService } from '@digitalaidseattle/core';
 
 import { ListCard } from '../../components/ListCard';
 
@@ -14,7 +13,6 @@ import { toolService } from '../../services/dasToolsService';
 import { ReferenceToolDetails } from '../tool/ReferenceToolDetails';
 
 const ReferenceToolsPage = () => {
-  const storageService = useStorageService()!;
 
   return (
     <EntityListPage
@@ -24,7 +22,7 @@ const ReferenceToolsPage = () => {
         <ListCard
           key={entity.id}
           title={entity.name}
-          avatarImageSrc={storageService.getUrl(`/logos/${entity.id}`)} />}
+          avatarImageSrc={toolService.getLogoUrl(entity)} />}
       detailRenderer={entity =>
         <ReferenceToolDetails
           entity={entity} />} />
