@@ -1,7 +1,7 @@
 
 // material-ui
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Chip } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -37,6 +37,14 @@ const ToolsPage = () => {
       ),
     },
     { field: 'name', headerName: 'Name', width: 200 },
+    {
+      field: 'status', headerName: 'Status', width: 200,
+      renderCell: (params) => (
+         <Chip label={params.row.status} color={params.row.status === 'active' ? 'success' : 'error'} />
+      ),
+    },
+   
+
     { field: 'description', headerName: 'Description', width: 800 },
 
   ];
