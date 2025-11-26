@@ -12,6 +12,8 @@ import {
   CardActionArea,
   CardContent,
   CardHeader,
+  Chip,
+  Stack,
   Tooltip
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -20,7 +22,7 @@ import { useNavigate } from 'react-router';
 
 import { storageService } from '../../App';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import { Discipline } from '../../services/dasDisciplineService';
+import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
@@ -77,11 +79,25 @@ const ReferenceDisciplineDetails = ({ entity }: { entity: Discipline }) => {
     </Card>
   }
 
+  const statusChip = entity.status === 'Public'
+    ? <Chip label={entity.status} variant="outlined" color="success" />
+    : entity.status === 'Internal'
+      ? <Chip label={entity.status} variant="outlined" color="primary" />
+      : null
+
   return (entity &&
-    <>
-      <Card sx={{ padding: 0 }}>
+    <Stack gap={2}>
+      <Card>
         <CardHeader
+          slotProps={{ title: { fontSize: 16, fontWeight: 600 } }}
           title={entity.name}
+          avatar={<Avatar
+            src={disciplineService.getIconUrl(entity)}
+            alt={entity.name}
+            sx={{ width: 40, height: 40, objectFit: 'contain' }}
+            variant="rounded"
+          />}
+          action={statusChip}
         />
 
         <CardContent>
@@ -89,7 +105,7 @@ const ReferenceDisciplineDetails = ({ entity }: { entity: Discipline }) => {
         </CardContent>
       </Card >
       <ManagedListCard title={'Volunteers'} items={volunteerCards} />
-    </>
+    </Stack>
   )
 }
 

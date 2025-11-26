@@ -187,7 +187,8 @@ class MigrationService {
                         status: r.fields['Status'],
                         details: r.fields['Details'],
                         slack: r.fields['Our Slack channel'],
-                        senior_ids: r.fields["Senior"]
+                        senior_ids: r.fields["Senior"],
+                        icon: ''
                     })
                 });
                 disciplineService.batchInsert(transformed)
@@ -329,7 +330,6 @@ class MigrationService {
     }
 
     async downloadVolunteerPics(): Promise<void> {
-
         const volunteers = await volunteerService.getAll();
         await new AirtableService(VOLUNTEER_TABLE)
             .getAll()
@@ -532,20 +532,23 @@ class MigrationService {
             .getAll()
             .then(records => {
                 records
-                    .forEach(record => {
+                    .forEach(async record => {
                         const discipline = disciplines.find(p => p.airtable_id === record.id);
-                        const url = record['icon'] ? record['icon'][0].url : undefined;
-                        if (discipline && url) {
+                        if (discipline) {
+                            const location = `icons/${discipline.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['icon'] ? record['icon'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`icons/${discipline.id}`, blob)
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await disciplineService.update(discipline.id, { icon: location });
+                                        storageService.upload(location, blob)
                                             .then((data: any) => console.log(data))
                                     })
                                 )
                         } else {
-                            console.log(record)
-                            console.warn(`no icon for aritable record: ${record.id}`)
+                            console.error(`no icon for aritable record: ${record.id}`)
                         }
                     })
             })

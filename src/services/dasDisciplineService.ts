@@ -18,7 +18,7 @@ type Discipline = {
     senior_ids: string[], // eligible to delete after final migration
     slack: string,
     status: string,
-    icon?: string // remove optional one day
+    icon: string // remove optional one day
 }
 
 class DisciplineService extends SupabaseEntityService<Discipline> {
@@ -37,7 +37,7 @@ class DisciplineService extends SupabaseEntityService<Discipline> {
     }
 
     getIconUrl(entity: Discipline): string | undefined {
-        return storageService.getUrl(`icons/${entity.id}`);
+        return storageService.getUrl(entity.icon);
     }
 
     getNextLocation(entity: Discipline): string {
