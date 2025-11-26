@@ -1,7 +1,8 @@
 
 // material-ui
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { Box, MenuItem, Stack, Typography } from '@mui/material';
+import { Box, MenuItem, Typography } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
@@ -12,7 +13,6 @@ import { EntityProps } from '../../components/utils';
 import { Discipline } from '../../services/dasDisciplineService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { useStorageService } from '@digitalaidseattle/core';
 
 export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);

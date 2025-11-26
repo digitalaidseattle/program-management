@@ -16,16 +16,15 @@ import {
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import Markdown from 'react-markdown';
 import { useParams } from 'react-router';
 
+import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import { storageService } from '../../App';
 import { EditField } from '../../components/EditField';
 import { UploadImage } from '../../components/UploadImage';
 import { EntityProps } from '../../components/utils';
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { VolunteersCard } from "./VolunteersCard";
-import { InputForm, InputOption } from '@digitalaidseattle/mui';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" };
 
