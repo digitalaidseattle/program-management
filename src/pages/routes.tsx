@@ -36,6 +36,7 @@ import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceTeamsPage from './reference/teams..tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
 import ReferenceDisciplinesPage from './reference/disciplines.tsx';
+import ReferencePartnersPage from './reference/partners.tsx';
 
 const routes = [
   {
@@ -53,15 +54,6 @@ const routes = [
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
-      },
-
-      {
-        path: "partners",
-        element: <PartnersPage />,
-      },
-      {
-        path: "partner/:id",
-        element: <PartnerPage />,
       },
       {
         path: "ventures",
@@ -139,6 +131,10 @@ const routes = [
         path: "disciplines",
         element: <ReferenceDisciplinesPage />,
       },
+      {
+        path: "partners",
+        element: <ReferencePartnersPage />,
+      },
 
     ]
   },
@@ -185,6 +181,14 @@ const routes = [
       {
         path: "discipline/:id",
         element: <DisciplinePage />,
+      },
+      {
+        path: "partners",
+        element: <PartnersPage />,
+      },
+      {
+        path: "partner/:id",
+        element: <PartnerPage />,
       }
     ]
   },

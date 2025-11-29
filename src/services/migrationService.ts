@@ -455,16 +455,17 @@ class MigrationService {
             .getAll()
             .then(records => {
                 records
-                    .forEach(record => {
+                    .forEach(async record => {
                         const partner = partners.find(p => p.airtable_id === record.id);
-                        const url = record['logo'] ? record['logo'][0].url : undefined;
-                        if (partner && url) {
-                            console.log(partner, url)
+                        if (partner) {
+                            const location = `logos/${partner.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['logo'] ? record['logo'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`logos/${partner.id}`, blob)
-                                            .then((data: any) => console.log(data))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await partnerService.update(partner.id, { logo_url: location });
                                     })
                                 )
                         } else {
@@ -543,8 +544,6 @@ class MigrationService {
                                     .then(async blob => {
                                         await storageService.upload(location, blob);
                                         await disciplineService.update(discipline.id, { icon: location });
-                                        storageService.upload(location, blob)
-                                            .then((data: any) => console.log(data))
                                     })
                                 )
                         } else {
@@ -635,14 +634,15 @@ class MigrationService {
                 records
                     .forEach(async record => {
                         const profile = profiles.find(p => record["Person"] === p.name);
-                        const url = record['Pic'] ? record['Pic'][0].url : undefined;
-                        if (profile && url) {
+                        if (profile) {
+                            const location = `profiles/${profile.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['Pic'] ? record['Pic'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`profiles/${profile.id}`, blob)
-                                            .then((data: any) => console.log(`loaded ${profile.id}`, data))
-                                            .catch(err => console.error(err))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await profileService.update(profile.id, { pic: location });
                                     })
                                 )
                         } else {
