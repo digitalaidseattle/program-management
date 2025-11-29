@@ -14,23 +14,28 @@ export async function addContact(partner: Partner, contact: Contact, picture: Fi
     // insert picture
     // insert partner2profile
     // 
-    const filePath = `/profiles/${contact.id}`;
-    const upload = { ...contact } as any;
-    upload.pic = filePath;
+    const filePath = picture ? profileService.getNextPicUrl(contact) : undefined;
+    const upload = {
+        ...contact,
+        pic: filePath
+    } as any;
+
     delete upload.title;
 
-    console.log(partner, filePath, upload)
-    // const profile = await profileService.insert(upload);
-    // await storageService.upload(filePath, picture);
-    // await profile2PartnerService.insert(
-    //     {
-    //         partner_id: partner.id,
-    //         profile_id: profile.id,
-    //         title: contact.title
-    //     }
-    // );
+    const profile = await profileService.insert(upload);
+    if (picture && filePath) {
+        await storageService.upload(filePath, picture);
+    }
 
-    return profileService.getById(contact.id)
+    await profile2PartnerService.insert(
+        {
+            partner_id: partner.id,
+            profile_id: profile.id,
+            title: contact.title
+        }
+    );
+
+    return profileService.getById(profile.id)
         .then(found => ({
             ...found,
             title: contact.title

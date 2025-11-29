@@ -115,6 +115,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/tools',
                 icon: <ToolOutlined />
+            },
+            {
+                id: 'ref-partners',
+                title: 'Partners',
+                type: 'item',
+                url: '/partners',
+                icon: <HeartOutlined />
             }
         ]
     }

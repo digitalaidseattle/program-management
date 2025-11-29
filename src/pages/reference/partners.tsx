@@ -17,7 +17,11 @@ const ReferencePartnersPage = () => {
   return (
     <EntityListPage
       title={'Partners'}
-      fetchData={() => partnerService.getAll()}
+      fetchData={() =>
+        partnerService
+          .getAll()
+          .then(partners => partners.sort((p1, p2) => p1.name.localeCompare(p2.name)))
+      }
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

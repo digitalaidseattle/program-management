@@ -17,6 +17,7 @@ import { useMemo } from 'react';
 import { ExternalLink } from '../../components/ExternalLink';
 import { FieldRow } from '../../components/FieldRow';
 import { Contact, Partner } from '../../services/dasPartnerService';
+import { profileService } from '../../services/dasProfileService';
 
 // DAS relationship with partner color
 const statusColor = (status?: string) => {
@@ -176,7 +177,7 @@ const ReferencePartnerDetails = ({ entity: partner }: { entity: Partner }) => {
                         return (
                           <Stack key={key} direction="row" gap={2} alignItems="center">
                             <Avatar
-                              src={c.pic}
+                              src={profileService.getPicUrl(c)}
                               sx={{
                                 width: 56,
                                 height: 56,
