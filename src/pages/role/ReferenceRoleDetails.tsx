@@ -7,11 +7,25 @@ import {
   CardHeader,
   Grid
 } from '@mui/material';
+<<<<<<< HEAD
 import Markdown from 'react-markdown';
 import { FieldRow } from '../../components/FieldRow';
 import { Role, roleService } from '../../services/dasRoleService';
 
 const ReferenceRoleDetails = ({ entity }: { entity: Role }) => {
+=======
+import { useEffect, useState } from 'react';
+import { Role, roleService } from '../../services/dasRoleService';
+import { FieldRow } from '../../components/FieldRow';
+import Markdown from 'react-markdown';
+
+const ReferenceRoleDetails = ({ entity }: { entity: Role }) => {
+  const [role, setRole] = useState<Role>();
+
+  useEffect(() => {
+    setRole(entity);
+  }, [entity]);
+>>>>>>> b09b223 (reference views for roles)
 
   return (entity &&
     <Card sx={{ padding: 0 }}>
