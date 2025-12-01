@@ -10,10 +10,18 @@ vi.mock('@digitalaidseattle/supabase', () => ({
   })),
 }));
 
+
 vi.mock('@digitalaidseattle/supabase', () => {
   return {
     SupabaseEntityService: class {
-      constructor(tableName: string) {
+      tableName = '';
+      select = '*';
+      mapper = (json: any) => (json as any);
+
+      constructor(tableName: string, select: string, mapper: any) {
+        this.tableName = tableName;
+        this.select = select ?? '*';
+        this.mapper = mapper ?? ((json: any) => json);
       }
     }
   };
