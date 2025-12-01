@@ -34,7 +34,7 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
         <>
             <Card>
                 <CardHeader
-                    titleTypographyProps={{ fontSize: 24 }}
+                    slotProps={{ title: { fontSize: 16 } }}
                     sx={{
                         ...cardHeaderSx
                     }}

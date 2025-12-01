@@ -6,35 +6,38 @@
  */
 import { Error, Login, MainLayout, MarkdownPage, MinimalLayout } from '@digitalaidseattle/mui';
 
+import Markdown from 'react-markdown';
+import DashboardPage from './dashboard/index.tsx';
 import { DisciplinePage } from './discipline';
 import DisciplinesPage from './disciplines';
+import { MeetingPage } from './meeting';
+import MeetingsPage from './meetings/index.tsx';
 import MigrationPage from './migration';
 import { PartnerPage } from './partner';
 import PartnersPage from './partners';
+import { ProfilePage } from './profile/index.tsx';
+import ReferenceDisciplinesPage from './reference/disciplines.tsx';
+import ReferencePartnersPage from './reference/partners.tsx';
+import ReferenceTeamsPage from './reference/teams..tsx';
+import ReferenceToolsPage from './reference/tools.tsx';
+import ReferenceVolunteersPage from './reference/volunteers.tsx';
+import { RolePage } from './role/index.tsx';
+import RolesPage from './roles/index.tsx';
+import StaffingPage from './staffing/StaffingPage.tsx';
 import { TeamPage } from './team';
 import TeamsPage from './teams';
 import { ToolPage } from './tool';
 import ToolsPage from './tools';
 import { VenturePage } from './venture';
 import VenturesPage from './ventures';
-import { MeetingPage } from './meeting';
+import { AdhocMeetingPage } from './view-meeting/AdhocMeetingPage.tsx';
+import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
+import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx';
+import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
+import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
-import DashboardPage from './dashboard/index.tsx';
-import Markdown from 'react-markdown';
-import MeetingsPage from './meetings/index.tsx';
-import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
-import { AdhocMeetingPage } from './view-meeting/AdhocMeetingPage.tsx';
-import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx';
-import StaffingPage from './staffing/StaffingPage.tsx';
-import { ProfilePage } from './profile/index.tsx';
-import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
-import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
-import { RolePage } from './role/index.tsx';
-import RolesPage from './roles/index.tsx';
-import ReferenceToolsPage from './reference/tools.tsx';
-import ReferenceTeamsPage from './reference/teams..tsx';
-import ReferenceVolunteersPage from './reference/volunteers.tsx';
+import ReportingPage from './reporting/index.tsx';
 
 const routes = [
   {
@@ -52,15 +55,6 @@ const routes = [
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
-      },
-
-      {
-        path: "partners",
-        element: <PartnersPage />,
-      },
-      {
-        path: "partner/:id",
-        element: <PartnerPage />,
       },
       {
         path: "ventures",
@@ -88,7 +82,7 @@ const routes = [
       },
       {
         path: "reporting",
-        element: <Markdown># The Reporting page is under construction.</Markdown>,
+        element: <ReportingPage />,
       },
       {
         path: "all-meetings",
@@ -134,6 +128,15 @@ const routes = [
         path: "volunteers",
         element: <ReferenceVolunteersPage />,
       },
+      {
+        path: "disciplines",
+        element: <ReferenceDisciplinesPage />,
+      },
+      {
+        path: "partners",
+        element: <ReferencePartnersPage />,
+      },
+
     ]
   },
   {
@@ -179,6 +182,14 @@ const routes = [
       {
         path: "discipline/:id",
         element: <DisciplinePage />,
+      },
+      {
+        path: "partners",
+        element: <PartnersPage />,
+      },
+      {
+        path: "partner/:id",
+        element: <PartnerPage />,
       }
     ]
   },

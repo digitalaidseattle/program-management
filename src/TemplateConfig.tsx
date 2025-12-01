@@ -102,7 +102,8 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/volunteers',
                 icon: <UserOutlined />
-            }, {
+            },
+            {
                 id: 'ref-teams',
                 title: 'Teams',
                 type: 'item',
@@ -114,6 +115,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/tools',
                 icon: <ToolOutlined />
+            },
+            {
+                id: 'ref-partners',
+                title: 'Partners',
+                type: 'item',
+                url: '/partners',
+                icon: <HeartOutlined />
             }
         ]
     }
@@ -140,7 +148,7 @@ export const TemplateConfig = () => {
                 id: 'partners',
                 title: 'Partners',
                 type: 'item',
-                url: '/partners',
+                url: '/data/partners',
                 icon: <HeartOutlined />
             },
             {
@@ -161,7 +169,7 @@ export const TemplateConfig = () => {
                 id: 'disciplines',
                 title: 'Disciplines',
                 type: 'item',
-                url: '/disciplines',
+                url: '/data/disciplines',
                 icon: <KeyOutlined />
             },
             {

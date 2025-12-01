@@ -10,7 +10,7 @@ import { useState } from "react";
 
 
 type ListCardProps = {
-    title: string;
+    title: React.ReactNode;
     avatarImageSrc?: string;
     cardStyles?: any;
     cardContent?: React.ReactNode;

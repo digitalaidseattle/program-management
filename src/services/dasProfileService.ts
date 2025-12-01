@@ -4,12 +4,14 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
+import { v4 as uuid } from 'uuid';
 
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { storageService } from "../App";
 
 
 type Profile = {
-    id: string,
+    id: string;
     name: string,
     first_name: string,
     last_name: string,
@@ -20,6 +22,19 @@ type Profile = {
 }
 const DEFAULT_SELECT = "*";
 class ProfileService extends SupabaseEntityService<Profile> {
+    empty(): Profile {
+        return ({
+            id: uuid(),
+            name: '',
+            first_name: '',
+            last_name: '',
+            email: '',
+            phone: '',
+            location: '',
+            pic: ''
+        })
+    }
+
     public constructor() {
         super("profile");
     }
@@ -40,6 +55,16 @@ class ProfileService extends SupabaseEntityService<Profile> {
             .eq('name', name)
             .single()
             .then((resp: any) => resp.data);
+    }
+
+    getPicUrl(profile: Profile): string | undefined {
+        return profile.pic ? storageService.getUrl(profile.pic) : undefined;
+    }
+
+    getNextPicUrl(profile: Profile): string {
+        const current = profile.pic ? profile.pic.split(':') : [];
+        const idx = current.length < 2 ? 1 : Number(current[1]);
+        return `/profiles/${profile.id}:${idx}`; // idx helps deal with CDN
     }
 }
 
