@@ -21,6 +21,7 @@ import ReferencePartnersPage from './reference/partners.tsx';
 import ReferenceTeamsPage from './reference/teams..tsx';
 import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
+import ReportingPage from './reporting/index.tsx';
 import { RolePage } from './role/index.tsx';
 import RolesPage from './roles/index.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
@@ -33,14 +34,10 @@ import VenturesPage from './ventures';
 import { AdhocMeetingPage } from './view-meeting/AdhocMeetingPage.tsx';
 import AllMeetingsPage from './view-meeting/AllMeetings.tsx';
 import { LeadershipMeetingPage } from './view-meeting/LeadershipMeetingPage.tsx';
-import StaffingPage from './staffing/StaffingPage.tsx';
-import ReportingPage from './reporting';
-import { ProfilePage } from './profile/index.tsx';
 import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
-import ReportingPage from './reporting/index.tsx';
 
 const routes = [
   {
