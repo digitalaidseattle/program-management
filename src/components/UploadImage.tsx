@@ -4,30 +4,43 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { useCallback, useState } from "react";
-import { Box, ClickAwayListener, Stack, Tooltip, Typography } from "@mui/material";
-import { useDropzone } from 'react-dropzone'
-import { PictureOutlined } from '@ant-design/icons';
-
+import { Box, ClickAwayListener, Stack, Typography } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
+import { useDropzone } from 'react-dropzone';
+import Logo from '../assets/images/project-image.png';
 
 
 export const UploadImage = ({ url, onChange }: { url: string | undefined, onChange: (file: File[]) => void }) => {
     const [edit, setEdit] = useState<boolean>(false);
     const onDrop = useCallback((acceptedFiles: File[]) => {
-        onChange(acceptedFiles);
+        if (acceptedFiles.length > 0) {
+            const newFile = acceptedFiles[0];
+            setPicUrl(URL.createObjectURL(newFile));
+            onChange(acceptedFiles);
+        }
         setEdit(false);
     }, []);
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
+    const [picUrl, setPicUrl] = useState<string>("");
+
+    useEffect(() => {
+        setPicUrl(url ?? Logo)
+    }, [url]);
+
     return (
-        edit
-            ? <ClickAwayListener onClickAway={() => setEdit(false)}>
+        <ClickAwayListener onClickAway={() => setEdit(false)}>
+            <Box
+                sx={{ alignItems: "center", justifyContent: "center", display: "flex", flexDirection: "column" }}
+                onClick={() => setEdit(!edit)}>
                 <Box
                     sx={{
                         padding: 5,
                         height: "100%",
-                        position: "relative",
+                        backgroundImage: `url(${picUrl})`,
+                        backgroundSize: 'contain', // or 'contain'
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
                         inset: 0, // top:0, right:0, bottom:0, left:0
-                        display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
 
@@ -36,41 +49,15 @@ export const UploadImage = ({ url, onChange }: { url: string | undefined, onChan
                         zIndex: 1300,                                // above most content
                     }}
                     {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <Stack sx={{
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }}>
-                        <PictureOutlined style={{ fontSize: '76px', }} size={200} />
-                        <Typography fontWeight={600}>Drag the picture file here, or click to select the file.</Typography>
-                    </Stack>
+                    <span><input disabled={!edit} {...getInputProps()} /></span>
                 </Box>
-            </ClickAwayListener>
-            : <Tooltip title={edit ? 'Drag the picture file here, or click to select the file' : 'Click to edit.'}>
-                <Box
-                    sx={
-                        {
-                            height: '100%',
-                            backgroundImage: `url(${url})`,
-                            backgroundSize: 'contain', // or 'contain'
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                            inset: 0, // top:0, right:0, bottom:0, left:0
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }
-                    }
-                    onClick={() => setEdit(!edit)}>
-                    {!url &&
-                        <Stack sx={{
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}>
-                            <PictureOutlined style={{ fontSize: '76px', }} size={200} />
-                            <Typography fontWeight={600}>Click to upload image.</Typography>
-                        </Stack>}
-                </Box>
-            </Tooltip>
+                <Stack sx={{
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    <Typography fontWeight={600}>{edit ? "Drag the picture file here, or click to select the file." : 'Click to edit.'}</Typography>
+                </Stack>
+            </Box>
+        </ClickAwayListener>
     );
 }
