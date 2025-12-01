@@ -75,6 +75,15 @@ class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
             .then((resp: any) => resp.data);
     }
 
+    async findVolunteersByToolId(id: string): Promise<Volunteer[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, volunteer(*, profile(*))')
+            .eq('tool_id', id)
+            .then((resp: any) => resp.data.map((d: any) => d.volunteer));
+    }
+
+
 }
 
 

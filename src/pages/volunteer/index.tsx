@@ -141,14 +141,15 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   }
 
   function getPicUrl(volunteer: Volunteer): string | undefined {
-    return volunteer.profile!.pic ? storageService.getUrl(`${volunteer.profile!.pic}`) : undefined
+    console.log('getPicUrl', volunteer)
+    return volunteer.profile!.id ? storageService.getUrl(`profiles/${volunteer.profile!.id}`) : undefined
   }
 
   return (volunteer &&
     <Stack gap={1} >
       <Card >
         <CardContent>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid size={3}>
               <UploadImage url={getPicUrl(volunteer)} onChange={(files) => handlePicChange(files)} />
             </Grid>

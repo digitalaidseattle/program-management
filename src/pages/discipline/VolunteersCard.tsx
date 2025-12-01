@@ -1,7 +1,8 @@
 
 // material-ui
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { MenuItem, Stack } from '@mui/material';
+import { Box, MenuItem, Typography } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
@@ -12,7 +13,6 @@ import { EntityProps } from '../../components/utils';
 import { Discipline } from '../../services/dasDisciplineService';
 import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { useStorageService } from '@digitalaidseattle/core';
 
 export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
@@ -46,23 +46,25 @@ export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onCh
 
     function refresh() {
         volunteer2DisciplineService.findByDisciplineId(entity.id)
-            .then((v2ds) => {
-                setCurrent(v2ds)
-            });
+            .then(v2ds => {
+                setCurrent(v2ds
+                    .filter(v2d => ['Cadre', 'Contributor'].includes(v2d.volunteer!.status))
+                    .sort((v1, v2) => v1.volunteer!.profile!.last_name.localeCompare(v2.volunteer!.profile!.last_name))
+                )
+            })
     }
 
     function createCards(items: Volunteer2Discipline[]) {
         return items
             .map(t2d => {
                 return <ListCard
+                    cardStyles={{ width: 360, height: '100%' }}
                     key={t2d.volunteer_id}
-                    title={t2d.volunteer!.profile!.name}
+                    title={<Box>
+                        <Typography fontWeight={600}>{t2d.volunteer!.profile!.name}</Typography>
+                        <Typography>{t2d.volunteer!.position}</Typography>
+                    </Box>}
                     avatarImageSrc={storageService.getUrl(`profiles/${t2d.volunteer!.profile!.id}`)}
-                    cardContent={
-                        <Stack>
-                            {t2d.volunteer!.position}
-                        </Stack>
-                    }
                     highlightOptions={{
                         title: "Senior",
                         highlight: t2d.senior ?? false,

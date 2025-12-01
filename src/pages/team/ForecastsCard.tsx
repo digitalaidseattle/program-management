@@ -4,14 +4,19 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Button, Card, CardContent, CardHeader } from "@mui/material";
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, IconButton } from "@mui/material";
+import { EditOutlined } from '@ant-design/icons';
+import dayjs from "dayjs";
 import { EntityProps } from "../../components/utils";
 import { Forecast, Team } from "../../services/dasTeamService";
 import ForecastsDialog from "./ForecastsDialog";
 
-const ForecastsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
+type ForecastsCardProps = EntityProps<Team> & {
+    editable?: boolean
+}
+
+const ForecastsCard: React.FC<ForecastsCardProps> = ({ entity, onChange, editable = false }) => {
     const [forecasts, setForecasts] = useState<Forecast[]>([]);
     const [showDialog, setShowDialog] = useState<boolean>(false);
 
@@ -26,11 +31,10 @@ const ForecastsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
     return (
         <Card>
             <CardHeader
-                titleTypographyProps={{ fontSize: 24 }}
                 title='Forecasts'
-                subheader='Current forecasts.  Click Edit to manage forecasts.'
-                action={
-                    <Button onClick={() => setShowDialog(true)}>Edit</Button>
+                subheader={`Current forecasts${editable ? ', edit to see all' : ''}`}
+                action={editable &&
+                    <IconButton size={"small"} onClick={() => setShowDialog(true)}><EditOutlined /></IconButton>
                 }>
             </CardHeader>
             <CardContent>

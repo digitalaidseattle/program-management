@@ -90,6 +90,42 @@ export const TemplateConfig = () => {
         ]
     } as MenuItem;
 
+
+    const reference = {
+        id: 'reference-group',
+        title: 'Reference',
+        type: 'group',
+        children: [
+            {
+                id: 'ref-volunteers',
+                title: 'Volunteers',
+                type: 'item',
+                url: '/volunteers',
+                icon: <UserOutlined />
+            },
+            {
+                id: 'ref-teams',
+                title: 'Teams',
+                type: 'item',
+                url: '/teams',
+                icon: <TeamOutlined />
+            }, {
+                id: 'ref-tools',
+                title: 'Tools',
+                type: 'item',
+                url: '/tools',
+                icon: <ToolOutlined />
+            },
+            {
+                id: 'ref-partners',
+                title: 'Partners',
+                type: 'item',
+                url: '/partners',
+                icon: <HeartOutlined />
+            }
+        ]
+    }
+
     const data = {
         id: 'cadre-dashboard',
         title: 'Data',
@@ -112,7 +148,7 @@ export const TemplateConfig = () => {
                 id: 'partners',
                 title: 'Partners',
                 type: 'item',
-                url: '/partners',
+                url: '/data/partners',
                 icon: <HeartOutlined />
             },
             {
@@ -133,7 +169,7 @@ export const TemplateConfig = () => {
                 id: 'disciplines',
                 title: 'Disciplines',
                 type: 'item',
-                url: '/disciplines',
+                url: '/data/disciplines',
                 icon: <KeyOutlined />
             },
             {
@@ -153,34 +189,34 @@ export const TemplateConfig = () => {
         ]
     } as MenuItem;
 
-const recruiting = {
-    id: 'recruiting-dashboard',
-    title: 'Recruiting',
-    type: 'group',
-    children: [
-        {
-            id: 'applicants',
-            title: 'Applicants',
-            type: 'item',
-            url: '/applicants',
-            icon: <SearchOutlined />
-        },
-        {
-            id: 'proctors',
-            title: 'Proctors',
-            type: 'item',
-            url: '/proctors',
-            icon: <MehOutlined />
-        }
-    ]
-} as MenuItem;
+    const recruiting = {
+        id: 'recruiting-dashboard',
+        title: 'Recruiting',
+        type: 'group',
+        children: [
+            {
+                id: 'applicants',
+                title: 'Applicants',
+                type: 'item',
+                url: '/applicants',
+                icon: <SearchOutlined />
+            },
+            {
+                id: 'proctors',
+                title: 'Proctors',
+                type: 'item',
+                url: '/proctors',
+                icon: <MehOutlined />
+            }
+        ]
+    } as MenuItem;
 
 
-  return ({
+    return ({
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
-        menuItems: [home, meetings, ventures, recruiting, data],
+        menuItems: [home, meetings, ventures, recruiting, reference, data],
         toolbarItems: [],
         profileItems: [
             <Link

@@ -17,16 +17,17 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { ventureReportService, VentureReportWithVenture } from '../../services/dasVentureReportService';
 import { HEALTH_STATUS_CHIPS, HEALTH_STATUS_INDICATOR_COLORS } from '../../components/StatusChip';
+import { LoadingContext } from '@digitalaidseattle/core';
 
 const ReportingPage = () => {
   const [reports, setReports] = useState<VentureReportWithVenture[]>([]);
 
-  //TODO: Look into loadingContext
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useContext(LoadingContext);
 
   const [error, setError] = useState<string | null>(null);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
@@ -64,40 +65,12 @@ const ReportingPage = () => {
     [latestPerVenture, selectedReportId]
   );
 
-  const parsePeriodDate = (period?: string): Date | null => {
-    if (!period) return null;
-    const parsed = new Date(period);
-    if (Number.isNaN(parsed.getTime())) return null;
-    return new Date(Date.UTC(parsed.getUTCFullYear(), parsed.getUTCMonth(), 1));
-  };
-
-  const formatPeriodLabel = (date: Date | null, fallback: string) => {
-    if (!date) return fallback || 'Unknown';
-    const month = date.toLocaleString(undefined, { month: 'long', timeZone: 'UTC' });
-    const year = date.getUTCFullYear();
-    return `${month}, ${year}`;
-  };
-
-  const formatPeriodString = (period?: string) => {
-    const date = parsePeriodDate(period);
-    return formatPeriodLabel(date, period || 'Unknown');
-  };
-
-  const formatReportingDate = (date?: string | null) => {
-    if (!date) return 'Unknown';
-    const parsed = new Date(date);
-    if (Number.isNaN(parsed.getTime())) return date;
-    return parsed.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
-  };
-
   const latestPeriodLabel = useMemo(() => {
     const sortedByPeriod = [...latestPerVenture].sort((a, b) => {
-      const aDate = parsePeriodDate(a.report_period)?.getTime() ?? 0;
-      const bDate = parsePeriodDate(b.report_period)?.getTime() ?? 0;
-      return bDate - aDate;
+      return dayjs(a.reporting_date).isBefore(dayjs(b.reporting_date)) ? 1 : -1;
     });
     const latest = sortedByPeriod[0];
-    return latest ? formatPeriodString(latest.report_period) : 'Latest reports';
+    return latest ? dayjs(latest.reporting_date).format('MM YYYY') : 'Latest reports';
   }, [latestPerVenture]);
 
   const REPORT_FIELDS = [
@@ -167,7 +140,7 @@ const ReportingPage = () => {
                         {report.venture?.title}
                       </Typography>
                     </TableCell>
-                    <TableCell>{formatReportingDate(report.reporting_date)}</TableCell>
+                    <TableCell>{dayjs(report.reporting_date).format('MM/dd/YYYY')}</TableCell>
                     <TableCell>{HEALTH_STATUS_CHIPS[report.health]}</TableCell>
                     <TableCell>
                       <Typography variant="body2" color="text.secondary" noWrap sx={{ maxWidth: 260 }}>
@@ -269,7 +242,7 @@ const ReportingPage = () => {
                     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
                       <Box>
                         <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'none' }}>
-                          {formatPeriodString(selectedReport.report_period)}
+                          {dayjs(selectedReport.reporting_date).format('MM YYYY')}
                         </Typography>
                         <Typography variant="h6">
                           {selectedReport.venture?.title || selectedReport.venture?.venture_code}
@@ -278,7 +251,7 @@ const ReportingPage = () => {
                           Reported by {selectedReport.reported_by || 'Unknown'}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Reporting date: {formatReportingDate(selectedReport.reporting_date)}
+                          Reporting date: {dayjs(selectedReport.reporting_date).format('MM/DD/YYYY')}
                         </Typography>
                       </Box>
                       {HEALTH_STATUS_CHIPS[selectedReport.health]}

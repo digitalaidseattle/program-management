@@ -6,15 +6,19 @@ import { MenuItem, Stack } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
-import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
-import { ListCard } from '../../components/ListCard';
+import { toggleVolunteer2TeamLeaderFlag } from "../../actions/ToggleVolunteer2TeamLeaderFlag";
+import { ListCard } from "../../components/ListCard";
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityProps } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team } from '../../services/dasTeamService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 
-export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
+type VolunteersCardProps = EntityProps<Team> & {
+  editable?: boolean
+}
+
+export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange, editable = false }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
@@ -50,13 +54,24 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
   }
 
   function createCards(items: Team2Volunteer[]) {
+
     return items
       .map((t2v, idx) => {
+        const menuItems = [<MenuItem key={'open'}
+          onClick={() => handleOpen(t2v.volunteer_id)}> Open</MenuItem >];
+        if (editable) {
+          menuItems.push(<MenuItem key={'remove'}
+            onClick={() => {
+              setSelectedItem(t2v.volunteer);
+              setOpenConfirmation(true);
+            }}>Remove...</MenuItem>)
+        }
         return (
           <ListCard
             key={`${idx}`}
             title={t2v.volunteer!.profile!.name}
             avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.profile!.id}`)}
+            menuItems={menuItems}
             cardContent={
               <Stack>
                 {t2v.volunteer!.position}
@@ -66,17 +81,12 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
               title: "Team Lead",
               highlight: t2v.leader ?? false,
               toggleHighlight: () => {
-                return toggleVolunteer2TeamLeaderFlag(t2v)
-                  .then(data => handleChange(data))
+                if (editable) {
+                  return toggleVolunteer2TeamLeaderFlag(t2v)
+                    .then(data => handleChange(data))
+                }
               }
             }}
-            menuItems={[
-              <MenuItem key={'open'} onClick={() => handleOpen(t2v.volunteer_id)}> Open</MenuItem >,
-              <MenuItem key={'remove'} onClick={() => {
-                setSelectedItem(t2v.volunteer);
-                setOpenConfirmation(true);
-              }}>Remove...</MenuItem>]
-            }
           />
         )
       })
@@ -114,11 +124,11 @@ export const VolunteersCard: React.FC<EntityProps<Team>> = ({ entity, onChange }
       title='Members'
       headerSx={CARD_HEADER_SX}
       items={cards}
-      addOpts={{
+      addOpts={editable ? {
         title: 'Add volunteer',
         available: available.map(v => ({ label: v.profile!.name, value: v.id })),
         handleAdd: handleAdd
-      }}
+      } : undefined}
     />
     <ConfirmationDialog
       title="Confirm removing this volunteer"

@@ -1,21 +1,16 @@
 
 // material-ui
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Chip } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Tool, toolService } from '../../services/dasToolsService';
-import { ToolDetails } from '../tool';
-import { useStorageService } from '@digitalaidseattle/core';
-
 
 const ToolsPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Tool>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
-  const storageService = useStorageService()!;
 
   const columns: GridColDef<Tool[][number]>[] = [
     {
@@ -33,7 +28,7 @@ const ToolsPage = () => {
           }}
         >
           <Avatar
-            src={storageService.getUrl(`logos/${params.row.id}`)}
+            src={toolService.getLogoUrl(params.row)}
             alt={params.row.name}
             sx={{ width: 40, height: 40, objectFit: 'contain' }}
             variant="rounded"
@@ -42,6 +37,14 @@ const ToolsPage = () => {
       ),
     },
     { field: 'name', headerName: 'Name', width: 200 },
+    {
+      field: 'status', headerName: 'Status', width: 200,
+      renderCell: (params) => (
+         <Chip label={params.row.status} color={params.row.status === 'active' ? 'success' : 'error'} />
+      ),
+    },
+   
+
     { field: 'description', headerName: 'Description', width: 800 },
 
   ];
@@ -68,21 +71,6 @@ const ToolsPage = () => {
           onRowDoubleClick: handleRowDoubleClick
         }
       }
-      gridOpts={{
-        cardRenderer: entity => <ListCard
-          key={entity.id}
-          title={entity.name}
-          avatarImageSrc={storageService.getUrl(`/logos/${entity.id}`)}
-          cardAction={() => handleRowDoubleClick({ id: entity.id })}
-        />
-      }}
-      listOpts={{
-        listItemRenderer: entity => <ListCard
-          key={entity.id}
-          title={entity.name}
-          avatarImageSrc={storageService.getUrl(`/logos/${entity.id}`)} />,
-        detailRenderer: entity => <ToolDetails entity={entity} onChange={() => alert('nrfpt')} />,
-      }}
     />
   );
 };
