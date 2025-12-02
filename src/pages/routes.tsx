@@ -18,7 +18,7 @@ import PartnersPage from './partners';
 import { ProfilePage } from './profile/index.tsx';
 import ReferenceDisciplinesPage from './reference/disciplines.tsx';
 import ReferencePartnersPage from './reference/partners.tsx';
-import ReferenceTeamsPage from './reference/teams..tsx';
+import ReferenceTeamsPage from './reference/teams.tsx';
 import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
 import { RolePage } from './role/index.tsx';
@@ -40,6 +40,9 @@ import VolunteersPage from './volunteers';
 import ReportingPage from './reporting/index.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
 import ReferenceVenturesPage from './reference/ventures.tsx';
+import ReportingPage from './reporting/index.tsx';
+import ReferenceRolesPage from './reference/roles.tsx';
+import ReferenceVenturesPage from './reference/ventures.tsx';
 
 const routes = [
   {
@@ -57,6 +60,10 @@ const routes = [
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
+      },
+      {
+        path: "ventures",
+        element: <ReferenceVenturesPage />,
       },
       {
         path: "migration",
@@ -193,12 +200,12 @@ const routes = [
         element: <RolesPage />,
       },
       {
-        path: "ventures",
-        element: <VenturesPage />,
-      },
-      {
         path: "venture/:id",
         element: <VenturePage />,
+      },
+      {
+        path: "ventures",
+        element: <VenturesPage />,
       }
     ]
   },

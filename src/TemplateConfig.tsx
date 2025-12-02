@@ -117,11 +117,12 @@ export const TemplateConfig = () => {
                 url: '/partners/',
                 icon: <HeartOutlined />
             },
+             {
             {
                 id: 'ref-ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures/',
+                url: '/ventures',
                 icon: <RocketOutlined />
             },
             {
