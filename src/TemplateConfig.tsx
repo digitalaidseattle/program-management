@@ -118,6 +118,14 @@ export const TemplateConfig = () => {
                 icon: <HeartOutlined />
             },
              {
+            {
+                id: 'ref-ventures',
+                title: 'Ventures',
+                type: 'item',
+                url: '/ventures',
+                icon: <RocketOutlined />
+            },
+            {
                 id: 'ref-tools',
                 title: 'Tools',
                 type: 'item',
@@ -163,7 +171,7 @@ export const TemplateConfig = () => {
                 id: 'ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures',
+                url: '/data/ventures',
                 icon: <RocketOutlined />
             },
             {
