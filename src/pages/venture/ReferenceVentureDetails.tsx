@@ -1,246 +1,180 @@
-/**
- * 
- * ReferenceVentureDetails.tsx
- * 
- */
-import { CheckOutlined, MoreOutlined } from "@ant-design/icons";
 import {
   Avatar,
+  Box,
   Card,
-  CardActionArea,
   CardContent,
   CardHeader,
+  Chip,
   Grid,
   IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Typography,
-  useTheme
+  Stack,
+  Tooltip,
+  Typography
 } from '@mui/material';
-import { ReactNode, useEffect, useState } from 'react';
-import Markdown from 'react-markdown';
-import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
+import { storageService } from '../../App';
 import { FieldRow } from '../../components/FieldRow';
-import { EntityProps } from '../../components/utils';
-import { profileService } from '../../services/dasProfileService';
+import { partnerService } from '../../services/dasPartnerService';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
-import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
+import { VentureReport, ventureReportService } from '../../services/dasVentureReportService';
 import { Venture } from '../../services/dasVentureService';
-import { STATUS_COMP } from '../ventures/Utils';
-import { VentureReportDetails } from "../../components/VentureReportDetails";
+import { HEALTH_STATUS_CHIPS } from '../../components/StatusChip';
 
-const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
-  const [staffing, setStaffing] = useState<Staffing[]>([]);
-  const [filter, setFilter] = useState<string>('all');
-  const [cards, setCards] = useState<ReactNode[]>([]);
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const showMenu = Boolean(anchorEl);
+const HealthCard = ({ entity }: { entity: Venture }) => {
+  const [report, setReport] = useState<VentureReport>();
 
   useEffect(() => {
-    if (entity) {
-      staffingService.findByVentureId(entity.id)
-        .then((staffing) => setStaffing(staffing));
-    }
+    fetchData();
   }, [entity]);
 
-  useEffect(() => {
-    switch (filter) {
-      case 'all':
-        setCards(staffing.map(s => createCard(s)));
-        break;
-      case 'active':
-        setCards(staffing.filter(s => s.status === 'Filled').map(s => createCard(s)));
-        break;
-      case 'open':
-        setCards(staffing.filter(s => s.status === 'Please fill').map(s => createCard(s)));
-        break;
-      default:
-        setCards(staffing.map(s => createCard(s)));
-        break;
-    }
-  }, [filter, staffing]);
-
-  function createCard(staffing: Staffing) {
-    return <Card key={staffing.id}
-      sx={{
-        boxShadow: 'none',
-        minWidth: { xs: '100%', sm: '17rem' }
-      }}>
-      <CardActionArea onClick={() => handleOpen(staffing.volunteer_id)}>
-        <CardHeader
-          title={staffing.volunteer ? staffing.volunteer.profile!.name : ''}
-          subheader={staffing.role?.name}
-          avatar={<Avatar
-            variant='rounded'
-            src={staffing.volunteer ? profileService.getPicUrl(staffing.volunteer.profile!) : undefined}
-          />}
-        />
-        <CardContent>{staffing.status}</CardContent>
-      </CardActionArea>
-    </Card>
+  function fetchData() {
+    ventureReportService.findByVentureId(entity.id!)
+      .then(reports => {
+        console.log(reports)
+        setReport(reports.length > 0 ? reports[0] : undefined)
+      });
   }
 
-  function handleOpen(volunteer_id: string): void {
-    if (volunteer_id) {
-      navigate(`/volunteers/${volunteer_id}`);
-    }
-  }
-
-  function handleMoreClick(event: React.MouseEvent<HTMLElement>) {
-    setAnchorEl(event.currentTarget);
-  };
-
-  function handleMoreClose() {
-    setAnchorEl(null);
-  };
-
-  function handleFilter(filter: string) {
-    setFilter(filter);
-    setAnchorEl(null);
-  }
-
-  return <Card>
-    <CardHeader title="Staffing"
-      action={<IconButton color="primary" aria-label={`more`}
-        onClick={(evt) => handleMoreClick(evt)}>
-        <MoreOutlined />
-      </IconButton>} >
-    </CardHeader>
-
-    <CardContent sx={{ bgcolor: theme.palette.background.default }}>
-      <Grid container spacing={2}>
-        {cards.map((card, idx) =>
-          <Grid size={4} key={idx}>
-            {card}
-          </Grid>
-        )}
-      </Grid>
-    </CardContent>
-    <Menu
-      id="positioned-menu"
-      aria-labelledby="positioned-button"
-      anchorEl={anchorEl}
-      open={showMenu}
-      onClose={handleMoreClose}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
-      }}
-    >
-      <MenuItem onClick={() => handleFilter('all')}>
-        <ListItemIcon>
-          {filter === 'all' && <CheckOutlined />}
-        </ListItemIcon>
-        Show All
-      </MenuItem>
-      <MenuItem onClick={() => handleFilter('active')}>
-        <ListItemIcon>
-          {filter === 'active' && <CheckOutlined />}
-        </ListItemIcon>
-        Show Active
-      </MenuItem>
-      <MenuItem onClick={() => handleFilter('open')}>
-        <ListItemIcon>
-          {filter === 'open' && <CheckOutlined />}
-        </ListItemIcon>
-        Show Open
-      </MenuItem>
-    </Menu>
-  </Card>
+  return (report &&
+    <Card variant="outlined" >
+      <CardHeader title="Venture Health"
+        subheader={dayjs(report.reporting_date).format('MMM YYYY')}
+        action={HEALTH_STATUS_CHIPS[report.health]} />
+    </Card >
+  )
 }
 
-const VentureReportDetailsCard = ({ venture }: { venture: Venture }) => {
-  const ventureReportService = VentureReportService.instance();
-  const [report, setReport] = useState<VentureReport>();
+export const STAFFING_COMP: { [key: string]: JSX.Element } = {
+  "Proposed": <Chip label='P' color='default' />,
+  "Please fill": <Chip label='P' color='primary' />,
+  'Cancelled': <Chip label='C' color='warning' />,
+  "Concluded": <Chip label='C' color='secondary' />,
+  'Filled': <Chip label='F' color='success' />,
+}
+const StaffingCard = ({ entity }: { entity: Venture }) => {
+  const [staffing, setStaffing] = useState<Staffing[]>([]);
+
   useEffect(() => {
-    if (venture) {
-      ventureReportService.findLatestByVentureId(venture.id)
-        .then(data => {
-          setReport(data)
-        })
-        .catch(err => {
-          console.error('Failed to load venture reports', err);
-          setReport(undefined);
-        });
-    } else {
-      setReport(undefined);
-    }
-  }, [venture]);
+    fetchData();
+  }, [entity]);
+
+  function fetchData() {
+    staffingService.findByVentureId(entity.id!)
+      .then(s => setStaffing(s));
+  }
 
   return (
-    <Card>
-      <CardHeader title="Latest Status Report" />
+    <Card key={entity.id} variant="outlined">
+      <CardHeader title="Staffing" />
       <CardContent>
-        {report && <VentureReportDetails report={report} />}
-        {!report && <Typography>No status report found.</Typography>}
+        {staffing.map(staff =>
+          <Card>
+            <CardHeader
+              avatar={<Avatar
+                src={staff.volunteer ? storageService.getUrl(`/profiles/${staff.volunteer.profile!.id}`) : undefined}
+                alt={`${staff.volunteer ? (staff.volunteer.profile!.name + ' picture') : ''}`}
+                sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                variant="rounded" />}
+
+              alt={staff.volunteer ? staff.volunteer!.profile!.name : ''}
+              title={staff.volunteer ? staff.volunteer!.profile!.name : 'Unfilled Position'}
+              subheader={staff.role!.name}
+              action={
+                <Tooltip title={staff.status}>
+                  <IconButton>
+                    {STAFFING_COMP[staff.status]}
+                  </IconButton>
+                </Tooltip>
+              } />
+          </Card>
+        )}
       </CardContent>
     </Card>
   )
 }
+
 
 const ReferenceVentureDetails = ({ entity }: { entity: Venture }) => {
-  return (entity &&
-    <Card>
-      <CardHeader
-        title={entity.venture_code}
-        action={STATUS_COMP[entity.status]} />
-      <CardContent>
-        <Grid container spacing={2}>
 
-          <Grid size={12}>
-            <FieldRow label="Partner">
-              <Typography>{entity.partner?.name}</Typography>
-            </FieldRow>
-            <FieldRow label="Painpoint">
-              <Typography>{entity.painpoint}</Typography>
-            </FieldRow>
-            <FieldRow label="Program Areas">
-              <Typography>{entity.program_areas.join(', ')}</Typography>
-            </FieldRow>
+  return (entity &&
+    <>
+      <Card sx={{ padding: 0 }}>
+        <CardHeader title={entity.venture_code} />
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid size={6}>
+              <Stack gap={3}>
+                <Box
+                  sx={{
+                    borderRadius: 3,
+                    overflow: 'hidden',
+                    bgcolor: 'grey.50',
+                    border: (t) => `1px solid ${t.palette.divider}`,
+                    height: { xs: 180, sm: 220, md: 240 },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: 2,
+                  }}
+                >
+                  <Avatar
+                    src={partnerService.getLogoUrl(entity.partner!)}
+                    alt={entity.partner!.name}
+                    variant="rounded"
+                    sx={{
+                      borderRadius: 3,
+                      width: '100%',
+                      height: '100%',
+                      fontSize: 48,
+                      bgcolor: 'grey.100',
+                      color: 'text.secondary',
+                      '& .MuiAvatar-img': {
+                        objectFit: 'contain',
+                        width: '100%',
+                        height: '100%',
+                      },
+                    }}
+                  >
+                    {entity.partner!.name?.[0] ?? '?'}
+                  </Avatar>
+                </Box>
+                <FieldRow label="Status" >
+                  <Typography variant="body1">{entity.status}</Typography>
+                </FieldRow>
+                <FieldRow label="Partner" >
+                  <Typography variant="body1">{entity.partner?.name}</Typography>
+                </FieldRow>
+                <FieldRow label="Title" >
+                  <Typography variant="body1">{entity.title}</Typography>
+                </FieldRow>
+                <FieldRow label="Painpoint" >
+                  <Typography variant="body1">{entity.painpoint}</Typography>
+                </FieldRow>
+                <FieldRow label="Problem" >
+                  <Typography variant="body1">{entity.problem}</Typography>
+                </FieldRow>
+                <FieldRow label="Solution" >
+                  <Typography variant="body1">{entity.solution}</Typography>
+                </FieldRow>
+                <FieldRow label="Impact" >
+                  <Typography variant="body1">{entity.impact}</Typography>
+                </FieldRow>
+              </Stack>
+            </Grid>
+            <Grid size={6} >
+              <Stack gap={2}>
+                <HealthCard entity={entity} />
+                <StaffingCard entity={entity} />
+              </Stack>
+            </Grid>
           </Grid>
-          <Grid size={4}>
-            <Card>
-              <CardHeader title="Problem" />
-              <CardContent>
-                <Markdown>{entity.problem}</Markdown>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid size={4}>
-            <Card>
-              <CardHeader title="Solution" />
-              <CardContent>
-                <Markdown>{entity.solution}</Markdown>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid size={4}>
-            <Card>
-              <CardHeader title="Impact" />
-              <CardContent>
-                <Markdown>{entity.impact}</Markdown>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid size={12}>
-            <StaffingPanel entity={entity} onChange={() => { }} />
-          </Grid>
-          <Grid size={12}>
-            <VentureReportDetailsCard venture={entity} />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card >
+
+    </>
   )
 
 }
-
 
 export { ReferenceVentureDetails };
