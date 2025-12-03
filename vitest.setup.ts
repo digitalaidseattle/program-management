@@ -23,6 +23,32 @@ vi.mock('@digitalaidseattle/supabase', () => {
         this.select = select ?? '*';
         this.mapper = mapper ?? ((json: any) => json);
       }
+    },
+    SupabaseAuthService: class {
+      signInWithOAuth = vi.fn();
+    },
+    SupabaseStorageService: class {
+      bucketName = '';
+
+      constructor(bucketName: string) {
+        this.bucketName = bucketName;
+      }
+
+      getUrl(path: string): string {
+        return path + ':1';
+      }
+    },
+  };
+});
+
+vi.mock('@digitalaidseattle/airtable', () => {
+  return {
+    AirtableEntityService: class {
+      tableName = '';
+    
+      constructor(tableName: string) {
+        this.tableName = tableName;
+      }
     }
   };
 });

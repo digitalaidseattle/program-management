@@ -70,6 +70,6 @@ class ProfileService extends SupabaseEntityService<Profile> {
 
 const profileService = new ProfileService();
 
-export { profileService };
+export { profileService, ProfileService };
 export type { Profile };
 
