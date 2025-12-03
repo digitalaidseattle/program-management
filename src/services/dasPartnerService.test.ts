@@ -22,7 +22,7 @@ describe("partnerService", () => {
                     },
                     title: "Manager"
                 }]
-        });
+        }) as any;
         expect(partner.id).toBe("1234");
         expect(partner.contact![0].title).toBe("Manager");
     })
