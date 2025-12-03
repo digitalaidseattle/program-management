@@ -275,19 +275,13 @@ redirect_uri = ""
 url = ""
 # If enabled, the nonce check will be skipped. Required for local sign in with Google auth.
 skip_nonce_check = false
+# If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
+email_optional = false
 
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
 # You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
 [auth.web3.solana]
 enabled = false
-
-# Use Google Auth as a third-party provider alongside Supabase Auth.
-[auth.external.google]
-enabled = true
-client_id = "env(SUPABASE_GOOGLE_CLIENT_ID)" # Replace with your Google Client ID
-secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)" # Use environment variable for security
-redirect_uri = "http://localhost:54321/auth/v1/callback"
-url = "http://localhost:3000"
 
 # Use Firebase Auth as a third-party provider alongside Supabase Auth.
 [auth.third_party.firebase]
@@ -353,3 +347,11 @@ s3_region = "env(S3_REGION)"
 s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
+
+# Use Google Auth as a third-party provider alongside Supabase Auth.
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_GOOGLE_CLIENT_ID)" # Replace with your Google Client ID
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)" # Use environment variable for security
+redirect_uri = "http://localhost:54321/auth/v1/callback"
+url = "http://localhost:3000"

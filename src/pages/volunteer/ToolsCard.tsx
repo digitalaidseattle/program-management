@@ -1,6 +1,5 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
@@ -14,7 +13,6 @@ import { Tool, toolService } from '../../services/dasToolsService';
 import { Volunteer2Tool, volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
-
 export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Volunteer2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -24,7 +22,6 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   const [selectedItem, setSelectedItem] = useState<Tool>();
 
   const navigate = useNavigate();
-  const storageService = useStorageService()!;
 
   useEffect(() => {
     toolService.getAll()
@@ -60,7 +57,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
         return <ListCard
           key={v2t.tool_id}
           title={v2t.tool!.name}
-          avatarImageSrc={storageService.getUrl(`logos/${v2t.tool_id}`)}
+          avatarImageSrc={toolService.getLogoUrl(v2t.tool!)}
 
           highlightOptions={{
             title: "Expert",

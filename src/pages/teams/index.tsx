@@ -68,7 +68,7 @@ const TeamsPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/team/${event.id}`)
+    navigate(`/data/team/${event.id}`)
   }
 
   return (
@@ -95,7 +95,7 @@ const TeamsPage = () => {
           key={entity.id}
           title={entity.name}
           avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />,
-        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />,
+        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')}/>,
       }}
 
     />

@@ -2,8 +2,12 @@
 
 import {
     CalendarOutlined,
+    CompassOutlined,
+    CrownOutlined,
     HeartOutlined,
     HomeOutlined,
+    IdcardOutlined,
+    KeyOutlined,
     MehOutlined,
     PaperClipOutlined,
     RocketOutlined,
@@ -17,6 +21,7 @@ import logo from "./assets/images/logo-light-icon.svg";
 
 import { LayoutConfiguration, MenuItem } from "@digitalaidseattle/mui";
 import packageJson from '../package.json';
+import { Link } from 'react-router-dom';
 
 export const TemplateConfig = () => {
     const home =
@@ -31,6 +36,21 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/',
                 icon: <HomeOutlined />
+            }]
+    }
+
+    const meetings =
+    {
+        id: 'meetins-group',
+        title: 'Meetings',
+        type: 'group',
+        children: [
+            {
+                id: 'team',
+                title: 'All Meetings',
+                type: 'item',
+                url: '/all-meetings',
+                icon: <CompassOutlined />
             },
             {
                 id: 'plenary',
@@ -38,6 +58,13 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/plenary',
                 icon: <ScheduleOutlined />
+            },
+            {
+                id: 'leadership',
+                title: 'Leadership',
+                type: 'item',
+                url: '/leadership',
+                icon: <CrownOutlined />
             }]
     }
 
@@ -63,6 +90,50 @@ export const TemplateConfig = () => {
         ]
     } as MenuItem;
 
+
+    const reference = {
+        id: 'reference-group',
+        title: 'Reference',
+        type: 'group',
+        children: [
+            {
+                id: 'ref-volunteers',
+                title: 'Volunteers',
+                type: 'item',
+                url: '/volunteers',
+                icon: <UserOutlined />
+            },
+            {
+                id: 'ref-teams',
+                title: 'Teams',
+                type: 'item',
+                url: '/teams',
+                icon: <TeamOutlined />
+            },
+            {
+                id: 'ref-partners',
+                title: 'Partners',
+                type: 'item',
+                url: '/partners',
+                icon: <HeartOutlined />
+            },
+             {
+                id: 'ref-tools',
+                title: 'Tools',
+                type: 'item',
+                url: '/tools',
+                icon: <ToolOutlined />
+            },
+             {
+                id: 'ref-disciplines',
+                title: 'Disciplines',
+                type: 'item',
+                url: '/disciplines',
+                icon: <KeyOutlined />
+            }
+        ]
+    }
+
     const data = {
         id: 'cadre-dashboard',
         title: 'Data',
@@ -72,20 +143,20 @@ export const TemplateConfig = () => {
                 id: 'people',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/volunteers',
+                url: '/data/volunteers',
                 icon: <UserOutlined />
             }, {
                 id: 'teams',
                 title: 'Teams',
                 type: 'item',
-                url: '/teams',
+                url: '/data/teams',
                 icon: <TeamOutlined />
             },
             {
                 id: 'partners',
                 title: 'Partners',
                 type: 'item',
-                url: '/partners',
+                url: '/data/partners',
                 icon: <HeartOutlined />
             },
             {
@@ -99,21 +170,28 @@ export const TemplateConfig = () => {
                 id: 'tools',
                 title: 'Tools',
                 type: 'item',
-                url: '/tools',
+                url: '/data/tools',
                 icon: <ToolOutlined />
             },
             {
                 id: 'disciplines',
                 title: 'Disciplines',
                 type: 'item',
-                url: '/disciplines',
-                icon: <ToolOutlined />
+                url: '/data/disciplines',
+                icon: <KeyOutlined />
+            },
+            {
+                id: 'roles',
+                title: 'Roles',
+                type: 'item',
+                url: '/roles',
+                icon: <IdcardOutlined />
             },
             {
                 id: 'meetings',
                 title: 'Meetings',
                 type: 'item',
-                url: '/meetings',
+                url: '/data/meetings',
                 icon: <CalendarOutlined />
             }
         ]
@@ -146,8 +224,22 @@ export const TemplateConfig = () => {
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
-        menuItems: [home, ventures, recruiting, data],
+        menuItems: [home, meetings, ventures, recruiting, reference, data],
         toolbarItems: [],
+        profileItems: [
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/profile`}>
+                Profile
+            </Link>,
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/privacy`}>
+                Privacy Policy
+            </Link>
+        ],
         version: packageJson.version,
     } as LayoutConfiguration);
 }

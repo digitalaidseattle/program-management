@@ -20,7 +20,6 @@ type Team2Tool = {
 
 const ASSOC_TABLE = 'team2tool';
 class DASTeam2ToolService extends AssociativeTableService<Team2Tool> {
-
     constructor() {
         super(ASSOC_TABLE)
     }
@@ -62,6 +61,15 @@ class DASTeam2ToolService extends AssociativeTableService<Team2Tool> {
             .eq('team_id', teamId)
             .then((resp: any) => resp.data)
     }
+
+    async findTeamsByToolId(toolId: string): Promise<Team[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, team(*)')
+            .eq('tool_id', toolId)
+            .then((resp: any) => resp.data.map((d: any) => d.team))
+    }
+
 }
 
 const team2ToolService = new DASTeam2ToolService();

@@ -12,7 +12,6 @@ import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
 export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
-  const [current, setCurrent] = useState<Staffing[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
 
   const navigate = useNavigate();
@@ -24,13 +23,12 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
     }
   }, [entity]);
 
-  useEffect(() => {
-    setCards(createCards(current))
-  }, [current]);
-
   function refresh() {
     staffingService.findByVolunteerId(entity.id)
-      .then((staffing) => setCurrent(staffing));
+      .then((staffing) => {
+        const venture = staffing.filter(st => st.venture); // Some staffing requests are for teams
+        setCards(createCards(venture));
+      });
   }
 
   function createCards(items: Staffing[]) {
@@ -39,14 +37,14 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
         return <ListCard
           key={staffing.venture_id}
           title={staffing.venture!.venture_code}
-          avatarImageSrc={storageService.getUrl(`logos/${staffing.venture!.partner!.id}`)}
+          avatarImageSrc={storageService.getUrl(`logos/${staffing.venture!.id}`)}
           cardContent={
             <Stack>
               <Typography fontWeight={600}>{staffing.status} :</Typography> {staffing.role?.name}
             </Stack>
           }
           menuItems={[
-            <MenuItem onClick={() => handleOpen(staffing.venture!.id)}> Open</MenuItem >,
+            <MenuItem key='0' onClick={() => handleOpen(staffing.venture!.id)}>Open</MenuItem >,
           ]}
         />
       })

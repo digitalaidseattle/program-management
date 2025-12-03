@@ -1,0 +1,28 @@
+
+import { vi } from 'vitest';
+
+vi.mock('@digitalaidseattle/supabase', () => ({
+  createClient: vi.fn(() => ({
+    auth: {
+      signInWithOAuth: vi.fn(),
+      // etc.
+    }
+  })),
+}));
+
+
+vi.mock('@digitalaidseattle/supabase', () => {
+  return {
+    SupabaseEntityService: class {
+      tableName = '';
+      select = '*';
+      mapper = (json: any) => (json as any);
+
+      constructor(tableName: string, select: string, mapper: any) {
+        this.tableName = tableName;
+        this.select = select ?? '*';
+        this.mapper = mapper ?? ((json: any) => json);
+      }
+    }
+  };
+});
