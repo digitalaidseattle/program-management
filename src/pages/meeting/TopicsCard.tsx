@@ -14,8 +14,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import { DeleteOutlined } from '@ant-design/icons';
-import { InputOption } from '@digitalaidseattle/mui';
-import InputFormDialog from '../../components/InputFormDialog';
+import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import { EntityProps } from '../../components/utils';
 import { Meeting, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
 

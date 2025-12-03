@@ -20,17 +20,30 @@ import { TopicsCard } from './TopicsCard';
 import { TabbedPanels } from '@digitalaidseattle/mui';
 
 const MeetingDetails: React.FC<EntityProps<Meeting>> = ({ entity: meeting, onChange }) => {
+
+  function getPanelsByType() {
+    switch (meeting.type) {
+      case 'plenary':
+        return [
+          { header: 'Details', children: <DetailsCard entity={meeting} onChange={onChange} /> },
+          { header: 'Attendees', children: <AttendeesCard entity={meeting} onChange={onChange} /> },
+          { header: 'Shout Outs', children: <ShoutoutsCard entity={meeting} onChange={onChange} /> },
+          { header: 'Topics', children: <TopicsCard entity={meeting} onChange={onChange} /> },
+          { header: 'Intros', children: <IntrosCard entity={meeting} onChange={onChange} /> },
+          { header: 'Anniversaries', children: <AnniversariesCard entity={meeting} onChange={onChange} /> }
+        ]
+      default:
+        return [
+          { header: 'Details', children: <DetailsCard entity={meeting} onChange={onChange} /> },
+          { header: 'Attendees', children: <AttendeesCard entity={meeting} onChange={onChange} /> },
+          { header: 'Topics', children: <TopicsCard entity={meeting} onChange={onChange} /> },
+        ]
+    }
+  }
   return (meeting &&
     <>
       <Typography variant='h2'>{meeting.name}</Typography>
-      <TabbedPanels panels={[
-        { header: 'Details', children: <DetailsCard entity={meeting} onChange={onChange} /> },
-        { header: 'Shout Outs', children: <ShoutoutsCard entity={meeting} onChange={onChange} /> },
-        { header: 'Topics', children: <TopicsCard entity={meeting} onChange={onChange} /> },
-        { header: 'Attendees', children: <AttendeesCard entity={meeting} onChange={onChange} /> },
-        { header: 'Intros', children: <IntrosCard entity={meeting} onChange={onChange} /> },
-        { header: 'Anniversaries', children: <AnniversariesCard entity={meeting} onChange={onChange} /> }
-      ]} />
+      <TabbedPanels panels={getPanelsByType()} />
     </>
   )
 }
@@ -58,7 +71,7 @@ const MeetingPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/meetings">
+        <Link color="inherit" href="/data/meetings">
           Meetings
         </Link>
         <Typography>Meeting Name</Typography>

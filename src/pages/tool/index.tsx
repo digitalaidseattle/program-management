@@ -2,9 +2,6 @@
 // material-ui
 import {
   Breadcrumbs,
-  Card,
-  CardContent,
-  CardHeader,
   Link,
   Stack,
   Typography
@@ -12,29 +9,8 @@ import {
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Tool, toolService } from '../../services/dasToolsService';
-import Markdown from 'react-markdown';
-import { EntityProps } from '../../components/utils';
+import { ToolDetails } from './ToolDetails';
 
-
-const ToolDetails: React.FC<EntityProps<Tool>> = ({ entity }) => {
-  return (entity &&
-    <Stack gap={2}>
-      <Typography variant='h2'>{entity.name}</Typography>
-      <Card>
-        <CardHeader title='Overview' />
-        <CardContent>
-          <Markdown>{entity.overview}</Markdown>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader title='Description' />
-        <CardContent>
-          <Markdown>{entity.description}</Markdown>
-        </CardContent>
-      </Card>
-    </Stack>
-  )
-}
 
 const ToolPage = () => {
   const [entity, setEntity] = useState<Tool>();
@@ -59,7 +35,7 @@ const ToolPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/tools">
+        <Link color="inherit" href="/data/tools">
           Tools
         </Link>
         <Typography>{entity.name}</Typography>
@@ -72,4 +48,5 @@ const ToolPage = () => {
 
 
 
-export { ToolDetails, ToolPage }
+export { ToolPage };
+

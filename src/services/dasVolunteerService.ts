@@ -5,46 +5,11 @@
  *
  */
 
-import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Profile } from "./dasProfileService";
-import { Identifier } from "@digitalaidseattle/core";
 
-type AirtableVolunteer = {
-    id: string,
-    airtable_id: string,
-    name: string,
-    firstName: string,
-    lastName: string,
-    affliation: string,
-    status: string,
-    ventures: string,
-    joinDate: string,
-    ventureDate: string,
-    ventureStatus: string,
-    position: string,
-    disciplines: string[],
-    tools: string[],
-    personalEmail: string,
-    phone: string,
-    pic: string,
-
-    github: string,
-    dasEmail: string,
-    slackId: string,
-    location: string,
-    hopeToGive: string,
-    hopeToGet: string,
-    communicationPreferences: string,
-    linkedin: string,
-
-}
-
-type Volunteer = {
-    id: string,
-    profile_id: string,
-    airtable_id: string,
-    affliation: string,
-    status: "Cadre" |
+type VolunteerStatusType =
+    "Cadre" |
     "new prospect" |
     "past" |
     "Cadre" |
@@ -55,8 +20,16 @@ type Volunteer = {
     "Onboarding" |
     "Board only" |
     "Contributor" |
-    "Offboarding Contributor",
-    join_date: string,
+    "Offboarding Contributor";
+
+
+type Volunteer = {
+    id: string,
+    profile_id: string,
+    airtable_id: string,
+    affliation: string,
+    status: VolunteerStatusType,
+    join_date: Date,
     position: string,
     disciplines: string[],
     tool_ids: string[],
@@ -73,9 +46,8 @@ type Volunteer = {
 
 const DEFAULT_SELECT = '*, profile!inner(*)';
 class VolunteerService extends SupabaseEntityService<Volunteer> {
-
     public constructor() {
-        super("volunteer");
+        super("volunteer", DEFAULT_SELECT);
     }
 
     async getActive(): Promise<Volunteer[]> {
@@ -94,15 +66,7 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .then((resp: any) => resp.data);
     }
 
-    async getById(id: Identifier): Promise<Volunteer | null> {
-        return super.getById(id, DEFAULT_SELECT);
-    }
-
-    getAll(_count?: number, _select?: string): Promise<Volunteer[]> {
-        return super.getAll(undefined, DEFAULT_SELECT);
-    }
-
-    async findByAirtableId(airtableId: string): Promise<AirtableVolunteer> {
+    async findByAirtableId(airtableId: string): Promise<Volunteer> {
         return await supabaseClient
             .from(this.tableName)
             .select(DEFAULT_SELECT)
@@ -111,10 +75,14 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
             .then((resp: any) => resp.data);
     }
 
-    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Volunteer): Promise<PageInfo<Volunteer>> {
-        return super.find(queryModel!, select ?? DEFAULT_SELECT, mapper);
+    async findByDasEmail(email: string): Promise<Volunteer> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .ilike('das_email', email)
+            .single()
+            .then((resp: any) => resp.data);
     }
-
 }
 
 const volunteerService = new VolunteerService();
