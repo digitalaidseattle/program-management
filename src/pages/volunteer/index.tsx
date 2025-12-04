@@ -6,7 +6,7 @@
  */
 
 // material-ui
-import { InputForm, InputOption } from '@digitalaidseattle/mui';
+import { InputForm, InputOption, TabbedPanels } from '@digitalaidseattle/mui';
 import {
   Breadcrumbs,
   Card,
@@ -19,6 +19,8 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { storageService } from '../../App';
+import { UploadImage } from '../../components/UploadImage';
 import { EntityProps } from '../../components/utils';
 import { Profile, profileService } from '../../services/dasProfileService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
@@ -26,8 +28,6 @@ import { DisciplinesCard } from './DisplinesCard';
 import { TeamsCard } from './TeamsCard';
 import { ToolsCard } from './ToolsCard';
 import { VenturesCard } from './VenturesCard';
-import { UploadImage } from '../../components/UploadImage';
-import { storageService } from '../../App';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" }
 
@@ -38,7 +38,7 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
     setVolunteer(entity);
   }, [entity]);
 
-  const fields = [
+  const profileFields = [
     {
       name: 'profile.name', label: 'Name', type: 'custom', disabled: true,
       inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
@@ -67,6 +67,67 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       }
     },
     {
+      name: "profile.email",
+      label: 'Email',
+      type: 'string',
+      disabled: false,
+      inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
+        return <TextField key={idx}
+          id="outlined-basic"
+          label="Email"
+          variant="outlined"
+          value={entity.profile!.email}
+          onChange={(evt) => handleChange('profile.email', evt.target.value)} />
+      }
+    },
+    {
+      name: "profile.phone",
+      label: 'Phone',
+      type: 'string',
+      disabled: false,
+      inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
+        return <TextField key={idx}
+          id="outlined-basic"
+          label="Phone"
+          variant="outlined"
+          value={entity.profile!.phone}
+          onChange={(evt) => handleChange('profile.phone', evt.target.value)} />
+      }
+    },
+    {
+      name: "profile.location",
+      label: 'Location',
+      type: 'string',
+      disabled: false,
+      inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
+        return <TextField key={idx}
+          id="outlined-basic"
+          label="Location"
+          variant="outlined"
+          value={entity.profile!.phone}
+          onChange={(evt) => handleChange('profile.location', evt.target.value)} />
+      }
+    },
+    {
+      name: "linkedin",
+      label: 'LinkedIn',
+      type: 'string',
+      disabled: false,
+    },
+    {
+      name: "github",
+      label: 'Github',
+      type: 'string',
+      disabled: false,
+    },
+  ] as InputOption[];
+
+  const volunteerFields = [
+    {
+      name: 'das_email', label: 'DAS email', type: 'string', disabled: false
+    }, {
+      name: 'slack_id', label: 'Slack ID', type: 'string', disabled: false
+    }, {
       name: 'join_date', label: 'Join Date', type: 'date', disabled: false
     },
     {
@@ -89,10 +150,19 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       disabled: false,
     },
     {
-      name: "linkedin",
-      label: 'LinkedIn',
+      name: "hope_to_get",
+      label: 'Hope to get',
       type: 'string',
       disabled: false,
+      size: 6
+    },
+    ,
+    {
+      name: "hope_to_give",
+      label: 'Hope to give',
+      type: 'string',
+      disabled: false,
+      size: 6
     },
   ] as InputOption[];
 
@@ -153,7 +223,24 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
               <UploadImage url={getPicUrl(volunteer)} onChange={(files) => handlePicChange(files)} />
             </Grid>
             <Grid size={9}>
-              <InputForm entity={volunteer} inputFields={fields} onChange={handleChange} />
+              <TabbedPanels
+                panels={[
+                  {
+                    header: 'DAS',
+                    children:
+                      <Stack padding={2}>
+                        <InputForm entity={volunteer} inputFields={volunteerFields} onChange={handleChange} />
+                      </Stack>
+                  },
+                  {
+                    header: 'Personal',
+                    children:
+                      <Stack padding={2}>
+                        <InputForm entity={volunteer} inputFields={profileFields} onChange={handleChange} />
+                      </Stack>
+                  }
+                ]}>
+              </TabbedPanels>
             </Grid>
           </Grid>
         </CardContent>

@@ -66,9 +66,9 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
                                 .then(data => handleChange(data))
                         }
                     }}
-                    menuItems={onChange && [
-                        <MenuItem onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
-                        <MenuItem onClick={() => {
+                    menuItems={[
+                        <MenuItem key={1} onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
+                        <MenuItem key={2} onClick={() => {
                             setSelectedItem(discipline);
                             setOpenConfirmation(true);
                         }}>Remove...</MenuItem>]

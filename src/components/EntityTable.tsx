@@ -7,7 +7,7 @@
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo, QueryModel } from "@digitalaidseattle/supabase";
 import { Box } from "@mui/material";
-import { DataGrid, GridColDef, GridFilterModel, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridFilterModel, GridRowSelectionModel, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 
 export type EntityTableProps<T extends Entity> = {
@@ -16,6 +16,7 @@ export type EntityTableProps<T extends Entity> = {
     toolbar?: () => any;
     onChange: (queryModel: any) => void;
     onRowDoubleClick: (evt: any) => void;
+    onSelect?: (selectionModel: GridRowSelectionModel) => void;
 }
 
 export function EntityTable<T extends Entity>({
@@ -23,11 +24,13 @@ export function EntityTable<T extends Entity>({
     columns,
     toolbar,
     onChange,
-    onRowDoubleClick
+    onRowDoubleClick,
+    onSelect
 }: EntityTableProps<T>) {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
     const [sortModel, setSortModel] = useState<GridSortModel>([])
     const [filterModel, setFilterModel] = useState<GridFilterModel>();
+    const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>();
     const [rowCountState, setRowCountState] = useState(pageInfo?.totalRowCount || 0,);
     const apiRef = useGridApiRef();
 
@@ -53,6 +56,10 @@ export function EntityTable<T extends Entity>({
             onChange(queryModel);
         }
     }, [paginationModel, sortModel, filterModel])
+
+    useEffect(() => {
+        onSelect && onSelect(selectionModel!);
+    }, [selectionModel])
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -80,6 +87,10 @@ export function EntityTable<T extends Entity>({
                 disableRowSelectionOnClick
                 slots={{ toolbar: toolbar }}
                 showToolbar={toolbar !== undefined}
+
+                checkboxSelection={onSelect !== undefined}
+                rowSelectionModel={selectionModel}
+                onRowSelectionModelChange={setSelectionModel}
             />
         </Box>
     )

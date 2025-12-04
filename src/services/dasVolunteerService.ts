@@ -4,15 +4,14 @@
  *  @copyright 20245Digital Aid Seattle
  *
  */
-
+import { v4 as uuid } from 'uuid';
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { Profile } from "./dasProfileService";
+import { Profile, profileService } from "./dasProfileService";
 
 type VolunteerStatusType =
     "Cadre" |
     "new prospect" |
     "past" |
-    "Cadre" |
     "taking a break" |
     "on call" |
     "rejected" |
@@ -41,11 +40,32 @@ type Volunteer = {
     communication_preferences: string,
     linkedin: string,
     profile?: Profile,
-    leader?: boolean
 }
 
 const DEFAULT_SELECT = '*, profile!inner(*)';
 class VolunteerService extends SupabaseEntityService<Volunteer> {
+    empty(): Volunteer {
+        const profile = profileService.empty();
+        return ({
+            id: uuid(),
+            profile_id: profile.id,
+            airtable_id: "",
+            affliation: "",
+            status: "Contributor",
+            join_date: new Date(),
+            position: "",
+            disciplines: [],
+            tool_ids: [],
+            github: "",
+            das_email: "",
+            slack_id: "",
+            hope_to_give: "",
+            hope_to_get: "",
+            communication_preferences: "",
+            linkedin: "",
+            profile: profile,
+        });
+    }
     public constructor() {
         super("volunteer", DEFAULT_SELECT);
     }

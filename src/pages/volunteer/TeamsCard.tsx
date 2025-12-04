@@ -67,9 +67,9 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
                 .then(data => handleChange(data))
             }
           }}
-          menuItems={onChange && [
-            <MenuItem onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
-            <MenuItem onClick={() => {
+          menuItems={[
+            <MenuItem key={1} onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
+            <MenuItem key={2} onClick={() => {
               setSelectedItem(t2v.team!);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>
