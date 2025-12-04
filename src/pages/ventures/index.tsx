@@ -65,7 +65,7 @@ const VenturesPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/venture/${event.id}`)
+    navigate(`/data/venture/${event.id}`)
   }
 
   return (
