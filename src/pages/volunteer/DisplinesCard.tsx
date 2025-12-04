@@ -1,6 +1,7 @@
 import { useStorageService } from "@digitalaidseattle/core";
 import { ConfirmationDialog } from "@digitalaidseattle/mui";
 import { MenuItem } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { CARD_HEADER_SX } from ".";
@@ -66,9 +67,9 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
                                 .then(data => handleChange(data))
                         }
                     }}
-                    menuItems={[
-                        <MenuItem key={1} onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
-                        <MenuItem key={2} onClick={() => {
+                    menuItems={onChange && [
+                        <MenuItem onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
+                        <MenuItem onClick={() => {
                             setSelectedItem(discipline);
                             setOpenConfirmation(true);
                         }}>Remove...</MenuItem>]

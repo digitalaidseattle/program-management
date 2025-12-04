@@ -1,6 +1,7 @@
 
 // material-ui
 import { useStorageService } from '@digitalaidseattle/core';
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
@@ -67,9 +68,9 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
                 .then(data => handleChange(data))
             }
           }}
-          menuItems={[
-            <MenuItem key={1} onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
-            <MenuItem key={2} onClick={() => {
+          menuItems={onChange && [
+            <MenuItem onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
+            <MenuItem onClick={() => {
               setSelectedItem(t2v.team!);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>
