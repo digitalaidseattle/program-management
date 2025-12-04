@@ -86,7 +86,7 @@ const RoleDetails: React.FC<EntityProps<Role>> = ({ entity, onChange }) => {
       type: 'custom',
       disabled: false,
       inputRenderer: (idx: number, _option: InputOption, value: any) => {
-        return <TextField key={idx} value={value.join(', ')} onChange={(evt => handleTagChange(evt.target.value))} />
+        return <TextField key={idx} label='Role tags' value={(value ?? []).join(', ')} onChange={(evt => handleTagChange(evt.target.value))} />
       }
     },
   ];

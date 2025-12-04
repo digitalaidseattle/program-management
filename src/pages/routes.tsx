@@ -21,7 +21,6 @@ import ReferencePartnersPage from './reference/partners.tsx';
 import ReferenceTeamsPage from './reference/teams..tsx';
 import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
-import ReportingPage from './reporting/index.tsx';
 import { RolePage } from './role/index.tsx';
 import RolesPage from './roles/index.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
@@ -38,6 +37,8 @@ import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
+import ReportingPage from './reporting/index.tsx';
+import ReferenceRolesPage from './reference/roles.tsx';
 
 const routes = [
   {
@@ -109,14 +110,6 @@ const routes = [
         element: <AllMeetingsPage />,
       },
       {
-        path: "role/:id",
-        element: <RolePage />,
-      },
-      {
-        path: "roles",
-        element: <RolesPage />,
-      },
-      {
         path: "teams",
         element: <ReferenceTeamsPage />,
       },
@@ -136,7 +129,10 @@ const routes = [
         path: "partners",
         element: <ReferencePartnersPage />,
       },
-
+      {
+        path: "roles",
+        element: <ReferenceRolesPage />,
+      }
     ]
   },
   {
@@ -190,6 +186,14 @@ const routes = [
       {
         path: "partner/:id",
         element: <PartnerPage />,
+      },
+      {
+        path: "role/:id",
+        element: <RolePage />,
+      },
+      {
+        path: "roles",
+        element: <RolesPage />,
       }
     ]
   },

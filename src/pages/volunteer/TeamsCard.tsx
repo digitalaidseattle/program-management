@@ -11,12 +11,12 @@ import { removeVolunteerFromTeam } from '../../actions/RemoveVolunteerFromTeam';
 import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import { EntityProps } from '../../components/utils';
+import { EntityPropsOpt } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team, teamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
-export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -63,7 +63,7 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
             title: "Team Lead",
             highlight: t2v.leader ?? false,
             toggleHighlight: () => {
-              toggleVolunteer2TeamLeaderFlag(t2v)
+              onChange && toggleVolunteer2TeamLeaderFlag(t2v)
                 .then(data => handleChange(data))
             }
           }}
@@ -72,15 +72,15 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
             <MenuItem key={2} onClick={() => {
               setSelectedItem(t2v.team!);
               setOpenConfirmation(true);
-            }}>Remove...</MenuItem>]
-          }
+            }}>Remove...</MenuItem>
+          ]}
         />
       })
   }
 
   function handleChange(data: any) {
     refresh();
-    onChange(data)
+    onChange!(data)
   }
 
   function handleOpen(team_id: string): void {
@@ -109,7 +109,7 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       title='Teams'
       items={cards}
       headerSx={CARD_HEADER_SX}
-      addOpts={{
+      addOpts={onChange && {
         title: 'Join Team',
         available: available.map(v => ({ label: v.name, value: v.id })),
         handleAdd: handleAdd

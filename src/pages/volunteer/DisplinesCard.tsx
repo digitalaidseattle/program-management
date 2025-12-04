@@ -9,12 +9,12 @@ import { removeDisciplineFromVolunteer } from "../../actions/RemoveDisciplineFro
 import { toggleVolunteer2DisciplineSeniorFlag } from "../../actions/ToggleVolunteer2DisciplineSeniorFlag";
 import { ListCard } from "../../components/ListCard";
 import { ManagedListCard } from "../../components/ManagedListCard";
-import { EntityProps } from "../../components/utils";
+import { EntityPropsOpt } from "../../components/utils";
 import { Discipline, disciplineService } from "../../services/dasDisciplineService";
 import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
 import { Volunteer } from "../../services/dasVolunteerService";
 
-export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);
@@ -62,7 +62,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
                         title: "Senior",
                         highlight: volunteer2Discipline.senior ?? false,
                         toggleHighlight: () => {
-                            return toggleVolunteer2DisciplineSeniorFlag(volunteer2Discipline)
+                            onChange && toggleVolunteer2DisciplineSeniorFlag(volunteer2Discipline)
                                 .then(data => handleChange(data))
                         }
                     }}
@@ -79,7 +79,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
 
     function handleChange(data: any) {
         refresh();
-        onChange(data)
+        onChange!(data)
     }
 
     function handleOpen(discipline_id: string): void {
@@ -107,7 +107,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             title='Disciplines'
             items={cards}
             headerSx={CARD_HEADER_SX}
-            addOpts={{
+            addOpts={onChange && {
                 title: 'Add Discipline',
                 available: available.map(v => ({ label: v.name, value: v.id })),
                 handleAdd: handleAdd
