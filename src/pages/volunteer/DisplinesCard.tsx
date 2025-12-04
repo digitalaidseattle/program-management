@@ -15,10 +15,14 @@ import { Volunteer2Discipline, volunteer2DisciplineService } from "../../service
 import { Volunteer } from "../../services/dasVolunteerService";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
 =======
 export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
 >>>>>>> 3cd4d2f (add volunteer)
+=======
+export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+>>>>>>> 4d1d323 (ET-84 read only volunteer component)
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);

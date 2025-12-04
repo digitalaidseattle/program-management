@@ -5,17 +5,21 @@
  *
  */
 
+<<<<<<< HEAD
 import { CheckOutlined } from "@ant-design/icons";
 import {
   ListItemIcon,
   MenuItem
 } from '@mui/material';
+=======
+>>>>>>> 4d1d323 (ET-84 read only volunteer component)
 
 import { ListCard } from '../../components/ListCard';
 
 import { useEffect, useState } from "react";
 import { EntityListPage } from '../../components/EntityListPage';
 import { profileService } from '../../services/dasProfileService';
+<<<<<<< HEAD
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
 import { MoreButton } from "./MoreButton";
@@ -106,14 +110,27 @@ const ReferenceVolunteersPage = () => {
   function handleFilterChange(newFilter: string) {
     setFilter(newFilter);
   };
+=======
+import { volunteerService } from '../../services/dasVolunteerService';
+import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
+
+const ReferenceVolunteersPage = () => {
+>>>>>>> 4d1d323 (ET-84 read only volunteer component)
 
   return (
     <EntityListPage
       title={'Volunteers'}
+<<<<<<< HEAD
       entities={entities}
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
+=======
+      fetchData={() => volunteerService
+        .getActive()
+        .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+      }
+>>>>>>> 4d1d323 (ET-84 read only volunteer component)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

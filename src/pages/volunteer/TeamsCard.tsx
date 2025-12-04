@@ -17,10 +17,14 @@ import { Team, teamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
 =======
 export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
 >>>>>>> 3cd4d2f (add volunteer)
+=======
+export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+>>>>>>> 4d1d323 (ET-84 read only volunteer component)
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);
