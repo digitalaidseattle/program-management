@@ -94,7 +94,7 @@ export const TemplateConfig = () => {
     const reference = {
         id: 'reference-group',
         title: 'Reference',
-        type: 'group',
+        type: 'collapse',
         children: [
             {
                 id: 'ref-volunteers',
@@ -137,7 +137,7 @@ export const TemplateConfig = () => {
     const data = {
         id: 'cadre-dashboard',
         title: 'Data',
-        type: 'group',
+        type: 'collapse',
         children: [
             {
                 id: 'people',

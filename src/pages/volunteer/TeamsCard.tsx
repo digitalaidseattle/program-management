@@ -16,11 +16,6 @@ import { Team, teamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
 import { useStorageService } from '@digitalaidseattle/core';
 
-const STATUS_COMP: { [key: string]: JSX.Element } = {
-  'Active': <Chip label='Active' color='primary' />,
-  'constant': <Chip label='Constant' color='success' />,
-  'yet to begin': <Chip label='Not ready' color='warning' />,
-}
 export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -64,13 +59,6 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
           key={t2v.team!.id}
           title={t2v.team!.name}
           avatarImageSrc={storageService.getUrl(`icons/${t2v.team!.id}`)}
-          cardContent={
-            <Stack>
-              {t2v.team!.status
-                ? STATUS_COMP[t2v.team!.status]
-                : <Chip label='No status' color='default' />}
-            </Stack>
-          }
           highlightOptions={{
             title: "Team Lead",
             highlight: t2v.leader ?? false,
@@ -80,8 +68,8 @@ export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
             }
           }}
           menuItems={[
-            <MenuItem onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
-            <MenuItem onClick={() => {
+            <MenuItem key={1} onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
+            <MenuItem key={2} onClick={() => {
               setSelectedItem(t2v.team!);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>]
