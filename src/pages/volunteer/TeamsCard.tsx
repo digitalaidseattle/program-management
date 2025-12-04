@@ -16,7 +16,11 @@ import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2Vo
 import { Team, teamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
+<<<<<<< HEAD
 export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+=======
+export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+>>>>>>> 3cd4d2f (add volunteer)
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -67,9 +71,15 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
                 .then(data => handleChange(data))
             }
           }}
+<<<<<<< HEAD
           menuItems={onChange && [
             <MenuItem onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
             <MenuItem onClick={() => {
+=======
+          menuItems={[
+            <MenuItem key={1} onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
+            <MenuItem key={2} onClick={() => {
+>>>>>>> 3cd4d2f (add volunteer)
               setSelectedItem(t2v.team!);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>

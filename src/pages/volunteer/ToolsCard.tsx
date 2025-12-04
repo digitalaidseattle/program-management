@@ -67,9 +67,15 @@ export const ToolsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
                 .then(data => handleChange(data))
             }
           }}
+<<<<<<< HEAD
           menuItems={onChange && [
             <MenuItem onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
             <MenuItem onClick={() => {
+=======
+          menuItems={[
+            <MenuItem key={0} onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
+            <MenuItem key={1} onClick={() => {
+>>>>>>> 3cd4d2f (add volunteer)
               setSelectedItem(tool);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>]
