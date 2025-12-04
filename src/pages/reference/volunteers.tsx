@@ -5,27 +5,29 @@
  *
  */
 
-import { useStorageService } from '@digitalaidseattle/core';
 
 import { ListCard } from '../../components/ListCard';
 
 import { EntityListPage } from '../../components/EntityListPage';
+import { profileService } from '../../services/dasProfileService';
 import { volunteerService } from '../../services/dasVolunteerService';
-import { VolunteerDetails } from '../volunteer';
+import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
 
 const ReferenceVolunteersPage = () => {
-  const storageService = useStorageService()!;
 
   return (
     <EntityListPage
       title={'Volunteers'}
-      fetchData={() => volunteerService.getActive()}
+      fetchData={() => volunteerService
+        .getActive()
+        .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+      }
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
           title={entity.profile!.name}
-          avatarImageSrc={storageService.getUrl(`/profiles/${entity.profile!.id}`)} />}
-      detailRenderer={entity => <VolunteerDetails entity={entity} onChange={() => alert('nrfpt')} />} />
+          avatarImageSrc={profileService.getPicUrl(entity.profile!)} />}
+      detailRenderer={entity => <ReferenceVolunteerDetails entity={entity} />} />
   );
 };
 
