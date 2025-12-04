@@ -58,7 +58,9 @@ class ProfileService extends SupabaseEntityService<Profile> {
     }
 
     getPicUrl(profile: Profile): string | undefined {
-        return profile.pic ? storageService.getUrl(profile.pic) : undefined;
+        // FIXME: migrate url to pic attribute
+        return profile.pic ? storageService.getUrl(`/profiles/${profile.id}`) : undefined;
+        // return profile.pic ? storageService.getUrl(profile.pic) : undefined;
     }
 
     getNextPicUrl(profile: Profile): string {

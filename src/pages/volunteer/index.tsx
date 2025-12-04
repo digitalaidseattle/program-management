@@ -141,7 +141,6 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   }
 
   function getPicUrl(volunteer: Volunteer): string | undefined {
-    console.log('getPicUrl', volunteer)
     return volunteer.profile!.id ? storageService.getUrl(`profiles/${volunteer.profile!.id}`) : undefined
   }
 
