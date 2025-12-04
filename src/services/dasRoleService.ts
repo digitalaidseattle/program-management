@@ -5,7 +5,8 @@
  *
  */
 
-import {  Entity, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Entity, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { storageService } from "../App";
 
 type Role = Entity & {
     pic: string | null;
@@ -21,6 +22,7 @@ type Role = Entity & {
 }
 
 class RoleService extends SupabaseEntityService<Role> {
+
     STATUSES = ['Active', 'Inactive'];
 
     public constructor() {
@@ -34,6 +36,10 @@ class RoleService extends SupabaseEntityService<Role> {
             .eq('airtable_id', airtableId)
             .single()
             .then((resp: any) => resp.data);
+    }
+
+    getIconUrl(entity: Role): string | undefined {
+        return entity.pic ? storageService.getUrl(entity.pic) : undefined
     }
 
 }
