@@ -19,7 +19,8 @@ const ReferenceTeamsPage = () => {
   return (
     <EntityListPage
       title={'Teams'}
-      fetchData={() => teamService.getAll()}
+      fetchData={() => teamService.getAll()
+        .then(teams => teams.sort((a, b) => a.name.localeCompare(b.name)))}
       listItemRenderer={entity => <ListCard
         key={entity.id}
         title={entity.name}

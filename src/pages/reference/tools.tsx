@@ -19,7 +19,8 @@ const ReferenceToolsPage = () => {
   return (
     <EntityListPage
       title={'Tools'}
-      fetchData={() => toolService.getAll()}
+      fetchData={() => toolService.getAll()
+                .then(tools => tools.sort((a, b) => a.name.localeCompare(b.name)))}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
