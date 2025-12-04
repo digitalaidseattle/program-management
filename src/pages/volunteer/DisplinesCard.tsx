@@ -1,6 +1,6 @@
 import { useStorageService } from "@digitalaidseattle/core";
 import { ConfirmationDialog } from "@digitalaidseattle/mui";
-import { Chip, MenuItem, Stack } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { CARD_HEADER_SX } from ".";

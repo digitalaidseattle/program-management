@@ -6,7 +6,7 @@
  */
 
 // material-ui
-import { InputForm, InputOption, TabbedPanels, TabbedPanelsCard } from '@digitalaidseattle/mui';
+import { InputForm, InputOption, TabbedPanels } from '@digitalaidseattle/mui';
 import {
   Breadcrumbs,
   Card,
@@ -19,6 +19,8 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { storageService } from '../../App';
+import { UploadImage } from '../../components/UploadImage';
 import { EntityProps } from '../../components/utils';
 import { Profile, profileService } from '../../services/dasProfileService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
@@ -26,8 +28,6 @@ import { DisciplinesCard } from './DisplinesCard';
 import { TeamsCard } from './TeamsCard';
 import { ToolsCard } from './ToolsCard';
 import { VenturesCard } from './VenturesCard';
-import { UploadImage } from '../../components/UploadImage';
-import { storageService } from '../../App';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" }
 

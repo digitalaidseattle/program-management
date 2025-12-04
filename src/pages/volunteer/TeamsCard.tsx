@@ -1,7 +1,8 @@
 
 // material-ui
+import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { Chip, MenuItem, Stack } from '@mui/material';
+import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
@@ -14,7 +15,6 @@ import { EntityProps } from '../../components/utils';
 import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team, teamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
-import { useStorageService } from '@digitalaidseattle/core';
 
 export const TeamsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
