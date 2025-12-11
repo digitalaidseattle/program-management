@@ -28,7 +28,7 @@ export interface TimeOffEntry {
   reason?: string;
 }
 
-const TimeOffPage: React.FC = () => {
+const TimeOffPage = () => {
   const [entries, setEntries] = useState<TimeOffEntry[]>([]);
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
