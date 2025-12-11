@@ -28,6 +28,7 @@ import TeamMeetingPage from './view-meeting/TeamMeetingPage.tsx';
 import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
 import LeadershipMeetingPage from './view-meeting/LeadershipMeetingPage.tsx';
 import StaffingPage from './staffing/StaffingPage.tsx';
+import TimeOffPage from '../components/TimeOffPage';
 
 const routes = [
   {
@@ -41,6 +42,10 @@ const routes = [
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
+      },
+      {
+        path: "timeoff",
+        element: <TimeOffPage />,
       },
       {
         path: "volunteers",

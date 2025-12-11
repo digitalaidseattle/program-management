@@ -179,6 +179,13 @@ export const TemplateConfig = () => {
                 color="secondary"
                 to={`/privacy`}>
                 Privacy Policy
+            </Link>,
+            // Button not showing up, some predefined mui styling?
+            <Link
+                style={{ textDecoration: 'none' }}
+                color="secondary"
+                to={`/time-off`}>
+                Time Off
             </Link>
         ],
         version: packageJson.version,
