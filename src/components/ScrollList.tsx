@@ -85,6 +85,7 @@ export function ScrollList<T,>({ items, listItemRenderer, direction = 'column', 
                 ...sx
             })
             : ({
+                width: "100%",
                 height: "100%",             // fill parent container height
                 overflowY: "auto",          // enable vertical scroll
                 overflowX: "hidden",        // hide horizontal scroll (optional)

@@ -1,31 +1,44 @@
 
 // material-ui
-import { PlusCircleOutlined } from '@ant-design/icons';
-import { useStorageService } from '@digitalaidseattle/core';
+import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useNotifications, useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box,
-  Button,
-  ButtonGroup,
+  Card,
+  CardContent,
+  CardHeader,
   IconButton,
   Stack,
   Toolbar,
+  Tooltip
 } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
-import { useState } from 'react';
+import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ListCard } from '../../components/ListCard';
-import ListDetailPage from '../../components/ListDetailPage';
-import { VolunteerCard } from '../../components/VolunteerCard';
+import { addVolunteer } from '../../actions/AddVolunteer';
+import { deleteVolunteers } from '../../actions/DeleteVolunteers';
+import { EntityTable } from '../../components/EntityTable';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { VolunteerDetails } from '../volunteer';
+import VolunteerDialog from './VolunteerDialog';
 
 const VolunteersPage = () => {
-  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const notifications = useNotifications();
+
+  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>();
+  const [queryModel, setQueryModel] = useState<QueryModel>();
+
   const [pageInfo, setPageInfo] = useState<PageInfo<Volunteer>>({ rows: [], totalRowCount: 0 });
   const storageService = useStorageService()!;
+
+  useEffect(() => {
+    fetchData();
+  }, [queryModel]);
 
   const columns: GridColDef<Volunteer[][number]>[] = [
     {
@@ -85,65 +98,88 @@ const VolunteersPage = () => {
     }
   ];
 
+  function fetchData() {
+    if (queryModel) {
+      volunteerService.find(queryModel)
+        .then(pageInfo => setPageInfo(pageInfo))
+    }
+  }
+
+  function isDeleteDisabled() {
+    return selectionModel
+      ? selectionModel.ids!.size === 0 && selectionModel.type === 'include'
+      : true;
+  }
+
   function toolbar() {
     return (
       <Stack direction='row' alignItems={'center'}>
         <Toolbar>
-          <IconButton color='primary' onClick={() => setShowDialog(true)}><PlusCircleOutlined /></IconButton>
+          <IconButton color='primary' onClick={() => setShowAddDialog(true)}><PlusCircleOutlined /></IconButton>
         </Toolbar>
-        <ButtonGroup size="small" sx={{ height: 30 }} aria-label="outlined primary button group">
-          <Button>Active</Button>
-          <Button>Cadre</Button>
-          <Button>Contributor</Button>
-          <Button>All</Button>
-        </ButtonGroup>
+        <Tooltip title="Remove Volunteer">
+          <Box>
+            <IconButton color="primary"
+              disabled={isDeleteDisabled()}
+              onClick={() => setShowDeleteDialog(true)} >
+              <DeleteOutlined />
+            </IconButton>
+          </Box>
+        </Tooltip>
       </Stack>
     );
   }
 
-  function onChange(queryModel?: QueryModel) {
-    volunteerService.find(queryModel!)
-      .then(pageInfo => setPageInfo(pageInfo))
-  }
-
-  const navigate = useNavigate();
-
   function handleRowDoubleClick(event: any) {
-    navigate(`/volunteer/${event.id}`)
+    navigate(`/data/volunteer/${event.id}`)
   }
 
-  function refreshEntity(entity: Volunteer) {
-    console.log(entity)
-    alert('nrfpt');
+  function handleAdd(volunteer: Volunteer | null): void {
+    if (volunteer && volunteer.profile) {
+      addVolunteer(volunteer)
+        .then(() => navigate(`/data/volunteer/${volunteer.id}`));
+    }
+    setShowAddDialog(false);
+  }
+
+  function handleDelete(): void {
+    if (selectionModel) {
+      deleteVolunteers([...selectionModel.ids] as string[])
+        .then(() => {
+          notifications.success('Volunteers deleted successfully.');
+          fetchData();
+        })
+        .finally(() => setShowDeleteDialog(false))
+    }
   }
 
   return (
     <>
-      <ListDetailPage
-        title="Volunteers"
-        pageInfo={pageInfo}
-        toolbar={toolbar}
-        onChange={onChange}
-        tableOpts={
-          {
-            columns: columns,
-            onRowDoubleClick: handleRowDoubleClick
-          }
-        }
-        gridOpts={{ cardRenderer: entity => <VolunteerCard key={entity.id} entity={entity} /> }}
-        listOpts={{
-          listItemRenderer: entity => <ListCard
-            key={entity.id}
-            title={entity.profile!.name}
-            avatarImageSrc={storageService.getUrl(`profiles/${entity.profile!.id}`)} />,
-          detailRenderer: entity => <VolunteerDetails entity={entity} onChange={entity => refreshEntity(entity)} />,
-        }}
+      <Card>
+        <CardHeader title="Volunteers" />
+        <CardContent>
+          <EntityTable
+            pageInfo={pageInfo}
+            onChange={setQueryModel}
+            columns={columns}
+            toolbar={toolbar}
+            onRowDoubleClick={handleRowDoubleClick}
+            onSelect={setSelectionModel}
+          />
+        </CardContent>
+      </Card>
+      <VolunteerDialog
+        open={showAddDialog}
+        title={'Add Volunteer'}
+        entity={volunteerService.empty()}
+        handleSuccess={handleAdd}
+        handleError={() => { }}
       />
       <ConfirmationDialog
-        open={showDialog}
-        message='Add volunteer dialog goes here!'
-        handleCancel={() => setShowDialog(false)}
-        handleConfirm={() => setShowDialog(false)}
+        open={showDeleteDialog}
+        message={'Are you sure?'}
+        handleCancel={() => setShowDeleteDialog(false)}
+        handleConfirm={() => handleDelete()}
       />
     </>
   );

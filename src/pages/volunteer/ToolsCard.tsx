@@ -1,6 +1,5 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
@@ -9,13 +8,12 @@ import { CARD_HEADER_SX } from '.';
 import { toggleVolunteer2ToolExpertFlag } from '../../actions/ToggleVolunteer2ToolExpertFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import { EntityProps } from '../../components/utils';
+import { EntityPropsOpt } from '../../components/utils';
 import { Tool, toolService } from '../../services/dasToolsService';
 import { Volunteer2Tool, volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
-
-export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+export const ToolsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
   const [current, setCurrent] = useState<Volunteer2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [tools, setTools] = useState<Tool[]>([]);
@@ -24,7 +22,6 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
   const [selectedItem, setSelectedItem] = useState<Tool>();
 
   const navigate = useNavigate();
-  const storageService = useStorageService()!;
 
   useEffect(() => {
     toolService.getAll()
@@ -60,19 +57,19 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
         return <ListCard
           key={v2t.tool_id}
           title={v2t.tool!.name}
-          avatarImageSrc={storageService.getUrl(`logos/${v2t.tool_id}`)}
+          avatarImageSrc={toolService.getLogoUrl(v2t.tool!)}
 
           highlightOptions={{
             title: "Expert",
             highlight: v2t.expert ?? false,
             toggleHighlight: () => {
-              toggleVolunteer2ToolExpertFlag(v2t)
+              onChange && toggleVolunteer2ToolExpertFlag(v2t)
                 .then(data => handleChange(data))
             }
           }}
           menuItems={[
-            <MenuItem onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
-            <MenuItem onClick={() => {
+            <MenuItem key={0} onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
+            <MenuItem key={1} onClick={() => {
               setSelectedItem(tool);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>]
@@ -87,7 +84,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
 
   function handleChange(data: any) {
     refresh();
-    onChange(data)
+    onChange!(data)
   }
 
   function handleAdd(selected: string | null | undefined): void {
@@ -108,7 +105,7 @@ export const ToolsCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       title='Tools'
       items={cards}
       headerSx={CARD_HEADER_SX}
-      addOpts={{
+      addOpts={onChange && {
         title: 'Add Tool',
         available: available.map(v => ({ label: v.name, value: v.id })),
         handleAdd: handleAdd

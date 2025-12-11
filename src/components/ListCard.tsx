@@ -5,13 +5,12 @@
  *
  */
 import { MoreOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
-import { Avatar, Card, CardActions, CardContent, CardHeader, IconButton, Menu, Tooltip } from "@mui/material";
+import { Avatar, Card, CardActions, CardContent, CardHeader, IconButton, Menu, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 
 
 type ListCardProps = {
-    key: string;
-    title: string;
+    title: React.ReactNode;
     avatarImageSrc?: string;
     cardStyles?: any;
     cardContent?: React.ReactNode;
@@ -25,7 +24,6 @@ type ListCardProps = {
 }
 
 export const ListCard = ({
-    key,
     title,
     avatarImageSrc,
     cardStyles,
@@ -48,16 +46,15 @@ export const ListCard = ({
 
     return (
         <Card
-            key={key}
             sx={{
                 boxShadow: 'none',
                 minWidth: { xs: '100%', sm: '17rem' },
-                maxWidth: 240,
                 ...cardStyles,
             }}
             onDoubleClick={cardAction ? cardAction : undefined}
         >
-            <CardHeader title={title}
+            <CardHeader
+                title={title}
                 avatar={avatarImageSrc &&
                     <Avatar
                         src={avatarImageSrc}
@@ -112,7 +109,7 @@ export const ListCard = ({
                                 ? <StarFilled style={{ color: '#bea907ff' }} />
                                 : <StarOutlined style={{ color: 'gray' }} />
                             }
-                            &nbsp;{`${highlightOptions.title}`}
+                            &nbsp;<Typography variant="body1">{`${highlightOptions.title}`}</Typography>
                         </IconButton>
                     </Tooltip>
                 </CardActions>}

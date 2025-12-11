@@ -11,7 +11,7 @@ import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
 import { partnerService, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
-import { roleService } from './dasRoleService';
+import { Role, roleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
 import { Team2Tool, team2ToolService } from './dasTeam2ToolService';
 import { team2VolunteerService } from './dasTeam2VolunteerService';
@@ -57,7 +57,8 @@ class MigrationService {
         'OKRs': this.migrateOkrs,
         'Forecast': this.migrateForecasts,
         'Contacts': this.migrateContacts,
-        'Contact Pics': this.downloadContactPics
+        'Contact Pics': this.downloadContactPics,
+        'Update roles': this.updateRoles,
     }
 
     migrateVentures(): Promise<void> {
@@ -186,7 +187,8 @@ class MigrationService {
                         status: r.fields['Status'],
                         details: r.fields['Details'],
                         slack: r.fields['Our Slack channel'],
-                        senior_ids: r.fields["Senior"]
+                        senior_ids: r.fields["Senior"],
+                        icon: ''
                     })
                 });
                 disciplineService.batchInsert(transformed)
@@ -230,7 +232,7 @@ class MigrationService {
                         name: record['Role'],
                         status: record['Status'],
                         urgency: record['Urgency']
-                    })
+                    } as unknown as Role)
                 });
                 roleService.batchInsert(transformed)
             })
@@ -328,7 +330,6 @@ class MigrationService {
     }
 
     async downloadVolunteerPics(): Promise<void> {
-
         const volunteers = await volunteerService.getAll();
         await new AirtableService(VOLUNTEER_TABLE)
             .getAll()
@@ -454,16 +455,17 @@ class MigrationService {
             .getAll()
             .then(records => {
                 records
-                    .forEach(record => {
+                    .forEach(async record => {
                         const partner = partners.find(p => p.airtable_id === record.id);
-                        const url = record['logo'] ? record['logo'][0].url : undefined;
-                        if (partner && url) {
-                            console.log(partner, url)
+                        if (partner) {
+                            const location = `logos/${partner.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['logo'] ? record['logo'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`logos/${partner.id}`, blob)
-                                            .then((data: any) => console.log(data))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await partnerService.update(partner.id, { logo_url: location });
                                     })
                                 )
                         } else {
@@ -480,20 +482,21 @@ class MigrationService {
             .getAll()
             .then(records => {
                 records
-                    .forEach(record => {
+                    .forEach(async record => {
                         const tool = tools.find(p => p.airtable_id === record.id);
-                        const url = record['logo'] ? record['logo'][0].url : undefined;
-                        if (tool && url) {
+                        if (tool) {
+                            const location = `logos/${tool.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['logo'] ? record['logo'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`logos/${tool.id}`, blob)
-                                            .then((data: any) => console.log(data))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await toolService.update(tool.id, { logo: location });
                                     })
                                 )
                         } else {
-                            console.log(record)
-                            console.warn(`no pic for aritable record: ${record.id}`)
+                            console.error(`no tool for aritable record: ${record.id}`, record)
                         }
                     })
             })
@@ -530,20 +533,21 @@ class MigrationService {
             .getAll()
             .then(records => {
                 records
-                    .forEach(record => {
+                    .forEach(async record => {
                         const discipline = disciplines.find(p => p.airtable_id === record.id);
-                        const url = record['icon'] ? record['icon'][0].url : undefined;
-                        if (discipline && url) {
+                        if (discipline) {
+                            const location = `icons/${discipline.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['icon'] ? record['icon'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`icons/${discipline.id}`, blob)
-                                            .then((data: any) => console.log(data))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await disciplineService.update(discipline.id, { icon: location });
                                     })
                                 )
                         } else {
-                            console.log(record)
-                            console.warn(`no icon for aritable record: ${record.id}`)
+                            console.error(`no icon for aritable record: ${record.id}`)
                         }
                     })
             })
@@ -630,14 +634,15 @@ class MigrationService {
                 records
                     .forEach(async record => {
                         const profile = profiles.find(p => record["Person"] === p.name);
-                        const url = record['Pic'] ? record['Pic'][0].url : undefined;
-                        if (profile && url) {
+                        if (profile) {
+                            const location = `profiles/${profile.id}`;
+                            await storageService.removeFile(location);
+                            const url = record['Pic'] ? record['Pic'][0].url : undefined;
                             fetch(url)
                                 .then(resp => resp.blob()
-                                    .then(blob => {
-                                        storageService.upload(`profiles/${profile.id}`, blob)
-                                            .then((data: any) => console.log(`loaded ${profile.id}`, data))
-                                            .catch(err => console.error(err))
+                                    .then(async blob => {
+                                        await storageService.upload(location, blob);
+                                        await profileService.update(profile.id, { pic: location });
                                     })
                                 )
                         } else {
@@ -646,6 +651,46 @@ class MigrationService {
                     });
             })
     }
+
+    async updateRoles(): Promise<void> {
+        return new AirtableService(ROLES_TABLE).getAll()
+            .then(records => {
+                records.forEach(async record => {
+                    const supa = await roleService.findByAirtableId(record.id)
+                    if (supa) {
+
+                        const url = record['image'] ? record['image'][0].url : null;
+                        const pic = `icons/${supa.id}:1`;
+                        if (url) {
+                            console.log(record, url, pic)
+                            fetch(url)
+                                .then(resp => resp.blob()
+                                    .then(blob => {
+                                        storageService.removeFile(pic)
+                                            .then(() => {
+                                                storageService.upload(pic, blob)
+                                                    .then((data: any) => console.log(`uploaded ${pic!}`, data))
+                                                    .catch(err => console.error(err))
+                                            })
+                                    }))
+                        }
+                        roleService.update(supa.id!,
+                            {
+                                pic: pic,
+                                headline: record['Headline'], // 'Headline'
+                                location: record['Location'],  // 'Location'
+                                responsibilities: record['Responsibilities'], // 'Responsibilities
+                                qualifications: record['Preferred Qualifications'], /// 'Preferred Qualifications
+                                key_attributes: record['Key attributes for success'], //Key attributes for success
+                                tags: record['Role tags']
+                            }
+                        )
+                    }
+                });
+            })
+    }
+
+
 }
 const migrationService = new MigrationService();
 

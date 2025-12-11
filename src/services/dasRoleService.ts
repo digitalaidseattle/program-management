@@ -5,17 +5,25 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Entity, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { storageService } from "../App";
 
-
-type Role = {
-    id: string,
-    name: string,
-    status: string,
-    urgency: string,
+type Role = Entity & {
+    pic: string | null;
+    name: string;
+    status: string;
+    urgency: number;
+    headline: string; // 'Headline'
+    location: string;  // 'Location'
+    responsibilities: string; // 'Responsibilities
+    qualifications: string; // 'Preferred Qualifications
+    key_attributes: string; //Key attributes for success
+    tags: string[]; //Role tags
 }
 
 class RoleService extends SupabaseEntityService<Role> {
+
+    STATUSES = ['Active', 'Inactive'];
 
     public constructor() {
         super("role");
@@ -28,6 +36,10 @@ class RoleService extends SupabaseEntityService<Role> {
             .eq('airtable_id', airtableId)
             .single()
             .then((resp: any) => resp.data);
+    }
+
+    getIconUrl(entity: Role): string | undefined {
+        return entity.pic ? storageService.getUrl(entity.pic) : undefined
     }
 
 }

@@ -1,6 +1,6 @@
 import { useStorageService } from "@digitalaidseattle/core";
 import { ConfirmationDialog } from "@digitalaidseattle/mui";
-import { Chip, MenuItem, Stack } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { CARD_HEADER_SX } from ".";
@@ -9,17 +9,12 @@ import { removeDisciplineFromVolunteer } from "../../actions/RemoveDisciplineFro
 import { toggleVolunteer2DisciplineSeniorFlag } from "../../actions/ToggleVolunteer2DisciplineSeniorFlag";
 import { ListCard } from "../../components/ListCard";
 import { ManagedListCard } from "../../components/ManagedListCard";
-import { EntityProps } from "../../components/utils";
+import { EntityPropsOpt } from "../../components/utils";
 import { Discipline, disciplineService } from "../../services/dasDisciplineService";
 import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
 import { Volunteer } from "../../services/dasVolunteerService";
 
-const DISCIPLINE_STATUS_COMP: { [key: string]: JSX.Element } = {
-    'Public': <Chip label='Public' color='success' />,
-    'Internal': <Chip label='Internal' color='primary' />
-}
-
-export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);
@@ -63,24 +58,17 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
                     key={volunteer2Discipline.discipline_id}
                     title={volunteer2Discipline.discipline!.name}
                     avatarImageSrc={storageService.getUrl(`icons/${volunteer2Discipline.discipline_id}`)}
-                    cardContent={
-                        <Stack>
-                            {discipline.status
-                                ? DISCIPLINE_STATUS_COMP[discipline.status]
-                                : <Chip label='No status' color='default' />}
-                        </Stack>
-                    }
                     highlightOptions={{
                         title: "Senior",
                         highlight: volunteer2Discipline.senior ?? false,
                         toggleHighlight: () => {
-                            return toggleVolunteer2DisciplineSeniorFlag(volunteer2Discipline)
+                            onChange && toggleVolunteer2DisciplineSeniorFlag(volunteer2Discipline)
                                 .then(data => handleChange(data))
                         }
                     }}
                     menuItems={[
-                        <MenuItem onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
-                        <MenuItem onClick={() => {
+                        <MenuItem key={1} onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
+                        <MenuItem key={2} onClick={() => {
                             setSelectedItem(discipline);
                             setOpenConfirmation(true);
                         }}>Remove...</MenuItem>]
@@ -91,7 +79,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
 
     function handleChange(data: any) {
         refresh();
-        onChange(data)
+        onChange!(data)
     }
 
     function handleOpen(discipline_id: string): void {
@@ -119,7 +107,7 @@ export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onCh
             title='Disciplines'
             items={cards}
             headerSx={CARD_HEADER_SX}
-            addOpts={{
+            addOpts={onChange && {
                 title: 'Add Discipline',
                 available: available.map(v => ({ label: v.name, value: v.id })),
                 handleAdd: handleAdd

@@ -1,6 +1,7 @@
 // src/components/VentureReportDisplay.tsx
 import { useMemo, useState } from 'react'
 import { Box, Card, CardContent, Divider, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
+import dayjs from 'dayjs';
 import { VentureReport } from '../services/dasVentureReportService'
 import { HEALTH_STATUS_CHIPS, HEALTH_STATUS_INDICATOR_COLORS } from '../components/StatusChip.tsx'
 
@@ -8,7 +9,7 @@ interface VentureReportDisplayProps {
   reports: VentureReport[]
   initialReportId?: string
 }
-
+const MONTH_YEAR_FORMAT = 'MMMM YYYY';
 export default function VentureReportDisplay({ reports, initialReportId }: VentureReportDisplayProps) {
   const [selectedReportId, setSelectedReportId] = useState<string>(initialReportId ?? reports[0]?.id ?? '')
 
@@ -116,25 +117,6 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
     return value
   }
 
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ]
-
-  const getReportPeriodParts = (period?: string) => {
-    if (!period) {
-      return undefined
-    }
-    const date = new Date(period)
-    if (Number.isNaN(date.getTime())) {
-      return undefined
-    }
-    return {
-      monthName: monthNames[date.getUTCMonth()],
-      year: date.getUTCFullYear()
-    }
-  }
-
   const renderHealthChip = (status?: VentureReport['health']) => status ? (HEALTH_STATUS_CHIPS[status] ?? null) : null;
 
   const renderFieldSection = (key: string, value: any) => (
@@ -150,9 +132,9 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
 
   const renderReportDetail = () => {
     if (!report) return null
-    
+
     const knownFieldNames = REPORT_FIELDS.map(field => field.name)
-    const metadata = new Set(['id', 'venture_id', 'reported_by', 'report_period', 'health'])
+    const metadata = new Set(['id', 'venture_id', 'reported_by', 'report_period', 'reporting_date', 'health'])
     const reportRecord = report as Record<string, any>
 
     const knownEntries = REPORT_FIELDS
@@ -165,19 +147,21 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
       .map(([key, value]) => [key, value])
 
     const contentEntries = [...knownEntries, ...fallbackEntries]
-    const periodParts = getReportPeriodParts(report.report_period);
 
     return (
       <Card>
         <CardContent>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
             <Typography variant="h6">
-              {periodParts ? `${periodParts.monthName} ${periodParts.year} Report` : 'Report'}
+              {report.reporting_date ? `${dayjs(report.reporting_date).format(MONTH_YEAR_FORMAT)} Report` : 'Report'}
             </Typography>
             {renderHealthChip(report.health)}
           </Stack>
-          <Typography variant="body2" color="text.secondary" mb={3}>
+          <Typography variant="body2" color="text.secondary">
             Reported by: {report.reported_by}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            Reported on: {report.reporting_date ? dayjs(report.reporting_date).format('M/D/YYYY') : 'Unknown'}
           </Typography>
 
           {contentEntries.map(([key, value]) => renderFieldSection(key, value))}
@@ -194,8 +178,7 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
         </Typography>
         <List component="nav" sx={{ border: 1, borderColor: 'divider', borderRadius: 2 }}>
           {reports.map(period => {
-            const periodParts = getReportPeriodParts(period.report_period)
-            const label = periodParts ? `${periodParts.monthName} ${periodParts.year}` : 'Unknown Period'
+            const label = report?.reporting_date ? `${dayjs(report?.reporting_date).format(MONTH_YEAR_FORMAT)}` : 'Unknown Period'
             const indicatorColor = (period.health && HEALTH_STATUS_INDICATOR_COLORS[period.health]) ?? '#4f4f4f'
             return (
               <ListItemButton

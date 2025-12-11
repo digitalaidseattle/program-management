@@ -1,7 +1,7 @@
 
 // material-ui
-import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import {
+  Avatar,
   Breadcrumbs,
   Card,
   CardContent,
@@ -12,69 +12,78 @@ import {
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import Markdown from "react-markdown";
 import { useParams } from 'react-router';
 import { EntityProps } from '../../components/utils';
 import { Team, teamService } from '../../services/dasTeamService';
 import { ForecastsCard } from './ForecastsCard';
-import { ToolsCard } from './ToolsCard';
 import { OKRsCard } from './OKRsCard';
+import { ToolsCard } from './ToolsCard';
 import { VolunteersCard } from './VolunteersCard';
+import { storageService } from '../../App';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
-const TeamDetails: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
-  const inputFields: InputOption[] = [
-    {
-      label: 'Purpose',
-      name: "purpose",
-      type: 'string',
-      disabled: false
-    },
-    {
-      label: 'What is NOT included in this Team?',
-      name: "not_included",
-      type: 'string',
-      disabled: false,
-    },
-    {
-      label: 'New to the team?',
-      name: "welcome_message",
-      type: 'string',
-      disabled: false,
-    },
-    {
-      label: 'Slack',
-      name: "slack_channel",
-      type: 'string',
-      disabled: false,
-    }
-  ]
+type TeamDetailsdProps = EntityProps<Team> & {
+  editable?: boolean
+}
+
+const TeamDetails: React.FC<TeamDetailsdProps> = ({ entity, onChange, editable = false }) => {
   return (entity &&
     <Stack gap={2}>
       <Grid container spacing={2}>
-        <Grid size={6}>
-          <Card>
-            <CardHeader
-              titleTypographyProps={{ fontSize: 24 }}
-              title='Details'>
-            </CardHeader>
-            <CardContent>
-              <InputForm
-                entity={entity}
-                inputFields={inputFields}
-                onChange={function (_field: string, _value: any): void { throw new Error('Function not implemented.'); }}>
-              </InputForm>
-            </CardContent>
-          </Card>
+        <Grid size={12}>
+          <Stack direction={'row'} sx={{ gap: 2, alignItems: 'center' }}>
+            <Avatar
+              src={storageService.getUrl(`/icons/${entity.id}`)}>
+            </Avatar>
+            <Typography variant="h3">{entity.name}</Typography>
+          </Stack>
         </Grid>
         <Grid size={6}>
           <Stack spacing={2}>
-            <OKRsCard entity={entity} onChange={onChange} />
-            <ForecastsCard entity={entity} onChange={onChange} />
+            <OKRsCard entity={entity} editable={editable} onChange={onChange} />
+            <ForecastsCard entity={entity} editable={editable} onChange={onChange} />
           </Stack>
         </Grid>
+        <Grid size={6}>
+          <Card >
+            <CardHeader
+              title='Details'>
+            </CardHeader>
+            <CardContent>
+              <Stack gap={1}>
+                <Card>
+                  <CardHeader title="Purpose" />
+                  <CardContent>
+                    <Markdown>{entity.purpose}</Markdown>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader title="What is NOT included in this Team?" />
+                  <CardContent>
+                    <Markdown>{entity.not_included}</Markdown>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader title="New to the team?" />
+                  <CardContent>
+                    <Markdown>{entity.welcome_message}</Markdown>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader title="Slack" />
+                  <CardContent>
+                    <Markdown>{entity.slack_channel}</Markdown>
+                  </CardContent>
+                </Card>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Grid>
+
       </Grid>
-      <VolunteersCard entity={entity} onChange={onChange} />
+      <VolunteersCard entity={entity} onChange={onChange} editable={editable} />
       <ToolsCard entity={entity} onChange={onChange} />
     </Stack>
   )
@@ -101,12 +110,12 @@ const TeamPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/teams">
+        <Link color="inherit" href="/data/teams">
           Teams
         </Link>
         <Typography>{entity.name}</Typography>
       </Breadcrumbs>
-      <TeamDetails entity={entity} onChange={(evt) => refresh(evt)} />
+      <TeamDetails entity={entity} onChange={(evt) => refresh(evt)} editable={true} />
     </Stack>
   )
 }

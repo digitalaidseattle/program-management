@@ -24,6 +24,7 @@ import CollapsibleCard from "../../components/CollasibleCard";
 import ImHereButton from "../../components/ImHereButton";
 import { ScrollList } from "../../components/ScrollList";
 import { MeetingToolbar } from "./MeetingToolbar";
+import { MeetingDetailsProps } from "./utils";
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #ce80e8ff -11.18%, #e5d9e5ff 111.48%)" };
 
@@ -44,7 +45,7 @@ function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopi
     }
 
     return (volunteer &&
-        <Card sx={{  width: 200, maxHeight: 400 }} >
+        <Card sx={{ width: 200, maxHeight: 400 }} >
             <CardHeader
                 title={topic.subject}
                 action={<Checkbox checked={topic.discussed} onClick={() => markAsDiscussed()} />} />
@@ -204,7 +205,7 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
     )
 }
 
-const PlenaryPage = () => {
+function PlenaryDetails({ meeting: initial }: MeetingDetailsProps) {
     const [iceBreaker, setIceBreaker] = useState<string>('');
     const [meeting, setMeeting] = useState<Meeting>();
 
@@ -213,6 +214,10 @@ const PlenaryPage = () => {
     const layout = useLayoutConfiguration();
     const [width, setWidth] = useState<string>();
     const { refresh } = useContext(RefreshContext)
+
+    useEffect(() => {
+        setMeeting(initial!)
+    }, [initial]);
 
     useEffect(() => {
         if (drawerOpen) {
@@ -234,8 +239,10 @@ const PlenaryPage = () => {
     }, [meeting])
 
     function refreshMeeting() {
-        meetingService.getCurrent('plenary')
-            .then(plenary => setMeeting(plenary));
+        if (meeting) {
+            meetingService.getById(meeting.id)
+                .then(mt => setMeeting(mt!));
+        }
     }
 
     return (meeting &&
@@ -278,6 +285,18 @@ const PlenaryPage = () => {
             </CardContent>
         </Card>
     );
+}
+
+function PlenaryPage() {
+    const [meeting, setMeeting] = useState<Meeting>();
+
+    useEffect(() => {
+        meetingService.getCurrent('plenary')
+            .then(plenary => setMeeting(plenary));
+    }, []);
+
+    return <PlenaryDetails meeting={meeting} />
+
 };
 
-export default PlenaryPage;
+export { PlenaryPage, PlenaryDetails };

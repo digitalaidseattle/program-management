@@ -6,7 +6,7 @@
  */
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
-import { Box, Stack } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ScrollList } from "./ScrollList";
 
@@ -32,24 +32,30 @@ export function EntityList<T extends Entity>({
     }, [pageInfo])
 
     return (
-        <Stack direction="row" sx={{ height: "100vh" }}>
-            <ScrollList
-                items={pageInfo.rows}
-                listItemRenderer={listItemRenderer}
-                selectedItem={selectedItem}
-                onSelect={setSelectedItem}
-            />
-            <Box
-                sx={{
-                    width: '100%',
-                    height: "100%",             // fill parent container height
-                    overflowY: "auto",          // enable vertical scroll
-                    overflowX: "hidden",        // hide horizontal scroll (optional)
-                    boxSizing: "border-box",    // include padding in height calc
-                    padding: 2
-                }}>
-                {selectedItem && detailRenderer(selectedItem)}
-            </Box>
-        </Stack >
+        <Grid container>
+            <Grid size={3}>
+                <Stack direction="row" sx={{ height: "100vh" }}>
+                    <ScrollList
+                        items={pageInfo.rows}
+                        listItemRenderer={listItemRenderer}
+                        selectedItem={selectedItem}
+                        onSelect={setSelectedItem}
+                    />
+                </Stack >
+            </Grid>
+            <Grid size={9}>
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: "100%",             // fill parent container height
+                        overflowY: "auto",          // enable vertical scroll
+                        overflowX: "hidden",        // hide horizontal scroll (optional)
+                        boxSizing: "border-box",    // include padding in height calc
+                        padding: 2
+                    }}>
+                    {selectedItem && detailRenderer(selectedItem)}
+                </Box>
+            </Grid>
+        </Grid>
     )
 }
