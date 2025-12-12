@@ -37,7 +37,6 @@ import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
-import AdhoceetingPage from './view-meeting/AdhocMeetingPage.tsx';
 import TimeOffPage from '../components/TimeOffPage';
 import ReportingPage from './reporting/index.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
@@ -66,6 +65,8 @@ const routes = [
       {
         path: "volunteers",
         element: <VolunteersPage />,
+      },
+      {
         path: "ventures",
         element: <VenturesPage />,
       },

@@ -3,11 +3,10 @@
  *
  */
 
-import React, { useState, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import {
   Box,
   Button,
-  Grid,
   Paper,
   TextField,
   Typography,
@@ -18,6 +17,7 @@ import {
   TableRow,
   Divider,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 
 import * as styles from "./TimeOffPageStyles";
 
