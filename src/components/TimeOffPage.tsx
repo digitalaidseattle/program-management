@@ -64,7 +64,7 @@ const TimeOffPage = () => {
   return (
     <Box sx={styles.rootBox}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={7}>
+        <Grid xs={12} md={7}>
           <Typography variant="h5" fontWeight={600} gutterBottom>
             Time off of DAS entirely?
           </Typography>
@@ -101,7 +101,7 @@ const TimeOffPage = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={5}>
+        <Grid xs={12} md={5}>
           <Paper elevation={0} sx={styles.rightPaper}>
             <Typography variant="subtitle1" fontWeight={600}>
               Add time off
