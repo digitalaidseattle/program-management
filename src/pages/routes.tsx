@@ -39,6 +39,7 @@ import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
 import ReportingPage from './reporting/index.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
+import ReferenceVenturesPage from './reference/ventures.tsx';
 
 const routes = [
   {
@@ -56,14 +57,6 @@ const routes = [
       {
         path: "privacy",
         element: <MarkdownPage filepath='privacy.md' />,
-      },
-      {
-        path: "ventures",
-        element: <VenturesPage />,
-      },
-      {
-        path: "venture/:id",
-        element: <VenturePage />,
       },
       {
         path: "migration",
@@ -132,6 +125,10 @@ const routes = [
       {
         path: "roles",
         element: <ReferenceRolesPage />,
+      },
+      {
+        path: "ventures",
+        element: <ReferenceVenturesPage />,
       }
     ]
   },
@@ -194,6 +191,14 @@ const routes = [
       {
         path: "roles",
         element: <RolesPage />,
+      },
+      {
+        path: "ventures",
+        element: <VenturesPage />,
+      },
+      {
+        path: "venture/:id",
+        element: <VenturePage />,
       }
     ]
   },

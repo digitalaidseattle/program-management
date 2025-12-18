@@ -19,17 +19,27 @@ type Venture = {
     problem: string
     solution: string
     impact: string
-    program_areas: string
+    program_areas: string[];
     venture_code: string;
     partner_airtable_id: string[],
     partner?: Partner
 
 }
 
-const DEFAULT_SELECT = "*, partner(*)"
+const DEFAULT_SELECT = "*, partner(*)";
+
+function MAPPER(json: any): Venture {
+    console.log(json);
+    const venture = {
+        ...json,
+        program_areas: JSON.parse(json.program_areas) ?? []
+    }
+    return venture;
+}
+
 class VentureService extends PMEntityService<Venture> {
     public constructor() {
-        super("venture", DEFAULT_SELECT);
+        super("venture", DEFAULT_SELECT, MAPPER);
     }
 
     async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Venture): Promise<PageInfo<Venture>> {
