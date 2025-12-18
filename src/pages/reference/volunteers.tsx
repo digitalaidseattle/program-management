@@ -6,19 +6,26 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> df7d938 (filter entity list)
 import { CheckOutlined } from "@ant-design/icons";
 import {
   ListItemIcon,
   MenuItem
 } from '@mui/material';
+<<<<<<< HEAD
 =======
 >>>>>>> 4d1d323 (ET-84 read only volunteer component)
+=======
+>>>>>>> df7d938 (filter entity list)
 
 import { ListCard } from '../../components/ListCard';
 
 import { useEffect, useState } from "react";
 import { EntityListPage } from '../../components/EntityListPage';
 import { profileService } from '../../services/dasProfileService';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
@@ -112,14 +119,103 @@ const ReferenceVolunteersPage = () => {
   };
 =======
 import { volunteerService } from '../../services/dasVolunteerService';
+=======
+import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
+>>>>>>> df7d938 (filter entity list)
 import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
+import { MoreButton } from "./MoreButton";
+import { useParams } from "react-router";
+
 
 const ReferenceVolunteersPage = () => {
+<<<<<<< HEAD
 >>>>>>> 4d1d323 (ET-84 read only volunteer component)
+=======
+  const { id } = useParams<string>();
+
+  const [entities, setEntities] = useState<Volunteer[]>([]);
+  const [filter, setFilter] = useState<string>('active');
+
+  useEffect(() => {
+    // externally requested record, only getAll guarantees finding the record
+    if (id) {
+      setFilter('all');
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchData()
+  }, [filter]);
+
+  async function fetchData() {
+    const found = await filteredData();
+    setEntities(found);
+  }
+
+  async function filteredData(): Promise<Volunteer[]> {
+    switch (filter) {
+      case 'all':
+        return volunteerService
+          .getAll()
+          .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+      case 'cadre':
+        return volunteerService
+          .getAll()
+          .then(data => data
+            .filter(v => ['Cadre'].includes(v.status))
+            .sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+      case 'contributor':
+        return volunteerService
+          .getAll()
+          .then(data => data
+            .filter(v => ['Contributor'].includes(v.status))
+            .sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+      case 'active':
+      default:
+        return volunteerService
+          .getActive()
+          .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+    }
+  }
+
+  function filterMenu() {
+    return <>
+      <MenuItem onClick={() => handleFilterChange('all')}>
+        <ListItemIcon>
+          {filter === 'all' && <CheckOutlined />}
+        </ListItemIcon>
+        Show All
+      </MenuItem>
+      <MenuItem onClick={() => handleFilterChange('all')}>
+        <ListItemIcon>
+          {filter === 'active' && <CheckOutlined />}
+        </ListItemIcon>
+        Active
+      </MenuItem>
+      <MenuItem onClick={() => handleFilterChange('cadre')}>
+        <ListItemIcon>
+          {filter === 'cadre' && <CheckOutlined />}
+        </ListItemIcon>
+        Cadre
+      </MenuItem>
+      <MenuItem onClick={() => handleFilterChange('contributor')}>
+        <ListItemIcon>
+          {filter === 'contributor' && <CheckOutlined />}
+        </ListItemIcon>
+        Contributor
+      </MenuItem>
+    </>
+  }
+
+  function handleFilterChange(newFilter: string) {
+    setFilter(newFilter);
+  };
+>>>>>>> df7d938 (filter entity list)
 
   return (
     <EntityListPage
       title={'Volunteers'}
+<<<<<<< HEAD
 <<<<<<< HEAD
       entities={entities}
       filterBy={searchValue}
@@ -131,6 +227,10 @@ const ReferenceVolunteersPage = () => {
         .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
       }
 >>>>>>> 4d1d323 (ET-84 read only volunteer component)
+=======
+      pageAction={<MoreButton menuItems={filterMenu()} />}
+      entities={entities}
+>>>>>>> df7d938 (filter entity list)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

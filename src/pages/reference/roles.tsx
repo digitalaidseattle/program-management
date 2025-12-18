@@ -6,6 +6,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import {
@@ -90,18 +91,37 @@ const ReferenceRolesPage = () => {
   };
 =======
 
+=======
+>>>>>>> df7d938 (filter entity list)
 import { ListCard } from '../../components/ListCard';
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { roleService } from '../../services/dasRoleService';
+import { Role, roleService } from '../../services/dasRoleService';
 import { ReferenceRoleDetails } from '../role/ReferenceRoleDetails';
+import { useEffect, useState } from 'react';
 
 const ReferenceRolesPage = () => {
+<<<<<<< HEAD
 >>>>>>> b09b223 (reference views for roles)
+=======
+  const [entities, setEntities] = useState<Role[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await roleService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
+>>>>>>> df7d938 (filter entity list)
 
   return (
     <EntityListPage
       title={'Roles'}
+<<<<<<< HEAD
 <<<<<<< HEAD
       entities={entities}
       filterBy={searchValue}
@@ -113,6 +133,9 @@ const ReferenceRolesPage = () => {
         .then(roles => roles.sort((r1, r2) => r1.name.localeCompare(r2.name)))
       }
 >>>>>>> b09b223 (reference views for roles)
+=======
+      entities={entities}
+>>>>>>> df7d938 (filter entity list)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

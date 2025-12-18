@@ -5,6 +5,7 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -16,20 +17,34 @@ import { Entity, Identifier } from "@digitalaidseattle/core";
 >>>>>>> 4815893 (reference list page urls)
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { ScrollList } from "./ScrollList";
+=======
+import { Entity } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
+import { Box, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
+>>>>>>> df7d938 (filter entity list)
 import { useParams } from "react-router-dom";
+import { ScrollList } from "./ScrollList";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
     entities: T[];
     pageAction?: React.ReactNode;
+<<<<<<< HEAD
     filterBy?: string;
     onFilter?: (value: string) => void;
+=======
+>>>>>>> df7d938 (filter entity list)
     listItemRenderer: (entity: T) => React.ReactNode;
     detailRenderer: (entity: T) => React.ReactNode;
 }
 
 export function EntityListPage<T extends Entity>({
+<<<<<<< HEAD
     title, entities = [], pageAction, filterBy, onFilter, listItemRenderer, detailRenderer
+=======
+    title, entities = [], pageAction, listItemRenderer, detailRenderer
+>>>>>>> df7d938 (filter entity list)
 }: EntityListPageProps<T>) {
     const { id } = useParams<string>();
 <<<<<<< HEAD
@@ -41,8 +56,13 @@ export function EntityListPage<T extends Entity>({
     const [selectedItem, setSelectedItem] = useState<T>();
 
     useEffect(() => {
+<<<<<<< HEAD
         setFilterValue(filterBy!);
     }, [filterBy]);
+=======
+        setPageInfo({ rows: entities, totalRowCount: entities.length });
+    }, [entities]);
+>>>>>>> df7d938 (filter entity list)
 
 <<<<<<< HEAD
     useEffect(() => {

@@ -15,13 +15,19 @@ import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 
 import { EntityListPage } from '../../components/EntityListPage';
+<<<<<<< HEAD
 import { ListCard } from '../../components/ListCard';
 import { MoreButton } from "./MoreButton";
 
 import { Discipline, DisciplineService } from '../../services/dasDisciplineService';
+=======
+import { Discipline, disciplineService } from '../../services/dasDisciplineService';
+>>>>>>> df7d938 (filter entity list)
 import { ReferenceDisciplineDetails } from '../discipline/ReferenceDisciplineDetails';
+import { useEffect, useState } from 'react';
 
 const ReferenceDisciplinesPage = () => {
+<<<<<<< HEAD
   const disciplineService = DisciplineService.instance();
   const { id } = useParams<string>();
 
@@ -86,14 +92,31 @@ const ReferenceDisciplinesPage = () => {
   function handleFilterChange(newFilter: string) {
     setFilter(newFilter);
   };
+=======
+  const [entities, setEntities] = useState<Discipline[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await disciplineService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
+>>>>>>> df7d938 (filter entity list)
 
   return (
     <EntityListPage
       title={'Disciplines'}
       entities={entities}
+<<<<<<< HEAD
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
+=======
+>>>>>>> df7d938 (filter entity list)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

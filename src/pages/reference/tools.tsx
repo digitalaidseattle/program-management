@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 
 import { EntityListPage } from '../../components/EntityListPage';
+<<<<<<< HEAD
 import { ListCard } from '../../components/ListCard';
 import { MoreButton } from './MoreButton';
 
@@ -87,13 +88,37 @@ const ReferenceToolsPage = () => {
   function handleFilterChange(newFilter: string) {
     setFilter(newFilter);
   };
+=======
+import { Tool, toolService } from '../../services/dasToolsService';
+import { ReferenceToolDetails } from '../tool/ReferenceToolDetails';
+import { useEffect, useState } from 'react';
+
+const ReferenceToolsPage = () => {
+  const [entities, setEntities] = useState<Tool[]>([]);
+  const storageService = useStorageService()!;
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await toolService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
+
+>>>>>>> df7d938 (filter entity list)
   return (
     <EntityListPage
       title={'Tools'}
       entities={entities}
+<<<<<<< HEAD
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
+=======
+>>>>>>> df7d938 (filter entity list)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

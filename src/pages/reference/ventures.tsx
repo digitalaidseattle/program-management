@@ -14,6 +14,7 @@ import {
 import { CheckOutlined } from "@ant-design/icons";
 
 import { ListCard } from '../../components/ListCard';
+<<<<<<< HEAD
 import { MoreButton } from "./MoreButton";
 import { EntityListPage } from '../../components/EntityListPage';
 import { partnerService } from '../../services/dasPartnerService';
@@ -83,6 +84,27 @@ const ReferenceVenturesPage = () => {
         </MenuItem>
       })}
     </>
+=======
+
+import { useEffect, useState } from 'react';
+import { EntityListPage } from '../../components/EntityListPage';
+import { partnerService } from '../../services/dasPartnerService';
+import { Venture, ventureService } from '../../services/dasVentureService';
+import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
+
+const ReferenceVenturesPage = () => {
+  const [entities, setEntities] = useState<Venture[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await ventureService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
+    setEntities(found);
+>>>>>>> df7d938 (filter entity list)
   }
 
   return (

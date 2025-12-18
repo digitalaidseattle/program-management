@@ -13,7 +13,9 @@ import {
 } from '@mui/material';
 import { CheckOutlined } from "@ant-design/icons";
 
+import { useEffect, useState } from 'react';
 import { EntityListPage } from '../../components/EntityListPage';
+<<<<<<< HEAD
 import { ListCard } from '../../components/ListCard';
 import { MoreButton } from "./MoreButton";
 
@@ -102,14 +104,35 @@ const ReferencePartnersPage = () => {
   function handleFilterChange(newFilter: string) {
     setFilter(newFilter);
   };
+=======
+import { Partner, partnerService } from '../../services/dasPartnerService';
+import { ReferencePartnerDetails } from '../partner/ReferencePartnerDetails';
+
+const ReferencePartnersPage = () => {
+  const [entities, setEntities] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await partnerService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
+>>>>>>> df7d938 (filter entity list)
 
   return (
     <EntityListPage
       title={'Partners'}
       entities={entities}
+<<<<<<< HEAD
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
+=======
+>>>>>>> df7d938 (filter entity list)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
