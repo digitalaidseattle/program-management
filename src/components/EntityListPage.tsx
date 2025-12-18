@@ -4,14 +4,19 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+<<<<<<< HEAD
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Entity } from "@digitalaidseattle/core";
+=======
+import { Entity, Identifier } from "@digitalaidseattle/core";
+>>>>>>> 4815893 (reference list page urls)
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { ScrollList } from "./ScrollList";
+import { useParams } from "react-router-dom";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
@@ -27,7 +32,10 @@ export function EntityListPage<T extends Entity>({
     title, entities = [], pageAction, filterBy, onFilter, listItemRenderer, detailRenderer
 }: EntityListPageProps<T>) {
     const { id } = useParams<string>();
+<<<<<<< HEAD
     const [filterValue, setFilterValue] = useState<string>('');
+=======
+>>>>>>> 4815893 (reference list page urls)
 
     const [pageInfo, setPageInfo] = useState<PageInfo<T>>({ rows: [], totalRowCount: 0 });
     const [selectedItem, setSelectedItem] = useState<T>();
@@ -36,11 +44,14 @@ export function EntityListPage<T extends Entity>({
         setFilterValue(filterBy!);
     }, [filterBy]);
 
+<<<<<<< HEAD
     useEffect(() => {
         setPageInfo({ rows: entities, totalRowCount: entities.length });
         setSelectedItem(entities.find(e => e.id === id) ?? entities[0]);
     }, [id, entities]);
 
+=======
+>>>>>>> 4815893 (reference list page urls)
     useEffect(() => {
         if (pageInfo) {
             if (pageInfo.rows.length > 0) {
@@ -50,12 +61,15 @@ export function EntityListPage<T extends Entity>({
                 } else {
                     setSelectedItem(pageInfo.rows[0]);
                 }
+<<<<<<< HEAD
             }
             if (id) {
                 const found = pageInfo.rows.find(e => e.id === id)
                 setSelectedItem(found ?? pageInfo.rows[0]);
             } else {
                 setSelectedItem(pageInfo.rows[0]);
+=======
+>>>>>>> 4815893 (reference list page urls)
             }
         }
     }, [pageInfo]);

@@ -86,7 +86,7 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
 
   function handleOpen(volunteer_id: string): void {
     if (volunteer_id) {
-      navigate(`/data/volunteer/${volunteer_id}`);
+      navigate(`/volunteers/${volunteer_id}`);
     }
   }
 
