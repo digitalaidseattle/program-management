@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { EntityListPage } from '../../components/EntityListPage';
 import { partnerService } from '../../services/dasPartnerService';
 import { Venture, ventureService } from '../../services/dasVentureService';
-import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
+import { ReferenceVentureDetails } from "../venture/referenceVentureDetails";
 
 const ReferenceVenturesPage = () => {
   const [entities, setEntities] = useState<Venture[]>([]);
