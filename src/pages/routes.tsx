@@ -18,7 +18,6 @@ import PartnersPage from './partners';
 import { ProfilePage } from './profile/index.tsx';
 import ReferenceDisciplinesPage from './reference/disciplines.tsx';
 import ReferencePartnersPage from './reference/partners.tsx';
-import ReferenceTeamsPage from './reference/teams..tsx';
 import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
 import { RolePage } from './role/index.tsx';
