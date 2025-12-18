@@ -103,31 +103,31 @@ const routes = [
         element: <AllMeetingsPage />,
       },
       {
-        path: "teams",
+        path: "teams/:id?",
         element: <ReferenceTeamsPage />,
       },
       {
-        path: "tools",
+        path: "tools/:id?",
         element: <ReferenceToolsPage />,
       },
       {
-        path: "volunteers",
+        path: "volunteers/:id?",
         element: <ReferenceVolunteersPage />,
       },
       {
-        path: "disciplines",
+        path: "disciplines/:id?",
         element: <ReferenceDisciplinesPage />,
       },
       {
-        path: "partners",
+        path: "partners/:id?",
         element: <ReferencePartnersPage />,
       },
       {
-        path: "roles",
+        path: "roles/:id?",
         element: <ReferenceRolesPage />,
       },
       {
-        path: "ventures",
+        path: "ventures/:id?",
         element: <ReferenceVenturesPage />,
       }
     ]

@@ -4,11 +4,12 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Entity } from "@digitalaidseattle/core";
+import { Entity, Identifier } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { Box, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ScrollList } from "./ScrollList";
+import { useParams } from "react-router-dom";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
@@ -20,6 +21,7 @@ type EntityListPageProps<T extends Entity> = {
 export function EntityListPage<T extends Entity>({
     title, fetchData, listItemRenderer, detailRenderer
 }: EntityListPageProps<T>) {
+    const { id } = useParams<string>();
 
     const [pageInfo, setPageInfo] = useState<PageInfo<T>>({ rows: [], totalRowCount: 0 });
     const [selectedItem, setSelectedItem] = useState<T>();
@@ -32,14 +34,25 @@ export function EntityListPage<T extends Entity>({
         }
     }, []);
 
-
     useEffect(() => {
         if (pageInfo) {
             if (pageInfo.rows.length > 0) {
-                setSelectedItem(pageInfo.rows[0])
+                if (id) {
+                    const found = pageInfo.rows.find(e => e.id === id)
+                    setSelectedItem(found ?? pageInfo.rows[0]);
+                } else {
+                    setSelectedItem(pageInfo.rows[0]);
+                }
             }
         }
-    }, [pageInfo])
+    }, [pageInfo]);
+
+    useEffect(() => {
+        if (selectedItem) {
+            window.history.pushState({}, '', `${selectedItem.id}`)
+        }
+    }, [selectedItem]);
+
     return (
         <Card >
             <CardHeader

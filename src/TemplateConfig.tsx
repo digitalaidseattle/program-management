@@ -100,49 +100,49 @@ export const TemplateConfig = () => {
                 id: 'ref-volunteers',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/volunteers',
+                url: '/volunteers/',
                 icon: <UserOutlined />
             },
             {
                 id: 'ref-teams',
                 title: 'Teams',
                 type: 'item',
-                url: '/teams',
+                url: '/teams/',
                 icon: <TeamOutlined />
             },
             {
                 id: 'ref-partners',
                 title: 'Partners',
                 type: 'item',
-                url: '/partners',
+                url: '/partners/',
                 icon: <HeartOutlined />
             },
             {
                 id: 'ref-ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures',
+                url: '/ventures/',
                 icon: <RocketOutlined />
             },
             {
                 id: 'ref-tools',
                 title: 'Tools',
                 type: 'item',
-                url: '/tools',
+                url: '/tools/',
                 icon: <ToolOutlined />
             },
             {
                 id: 'ref-disciplines',
                 title: 'Disciplines',
                 type: 'item',
-                url: '/disciplines',
+                url: '/disciplines/',
                 icon: <KeyOutlined />
             },
             {
                 id: 'ref-roles',
                 title: 'Roles',
                 type: 'item',
-                url: '/roles',
+                url: '/roles/',
                 icon: <IdcardOutlined />
             }
         ]
