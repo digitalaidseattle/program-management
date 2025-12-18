@@ -26,7 +26,17 @@ type Venture = {
 
 }
 
-const DEFAULT_SELECT = "*, partner(*)"
+const DEFAULT_SELECT = "*, partner(*)";
+
+function MAPPER(json: any): Venture {
+    console.log(json);
+    const venture = {
+        ...json,
+        program_areas: JSON.parse(json.program_areas) ?? []
+    }
+    return venture;
+}
+
 class VentureService extends PMEntityService<Venture> {
 
     public constructor() {

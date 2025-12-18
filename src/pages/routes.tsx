@@ -129,6 +129,10 @@ const routes = [
       {
         path: "roles",
         element: <ReferenceRolesPage />,
+      },
+      {
+        path: "ventures",
+        element: <ReferenceVenturesPage />,
       }
     ]
   },
