@@ -94,42 +94,56 @@ export const TemplateConfig = () => {
     const reference = {
         id: 'reference-group',
         title: 'Reference',
-        type: 'group',
+        type: 'collapse',
         children: [
             {
                 id: 'ref-volunteers',
                 title: 'Volunteers',
                 type: 'item',
-                url: '/volunteers',
+                url: '/volunteers/',
                 icon: <UserOutlined />
             },
             {
                 id: 'ref-teams',
                 title: 'Teams',
                 type: 'item',
-                url: '/teams',
+                url: '/teams/',
                 icon: <TeamOutlined />
             },
             {
                 id: 'ref-partners',
                 title: 'Partners',
                 type: 'item',
-                url: '/partners',
+                url: '/partners/',
                 icon: <HeartOutlined />
             },
-             {
+            {
+                id: 'ref-ventures',
+                title: 'Ventures',
+                type: 'item',
+                url: '/ventures/',
+                icon: <RocketOutlined />
+            },
+            {
                 id: 'ref-tools',
                 title: 'Tools',
                 type: 'item',
-                url: '/tools',
+                url: '/tools/',
                 icon: <ToolOutlined />
             },
-             {
+            {
                 id: 'ref-disciplines',
                 title: 'Disciplines',
                 type: 'item',
-                url: '/disciplines',
+                url: '/disciplines/',
                 icon: <KeyOutlined />
+            },
+            {
+                id: 'ref-roles',
+                title: 'Roles',
+                type: 'item',
+                url: '/roles/',
+                icon: <IdcardOutlined />
             }
         ]
     }
@@ -137,7 +151,7 @@ export const TemplateConfig = () => {
     const data = {
         id: 'cadre-dashboard',
         title: 'Data',
-        type: 'group',
+        type: 'collapse',
         children: [
             {
                 id: 'people',
@@ -163,7 +177,7 @@ export const TemplateConfig = () => {
                 id: 'ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures',
+                url: '/data/ventures',
                 icon: <RocketOutlined />
             },
             {
@@ -184,7 +198,7 @@ export const TemplateConfig = () => {
                 id: 'roles',
                 title: 'Roles',
                 type: 'item',
-                url: '/roles',
+                url: '/data/roles',
                 icon: <IdcardOutlined />
             },
             {

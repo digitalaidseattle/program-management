@@ -1,29 +1,26 @@
 /**
- *  reference/teams/index.tsx
+ *  reference/roles/index.tsx
  *
  *  @copyright 2025 Digital Aid Seattle
  *
  */
 
-import { useStorageService } from '@digitalaidseattle/core';
-
 import { ListCard } from '../../components/ListCard';
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { Tool, toolService } from '../../services/dasToolsService';
-import { ReferenceToolDetails } from '../tool/ReferenceToolDetails';
+import { Role, roleService } from '../../services/dasRoleService';
+import { ReferenceRoleDetails } from '../role/ReferenceRoleDetails';
 import { useEffect, useState } from 'react';
 
-const ReferenceToolsPage = () => {
-  const [entities, setEntities] = useState<Tool[]>([]);
-  const storageService = useStorageService()!;
+const ReferenceRolesPage = () => {
+  const [entities, setEntities] = useState<Role[]>([]);
 
   useEffect(() => {
     fetchData()
   }, []);
 
   async function fetchData() {
-    const found = await toolService
+    const found = await roleService
       .getAll()
       .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
     setEntities(found);
@@ -31,17 +28,17 @@ const ReferenceToolsPage = () => {
 
   return (
     <EntityListPage
-      title={'Tools'}
+      title={'Roles'}
       entities={entities}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
           title={entity.name}
-          avatarImageSrc={storageService.getUrl(`/logos/${entity.id}`)} />}
+          avatarImageSrc={roleService.getIconUrl(entity)} />}
       detailRenderer={entity =>
-        <ReferenceToolDetails
+        <ReferenceRoleDetails
           entity={entity} />} />
   );
 };
 
-export default ReferenceToolsPage;
+export default ReferenceRolesPage;
