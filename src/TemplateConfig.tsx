@@ -55,7 +55,7 @@ export const TemplateConfig = () => {
                 id: 'ref-ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures',
+                url: '/ventures/',
                 icon: <RocketOutlined />
             },
             {
