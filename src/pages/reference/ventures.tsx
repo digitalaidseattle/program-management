@@ -7,20 +7,30 @@
 
 import { ListCard } from '../../components/ListCard';
 
+import { useEffect, useState } from 'react';
 import { EntityListPage } from '../../components/EntityListPage';
 import { partnerService } from '../../services/dasPartnerService';
-import { ventureService } from '../../services/dasVentureService';
+import { Venture, ventureService } from '../../services/dasVentureService';
 import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
 
 const ReferenceVenturesPage = () => {
+  const [entities, setEntities] = useState<Venture[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await ventureService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
+    setEntities(found);
+  }
 
   return (
     <EntityListPage
       title={'Ventures'}
-      fetchData={() => ventureService
-        .getAll()
-        .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
-      }
+      entities={entities}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

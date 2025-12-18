@@ -5,22 +5,31 @@
  *
  */
 
-
 import { ListCard } from '../../components/ListCard';
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { roleService } from '../../services/dasRoleService';
+import { Role, roleService } from '../../services/dasRoleService';
 import { ReferenceRoleDetails } from '../role/ReferenceRoleDetails';
+import { useEffect, useState } from 'react';
 
 const ReferenceRolesPage = () => {
+  const [entities, setEntities] = useState<Role[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await roleService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
 
   return (
     <EntityListPage
       title={'Roles'}
-      fetchData={() => roleService
-        .getAll()
-        .then(roles => roles.sort((r1, r2) => r1.name.localeCompare(r2.name)))
-      }
+      entities={entities}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

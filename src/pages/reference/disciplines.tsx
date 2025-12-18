@@ -9,16 +9,28 @@
 import { ListCard } from '../../components/ListCard';
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { disciplineService } from '../../services/dasDisciplineService';
+import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 import { ReferenceDisciplineDetails } from '../discipline/ReferenceDisciplineDetails';
+import { useEffect, useState } from 'react';
 
 const ReferenceDisciplinesPage = () => {
+  const [entities, setEntities] = useState<Discipline[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await disciplineService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
 
   return (
     <EntityListPage
       title={'Disciplines'}
-      fetchData={() => disciplineService.getAll()
-        .then(disciplines => disciplines.sort((d1, d2) => d1.name.localeCompare(d2.name)))}
+      entities={entities}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

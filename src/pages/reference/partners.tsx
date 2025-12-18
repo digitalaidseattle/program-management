@@ -8,20 +8,29 @@
 
 import { ListCard } from '../../components/ListCard';
 
+import { useEffect, useState } from 'react';
 import { EntityListPage } from '../../components/EntityListPage';
-import { partnerService } from '../../services/dasPartnerService';
+import { Partner, partnerService } from '../../services/dasPartnerService';
 import { ReferencePartnerDetails } from '../partner/ReferencePartnerDetails';
 
 const ReferencePartnersPage = () => {
+  const [entities, setEntities] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  async function fetchData() {
+    const found = await partnerService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    setEntities(found);
+  }
 
   return (
     <EntityListPage
       title={'Partners'}
-      fetchData={() =>
-        partnerService
-          .getAll()
-          .then(partners => partners.sort((p1, p2) => p1.name.localeCompare(p2.name)))
-      }
+      entities={entities}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

@@ -4,22 +4,23 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Entity, Identifier } from "@digitalaidseattle/core";
+import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { Box, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ScrollList } from "./ScrollList";
 import { useParams } from "react-router-dom";
+import { ScrollList } from "./ScrollList";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
-    fetchData: () => Promise<T[]>;
+    entities: T[];
+    pageAction?: React.ReactNode;
     listItemRenderer: (entity: T) => React.ReactNode;
     detailRenderer: (entity: T) => React.ReactNode;
 }
 
 export function EntityListPage<T extends Entity>({
-    title, fetchData, listItemRenderer, detailRenderer
+    title, entities = [], pageAction, listItemRenderer, detailRenderer
 }: EntityListPageProps<T>) {
     const { id } = useParams<string>();
 
@@ -27,12 +28,8 @@ export function EntityListPage<T extends Entity>({
     const [selectedItem, setSelectedItem] = useState<T>();
 
     useEffect(() => {
-        if (fetchData) {
-            fetchData().then(data => {
-                setPageInfo({ rows: data, totalRowCount: data.length });
-            });
-        }
-    }, []);
+        setPageInfo({ rows: entities, totalRowCount: entities.length });
+    }, [entities]);
 
     useEffect(() => {
         if (pageInfo) {
@@ -57,7 +54,8 @@ export function EntityListPage<T extends Entity>({
         <Card >
             <CardHeader
                 slotProps={{ title: { fontSize: 24 } }} // TODO move magic number into style constants
-                title={title} />
+                title={title}
+                action={pageAction} />
             <CardContent sx={{ p: 0 }}>
                 <Grid container>
                     <Grid size={3}>
