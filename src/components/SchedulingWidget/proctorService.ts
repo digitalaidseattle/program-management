@@ -5,7 +5,7 @@
  *
  */
 
-import { CodaRow } from '../../services/codaService';
+import { CodaRow, codaService } from '../../services/codaService';
 
 type Proctor = {
     id: string,
@@ -37,7 +37,6 @@ class ProctorService {
     }
 
     async getAll(): Promise<Proctor[]> {
-        const { codaService } = await import('../../services/codaService');
         const rows = await codaService.getRows(PROCTOR_TABLE_ID);
         const proctors = rows
             .map(row => this.mapJson(row))
@@ -59,7 +58,6 @@ class ProctorService {
                 { column: CODA_COLUMNS.links.interviewer, value: proctor.name }
             ]
         }));
-        const { codaService } = await import('../../services/codaService');
         return codaService.createRows(LINK_TABLE_ID, rows);
     }
 

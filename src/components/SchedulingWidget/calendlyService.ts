@@ -41,13 +41,17 @@ class CalendlyService {
             
             if (!createResp.ok) {
                 const error = await createResp.json().catch(() => ({ message: createResp.statusText }));
-                throw new Error(`Failed to create scheduling link: ${error.message || createResp.statusText}`);
+                console.error(`Failed to create scheduling link ${i + 1}/${nLinks}: ${error.message || createResp.statusText}`);
+                // Continue with subsequent attempts instead of throwing
+                continue;
             }
             
             const createData = await createResp.json();
             const url = createData.resource?.booking_url;
             if (url) {
                 links.push(url);
+            } else {
+                console.error(`No booking URL returned for scheduling link ${i + 1}/${nLinks}`);
             }
         }
         
