@@ -109,6 +109,15 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
             .eq('team_id', teamId)
             .then((resp: any) => resp.data);
     }
+
+    async findLeaders(): Promise<Team2Volunteer[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select('*, volunteer(*, profile(*))')
+            .eq('leader', true)
+            .then((resp: any) => resp.data);
+    }
+
 }
 
 

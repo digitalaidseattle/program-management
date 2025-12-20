@@ -11,6 +11,7 @@ import {
   Breadcrumbs,
   Card,
   CardContent,
+  Grid,
   Link,
   Stack,
   TextField,
@@ -19,33 +20,50 @@ import {
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { EntityProps } from '../../components/utils';
+import { Profile, profileService } from '../../services/dasProfileService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { DisciplinesCard } from './DisplinesCard';
 import { TeamsCard } from './TeamsCard';
 import { ToolsCard } from './ToolsCard';
 import { VenturesCard } from './VenturesCard';
+import { UploadImage } from '../../components/UploadImage';
+import { storageService } from '../../App';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #6ef597ff 111.48%, #7461c9ff -11.18%)" }
 
 const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
+  const [volunteer, setVolunteer] = useState<Volunteer>();
+
+  useEffect(() => {
+    setVolunteer(entity);
+  }, [entity]);
 
   const fields = [
     {
-      name: 'profile.name', label: 'Name', type: 'custom', disabled: false,
+      name: 'profile.name', label: 'Name', type: 'custom', disabled: true,
       inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
-        return <TextField key={idx} id="outlined-basic" label="Name" variant="outlined" value={entity.profile!.name} />
+        return <TextField key={idx} id="outlined-basic" label="Name"
+          disabled={true}
+          variant="outlined" value={entity.profile!.name} />
       }
     },
     {
-      name: 'profile.first_name', label: 'First Name', type: 'string', disabled: false,
+      name: 'profile.first_name', label: 'First Name', type: 'custom', disabled: false,
       inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
-        return <TextField key={idx} id="outlined-basic" label="First Name" variant="outlined" value={entity.profile!.first_name} />
+        return <TextField key={idx} id="outlined-basic" label="First Name" variant="outlined"
+          value={entity.profile!.first_name}
+          onChange={(evt) => handleChange('profile.first_name', evt.target.value)} />
       }
     },
     {
-      name: 'profile.last_name', label: 'Last Name', type: 'string', disabled: false,
+      name: 'profile.last_name', label: 'Last Name', type: 'custom', disabled: false,
       inputRenderer: (idx: number, _optio: InputOption, _value: any) => {
-        return <TextField key={idx} id="outlined-basic" label="First Name" variant="outlined" value={entity.profile!.last_name} />
+        return <TextField key={idx}
+          id="outlined-basic"
+          label="First Name"
+          variant="outlined"
+          value={entity.profile!.last_name}
+          onChange={(evt) => handleChange('profile.last_name', evt.target.value)} />
       }
     },
     {
@@ -76,29 +94,75 @@ const VolunteerDetails: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }
       type: 'string',
       disabled: false,
     },
-  ]
+  ] as InputOption[];
 
   function handleChange(field: string, value: any) {
-    // stringify & parse needed for string keys
-    const updatedChanges = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
-    console.log(updatedChanges)
-    // setProject({
-    //   ...project,
-    //   ...updatedChanges
-    // });
-    // setDirty(true);
+    if (volunteer) {
+      const attrs = field.split('.');
+      if (attrs[0] === 'profile') {
+        let profileChanges: Partial<Profile> = {};
+        if (attrs[1] === 'last_name') {
+          profileChanges = {
+            'last_name': value,
+            'name': `${volunteer.profile!.first_name} ${value}`
+          }
+        }
+        if (attrs[1] === 'first_name') {
+          profileChanges = {
+            'first_name': value,
+            'name': `${value} ${volunteer.profile!.last_name}`
+          }
+        }
+        profileService.update(volunteer.profile!.id, profileChanges)
+          .then(() => volunteerService.getById(volunteer.id)
+            .then(refreshed => onChange(refreshed)));
+      } else {
+        const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`);
+        volunteerService.update(volunteer.id, changes)
+          .then(updated => onChange(updated));
+      }
+    }
   }
-  return (entity &&
+
+  function handlePicChange(files: File[]) {
+    if (volunteer) {
+      files.forEach((file: File) => {
+        const current = volunteer.profile!.pic ? volunteer.profile!.pic.split(':') : [];
+        const idx = current.length < 2 ? 1 : Number(current[1]);
+        const location = `profiles/${volunteer.profile!.id}:${idx}`;
+        storageService.upload(location, file)
+          .then(() => {
+            profileService.update(volunteer.profile!.id, { pic: location })
+              .then(() => volunteerService.getById(volunteer.id)
+                .then(refreshed => onChange(refreshed)));
+          })
+      })
+    }
+  }
+
+  function getPicUrl(volunteer: Volunteer): string | undefined {
+    console.log('getPicUrl', volunteer)
+    return volunteer.profile!.id ? storageService.getUrl(`profiles/${volunteer.profile!.id}`) : undefined
+  }
+
+  return (volunteer &&
     <Stack gap={1} >
       <Card >
         <CardContent>
-          <InputForm entity={entity} inputFields={fields} onChange={handleChange} />
+          <Grid container spacing={2}>
+            <Grid size={3}>
+              <UploadImage url={getPicUrl(volunteer)} onChange={(files) => handlePicChange(files)} />
+            </Grid>
+            <Grid size={9}>
+              <InputForm entity={volunteer} inputFields={fields} onChange={handleChange} />
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
-      <TeamsCard entity={entity} onChange={onChange} />
-      <DisciplinesCard entity={entity} onChange={onChange} />
-      <ToolsCard entity={entity} onChange={onChange} />
-      <VenturesCard entity={entity} onChange={onChange} />
+      <TeamsCard entity={volunteer} onChange={onChange} />
+      <DisciplinesCard entity={volunteer} onChange={onChange} />
+      <ToolsCard entity={volunteer} onChange={onChange} />
+      <VenturesCard entity={volunteer} onChange={onChange} />
     </Stack>
   )
 }
@@ -124,7 +188,7 @@ const VolunteerPage = () => {
         <Link color="inherit" href="/">
           Home
         </Link>
-        <Link color="inherit" href="/volunteers">
+        <Link color="inherit" href="/data/volunteers">
           Volunteers
         </Link>
         <Typography>{entity.profile!.name}</Typography>

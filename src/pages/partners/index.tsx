@@ -9,13 +9,8 @@ import {
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Partner, partnerService } from '../../services/dasPartnerService';
-import { PartnerDetails } from '../partner';
-import { PartnerCard } from './partnerCard';
-
-
 
 const PartnersPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Partner>>({ rows: [], totalRowCount: 0 });
@@ -88,7 +83,7 @@ const PartnersPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/partner/${event.id}`)
+    navigate(`/data/partner/${event.id}`)
   }
 
   return (
@@ -102,14 +97,6 @@ const PartnersPage = () => {
           onRowDoubleClick: handleRowDoubleClick
         }
       }
-      gridOpts={{ cardRenderer: entity => <PartnerCard entity={entity} /> }}
-      listOpts={{
-        listItemRenderer: entity => <ListCard
-          key={entity.id}
-          title={entity.name}
-          avatarImageSrc={storageService.getUrl(`logos/${entity.id}`)} />,
-        detailRenderer: entity => <PartnerDetails entity={entity} onChange={() => alert('nrfpt')} />,
-      }}
     />
   );
 };

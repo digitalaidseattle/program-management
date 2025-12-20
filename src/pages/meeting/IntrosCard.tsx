@@ -33,7 +33,7 @@ function IntrosCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
     }, [meeting]);
 
     async function addIntros(): Promise<void> {
-        const cutoff = dayjs(meeting.date).subtract(2, 'month');
+        const cutoff = dayjs(meeting.start_date).subtract(2, 'month');
         const cadre = await volunteerService.findCadreVolunteers();
         meetingTopicService.findIntros()
             .then(topics => {

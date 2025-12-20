@@ -10,7 +10,7 @@ import * as React from "react";
 
 const ExpandMore = styled((props: any) => {
     const { expand, ...other } = props;
-    return <IconButton {...other} />;
+    return <IconButton size="small" {...other} />;
 })(({ theme, expand }: { theme?: any; expand: boolean }) => ({
     transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
     marginLeft: "auto",

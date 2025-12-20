@@ -1,0 +1,2 @@
+ALTER TABLE meeting DROP COLUMN IF EXISTS team_id;
+ALTER TABLE meeting ADD COLUMN team_id UUID REFERENCES team(id);

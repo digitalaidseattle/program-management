@@ -14,12 +14,15 @@ import { Team2Tool, team2ToolService } from '../../services/dasTeam2ToolService'
 import { Team } from '../../services/dasTeamService';
 import { Tool, toolService } from '../../services/dasToolsService';
 
+type ToolsCarddProps = EntityProps<Team> & {
+  editable?: boolean
+}
 
 const STATUS_COMP: { [key: string]: JSX.Element } = {
   'active': <Chip label='Active' color='primary' />,
   'inactive': <Chip label='Inactive' color='default' />
 }
-export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
+export const ToolsCard: React.FC<ToolsCarddProps> = ({ entity, editable = false, onChange }) => {
   const [current, setCurrent] = useState<Team2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [tools, setTools] = useState<Tool[]>([]);
@@ -58,15 +61,15 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
 
   function createCards(items: Team2Tool[]) {
     return items
-      .map(v2t => {
+      .map((v2t, idx) => {
         const tool = v2t.tool!;
         return <ListCard
-          key={v2t.tool_id}
+          key={`${idx}`}
           title={v2t.tool!.name}
           avatarImageSrc={storageService.getUrl(`logos/${v2t.tool_id}`)}
           menuItems={[
-            <MenuItem onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
-            <MenuItem onClick={() => {
+            <MenuItem key={'open'} onClick={() => handleOpen(tool.id)}> Open</MenuItem >,
+            <MenuItem key={'remove'} onClick={() => {
               setSelectedItem(tool);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>]
@@ -113,11 +116,11 @@ export const ToolsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => 
         title='Tools'
         headerSx={CARD_HEADER_SX}
         items={cards}
-        addOpts={{
+        addOpts={editable ? {
           title: 'Add tool',
           available: available.map(tool => ({ label: tool.name, value: tool.id })),
           handleAdd: handleAdd
-        }}
+        } : undefined}
       />
       <ConfirmationDialog
         title="Confirm removing this tools"

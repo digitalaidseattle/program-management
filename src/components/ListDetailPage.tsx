@@ -5,15 +5,12 @@
  *
  */
 
-import { BarsOutlined, IdcardOutlined, TableOutlined } from "@ant-design/icons";
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
-import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, Stack, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
-import { EntityGrid } from "./EntityGrid";
 import { EntityTable } from "./EntityTable";
-import { EntityList } from "./EntityList";
 
 export type ListDetailPageProps<T extends Entity> = {
     pageInfo: PageInfo<T>;
@@ -34,31 +31,27 @@ export type ListDetailPageProps<T extends Entity> = {
 }
 
 export function ListDetailPage<T extends Entity>({
-    pageInfo, title, toolbar, onChange, tableOpts, gridOpts, listOpts
+    pageInfo, title, toolbar, onChange, tableOpts
 }: ListDetailPageProps<T>) {
-    const [showType, setShowType] = useState<string>('table');
+    const [showType] = useState<string>('table');
     return (
-        <>
-            <Stack direction={'row'} gap={1}>
-                <Typography variant='h2'>{title}</Typography>
-                <IconButton onClick={() => setShowType('table')}>
-                    <TableOutlined />
-                </IconButton>
-                <IconButton onClick={() => setShowType('grid')}>
-                    <IdcardOutlined />
-                </IconButton>
-                <IconButton onClick={() => setShowType('list')}>
-                    <BarsOutlined />
-                </IconButton>
-            </Stack>
-            <Divider />
-            <Box sx={{ margin: 1 }}>
-                {showType === 'grid' && gridOpts &&
-                    <EntityGrid
-                        pageInfo={pageInfo}
-                        onChange={onChange}
-                        cardRenderer={gridOpts.cardRenderer}
-                    />}
+        <Card >
+            <CardHeader
+                title={
+                    <Stack direction={'row'} gap={1}>
+                        <Typography variant='h2'>{title}</Typography>
+                        {/* <IconButton onClick={() => setShowType('table')}>
+                            <TableOutlined />
+                        </IconButton>
+                        <IconButton onClick={() => setShowType('grid')}>
+                            <IdcardOutlined />
+                        </IconButton>
+                        <IconButton onClick={() => setShowType('list')}>
+                            <BarsOutlined />
+                        </IconButton> */}
+                    </Stack>
+                }></CardHeader>
+            <CardContent sx={{ p: 0 }}>
                 {showType === 'table' && tableOpts &&
                     <EntityTable
                         pageInfo={pageInfo}
@@ -67,15 +60,21 @@ export function ListDetailPage<T extends Entity>({
                         toolbar={toolbar}
                         onRowDoubleClick={tableOpts.onRowDoubleClick}
                     />}
+                {/* {showType === 'grid' && gridOpts &&
+                    <EntityGrid
+                        pageInfo={pageInfo}
+                        onChange={onChange}
+                        cardRenderer={gridOpts.cardRenderer}
+                    />}
                 {showType === 'list' && listOpts &&
                     <EntityList
                         pageInfo={pageInfo}
                         toolbar={toolbar}
                         listItemRenderer={listOpts.listItemRenderer}
                         detailRenderer={listOpts.detailRenderer}
-                    />}
-            </Box>
-        </>
+                    />} */}
+            </CardContent>
+        </Card>
     );
 };
 

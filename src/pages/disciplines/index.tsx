@@ -12,11 +12,10 @@ import { Discipline, disciplineService } from '../../services/dasDisciplineServi
 import { DisciplineDetails } from '../discipline';
 
 
-
 const DisciplinesPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
-
   const navigate = useNavigate();
+
   const storageService = useStorageService()!;
 
   const columns: GridColDef<Discipline[][number]>[] = [
@@ -36,6 +35,7 @@ const DisciplinesPage = () => {
         >
           <Avatar
             src={storageService.getUrl(`icons/${params.row.id}`)}
+            src={disciplineService.getIconUrl(params.row)}
             alt={`${params.row.name} icon`}
             sx={{ width: 40, height: 40, objectFit: 'contain' }}
             variant="rounded"
@@ -56,7 +56,7 @@ const DisciplinesPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/discipline/${event.id}`)
+    navigate(`/data/discipline/${event.id}`)
   }
 
   function refreshEntity(entity: Discipline) {
@@ -90,6 +90,5 @@ const DisciplinesPage = () => {
     />
   );
 };
-
 
 export default DisciplinesPage;

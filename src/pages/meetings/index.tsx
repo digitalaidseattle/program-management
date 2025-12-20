@@ -4,9 +4,10 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { IconButton, Stack, Toolbar } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { useState } from 'react';
+import dayjs from 'dayjs';
+import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { createPlenaryMeeting } from '../../actions/CreatePlenary';
+import AddMeetingDialog from '../../components/AddMeetingDialog';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Meeting, meetingService } from '../../services/dasMeetingService';
@@ -27,35 +28,44 @@ const columns: GridColDef<Meeting[][number]>[] = [
   },
   {
     field: 'date',
-    headerName: 'Status',
+    headerName: 'Date',
   },
   {
-    field: 'meetingUrl',
+    field: 'meeting_url',
     headerName: 'Google Meet',
     width: 300,
   },
 ];
 
+function MeetingToolbar(): ReactNode {
+  const navigate = useNavigate();
+
+  const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
+
+  function handleClose(evt: any) {
+    if (evt.meeting) {
+      navigate(`data/meeting/${evt.meeting.id}`);
+    }
+    setShowAddMeetingDialog(false);
+  }
+
+  return (
+    <Stack direction='row' alignItems={'center'}>
+      <Toolbar sx={{ gap: 1 }}>
+        <IconButton onClick={() => setShowAddMeetingDialog(true)}><PlusCircleOutlined /></IconButton>
+      </Toolbar>
+      <AddMeetingDialog
+        title={'Add meeting'}
+        meetingTypes={['adhoc', 'team', 'leadership', 'plenary']}
+        onClose={handleClose}
+        open={showAddMeetingDialog} />
+    </Stack >
+  );
+}
+
 const MeetingsPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Meeting>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
-
-  async function newPlenary() {
-    const meeting = await createPlenaryMeeting();
-    if (meeting) {
-      navigate(`/meeting/${meeting.id}`)
-    }
-  }
-
-  function toolbar() {
-    return (
-      <Stack direction='row' alignItems={'center'}>
-        <Toolbar>
-          <IconButton color='primary' onClick={() => newPlenary()}><PlusCircleOutlined /></IconButton>
-        </Toolbar>
-      </Stack>
-    );
-  }
 
   function onChange(queryModel?: QueryModel) {
     if (queryModel) {
@@ -65,14 +75,14 @@ const MeetingsPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/meeting/${event.id}`)
+    navigate(`/data/meeting/${event.id}`)
   }
 
   return (
     <ListDetailPage
       title='Meetings'
       pageInfo={pageInfo}
-      toolbar={toolbar}
+      toolbar={() => <MeetingToolbar />}
       onChange={onChange}
       tableOpts={
         {
@@ -80,7 +90,7 @@ const MeetingsPage = () => {
           onRowDoubleClick: handleRowDoubleClick
         }
       }
-      gridOpts={{ cardRenderer: entity => <ListCard key={entity.id} title={`${entity.name} ${entity.date}`} /> }}
+      gridOpts={{ cardRenderer: entity => <ListCard key={entity.id} title={`${entity.name} ${dayjs(entity.start_date).format('MM/DD/YYYY')}`} /> }}
       listOpts={{
         listItemRenderer: entity => <ListCard
           key={entity.id}

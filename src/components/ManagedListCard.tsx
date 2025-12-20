@@ -1,7 +1,13 @@
+/**
+ *  ManagedListCard.tsx
+ *
+ *  @copyright 2025 Digital Aid Seattle
+ *
+ */
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { SelectItemDialog } from "@digitalaidseattle/mui";
+import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack } from "@mui/material";
 import { ReactNode, useState } from "react";
-import SelectItemDialog from "./SelectItemDialog";
 
 export type ManagedListCardProps = {
     title: string;
@@ -28,43 +34,34 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
         <>
             <Card>
                 <CardHeader
-                    titleTypographyProps={{ fontSize: 24 }}
+                    slotProps={{ title: { fontSize: 16 } }}
                     sx={{
                         ...cardHeaderSx
                     }}
                     title={title}
-                    avatar={
-                        addOpts && <IconButton aria-label={`add ${title}`}
-                            color="primary"
+                    action={
+                        addOpts && <IconButton color="primary" aria-label={`add ${title}`}
                             onClick={() => setShowAddDialog(true)}>
                             <PlusCircleOutlined />
                         </IconButton>
                     }>
-                    <Stack direction={'row'} alignItems={'center'}>
-                        <Typography variant='h3'>{title}</Typography>
-                        <IconButton color="primary" aria-label="add" >
-                            <PlusCircleOutlined />
-                        </IconButton>
-                    </Stack>
                 </CardHeader>
                 <CardContent >
                     <Stack gap={2} margin={2}>
                         <Grid container gap={2}>
-                            <Grid container gap={2}>
-                                {items.map((item, idx) =>
-                                (<Paper
-                                    key={idx}
-                                    sx={{
-                                        position: "relative", // make card the positioning parent
-                                        overflow: "visible", // allow the floating icon to overflow the card
-                                        borderRadius: 2,
-                                        p: 0,
-                                    }}
-                                    elevation={3}>
-                                    {item}
-                                </Paper>
-                                ))}
-                            </Grid>
+                            {items.map((item, idx) =>
+                            (<Paper
+                                key={idx}
+                                sx={{
+                                    position: "relative", // make card the positioning parent
+                                    overflow: "visible", // allow the floating icon to overflow the card
+                                    borderRadius: 2,
+                                    p: 0,
+                                }}
+                                elevation={3}>
+                                {item}
+                            </Paper>
+                            ))}
                         </Grid>
                     </Stack>
                 </CardContent>
