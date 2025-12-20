@@ -29,7 +29,7 @@ export const SchedulingWidget = () => {
     const eventsLoadedRef = useRef(false);
     const oauthProcessedRef = useRef<string | null>(null);
 
-    // Load proctor once on mount
+    // Load proctor once on mount using authenticated user's email
     useEffect(() => {
         if (proctorLoadedRef.current) return;
         proctorLoadedRef.current = true;
@@ -91,13 +91,24 @@ export const SchedulingWidget = () => {
         if (accessToken && interviewEventUri && selectedProctor) {
             try {
                 setThinking(true);
+                // Step 1: Create links in Calendly
                 const links = await calendlyService.createOneTimeLinks(accessToken, interviewEventUri, numLinks);
-                const scheduled = await proctorService.addBookingLinks(selectedProctor, links);
-                if (scheduled) {
-                    notifications.success('Your links have been created.')
+                
+                if (links.length === 0) {
+                    notifications.error('No scheduling links were created. Please try again.');
+                    return;
                 }
+
+                if (links.length < numLinks) {
+                    notifications.warn(`Only ${links.length} out of ${numLinks} links were created.`);
+                }
+
+                // Step 2: Insert links into Coda table via API
+                await proctorService.addBookingLinks(selectedProctor, links);
+                notifications.success(`Successfully created ${links.length} scheduling link${links.length === 1 ? '' : 's'} and added them to Coda.`);
             } catch (err) {
-                notifications.error('Failed to create booking links. Please try again.');
+                console.error('Error creating booking links:', err);
+                notifications.error(`Failed to create booking links: ${err instanceof Error ? err.message : 'Please try again.'}`);
             } finally {
                 setThinking(false);
             }

@@ -43,11 +43,13 @@ class CodaService {
             body: JSON.stringify({ rows })
         });
         
-        if (!resp.ok) {
+        // Coda API returns 202 Accepted for async processing
+        if (resp.status !== 202 && !resp.ok) {
             const error = await resp.json().catch(() => ({ message: resp.statusText }));
             throw new Error(`Failed to create rows: ${error.message || resp.statusText}`);
         }
         
+        // Return the response (202 Accepted means the request was queued successfully)
         return resp.json();
     }
 }

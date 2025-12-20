@@ -21,8 +21,13 @@ const LINK_TABLE_ID = import.meta.env.VITE_CODA_SCHEDULE_LINK_TABLE_ID;
 const NAME_KEY = 'c-x0QRJJXWk9';
 const EMAIL_KEY = 'c-FZ2nIGJhbt';
 
+// Column IDs discovered from Coda API for schedule link table (grid-mp-Lzk8BLN)
 const CODA_COLUMNS = {
-    links: { url: 'Scheduling link', status: 'Status', interviewer: 'Interviewer' }
+    links: { 
+        url: 'c-6ZlUhINYhy',      // "Link" column
+        status: 'c-bcWSzbGxNd',   // "Status" column
+        interviewer: 'c-txayd-tSjq' // "Interviewer" column
+    }
 } as const;
 const DEFAULT_LINK_STATUS = 'Available';
 
