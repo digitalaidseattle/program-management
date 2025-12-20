@@ -18,8 +18,10 @@ const PROCTOR_TABLE_ID = import.meta.env.VITE_CODA_PROCTOR_TABLE_ID;
 // @ts-ignore
 const LINK_TABLE_ID = import.meta.env.VITE_CODA_SCHEDULE_LINK_TABLE_ID;
 
-const NAME_KEY = 'c-x0QRJJXWk9';
-const EMAIL_KEY = 'c-FZ2nIGJhbt';
+// Column IDs discovered from Coda API for proctor table
+const NAME_KEY = 'c-mFmHr9G0kc';        // "Name" column
+const DAS_EMAIL_KEY = 'c-8mnE-hcSOT';  // "DAS email" column
+const PERSONAL_EMAIL_KEY = 'c-yVZXbtwgEP'; // "Personal email" column
 
 // Column IDs discovered from Coda API for schedule link table (grid-mp-Lzk8BLN)
 const CODA_COLUMNS = {
@@ -33,10 +35,15 @@ const DEFAULT_LINK_STATUS = 'Available';
 
 class ProctorService {
     mapJson(row: CodaRow): Proctor {
+        // Use DAS email as primary, fallback to personal email
+        const dasEmail = row.values[DAS_EMAIL_KEY] || '';
+        const personalEmail = row.values[PERSONAL_EMAIL_KEY] || '';
+        const email = dasEmail || personalEmail;
+        
         const proctor = {
             id: row.id,
             name: row.values[NAME_KEY] || '',
-            email: row.values[EMAIL_KEY] || ''
+            email: email
         } as Proctor;
         return proctor;
     }
@@ -50,9 +57,27 @@ class ProctorService {
     }
 
     async findByEmail(email: string): Promise<Proctor | null> {
-        const proctors = await this.getAll();
+        if (!email) return null;
+        
+        const rows = await codaService.getRows(PROCTOR_TABLE_ID);
         const emailLower = email.toLowerCase();
-        return proctors.find(p => p.email.toLowerCase() === emailLower) || null;
+        
+        // Check both DAS email and Personal email columns
+        for (const row of rows) {
+            const dasEmail = (row.values[DAS_EMAIL_KEY] || '').toLowerCase();
+            const personalEmail = (row.values[PERSONAL_EMAIL_KEY] || '').toLowerCase();
+            const name = row.values[NAME_KEY] || '';
+            
+            if ((dasEmail === emailLower || personalEmail === emailLower) && name) {
+                return {
+                    id: row.id,
+                    name: name,
+                    email: dasEmail || personalEmail || email
+                };
+            }
+        }
+        
+        return null;
     }
 
     async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<any> {
