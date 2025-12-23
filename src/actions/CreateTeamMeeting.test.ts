@@ -7,10 +7,8 @@
 
 import { describe, expect, it, vi } from "vitest";
 import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
-import { Volunteer, volunteerService } from "../services/dasVolunteerService";
-import { createPlenaryMeeting } from "./CreatePlenary";
-import { createTeamMeeting } from "./CreateTeamMeeting";
 import { Team } from "../services/dasTeamService";
+import { createTeamMeeting } from "./CreateTeamMeeting";
 
 describe("CreateTeamMeeting", () => {
     it.beforeEach(() => {
