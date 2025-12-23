@@ -9,7 +9,7 @@ import { storageService } from "../App";
 import { Contact, Partner, profile2PartnerService } from "../services/dasPartnerService";
 import { profileService } from "../services/dasProfileService";
 
-export async function updateContact(partner: Partner, contact: Contact, picture: File): Promise<Contact> {
+export async function updateContact(partner: Partner, contact: Contact, picture: File | undefined): Promise<Contact> {
     const filePath = picture ? profileService.getNextPicUrl(contact) : contact.pic;
     const upload = {
         ...contact,
@@ -18,9 +18,10 @@ export async function updateContact(partner: Partner, contact: Contact, picture:
     } as any;
     delete upload.title;
 
-    console.log('updateContact upload', filePath, upload);
+    if (picture && contact.pic) {
+        await storageService.removeFile(contact.pic);
+    }
 
-    await storageService.removeFile(contact.pic);
     const profile = await profileService.update(contact.id, upload);
     if (picture) {
         await storageService.upload(filePath, picture);
