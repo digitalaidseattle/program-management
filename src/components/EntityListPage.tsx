@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -23,13 +24,15 @@ import { Entity } from "@digitalaidseattle/core";
 =======
 import { Entity, Identifier } from "@digitalaidseattle/core";
 >>>>>>> 5b1aa96 (reference list page urls)
+=======
+import { Entity } from "@digitalaidseattle/core";
+>>>>>>> cb09a16 (main merge fixes)
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { Box, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 >>>>>>> df7d938 (filter entity list)
 import { useParams } from "react-router-dom";
 import { ScrollList } from "./ScrollList";
-import { useParams } from "react-router-dom";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
@@ -54,17 +57,21 @@ export function EntityListPage<T extends Entity>({
     const { id } = useParams<string>();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const [filterValue, setFilterValue] = useState<string>('');
 =======
 >>>>>>> 4815893 (reference list page urls)
 =======
     const { id } = useParams<string>();
 >>>>>>> 5b1aa96 (reference list page urls)
+=======
+>>>>>>> cb09a16 (main merge fixes)
 
     const [pageInfo, setPageInfo] = useState<PageInfo<T>>({ rows: [], totalRowCount: 0 });
     const [selectedItem, setSelectedItem] = useState<T>();
 
     useEffect(() => {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         setFilterValue(filterBy!);
@@ -81,6 +88,11 @@ export function EntityListPage<T extends Entity>({
         }
     }, []);
 >>>>>>> 5b1aa96 (reference list page urls)
+=======
+        setPageInfo({ rows: entities, totalRowCount: entities.length });
+        setSelectedItem(entities.find(e => e.id === id) ?? entities[0]);
+    }, [id, entities]);
+>>>>>>> cb09a16 (main merge fixes)
 
 <<<<<<< HEAD
     useEffect(() => {
@@ -109,12 +121,11 @@ export function EntityListPage<T extends Entity>({
 =======
 >>>>>>> 4815893 (reference list page urls)
             }
-                if (id) {
-                    const found = pageInfo.rows.find(e => e.id === id)
-                    setSelectedItem(found ?? pageInfo.rows[0]);
-                } else {
-                    setSelectedItem(pageInfo.rows[0]);
-                }
+            if (id) {
+                const found = pageInfo.rows.find(e => e.id === id)
+                setSelectedItem(found ?? pageInfo.rows[0]);
+            } else {
+                setSelectedItem(pageInfo.rows[0]);
             }
         }
     }, [pageInfo]);

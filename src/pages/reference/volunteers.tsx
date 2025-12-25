@@ -141,7 +141,7 @@ const ReferenceVolunteersPage = () => {
     if (id) {
       setFilter('all');
     }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     fetchData()

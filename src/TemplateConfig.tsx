@@ -1,6 +1,20 @@
 
 import {
-    HomeOutlined
+    CalendarOutlined,
+    CompassOutlined,
+    CrownOutlined,
+    HeartOutlined,
+    HomeOutlined,
+    IdcardOutlined,
+    KeyOutlined,
+    MehOutlined,
+    PaperClipOutlined,
+    RocketOutlined,
+    ScheduleOutlined,
+    SearchOutlined,
+    TeamOutlined,
+    ToolOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import logo from "./assets/images/logo-light-icon.svg";
@@ -23,6 +37,7 @@ export const TemplateConfig = () => {
                     icon: <HomeOutlined />
                 }]
         } as MenuItem;
+<<<<<<< HEAD
 
     const meetings = {
         id: 'meetins-group',
@@ -73,6 +88,8 @@ export const TemplateConfig = () => {
             }
         ]
     } as MenuItem;
+=======
+>>>>>>> cb09a16 (main merge fixes)
 
     // const meetings =
     // {
@@ -239,47 +256,47 @@ export const TemplateConfig = () => {
     //     ]
     // } as MenuItem;
 
-    // const recruiting = {
-    //     id: 'recruiting-dashboard',
-    //     title: 'Recruiting',
-    //     type: 'group',
-    //     children: [
-    //         {
-    //             id: 'applicants',
-    //             title: 'Applicants',
-    //             type: 'item',
-    //             url: '/applicants',
-    //             icon: <SearchOutlined />
-    //         },
-    //         {
-    //             id: 'proctors',
-    //             title: 'Proctors',
-    //             type: 'item',
-    //             url: '/proctors',
-    //             icon: <MehOutlined />
-    //         }
-    //     ]
-    // } as MenuItem;
+    const recruiting = {
+        id: 'recruiting-dashboard',
+        title: 'Recruiting',
+        type: 'group',
+        children: [
+            {
+                id: 'applicants',
+                title: 'Applicants',
+                type: 'item',
+                url: '/applicants',
+                icon: <SearchOutlined />
+            },
+            {
+                id: 'proctors',
+                title: 'Proctors',
+                type: 'item',
+                url: '/proctors',
+                icon: <MehOutlined />
+            }
+        ]
+    } as MenuItem;
 
     return ({
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
-        menuItems: [home], // meetings, ventures, recruiting, reference, data],
+        menuItems: [home, meetings, ventures, recruiting, reference, data],
         toolbarItems: [],
         profileItems: [
-            // <Link
-            //     style={{ 'textDecoration': 'none' }}
-            //     color="secondary"
-            //     to={`/profile`}>
-            //     Profile
-            // </Link>,
-            // <Link
-            //     style={{ 'textDecoration': 'none' }}
-            //     color="secondary"
-            //     to={`/privacy`}>
-            //     Privacy Policy
-            // </Link>
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/profile`}>
+                Profile
+            </Link>,
+            <Link
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/privacy`}>
+                Privacy Policy
+            </Link>
         ],
         version: packageJson.version,
     } as LayoutConfiguration);
