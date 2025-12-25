@@ -4,13 +4,12 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Entity, Identifier } from "@digitalaidseattle/core";
+import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
 import { Box, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ScrollList } from "./ScrollList";
-import { useParams } from "react-router-dom";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
@@ -24,18 +23,14 @@ export function EntityListPage<T extends Entity>({
     title, entities = [], pageAction, listItemRenderer, detailRenderer
 }: EntityListPageProps<T>) {
     const { id } = useParams<string>();
-    const { id } = useParams<string>();
 
     const [pageInfo, setPageInfo] = useState<PageInfo<T>>({ rows: [], totalRowCount: 0 });
     const [selectedItem, setSelectedItem] = useState<T>();
 
     useEffect(() => {
-        if (fetchData) {
-            fetchData().then(data => {
-                setPageInfo({ rows: data, totalRowCount: data.length });
-            });
-        }
-    }, []);
+        setPageInfo({ rows: entities, totalRowCount: entities.length });
+        setSelectedItem(entities.find(e => e.id === id) ?? entities[0]);
+    }, [id, entities]);
 
     useEffect(() => {
         if (pageInfo) {
@@ -47,12 +42,11 @@ export function EntityListPage<T extends Entity>({
                     setSelectedItem(pageInfo.rows[0]);
                 }
             }
-                if (id) {
-                    const found = pageInfo.rows.find(e => e.id === id)
-                    setSelectedItem(found ?? pageInfo.rows[0]);
-                } else {
-                    setSelectedItem(pageInfo.rows[0]);
-                }
+            if (id) {
+                const found = pageInfo.rows.find(e => e.id === id)
+                setSelectedItem(found ?? pageInfo.rows[0]);
+            } else {
+                setSelectedItem(pageInfo.rows[0]);
             }
         }
     }, [pageInfo]);

@@ -20,7 +20,6 @@ type Venture = {
     solution: string
     impact: string
     program_areas: string[];
-    program_areas: string[];
     venture_code: string;
     partner_airtable_id: string[],
     partner?: Partner

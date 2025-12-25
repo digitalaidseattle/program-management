@@ -1,7 +1,6 @@
 
 // material-ui
 import { useStorageService } from '@digitalaidseattle/core';
-import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
