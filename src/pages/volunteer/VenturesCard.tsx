@@ -40,7 +40,8 @@ export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) =>
           avatarImageSrc={storageService.getUrl(`logos/${staffing.venture!.id}`)}
           cardContent={
             <Stack>
-              <Typography fontWeight={600}>{staffing.status} :</Typography> {staffing.role?.name}
+              <Typography fontWeight={600}>{staffing.status} </Typography>
+              <Typography fontWeight={300}>{staffing.role?.name}</Typography> 
             </Stack>
           }
           menuItems={[
@@ -51,7 +52,7 @@ export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) =>
   }
 
   function handleOpen(discipline_id: string): void {
-    navigate(`/venture/${discipline_id}`)
+    navigate(`/ventures/${discipline_id}`)
   }
 
   return (< >

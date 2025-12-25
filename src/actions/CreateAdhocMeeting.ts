@@ -35,7 +35,7 @@ export async function createAdhocMeeting(volunteer: Volunteer): Promise<Meeting 
         email: volunteer.das_email,
     } as MeetingAttendee);
 
-    await meetingService.insert(meeting);
+    const inserted = await meetingService.insert(meeting);
     await meetingAttendeeService.insert(attendee);
-    return meetingService.getById(meeting.id)
+    return meetingService.getById(inserted.id)
 }

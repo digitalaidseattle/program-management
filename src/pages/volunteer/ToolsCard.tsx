@@ -79,7 +79,7 @@ export const ToolsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
   }
 
   function handleOpen(discipline_id: string): void {
-    navigate(`/tool/${discipline_id}`)
+    navigate(`/tools/${discipline_id}`)
   }
 
   function handleChange(data: any) {

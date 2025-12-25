@@ -43,7 +43,7 @@ export async function createPlenaryMeeting(): Promise<Meeting | null> {
             email: v.das_email,
         } as MeetingAttendee))
 
-    await meetingService.insert(meeting);
+    const inserted = await meetingService.insert(meeting);
     await meetingAttendeeService.batchInsert(attendees);
-    return meetingService.getById(meeting.id)
+    return meetingService.getById(inserted.id)
 }
