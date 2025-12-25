@@ -22,10 +22,6 @@ jobs:
           echo VITE_CALENDLY_CLIENT_ID=${{ secrets.CALENDLY_CLIENT_ID }} >> .env
           echo VITE_CALENDLY_CLIENT_SECRET=${{ secrets.CALENDLY_CLIENT_SECRET }} >> .env
           echo VITE_CODA_API_TOKEN=${{ secrets.CODA_API_TOKEN }} >> .env
-          # Non-secret Coda configuration
-          echo VITE_CODA_DOC_ID=aI0qxXbRcr >> .env
-          echo VITE_CODA_PROCTOR_TABLE_ID=grid-sync-1054-Table-dynamic-2def20411c857fcd0ad18ca672817ba77d83f3097962cc1512775d8e0e11cd2a >> .env
-          echo VITE_CODA_SCHEDULE_LINK_TABLE_ID=grid-mp-Lzk8BLN >> .env
           cat .env
           npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
