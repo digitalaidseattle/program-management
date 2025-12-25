@@ -116,7 +116,7 @@ export const SchedulingWidget = () => {
     }
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="50vh" gap={2}>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
             <Typography>{selectedProctor ? selectedProctor.name : 'You are not a eligible proctor.'}</Typography>
             <Typography fontWeight={600}>Create single-use links in Calendly in two steps.</Typography>
             {selectedProctor &&
