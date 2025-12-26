@@ -6,7 +6,7 @@
  */
 import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
@@ -14,7 +14,8 @@ import { SchedulingLink, SchedulingLinkService } from './schedulingLinkService';
 
 const DEFAULT_LINK_COUNT = 10
 export const SchedulingWidget = () => {
-    const searchParams = useSearchParams()[0];
+    const schedulingLinkService = SchedulingLinkService.newInstance();
+    const [searchParams] = useSearchParams();
     const authService = useAuthService();
     const notifications = useNotifications();
 
@@ -28,6 +29,7 @@ export const SchedulingWidget = () => {
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     const redirectUri = useMemo(() => {
         return `${window.location.origin}`;
     }, []);
@@ -39,6 +41,13 @@ export const SchedulingWidget = () => {
 
     // Load proctor once on mount
 >>>>>>> 1b0e18d (error fixes)
+=======
+    const proctorLoadedRef = useRef(false);
+    const eventsLoadedRef = useRef(false);
+    const oauthProcessedRef = useRef<string | null>(null);
+
+    // Load proctor once on mount using authenticated user's email
+>>>>>>> 42b83ce (coda refactor)
     useEffect(() => {
         const authCode = searchParams.get('code');
         if (authCode) {
@@ -56,7 +65,7 @@ export const SchedulingWidget = () => {
                         .then(proctor => setSelectedProctor(proctor));
                 }
             });
-    }, [searchParams, redirectUri, authService, notifications]);
+    }, [authService]);
 
 <<<<<<< HEAD
 =======
@@ -76,6 +85,35 @@ export const SchedulingWidget = () => {
 
     // Update step and load events once when both are ready
 >>>>>>> 1b0e18d (error fixes)
+    useEffect(() => {
+        fetchData();
+    }, [selectedProctor]);
+
+
+    // Handle OAuth callback once - process code and clean URL
+    useEffect(() => {
+        const authCode = searchParams.get('code');
+        if (authCode && oauthProcessedRef.current !== authCode && !accessToken) {
+            setLoading(true);
+            oauthProcessedRef.current = authCode;
+            calendlyService.exchangeCodeForToken(authCode, window.location.origin)
+                .then(token => {
+                    setAccessToken(token);
+                    // Remove code from URL to prevent re-processing on reload
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('code');
+                    window.history.replaceState({}, '', url.toString());
+                })
+                .catch(() => {
+                    notifications.error('Failed to authenticate with Calendly. Please try again.');
+                    oauthProcessedRef.current = null;
+                })
+                .finally(() => setLoading(false));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Update step and load events once when both are ready
     useEffect(() => {
         setActiveStep(accessToken ? 1 : 0);
         
