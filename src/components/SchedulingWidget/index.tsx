@@ -4,15 +4,17 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { useAuthService, useNotifications } from '@digitalaidseattle/core';
+import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
+import { SchedulingLink, SchedulingLinkService } from './schedulingLinkService';
 
 const DEFAULT_LINK_COUNT = 10
 export const SchedulingWidget = () => {
+    const schedulingLinkService = SchedulingLinkService.newInstance();
     const [searchParams] = useSearchParams();
     const authService = useAuthService();
     const notifications = useNotifications();
@@ -23,7 +25,8 @@ export const SchedulingWidget = () => {
     const [activeStep, setActiveStep] = useState<number>(0);
     const [events, setEvents] = useState<EventType[]>([]);
     const [interviewEventUri, setInterviewEventUri] = useState<string | null>(null);
-    const [thinking, setThinking] = useState<boolean>(false);
+    const { loading, setLoading } = useContext(LoadingContext);
+    const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
     const proctorLoadedRef = useRef(false);
     const eventsLoadedRef = useRef(false);
@@ -42,10 +45,16 @@ export const SchedulingWidget = () => {
             });
     }, [authService]);
 
+    useEffect(() => {
+        fetchData();
+    }, [selectedProctor]);
+
+
     // Handle OAuth callback once - process code and clean URL
     useEffect(() => {
         const authCode = searchParams.get('code');
         if (authCode && oauthProcessedRef.current !== authCode && !accessToken) {
+            setLoading(true);
             oauthProcessedRef.current = authCode;
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
@@ -58,9 +67,10 @@ export const SchedulingWidget = () => {
                 .catch(() => {
                     notifications.error('Failed to authenticate with Calendly. Please try again.');
                     oauthProcessedRef.current = null;
-                });
+                })
+                .finally(() => setLoading(false));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Update step and load events once when both are ready
@@ -82,6 +92,15 @@ export const SchedulingWidget = () => {
         }
     }, [accessToken, selectedProctor, notifications]);
 
+    async function fetchData() {
+        if (selectedProctor) {
+            setLoading(true);
+            schedulingLinkService.findByName(selectedProctor.name)
+                .then(links => setAvailableLinks(links.filter(link => link.status === SchedulingLinkService.AVAILABLE_STATUS)))
+                .finally(() => setLoading(false));
+        }
+    }
+
     async function authenticate() {
         const calendlyUri = calendlyService.getAuthUri(window.location.origin);
         window.location.replace(calendlyUri);
@@ -90,10 +109,10 @@ export const SchedulingWidget = () => {
     async function makeLinks() {
         if (accessToken && interviewEventUri && selectedProctor) {
             try {
-                setThinking(true);
+                setLoading(true);
                 // Step 1: Create links in Calendly
                 const links = await calendlyService.createOneTimeLinks(accessToken, interviewEventUri, numLinks);
-                
+
                 if (links.length === 0) {
                     notifications.error('No scheduling links were created. Please try again.');
                     return;
@@ -104,13 +123,23 @@ export const SchedulingWidget = () => {
                 }
 
                 // Step 2: Insert links into Coda table via API
-                await proctorService.addBookingLinks(selectedProctor, links);
-                notifications.success(`Successfully created ${links.length} scheduling link${links.length === 1 ? '' : 's'} and added them to Coda.`);
+                const schedulingLiks = links.map(link => {
+                    return {
+                        ...schedulingLinkService.empty(),
+                        interviewer: selectedProctor.name,
+                        url: link
+                    }
+                })
+                schedulingLinkService.batchInsert(schedulingLiks)
+                    .then(schedulingLinks => {
+                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling link${schedulingLinks.length === 1 ? '' : 's'} and added them to Coda.`);
+                        fetchData();
+                    })
             } catch (err) {
                 console.error('Error creating booking links:', err);
                 notifications.error(`Failed to create booking links: ${err instanceof Error ? err.message : 'Please try again.'}`);
             } finally {
-                setThinking(false);
+                setLoading(false);
             }
         }
     }
@@ -118,6 +147,7 @@ export const SchedulingWidget = () => {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
             <Typography>{selectedProctor ? selectedProctor.name : 'You are not a eligible proctor.'}</Typography>
+            {selectedProctor && <Typography>{`You have ${availableLinks.length} available links.`}</Typography>}
             <Typography fontWeight={600}>Create single-use links in Calendly in two steps.</Typography>
             {selectedProctor &&
                 <>
@@ -127,7 +157,7 @@ export const SchedulingWidget = () => {
                     </Stepper>
                     {activeStep == 0 &&
                         <Stack direction={'row'} gap={1}>
-                            <Button variant={'contained'} onClick={authenticate}>Authenticate</Button>
+                            <Button variant={'contained'} disabled={loading} onClick={authenticate}>Authenticate</Button>
                         </Stack>
                     }
                     {activeStep == 1 &&
@@ -154,8 +184,8 @@ export const SchedulingWidget = () => {
                                     {[1, 2, 3, 5, 10].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
                                 </Select>
                             </FormControl>
-                            <Button variant={'contained'} onClick={makeLinks} disabled={thinking}>Do it!</Button>
-                            {thinking && <CircularProgress color="secondary" />}
+                            <Button variant={'contained'} onClick={makeLinks} disabled={loading}>Do it!</Button>
+                            {loading && <CircularProgress color="secondary" />}
                         </Stack>
                     }
                 </>
