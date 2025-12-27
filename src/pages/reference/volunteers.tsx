@@ -78,7 +78,7 @@ const ReferenceVolunteersPage = () => {
         </ListItemIcon>
         Show All
       </MenuItem>
-      <MenuItem onClick={() => handleFilterChange('all')}>
+      <MenuItem onClick={() => handleFilterChange('active')}>
         <ListItemIcon>
           {filter === 'active' && <CheckOutlined />}
         </ListItemIcon>
