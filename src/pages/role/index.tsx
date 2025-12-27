@@ -152,6 +152,8 @@ const RoleDetails: React.FC<EntityProps<Role>> = ({ entity, onChange }) => {
 }
 
 const RolePage = () => {
+  const roleService = RoleService.instance();
+
   const [entity, setEntity] = useState<Role>();
   const { id } = useParams<string>();
 
