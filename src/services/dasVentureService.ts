@@ -57,6 +57,15 @@ class VentureService extends SupabaseEntityService<Venture> {
     getLogoUrl(entity: Venture): string | undefined {
         return partnerService.getLogoUrl(entity.partner!);
     }
+
+    async getActive(): Promise<Venture[]> {
+        return supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .eq('status', 'Active')
+            .then((resp: any) => resp.data);
+    }
+
 }
 
 const ventureService = new VentureService()

@@ -5,19 +5,20 @@
  *
  */
 import { Card, CardContent, CardHeader, List, ListItemButton, ListItemText } from '@mui/material';
-import { Link } from 'react-router-dom';
-import AddMeetingDialog from '../AddMeetingDialog';
 import { useState } from 'react';
+import AddMeetingDialog from '../AddMeetingDialog';
+import VentureReportDialog from '../VentureReportDialog';
 
 export const MyTasksWidget = () => {
     const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
+    const [showAddVentureReportDialog, setShowAddVentureReportDialog] = useState<boolean>(false);
 
     return (
         <Card sx={{ height: "100%" }}>
             <CardHeader title="Quick Links" />
             <CardContent>
                 <List>
-                    <ListItemButton>
+                    {/* <ListItemButton>
                         <Link
                             style={{ 'textDecoration': 'none' }}
                             color="secondary"
@@ -32,10 +33,10 @@ export const MyTasksWidget = () => {
                     <ListItemButton
                         onClick={() => alert('NRFPT')} >
                         <ListItemText>My Time Off</ListItemText>
-                    </ListItemButton>
+                    </ListItemButton> */}
                     <ListItemButton
-                        onClick={() => alert('NRFPT')} >
-                        <ListItemText>Enter Venture Report</ListItemText>
+                        onClick={() => setShowAddVentureReportDialog(true)} >
+                        <ListItemText>Create Venture Report</ListItemText>
                     </ListItemButton>
                 </List>
                 <AddMeetingDialog
@@ -43,6 +44,10 @@ export const MyTasksWidget = () => {
                     meetingTypes={['adhoc', 'team']}
                     onClose={() => setShowAddMeetingDialog(false)}
                     open={showAddMeetingDialog} />
+                <VentureReportDialog
+                    title={'Add Venture Report'}
+                    onClose={() => setShowAddVentureReportDialog(false)}
+                    open={showAddVentureReportDialog} />
             </CardContent>
         </Card>
     );

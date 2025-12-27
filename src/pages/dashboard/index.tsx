@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, Grid } from "@mui/material";
+import { MyTasksWidget } from "../../components/MyTasksWidget";
 import { SchedulingWidget } from "../../components/SchedulingWidget";
 
 const DashboardPage = () => {
@@ -6,11 +7,11 @@ const DashboardPage = () => {
     return (
         <>
             <Grid container spacing={2}>
-                {/* <Grid size={4} >
+                <Grid size={4} >
                     <MyTasksWidget />
-                </Grid> */}
-                <Grid size={12} >
-                    <Card sx={{height: "100%"}}>
+                </Grid>
+                <Grid size={8} >
+                    <Card >
                         <CardHeader title="Create Scheduling Links" />
                         <CardContent>
                             <SchedulingWidget />
