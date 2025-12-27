@@ -56,6 +56,22 @@ type Team = {
 
 const DEFAULT_SELECT = "*, volunteer(*, profile(*)), okr(*), forecast(*)"
 class TeamService extends SupabaseEntityService<Team> {
+    
+    static STATUSES = [
+        'Active',
+        'constant',
+        'yet to begin'
+    ];
+
+    static _instance: TeamService;
+
+    static instance(): TeamService {
+        if (!this._instance) {
+            this._instance = new TeamService();
+        }
+        return this._instance;
+    }
+
     public constructor() {
         super("team", DEFAULT_SELECT);
 
@@ -67,9 +83,16 @@ class TeamService extends SupabaseEntityService<Team> {
             .select(DEFAULT_SELECT)
             .eq('airtable_id', airtableId)
             .single()
-            .then((resp: any) => resp.data);
+            .then((resp: any) => this.mapper(resp.data)!);
     }
 
+    async findByStatus(status: string): Promise<Team[]> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .eq('status', status)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+    }
 }
 
 class OKRService extends SupabaseEntityService<OKR> {
@@ -116,10 +139,10 @@ class ForecastService extends SupabaseEntityService<Forecast> {
     }
 }
 
-const teamService = new TeamService();
+const teamService = TeamService.instance();
 const okrService = new OKRService();
 const forecastService = new ForecastService();
-export { forecastService, okrService, teamService };
+export { forecastService, okrService, teamService, TeamService };
 
-    export type { Forecast, OKR, Team };
+export type { Forecast, OKR, Team };
 

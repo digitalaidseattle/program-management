@@ -17,10 +17,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { EditField } from '../../components/EditField';
 import { EntityProps } from '../../components/utils';
-import { Role, roleService } from '../../services/dasRoleService';
+import { Role, RoleService } from '../../services/dasRoleService';
 import { storageService } from '../../App';
 
 const RoleDetails: React.FC<EntityProps<Role>> = ({ entity, onChange }) => {
+  const roleService = RoleService.instance();
   const [role, setRole] = useState<Role>();
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const RoleDetails: React.FC<EntityProps<Role>> = ({ entity, onChange }) => {
       label: 'Status',
       type: 'select',
       disabled: false,
-      options: roleService.STATUSES.map(e => ({ value: e, label: e }))
+      options: RoleService.STATUSES.map(e => ({ value: e, label: e }))
     },
     {
       name: "urgency",

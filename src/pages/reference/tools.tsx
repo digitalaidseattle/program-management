@@ -4,40 +4,93 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-
-import { useStorageService } from '@digitalaidseattle/core';
-
-import { ListCard } from '../../components/ListCard';
+import { CheckOutlined } from "@ant-design/icons";
+import {
+  Divider,
+  ListItemIcon,
+  MenuItem
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useParams } from "react-router";
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { Tool, toolService } from '../../services/dasToolsService';
+import { ListCard } from '../../components/ListCard';
+import { MoreButton } from './MoreButton';
+
+import { Tool, ToolService } from '../../services/dasToolsService';
 import { ReferenceToolDetails } from '../tool/ReferenceToolDetails';
-import { useEffect, useState } from 'react';
 
 const ReferenceToolsPage = () => {
+  const toolService = ToolService.instance();
+
+  const { id } = useParams<string>();
+
   const [entities, setEntities] = useState<Tool[]>([]);
-  const storageService = useStorageService()!;
+  const [filter, setFilter] = useState<string>('active');
+
+  useEffect(() => {
+    // externally requested record, only getAll guarantees finding the record
+    if (id) {
+      setFilter('all');
+    }
+  }, []);
 
   useEffect(() => {
     fetchData()
-  }, []);
+  }, [filter]);
 
   async function fetchData() {
-    const found = await toolService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    const found = await filteredData();
     setEntities(found);
   }
 
+  async function filteredData(): Promise<Tool[]> {
+    if (ToolService.STATUSES.includes(filter)) {
+      return await toolService
+        .findByStatus(filter)
+        .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    }
+
+    return await toolService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+  }
+
+  function filterMenu() {
+    return <>
+      <MenuItem onClick={() => handleFilterChange('all')}>
+        <ListItemIcon>
+          {filter === 'all' && <CheckOutlined />}
+        </ListItemIcon>
+        Show All
+      </MenuItem>
+      <Divider />
+      {ToolService.STATUSES.map(status => {
+        return <MenuItem
+          key={status}
+          onClick={() => handleFilterChange(`${status}`)}>
+          <ListItemIcon>
+            {filter === status && <CheckOutlined />}
+          </ListItemIcon>
+          {status}
+        </MenuItem>
+      })}
+    </>
+  }
+
+  function handleFilterChange(newFilter: string) {
+    setFilter(newFilter);
+  };
   return (
     <EntityListPage
       title={'Tools'}
       entities={entities}
+      pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
           title={entity.name}
-          avatarImageSrc={storageService.getUrl(`/logos/${entity.id}`)} />}
+          avatarImageSrc={toolService.getLogoUrl(entity)} />}
       detailRenderer={entity =>
         <ReferenceToolDetails
           entity={entity} />} />

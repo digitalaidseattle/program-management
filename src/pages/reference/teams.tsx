@@ -1,10 +1,9 @@
 /**
- *  reference/roles/index.tsx
+ *  reference/teams/index.tsx
  *
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import {
@@ -14,19 +13,18 @@ import {
 } from '@mui/material';
 import { CheckOutlined } from "@ant-design/icons";
 
-import { EntityListPage } from '../../components/EntityListPage';
+import { useStorageService } from '@digitalaidseattle/core';
 import { ListCard } from '../../components/ListCard';
 import { MoreButton } from "./MoreButton";
+import { EntityListPage } from '../../components/EntityListPage';
+import { Team, TeamService } from '../../services/dasTeamService';
+import { TeamDetails } from '../team';
 
-
-import { ReferenceRoleDetails } from '../role/ReferenceRoleDetails';
-import { Role, RoleService } from '../../services/dasRoleService';
-
-const ReferenceRolesPage = () => {
-  const roleService = RoleService.instance();
+const ReferenceTeamsPage = () => {
+  const teamService = TeamService.instance();
   const { id } = useParams<string>();
-
-  const [entities, setEntities] = useState<Role[]>([]);
+  const storageService = useStorageService()!;
+  const [entities, setEntities] = useState<Team[]>([]);
   const [filter, setFilter] = useState<string>('Active');
 
   useEffect(() => {
@@ -45,14 +43,14 @@ const ReferenceRolesPage = () => {
     setEntities(found);
   }
 
-  async function filteredData(): Promise<Role[]> {
-    if (RoleService.STATUSES.includes(filter)) {
-      return await roleService
+  async function filteredData(): Promise<Team[]> {
+    if (TeamService.STATUSES.includes(filter)) {
+      return await teamService
         .findByStatus(filter)
         .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
     }
 
-    return await roleService
+    return await teamService
       .getAll()
       .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
   }
@@ -66,7 +64,7 @@ const ReferenceRolesPage = () => {
         Show All
       </MenuItem>
       <Divider />
-      {RoleService.STATUSES.map(status => {
+      {TeamService.STATUSES.map(status => {
         return <MenuItem
           key={status}
           onClick={() => handleFilterChange(`${status}`)}>
@@ -85,18 +83,16 @@ const ReferenceRolesPage = () => {
 
   return (
     <EntityListPage
-      title={'Roles'}
+      title={'Teams'}
       entities={entities}
       pageAction={<MoreButton menuItems={filterMenu()} />}
-      listItemRenderer={entity =>
-        <ListCard
-          key={entity.id}
-          title={entity.name}
-          avatarImageSrc={roleService.getIconUrl(entity)} />}
-      detailRenderer={entity =>
-        <ReferenceRoleDetails
-          entity={entity} />} />
+      listItemRenderer={entity => <ListCard
+        key={entity.id}
+        title={entity.name}
+        avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />}
+      detailRenderer={entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
+    />
   );
 };
 
-export default ReferenceRolesPage;
+export default ReferenceTeamsPage;

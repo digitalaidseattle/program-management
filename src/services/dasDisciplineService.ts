@@ -22,6 +22,21 @@ type Discipline = {
 }
 
 class DisciplineService extends SupabaseEntityService<Discipline> {
+    
+    static STATUSES = [
+        'Public',
+        'Internal'
+    ];
+
+    static _instance: DisciplineService;
+
+    static instance(): DisciplineService {
+        if (!this._instance) {
+            this._instance = new DisciplineService();
+        }
+        return this._instance;
+    }
+
 
     public constructor() {
         super("discipline");
@@ -46,10 +61,17 @@ class DisciplineService extends SupabaseEntityService<Discipline> {
         return `icons/${entity.icon}:${idx}`; // idx helps deal with CDN
     }
 
+    async findByStatus(status: string): Promise<Discipline[]> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select('*')
+            .eq('status', status)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+    }
 }
 
-const disciplineService = new DisciplineService();
+const disciplineService = DisciplineService.instance();
 
-export { disciplineService };
+export { disciplineService, DisciplineService };
 export type { Discipline };
 

@@ -39,7 +39,7 @@ import VolunteersPage from './volunteers';
 import ReportingPage from './reporting/index.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
 import ReferenceVenturesPage from './reference/ventures.tsx';
-import ReferenceTeamsPage from './reference/teams..tsx';
+import ReferenceTeamsPage from './reference/teams.tsx';
 
 const routes = [
   {
