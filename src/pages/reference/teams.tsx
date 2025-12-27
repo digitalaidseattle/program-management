@@ -19,13 +19,16 @@ import { MoreButton } from "./MoreButton";
 import { EntityListPage } from '../../components/EntityListPage';
 import { Team, TeamService } from '../../services/dasTeamService';
 import { TeamDetails } from '../team';
+import { StringUtils } from '../../services/StringUtils';
 
 const ReferenceTeamsPage = () => {
   const teamService = TeamService.instance();
   const { id } = useParams<string>();
   const storageService = useStorageService()!;
+
   const [entities, setEntities] = useState<Team[]>([]);
   const [filter, setFilter] = useState<string>('Active');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -36,11 +39,15 @@ const ReferenceTeamsPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.name.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Team[]> {
@@ -71,7 +78,7 @@ const ReferenceTeamsPage = () => {
           <ListItemIcon>
             {filter === status && <CheckOutlined />}
           </ListItemIcon>
-          {status}
+          {StringUtils.capitalize(status)}
         </MenuItem>
       })}
     </>
@@ -85,12 +92,16 @@ const ReferenceTeamsPage = () => {
     <EntityListPage
       title={'Teams'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
-      listItemRenderer={entity => <ListCard
-        key={entity.id}
-        title={entity.name}
-        avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />}
-      detailRenderer={entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
+      listItemRenderer={entity =>
+        <ListCard
+          key={entity.id}
+          title={entity.name}
+          avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />}
+      detailRenderer={entity =>
+        <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
     />
   );
 };

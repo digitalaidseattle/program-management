@@ -26,6 +26,7 @@ const ReferencePartnersPage = () => {
 
   const [entities, setEntities] = useState<Partner[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -36,11 +37,15 @@ const ReferencePartnersPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.name.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Partner[]> {
@@ -102,6 +107,8 @@ const ReferencePartnersPage = () => {
     <EntityListPage
       title={'Partners'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard

@@ -27,6 +27,7 @@ const ReferenceDisciplinesPage = () => {
 
   const [entities, setEntities] = useState<Discipline[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -37,11 +38,15 @@ const ReferenceDisciplinesPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.name.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Discipline[]> {
@@ -50,7 +55,6 @@ const ReferenceDisciplinesPage = () => {
         .findByStatus(filter)
         .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
     }
-
 
     return await disciplineService
       .getAll()
@@ -87,6 +91,8 @@ const ReferenceDisciplinesPage = () => {
     <EntityListPage
       title={'Disciplines'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard

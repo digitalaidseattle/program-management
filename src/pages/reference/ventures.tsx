@@ -23,8 +23,10 @@ import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
 const ReferenceVenturesPage = () => {
   const ventureService = VentureService.instance();
   const { id } = useParams<string>();
+
   const [entities, setEntities] = useState<Venture[]>([]);
   const [filter, setFilter] = useState<string>('Active');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -35,11 +37,15 @@ const ReferenceVenturesPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.venture_code.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Venture[]> {
@@ -83,6 +89,8 @@ const ReferenceVenturesPage = () => {
     <EntityListPage
       title={'Ventures'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard

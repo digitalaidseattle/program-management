@@ -33,3 +33,5 @@ export interface EntityDialogProps<T> {
 export function dateToString(date: Date) {
     return dayjs(date).format('MM/DD/YYYY');
 }
+
+

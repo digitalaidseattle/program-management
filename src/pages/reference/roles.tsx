@@ -28,6 +28,7 @@ const ReferenceRolesPage = () => {
 
   const [entities, setEntities] = useState<Role[]>([]);
   const [filter, setFilter] = useState<string>('Active');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -38,11 +39,15 @@ const ReferenceRolesPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.name.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Role[]> {
@@ -87,6 +92,8 @@ const ReferenceRolesPage = () => {
     <EntityListPage
       title={'Roles'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard

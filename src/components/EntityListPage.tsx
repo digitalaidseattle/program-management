@@ -4,28 +4,37 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Entity } from "@digitalaidseattle/core";
-import { PageInfo } from "@digitalaidseattle/supabase";
-import { Box, Card, CardContent, CardHeader, Grid, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
+import { SearchOutlined } from "@ant-design/icons";
+
+import { Entity } from "@digitalaidseattle/core";
+import { PageInfo } from "@digitalaidseattle/supabase";
 import { ScrollList } from "./ScrollList";
 
 type EntityListPageProps<T extends Entity> = {
     title: string;
     entities: T[];
     pageAction?: React.ReactNode;
+    filterBy?: string;
+    onFilter?: (value: string) => void;
     listItemRenderer: (entity: T) => React.ReactNode;
     detailRenderer: (entity: T) => React.ReactNode;
 }
 
 export function EntityListPage<T extends Entity>({
-    title, entities = [], pageAction, listItemRenderer, detailRenderer
+    title, entities = [], pageAction, filterBy, onFilter, listItemRenderer, detailRenderer
 }: EntityListPageProps<T>) {
     const { id } = useParams<string>();
+    const [filterValue, setFilterValue] = useState<string>('');
 
     const [pageInfo, setPageInfo] = useState<PageInfo<T>>({ rows: [], totalRowCount: 0 });
     const [selectedItem, setSelectedItem] = useState<T>();
+
+    useEffect(() => {
+        setFilterValue(filterBy!);
+    }, [filterBy]);
 
     useEffect(() => {
         setPageInfo({ rows: entities, totalRowCount: entities.length });
@@ -67,6 +76,17 @@ export function EntityListPage<T extends Entity>({
                 <Grid container>
                     <Grid size={3}>
                         <Stack sx={{ height: "100vh" }}>
+                            {onFilter && <OutlinedInput
+                                value={filterValue}
+                                onChange={(evt) => onFilter && onFilter(evt.target.value)}
+                                endAdornment={<InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => onFilter && onFilter(filterValue)}
+                                        edge="end"
+                                    >
+                                        <SearchOutlined />
+                                    </IconButton>
+                                </InputAdornment>} />}
                             <ScrollList
                                 items={pageInfo.rows}
                                 listItemRenderer={listItemRenderer}

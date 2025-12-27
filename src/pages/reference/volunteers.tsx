@@ -21,12 +21,12 @@ import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetail
 import { MoreButton } from "./MoreButton";
 import { useParams } from "react-router";
 
-
 const ReferenceVolunteersPage = () => {
   const { id } = useParams<string>();
 
   const [entities, setEntities] = useState<Volunteer[]>([]);
   const [filter, setFilter] = useState<string>('active');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -37,11 +37,15 @@ const ReferenceVolunteersPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.profile!.name.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Volunteer[]> {
@@ -106,8 +110,10 @@ const ReferenceVolunteersPage = () => {
   return (
     <EntityListPage
       title={'Volunteers'}
-      pageAction={<MoreButton menuItems={filterMenu()} />}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
+      pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

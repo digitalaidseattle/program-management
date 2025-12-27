@@ -19,6 +19,7 @@ import { MoreButton } from './MoreButton';
 
 import { Tool, ToolService } from '../../services/dasToolsService';
 import { ReferenceToolDetails } from '../tool/ReferenceToolDetails';
+import { StringUtils } from "../../services/StringUtils";
 
 const ReferenceToolsPage = () => {
   const toolService = ToolService.instance();
@@ -27,6 +28,7 @@ const ReferenceToolsPage = () => {
 
   const [entities, setEntities] = useState<Tool[]>([]);
   const [filter, setFilter] = useState<string>('active');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -37,11 +39,15 @@ const ReferenceToolsPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [filter]);
+  }, [filter, searchValue]);
 
   async function fetchData() {
     const found = await filteredData();
-    setEntities(found);
+    if (searchValue.length > 0) {
+      setEntities(found.filter(elem => elem.name.toLowerCase().includes(searchValue.toLowerCase())))
+    } else {
+      setEntities(found);
+    }
   }
 
   async function filteredData(): Promise<Tool[]> {
@@ -72,7 +78,7 @@ const ReferenceToolsPage = () => {
           <ListItemIcon>
             {filter === status && <CheckOutlined />}
           </ListItemIcon>
-          {status}
+          {StringUtils.capitalize(status)}
         </MenuItem>
       })}
     </>
@@ -85,6 +91,8 @@ const ReferenceToolsPage = () => {
     <EntityListPage
       title={'Tools'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard
