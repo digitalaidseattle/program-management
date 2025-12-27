@@ -36,7 +36,29 @@ function MAPPER(json: any): Venture {
     return venture;
 }
 
+<<<<<<< HEAD
 class VentureService extends PMEntityService<Venture> {
+=======
+class VentureService extends SupabaseEntityService<Venture> {
+    
+    static STATUSES = [
+        'Active',
+        'Declined',
+        'Ready for consideration',
+        'Paused',
+        'Delivered',
+        'Submitted by Partner',
+    ];
+
+    static _instance: VentureService;
+
+    static instance(): VentureService {
+        if (!this._instance) {
+            this._instance = new VentureService();
+        }
+        return this._instance;
+    }
+>>>>>>> 4da58ec (filtering)
 
     public constructor() {
         super("venture", DEFAULT_SELECT, MAPPER);
@@ -60,16 +82,20 @@ class VentureService extends PMEntityService<Venture> {
     }
 
     async getActive(): Promise<Venture[]> {
-        return supabaseClient
+        return this.findByStatus('Active');
+    }
+
+    async findByStatus(status: string): Promise<Venture[]> {
+        return await supabaseClient
             .from(this.tableName)
             .select(DEFAULT_SELECT)
-            .eq('status', 'Active')
-            .then((resp: any) => resp.data);
+            .eq('status', status)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
     }
 
 }
 
-const ventureService = new VentureService()
-export { ventureService };
+const ventureService = VentureService.instance();
+export { ventureService, VentureService };
 export type { Venture };
 

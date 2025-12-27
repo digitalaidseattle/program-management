@@ -16,17 +16,23 @@ import { useParams } from "react-router";
 
 import { EntityListPage } from '../../components/EntityListPage';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4da58ec (filtering)
 import { ListCard } from '../../components/ListCard';
 import { MoreButton } from "./MoreButton";
 
 import { Discipline, DisciplineService } from '../../services/dasDisciplineService';
+<<<<<<< HEAD
 =======
 import { Discipline, disciplineService } from '../../services/dasDisciplineService';
 >>>>>>> df7d938 (filter entity list)
+=======
+>>>>>>> 4da58ec (filtering)
 import { ReferenceDisciplineDetails } from '../discipline/ReferenceDisciplineDetails';
-import { useEffect, useState } from 'react';
 
 const ReferenceDisciplinesPage = () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
   const disciplineService = DisciplineService.instance();
   const { id } = useParams<string>();
@@ -93,30 +99,84 @@ const ReferenceDisciplinesPage = () => {
     setFilter(newFilter);
   };
 =======
+=======
+  const disciplineService = DisciplineService.instance();
+  const { id } = useParams<string>();
+
+>>>>>>> 4da58ec (filtering)
   const [entities, setEntities] = useState<Discipline[]>([]);
+  const [filter, setFilter] = useState<string>('all');
+
+  useEffect(() => {
+    // externally requested record, only getAll guarantees finding the record
+    if (id) {
+      setFilter('all');
+    }
+  }, []);
 
   useEffect(() => {
     fetchData()
-  }, []);
+  }, [filter]);
 
   async function fetchData() {
-    const found = await disciplineService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    const found = await filteredData();
     setEntities(found);
   }
 >>>>>>> df7d938 (filter entity list)
+
+  async function filteredData(): Promise<Discipline[]> {
+    if (DisciplineService.STATUSES.includes(filter)) {
+      return await disciplineService
+        .findByStatus(filter)
+        .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    }
+
+
+    return await disciplineService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+  }
+
+  function filterMenu() {
+    return <>
+      <MenuItem onClick={() => handleFilterChange('all')}>
+        <ListItemIcon>
+          {filter === 'all' && <CheckOutlined />}
+        </ListItemIcon>
+        Show All
+      </MenuItem>
+      <Divider />
+      {DisciplineService.STATUSES.map(status => {
+        return <MenuItem
+          key={status}
+          onClick={() => handleFilterChange(`${status}`)}>
+          <ListItemIcon>
+            {filter === status && <CheckOutlined />}
+          </ListItemIcon>
+          {status}
+        </MenuItem>
+      })}
+    </>
+  }
+
+  function handleFilterChange(newFilter: string) {
+    setFilter(newFilter);
+  };
 
   return (
     <EntityListPage
       title={'Disciplines'}
       entities={entities}
 <<<<<<< HEAD
+<<<<<<< HEAD
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
 =======
 >>>>>>> df7d938 (filter entity list)
+=======
+      pageAction={<MoreButton menuItems={filterMenu()} />}
+>>>>>>> 4da58ec (filtering)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

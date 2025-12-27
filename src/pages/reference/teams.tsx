@@ -19,16 +19,24 @@ import { MoreButton } from "./MoreButton";
 import { EntityListPage } from '../../components/EntityListPage';
 import { Team, TeamService } from '../../services/dasTeamService';
 import { TeamDetails } from '../team';
+<<<<<<< HEAD
 import { StringUtils } from '../../services/StringUtils';
+=======
+>>>>>>> 4da58ec (filtering)
 
 const ReferenceTeamsPage = () => {
   const teamService = TeamService.instance();
   const { id } = useParams<string>();
   const storageService = useStorageService()!;
+<<<<<<< HEAD
 
   const [entities, setEntities] = useState<Team[]>([]);
   const [filter, setFilter] = useState<string>('Active');
   const [searchValue, setSearchValue] = useState<string>('');
+=======
+  const [entities, setEntities] = useState<Team[]>([]);
+  const [filter, setFilter] = useState<string>('Active');
+>>>>>>> 4da58ec (filtering)
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
@@ -39,6 +47,7 @@ const ReferenceTeamsPage = () => {
 
   useEffect(() => {
     fetchData()
+<<<<<<< HEAD
   }, [filter, searchValue]);
 
   async function fetchData() {
@@ -48,6 +57,13 @@ const ReferenceTeamsPage = () => {
     } else {
       setEntities(found);
     }
+=======
+  }, [filter]);
+
+  async function fetchData() {
+    const found = await filteredData();
+    setEntities(found);
+>>>>>>> 4da58ec (filtering)
   }
 
   async function filteredData(): Promise<Team[]> {
@@ -78,7 +94,11 @@ const ReferenceTeamsPage = () => {
           <ListItemIcon>
             {filter === status && <CheckOutlined />}
           </ListItemIcon>
+<<<<<<< HEAD
           {StringUtils.capitalize(status)}
+=======
+          {status}
+>>>>>>> 4da58ec (filtering)
         </MenuItem>
       })}
     </>
@@ -92,6 +112,7 @@ const ReferenceTeamsPage = () => {
     <EntityListPage
       title={'Teams'}
       entities={entities}
+<<<<<<< HEAD
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
@@ -102,6 +123,14 @@ const ReferenceTeamsPage = () => {
           avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />}
       detailRenderer={entity =>
         <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
+=======
+      pageAction={<MoreButton menuItems={filterMenu()} />}
+      listItemRenderer={entity => <ListCard
+        key={entity.id}
+        title={entity.name}
+        avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />}
+      detailRenderer={entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
+>>>>>>> 4da58ec (filtering)
     />
   );
 };

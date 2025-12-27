@@ -7,6 +7,9 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4da58ec (filtering)
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import {
@@ -15,6 +18,7 @@ import {
   MenuItem
 } from '@mui/material';
 import { CheckOutlined } from "@ant-design/icons";
+<<<<<<< HEAD
 
 import { EntityListPage } from '../../components/EntityListPage';
 import { ListCard } from '../../components/ListCard';
@@ -94,29 +98,84 @@ const ReferenceRolesPage = () => {
 =======
 >>>>>>> df7d938 (filter entity list)
 import { ListCard } from '../../components/ListCard';
+=======
+>>>>>>> 4da58ec (filtering)
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { Role, roleService } from '../../services/dasRoleService';
+import { ListCard } from '../../components/ListCard';
+import { MoreButton } from "./MoreButton";
+
+
 import { ReferenceRoleDetails } from '../role/ReferenceRoleDetails';
-import { useEffect, useState } from 'react';
+import { Role, RoleService } from '../../services/dasRoleService';
 
 const ReferenceRolesPage = () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> b09b223 (reference views for roles)
 =======
+=======
+  const roleService = RoleService.instance();
+  const { id } = useParams<string>();
+
+>>>>>>> 4da58ec (filtering)
   const [entities, setEntities] = useState<Role[]>([]);
+  const [filter, setFilter] = useState<string>('Active');
+
+  useEffect(() => {
+    // externally requested record, only getAll guarantees finding the record
+    if (id) {
+      setFilter('all');
+    }
+  }, []);
 
   useEffect(() => {
     fetchData()
-  }, []);
+  }, [filter]);
 
   async function fetchData() {
-    const found = await roleService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    const found = await filteredData();
     setEntities(found);
   }
 >>>>>>> df7d938 (filter entity list)
+
+  async function filteredData(): Promise<Role[]> {
+    if (RoleService.STATUSES.includes(filter)) {
+      return await roleService
+        .findByStatus(filter)
+        .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    }
+
+    return await roleService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+  }
+
+  function filterMenu() {
+    return <>
+      <MenuItem onClick={() => handleFilterChange('all')}>
+        <ListItemIcon>
+          {filter === 'all' && <CheckOutlined />}
+        </ListItemIcon>
+        Show All
+      </MenuItem>
+      <Divider />
+      {RoleService.STATUSES.map(status => {
+        return <MenuItem
+          key={status}
+          onClick={() => handleFilterChange(`${status}`)}>
+          <ListItemIcon>
+            {filter === status && <CheckOutlined />}
+          </ListItemIcon>
+          {status}
+        </MenuItem>
+      })}
+    </>
+  }
+
+  function handleFilterChange(newFilter: string) {
+    setFilter(newFilter);
+  };
 
   return (
     <EntityListPage
@@ -124,6 +183,7 @@ const ReferenceRolesPage = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
       entities={entities}
+<<<<<<< HEAD
       filterBy={searchValue}
       onFilter={setSearchValue}
       pageAction={<MoreButton menuItems={filterMenu()} />}
@@ -136,6 +196,9 @@ const ReferenceRolesPage = () => {
 =======
       entities={entities}
 >>>>>>> df7d938 (filter entity list)
+=======
+      pageAction={<MoreButton menuItems={filterMenu()} />}
+>>>>>>> 4da58ec (filtering)
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
