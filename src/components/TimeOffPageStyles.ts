@@ -6,7 +6,7 @@ export const rootBox: SxProps<Theme> = {
   p: 3,
 };
 
-export const leftPaper: SxProps<Theme> = (theme: Theme) => ({
+export const leftCard: SxProps<Theme> = (theme: Theme) => ({
   mt: 2,
   borderRadius: 3,
   border: `1px solid ${theme.palette.grey[200]}`,
@@ -22,7 +22,7 @@ export const emptyCell: SxProps<Theme> = {
   color: "text.secondary",
 };
 
-export const rightPaper: SxProps<Theme> = (theme: Theme) => ({
+export const rightCard: SxProps<Theme> = (theme: Theme) => ({
   height: "100%",
   borderRadius: 3,
   border: `1px solid ${theme.palette.grey[200]}`,

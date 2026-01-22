@@ -3,11 +3,11 @@
  *
  */
 
-import { useState, FormEvent } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import {
   Box,
   Button,
-  Paper,
+  Card,
   TextField,
   Typography,
   Table,
@@ -18,11 +18,16 @@ import {
   TableRow,
   Divider,
 } from "@mui/material";
-
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { useVolunteer } from '../hooks/useVolunteer';
+import { supabaseClient } from "@digitalaidseattle/supabase";
 import * as styles from "./TimeOffPageStyles";
 
+dayjs.extend(utc);
+
 export interface TimeOffEntry {
-  id: number;
+  id: string;
   start: string; 
   end: string;   
   reason?: string;
@@ -33,32 +38,89 @@ const TimeOffPage = () => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [reason, setReason] = useState("");
+  const { volunteer } = useVolunteer();
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!start || !end) return;
-
-    const newEntry: TimeOffEntry = {
-      id: Date.now(),
-      start,
-      end,
-      reason: reason.trim() || undefined,
+  useEffect(() => {
+    const load = async () => {
+      if (!volunteer?.id) return;
+  
+      const { data, error } = await supabaseClient
+        .from("time_off")
+        .select("id, start_at, end_at, reason")
+        .eq("volunteer_id", volunteer.id)
+        .order("start_at", { ascending: true });
+  
+      if (error) {
+        console.error("Failed to load time off:", error);
+        return;
+      }
+  
+      setEntries(
+        (data ?? []).map((row) => ({
+          id: row.id,
+          start: row.start_at,
+          end: row.end_at,
+          reason: row.reason ?? undefined,
+        }))
+      );
     };
+  
+    load();
+  }, [volunteer?.id]);
 
-    const updated = [...entries, newEntry];
-    setEntries(updated);
-
-    // Soft TODO: call backend API here 
-
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+  
+    if (!start || !end || !volunteer?.id) return;
+  
+    const startIso = dayjs(start).utc().toISOString();
+    const endIso = dayjs(end).utc().toISOString();
+  
+    if (dayjs(endIso).isBefore(dayjs(startIso))) {
+      console.warn("End date must be after start date");
+      return;
+    }
+  
+    const { data, error } = await supabaseClient
+      .from("time_off")
+      .insert([
+        {
+          volunteer_id: volunteer.id,   
+          start_at: startIso,
+          end_at: endIso,
+          reason: reason.trim() || null,
+        },
+      ])
+      .select("id, start_at, end_at, reason")
+      .single();
+  
+    if (error) {
+      console.error("Failed to create time off:", error);
+      return;
+    }
+  
+    // Update UI
+    setEntries((prev) => [
+      ...prev,
+      {
+        id: data.id,
+        start: data.start_at,
+        end: data.end_at,
+        reason: data.reason ?? undefined,
+      },
+    ]);
+  
     setStart("");
     setEnd("");
     setReason("");
   };
 
+  // Time displayed in military time
   const formatDate = (value: string) => {
     if (!value) return "—";
-    const d = new Date(value);
-    return isNaN(d.getTime()) ? value : d.toLocaleString();
+  
+    const d = dayjs(value);
+    return d.isValid() ? d.format("DD/MM/YYYY HH:mm") : value;
   };
 
   return (
@@ -72,7 +134,7 @@ const TimeOffPage = () => {
             Enter the time span below.
           </Typography>
 
-          <Paper elevation={0} sx={styles.leftPaper}>
+          <Card elevation={0} sx={styles.leftCard}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -98,11 +160,11 @@ const TimeOffPage = () => {
                 ))}
               </TableBody>
             </Table>
-          </Paper>
+          </Card>
         </Grid>
 
         <Grid size={{ xs: 12, md: 5 }}>
-          <Paper elevation={0} sx={styles.rightPaper}>
+          <Card elevation={0} sx={styles.rightCard}>
             <Typography variant="subtitle1" fontWeight={600}>
               Add time off
             </Typography>
@@ -154,7 +216,7 @@ const TimeOffPage = () => {
                 </Button>
               </Box>
             </Box>
-          </Paper>
+          </Card>
         </Grid>
       </Grid>
     </Box>
