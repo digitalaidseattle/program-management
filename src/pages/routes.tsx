@@ -40,6 +40,7 @@ import ReportingPage from './reporting/index.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
 import ReferenceVenturesPage from './reference/ventures.tsx';
 import ReferenceTeamsPage from './reference/teams.tsx';
+import { VentureStatusReportPage } from './venture/VenturesStatusReportPage.tsx';
 
 const routes = [
   {
@@ -79,7 +80,7 @@ const routes = [
         element: <StaffingPage />,
       },
       {
-        path: "reporting",
+        path: "ventures/reporting",
         element: <ReportingPage />,
       },
       {
@@ -133,6 +134,10 @@ const routes = [
       {
         path: "ventures/:id?",
         element: <ReferenceVenturesPage />,
+      }, ,
+      {
+        path: "ventures/status-report/:id?",
+        element: <VentureStatusReportPage />,
       }
     ]
   },

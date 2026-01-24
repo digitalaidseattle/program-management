@@ -1,5 +1,6 @@
 import {
 <<<<<<< HEAD
+<<<<<<< HEAD
   Avatar,
   Box,
   Card,
@@ -10,7 +11,13 @@ import {
 } from '@mui/material';
 import { blue } from '@mui/material/colors';
 =======
+=======
+  Avatar,
+>>>>>>> 5b8aad2 (reporting cleanup)
   Box,
+  Card,
+  CardContent,
+  CardHeader,
   Divider,
   Stack,
   Typography
@@ -19,6 +26,7 @@ import { blue } from '@mui/material/colors';
 import dayjs from 'dayjs';
 import { VentureReport } from '../services/dasVentureReportService';
 import { HEALTH_STATUS_CHIPS } from './StatusChip';
+import { blue } from '@mui/material/colors';
 
 export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
   const REPORT_FIELDS = [
@@ -33,6 +41,9 @@ export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
   return (
     <>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5b8aad2 (reporting cleanup)
       <Card>
         <CardHeader
           slotProps={{ title: { fontSize: 16, fontWeight: 600 } }}
@@ -66,6 +77,7 @@ export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
             REPORT_FIELDS.every(field => !(report as any)[field.key]) && (
               <Typography variant="body2" color="text.secondary">
                 No detailed notes recorded for this report.
+<<<<<<< HEAD
               </Typography>
             )
           }
@@ -115,6 +127,14 @@ export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
         )
       }
 >>>>>>> a1aca81 (reuse venture report details)
+=======
+              </Typography>
+            )
+          }
+        </CardContent>
+      </Card>
+
+>>>>>>> 5b8aad2 (reporting cleanup)
     </>
   );
 }
