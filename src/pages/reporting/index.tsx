@@ -90,12 +90,15 @@ const ReportingPage = () => {
   }, [queryModel]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   useEffect(() => {
     fetchData();
   }, [queryModel]);
 
 >>>>>>> a1aca81 (reuse venture report details)
+=======
+>>>>>>> a2e1142 (clean build)
   function fetchData() {
     setLoading(true);
     if (queryModel) {

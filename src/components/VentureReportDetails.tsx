@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+<<<<<<< HEAD
   Stack,
   Typography
 } from '@mui/material';
@@ -23,10 +24,15 @@ import { blue } from '@mui/material/colors';
   Typography
 } from '@mui/material';
 >>>>>>> a1aca81 (reuse venture report details)
+=======
+  Stack,
+  Typography
+} from '@mui/material';
+import { blue } from '@mui/material/colors';
+>>>>>>> a2e1142 (clean build)
 import dayjs from 'dayjs';
 import { VentureReport } from '../services/dasVentureReportService';
 import { HEALTH_STATUS_CHIPS } from './StatusChip';
-import { blue } from '@mui/material/colors';
 
 export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
   const REPORT_FIELDS = [
