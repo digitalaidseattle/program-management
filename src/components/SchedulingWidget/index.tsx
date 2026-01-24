@@ -124,7 +124,7 @@ export const SchedulingWidget = () => {
     }
 
     async function authenticate() {
-        const calendlyUri = calendlyService.getAuthUri(redirectUri);
+        const calendlyUri = calendlyService.getAuthUri(window.location.origin);
         window.location.replace(calendlyUri);
     }
 
