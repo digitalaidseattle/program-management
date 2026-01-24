@@ -23,10 +23,6 @@ type Role = Entity & {
 
 class RoleService extends SupabaseEntityService<Role> {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4da58ec (filtering)
     static STATUSES = ['Active', 'Inactive'];
 
     static _instance: RoleService;
@@ -37,12 +33,6 @@ class RoleService extends SupabaseEntityService<Role> {
         }
         return this._instance;
     }
-<<<<<<< HEAD
-=======
-    STATUSES = ['Active', 'Inactive'];
->>>>>>> b09b223 (reference views for roles)
-=======
->>>>>>> 4da58ec (filtering)
 
     public constructor() {
         super("role");
@@ -61,10 +51,6 @@ class RoleService extends SupabaseEntityService<Role> {
         return entity.pic ? storageService.getUrl(entity.pic) : undefined
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4da58ec (filtering)
     async findByStatus(status: string): Promise<Role[]> {
         return await supabaseClient
             .from(this.tableName)
@@ -72,11 +58,6 @@ class RoleService extends SupabaseEntityService<Role> {
             .eq('status', status)
             .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
     }
-<<<<<<< HEAD
-=======
->>>>>>> b09b223 (reference views for roles)
-=======
->>>>>>> 4da58ec (filtering)
 }
 
 const roleService = RoleService.instance();

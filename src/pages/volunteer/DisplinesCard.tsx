@@ -14,15 +14,7 @@ import { Discipline, disciplineService } from "../../services/dasDisciplineServi
 import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
 import { Volunteer } from "../../services/dasVolunteerService";
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
-=======
-export const DisciplinesCard: React.FC<EntityProps<Volunteer>> = ({ entity, onChange }) => {
->>>>>>> 3cd4d2f (add volunteer)
-=======
-export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
->>>>>>> 4d1d323 (ET-84 read only volunteer component)
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);
@@ -74,15 +66,9 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
                                 .then(data => handleChange(data))
                         }
                     }}
-<<<<<<< HEAD
-                    menuItems={onChange && [
-                        <MenuItem onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
-                        <MenuItem onClick={() => {
-=======
                     menuItems={[
                         <MenuItem key={1} onClick={() => handleOpen(discipline.id)}> Open</MenuItem >,
                         <MenuItem key={2} onClick={() => {
->>>>>>> 3cd4d2f (add volunteer)
                             setSelectedItem(discipline);
                             setOpenConfirmation(true);
                         }}>Remove...</MenuItem>]

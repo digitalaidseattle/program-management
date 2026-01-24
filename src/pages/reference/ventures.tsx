@@ -4,99 +4,22 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-<<<<<<< HEAD
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { CheckOutlined } from "@ant-design/icons";
 import {
   Divider,
   ListItemIcon,
   MenuItem
 } from '@mui/material';
-import { CheckOutlined } from "@ant-design/icons";
-
-import { ListCard } from '../../components/ListCard';
-<<<<<<< HEAD
-import { MoreButton } from "./MoreButton";
-import { EntityListPage } from '../../components/EntityListPage';
-import { partnerService } from '../../services/dasPartnerService';
-import { Venture, VentureService } from '../../services/dasVentureService';
-import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
-
-const ReferenceVenturesPage = () => {
-  const ventureService = VentureService.instance();
-  const { id } = useParams<string>();
-
-  const [entities, setEntities] = useState<Venture[]>([]);
-  const [filter, setFilter] = useState<string>('Active');
-  const [searchValue, setSearchValue] = useState<string>('');
-
-  useEffect(() => {
-    // externally requested record, only getAll guarantees finding the record
-    if (id) {
-      setFilter('all');
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData()
-  }, [filter, searchValue]);
-
-  async function fetchData() {
-    const found = await filteredData();
-    if (searchValue.length > 0) {
-      setEntities(found.filter(elem => elem.venture_code.toLowerCase().includes(searchValue.toLowerCase())))
-    } else {
-      setEntities(found);
-    }
-  }
-
-  async function filteredData(): Promise<Venture[]> {
-    if (VentureService.STATUSES.includes(filter)) {
-      return await ventureService
-        .findByStatus(filter)
-        .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
-    }
-    return await ventureService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
-  }
-
-  function handleFilterChange(newFilter: string) {
-    setFilter(newFilter);
-  };
-
-  function filterMenu() {
-    return <>
-      <MenuItem onClick={() => handleFilterChange('all')}>
-        <ListItemIcon>
-          {filter === 'all' && <CheckOutlined />}
-        </ListItemIcon>
-        Show All
-      </MenuItem>
-      <Divider />
-      {VentureService.STATUSES.map(status => {
-        return <MenuItem
-          key={status}
-          onClick={() => handleFilterChange(`${status}`)}>
-          <ListItemIcon>
-            {filter === status && <CheckOutlined />}
-          </ListItemIcon>
-          {status}
-        </MenuItem>
-      })}
-    </>
-=======
-
 import { useEffect, useState } from 'react';
-=======
+import { useParams } from 'react-router';
 
 import { ListCard } from '../../components/ListCard';
-import { MoreButton } from "./MoreButton";
->>>>>>> 4da58ec (filtering)
-import { EntityListPage } from '../../components/EntityListPage';
-import { partnerService } from '../../services/dasPartnerService';
 import { Venture, VentureService } from '../../services/dasVentureService';
 import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
+import { MoreButton } from "./MoreButton";
+
+import { EntityListPage } from '../../components/EntityListPage';
+import { partnerService } from '../../services/dasPartnerService';
 
 const ReferenceVenturesPage = () => {
   const ventureService = VentureService.instance();
@@ -129,10 +52,6 @@ const ReferenceVenturesPage = () => {
     return await ventureService
       .getAll()
       .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
-<<<<<<< HEAD
-    setEntities(found);
->>>>>>> df7d938 (filter entity list)
-=======
   }
 
   function handleFilterChange(newFilter: string) {
@@ -159,18 +78,12 @@ const ReferenceVenturesPage = () => {
         </MenuItem>
       })}
     </>
->>>>>>> 4da58ec (filtering)
   }
 
   return (
     <EntityListPage
       title={'Ventures'}
       entities={entities}
-<<<<<<< HEAD
-      filterBy={searchValue}
-      onFilter={setSearchValue}
-=======
->>>>>>> 4da58ec (filtering)
       pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard

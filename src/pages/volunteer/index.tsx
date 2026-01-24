@@ -6,11 +6,7 @@
  */
 
 // material-ui
-<<<<<<< HEAD
 import { InputForm, InputOption, TabbedPanels } from '@digitalaidseattle/mui';
-=======
-import { InputForm, InputOption, TabbedPanels, TabbedPanelsCard } from '@digitalaidseattle/mui';
->>>>>>> 3cd4d2f (add volunteer)
 import {
   Breadcrumbs,
   Card,

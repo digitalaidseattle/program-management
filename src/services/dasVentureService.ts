@@ -5,9 +5,8 @@
  *
  */
 
-import { PageInfo, QueryModel, supabaseClient } from "@digitalaidseattle/supabase";
+import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Partner, partnerService } from "./dasPartnerService";
-import { PMEntityService } from "./pmEntityService";
 
 type Venture = {
     id: string
@@ -36,9 +35,6 @@ function MAPPER(json: any): Venture {
     return venture;
 }
 
-<<<<<<< HEAD
-class VentureService extends PMEntityService<Venture> {
-=======
 class VentureService extends SupabaseEntityService<Venture> {
     
     static STATUSES = [
@@ -58,7 +54,6 @@ class VentureService extends SupabaseEntityService<Venture> {
         }
         return this._instance;
     }
->>>>>>> 4da58ec (filtering)
 
     public constructor() {
         super("venture", DEFAULT_SELECT, MAPPER);
