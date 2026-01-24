@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
-import { SearchOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, SearchOutlined } from "@ant-design/icons";
 
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";
@@ -78,13 +78,13 @@ export function EntityListPage<T extends Entity>({
                         <Stack sx={{ height: "100vh" }}>
                             {onFilter && <OutlinedInput
                                 value={filterValue}
-                                onChange={(evt) => onFilter && onFilter(evt.target.value)}
+                                onChange={(evt) => onFilter(evt.target.value)}
                                 endAdornment={<InputAdornment position="end">
                                     <IconButton
-                                        onClick={() => onFilter && onFilter(filterValue)}
+                                        onClick={() => onFilter("")}
                                         edge="end"
                                     >
-                                        <SearchOutlined />
+                                        <CloseCircleOutlined />
                                     </IconButton>
                                 </InputAdornment>} />}
                             <ScrollList

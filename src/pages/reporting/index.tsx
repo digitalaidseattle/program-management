@@ -4,38 +4,39 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { useContext, useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { HomeOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {
-  Button,
+  Breadcrumbs,
   Card,
   CardContent,
   CardHeader,
   IconButton,
   Stack,
-  Toolbar
+  Toolbar,
+  Tooltip,
+  Typography
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { useContext, useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import { LoadingContext, useNotifications } from '@digitalaidseattle/core';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 
 import { EntityTable } from '../../components/EntityTable';
 import { HEALTH_STATUS_CHIPS } from '../../components/StatusChip';
-import { VentureReportDetails } from '../../components/VentureReportDetails';
-import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
 import VentureReportDialog from '../../components/VentureReportDialog';
+import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
 
 const ReportingPage = () => {
   const ventureReportService = VentureReportService.instance();
   const notifications = useNotifications();
   const { setLoading } = useContext(LoadingContext);
+  const navigate = useNavigate();
 
   const [pageInfo, setPageInfo] = useState<PageInfo<VentureReport>>({ rows: [], totalRowCount: 0 });
   const [queryModel, setQueryModel] = useState<QueryModel>();
-  const [selectedReport, setSelectedReport] = useState<VentureReport>();
 
   const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
 
@@ -60,13 +61,14 @@ const ReportingPage = () => {
     }
   };
 
-  const handleBackToTable = () => setSelectedReport(undefined);
 
   const columns: GridColDef<VentureReport[][number]>[] = [
     {
-      field: 'venture_code', headerName: 'Venture',
+      field: 'venture_id', headerName: 'Venture',
       renderCell: (params) => (
-        params.row.venture!.venture_code
+        <Tooltip title="click to view venture">
+          <NavLink to={`/ventures/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
+        </Tooltip>
       ),
       width: 300,
     },
@@ -89,28 +91,9 @@ const ReportingPage = () => {
     },
     {
       field: 'reported_by', headerName: 'Reported By',
-      width: 200,
-    },
-    {
-      field: 'id', headerName: 'Actions', renderCell: (params) => (
-        <Button
-          component={RouterLink}
-          to={`/ventures/${params.row.venture_id}`}
-          size="small"
-          variant="outlined"
-          onClick={e => e.stopPropagation()}
-        >
-          View Venture
-        </Button>
-      ),
-      width: 200,
-    },
+      flex: 1,
+    }
   ];
-
-  function changeSelectedReport(reportId: string) {
-    ventureReportService.getById(reportId)
-      .then(report => setSelectedReport(report!));
-  }
 
   function toolbar() {
     return (
@@ -121,13 +104,23 @@ const ReportingPage = () => {
       </Stack>
     );
   }
+
+  function changeSelectedReport(id: any): void {
+    navigate(`/ventures/status-report/${id}`)
+  }
+
   return (
-    <Card>
-      <CardHeader
-        title="Venture reports"
-        subheader="Venture reports across the program." />
-      <CardContent>
-        {!selectedReport ? (
+    <>
+      <Breadcrumbs aria-label="breadcrumb">
+        <NavLink to="/" ><IconButton size="medium"><HomeOutlined /></IconButton></NavLink>
+        <NavLink to={`/ventures`} >Ventures</NavLink>
+        <Typography color="text.primary">Reports </Typography>
+      </Breadcrumbs>
+      <Card>
+        <CardHeader
+          title="Venture reports"
+          subheader="Venture reports across the program." />
+        <CardContent>
           <EntityTable
             pageInfo={pageInfo}
             onChange={setQueryModel}
@@ -135,28 +128,13 @@ const ReportingPage = () => {
             toolbar={toolbar}
             onRowDoubleClick={(evt) => changeSelectedReport(evt.id)}
           />
-        ) : (
-          <Stack spacing={3}>
-            <Toolbar>
-              <Button size="small" onClick={handleBackToTable}>
-                Back to table
-              </Button>
-            </Toolbar>
-            {selectedReport && (
-              <Card>
-                <CardContent>
-                  <VentureReportDetails report={selectedReport} />
-                </CardContent>
-              </Card>
-            )}
-          </Stack>
-        )}
-        <VentureReportDialog
-          title={'Add Venture Report'}
-          onClose={() => setShowAddDialog(false)}
-          open={showAddDialog} />
-      </CardContent>
-    </Card >
+          <VentureReportDialog
+            title={'Add Venture Report'}
+            onClose={() => setShowAddDialog(false)}
+            open={showAddDialog} />
+        </CardContent>
+      </Card >
+    </>
   );
 };
 

@@ -75,7 +75,7 @@ export const TemplateConfig = () => {
                 id: 'reporting',
                 title: 'Reporting',
                 type: 'item',
-                url: '/reporting',
+                url: '/ventures/reporting',
                 icon: <PaperClipOutlined />
             },
             {
