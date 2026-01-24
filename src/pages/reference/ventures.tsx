@@ -15,11 +15,11 @@ import { useParams } from 'react-router';
 
 import { ListCard } from '../../components/ListCard';
 import { Venture, VentureService } from '../../services/dasVentureService';
-import { ReferenceVentureDetails } from "../venture/ReferenceVentureDetails";
 import { MoreButton } from "./MoreButton";
 
 import { EntityListPage } from '../../components/EntityListPage';
 import { partnerService } from '../../services/dasPartnerService';
+import { ReferenceVentureDetails } from "../venture/referenceVentureDetails";
 
 const ReferenceVenturesPage = () => {
   const ventureService = VentureService.instance();

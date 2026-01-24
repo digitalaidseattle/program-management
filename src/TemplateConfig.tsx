@@ -1,8 +1,21 @@
 
 import {
-    HomeOutlined
+    CalendarOutlined,
+    CompassOutlined,
+    CrownOutlined,
+    HeartOutlined,
+    HomeOutlined,
+    IdcardOutlined,
+    KeyOutlined,
+    MehOutlined,
+    PaperClipOutlined,
+    RocketOutlined,
+    ScheduleOutlined,
+    SearchOutlined,
+    TeamOutlined,
+    ToolOutlined,
+    UserOutlined
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
 import logo from "./assets/images/logo-light-icon.svg";
 
 import { LayoutConfiguration, MenuItem } from "@digitalaidseattle/mui";
@@ -74,6 +87,142 @@ export const TemplateConfig = () => {
             // }
         ]
     } as MenuItem;
+
+    const reference = {
+        id: 'reference-group',
+        title: 'Reference',
+        type: 'collapse',
+        children: [
+            {
+                id: 'ref-volunteers',
+                title: 'Volunteers',
+                type: 'item',
+                url: '/volunteers',
+                icon: <UserOutlined />
+            },
+            {
+                id: 'ref-teams',
+                title: 'Teams',
+                type: 'item',
+                url: '/teams',
+                icon: <TeamOutlined />
+            },
+            {
+                id: 'ref-partners',
+                title: 'Partners',
+                type: 'item',
+                url: '/partners',
+                icon: <HeartOutlined />
+            },
+            {
+                id: 'ref-tools',
+                title: 'Tools',
+                type: 'item',
+                url: '/tools',
+                icon: <ToolOutlined />
+            },
+            {
+                id: 'ref-disciplines',
+                title: 'Disciplines',
+                type: 'item',
+                url: '/disciplines',
+                icon: <KeyOutlined />
+            },
+            {
+                id: 'ref-roles',
+                title: 'Roles',
+                type: 'item',
+                url: '/roles',
+                icon: <IdcardOutlined />
+            }
+        ]
+    }
+
+    const data = {
+        id: 'cadre-dashboard',
+        title: 'Data',
+        type: 'collapse',
+        children: [
+            {
+                id: 'people',
+                title: 'Volunteers',
+                type: 'item',
+                url: '/data/volunteers',
+                icon: <UserOutlined />
+            }, {
+                id: 'teams',
+                title: 'Teams',
+                type: 'item',
+                url: '/data/teams',
+                icon: <TeamOutlined />
+            },
+            {
+                id: 'partners',
+                title: 'Partners',
+                type: 'item',
+                url: '/data/partners',
+                icon: <HeartOutlined />
+            },
+            {
+                id: 'ventures',
+                title: 'Ventures',
+                type: 'item',
+                url: '/ventures',
+                icon: <RocketOutlined />
+            },
+            {
+                id: 'tools',
+                title: 'Tools',
+                type: 'item',
+                url: '/data/tools',
+                icon: <ToolOutlined />
+            },
+            {
+                id: 'disciplines',
+                title: 'Disciplines',
+                type: 'item',
+                url: '/data/disciplines',
+                icon: <KeyOutlined />
+            },
+            {
+                id: 'roles',
+                title: 'Roles',
+                type: 'item',
+                url: '/data/roles',
+                icon: <IdcardOutlined />
+            },
+            {
+                id: 'meetings',
+                title: 'Meetings',
+                type: 'item',
+                url: '/data/meetings',
+                icon: <CalendarOutlined />
+            }
+        ]
+    } as MenuItem;
+
+    const recruiting = {
+        id: 'recruiting-dashboard',
+        title: 'Recruiting',
+        type: 'group',
+        children: [
+            {
+                id: 'applicants',
+                title: 'Applicants',
+                type: 'item',
+                url: '/applicants',
+                icon: <SearchOutlined />
+            },
+            {
+                id: 'proctors',
+                title: 'Proctors',
+                type: 'item',
+                url: '/proctors',
+                icon: <MehOutlined />
+            }
+        ]
+    } as MenuItem;
+
 
     console.log('disabled menu items', meetings, ventures, reference, data, recruiting);
     const menuItems = [home, ventures];
