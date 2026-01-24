@@ -4,14 +4,13 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Divider,
   Stack,
   Typography
 } from '@mui/material';
+import { blue } from '@mui/material/colors';
 import dayjs from 'dayjs';
 import { VentureReport } from '../services/dasVentureReportService';
 import { HEALTH_STATUS_CHIPS } from './StatusChip';
-import { blue } from '@mui/material/colors';
 
 export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
   const REPORT_FIELDS = [

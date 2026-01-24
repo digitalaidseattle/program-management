@@ -4,10 +4,10 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+import { CloseCircleOutlined } from "@ant-design/icons";
+import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
-import { CloseCircleOutlined, SearchOutlined } from "@ant-design/icons";
 
 import { Entity } from "@digitalaidseattle/core";
 import { PageInfo } from "@digitalaidseattle/supabase";

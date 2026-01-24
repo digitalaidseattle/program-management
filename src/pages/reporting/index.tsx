@@ -44,10 +44,6 @@ const ReportingPage = () => {
     fetchData();
   }, [queryModel]);
 
-  useEffect(() => {
-    fetchData();
-  }, [queryModel]);
-
   function fetchData() {
     setLoading(true);
     if (queryModel) {

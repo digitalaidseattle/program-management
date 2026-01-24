@@ -186,7 +186,6 @@ const VentureReportDetailsCard = ({ venture }: { venture: Venture }) => {
 }
 
 const ReferenceVentureDetails = ({ entity }: { entity: Venture }) => {
-  console.log('entity', entity)
   return (entity &&
     <Card>
       <CardHeader
