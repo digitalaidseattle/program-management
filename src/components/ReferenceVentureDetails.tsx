@@ -21,14 +21,14 @@ import {
 import { ReactNode, useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
-import { FieldRow } from '../../components/FieldRow';
-import { EntityProps } from '../../components/utils';
-import { profileService } from '../../services/dasProfileService';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
-import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
-import { Venture } from '../../services/dasVentureService';
-import { STATUS_COMP } from '../ventures/Utils';
-import { VentureReportDetails } from "../../components/VentureReportDetails";
+import { FieldRow } from './FieldRow';
+import { EntityProps } from './utils';
+import { profileService } from '../services/dasProfileService';
+import { Staffing, staffingService } from '../services/dasStaffingService';
+import { VentureReport, VentureReportService } from '../services/dasVentureReportService';
+import { Venture } from '../services/dasVentureService';
+import { STATUS_COMP } from '../pages/ventures/Utils';
+import { VentureReportDetails } from "./VentureReportDetails";
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [staffing, setStaffing] = useState<Staffing[]>([]);

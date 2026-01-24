@@ -19,7 +19,7 @@ import { MoreButton } from "./MoreButton";
 
 import { EntityListPage } from '../../components/EntityListPage';
 import { partnerService } from '../../services/dasPartnerService';
-import { ReferenceVentureDetails } from "../venture/referenceVentureDetails";
+import { ReferenceVentureDetails } from "../../components/ReferenceVentureDetails";
 
 const ReferenceVenturesPage = () => {
   const ventureService = VentureService.instance();
