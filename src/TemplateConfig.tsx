@@ -1,4 +1,11 @@
-
+/**
+ * 
+ * TemplateConfig.tsx
+ * 
+ * @Copyright 2026 Digital Aid Seattle
+ * 
+ */
+import { NavLink } from "react-router-dom";
 import {
     CalendarOutlined,
     CompassOutlined,
@@ -224,8 +231,9 @@ export const TemplateConfig = () => {
     } as MenuItem;
 
 
-    console.log('disabled menu items', meetings, ventures, reference, data, recruiting);
-    const menuItems = [home, ventures];
+    console.log('disabled menu items', meetings, recruiting, reference, data);
+
+    const menuItems = [home, ventures,];
 
     return ({
         appName: 'DAS Program Management',
@@ -240,12 +248,12 @@ export const TemplateConfig = () => {
             //     to={`/profile`}>
             //     Profile
             // </Link>,
-            // <Link
-            //     style={{ 'textDecoration': 'none' }}
-            //     color="secondary"
-            //     to={`/privacy`}>
-            //     Privacy Policy
-            // </Link>
+            <NavLink
+                style={{ 'textDecoration': 'none' }}
+                color="secondary"
+                to={`/privacy`}>
+                Privacy Policy
+            </NavLink>
         ],
         version: packageJson.version,
     } as LayoutConfiguration);
