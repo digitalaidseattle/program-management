@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, List, ListItemButton, ListItemText } fro
 import { useState } from 'react';
 import AddMeetingDialog from '../AddMeetingDialog';
 import VentureReportDialog from '../VentureReportDialog';
+import { VentureReportService } from '../../services/dasVentureReportService';
 
 export const MyTasksWidget = () => {
     const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
@@ -46,6 +47,7 @@ export const MyTasksWidget = () => {
                     open={showAddMeetingDialog} />
                 <VentureReportDialog
                     title={'Add Venture Report'}
+                    report={VentureReportService.instance().empty()}
                     onClose={() => setShowAddVentureReportDialog(false)}
                     open={showAddVentureReportDialog} />
             </CardContent>

@@ -1,4 +1,4 @@
-import { HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { ArrowsAltOutlined, DeleteOutlined, EditOutlined, HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 import { LoadingContext, useNotifications } from '@digitalaidseattle/core';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
@@ -7,31 +7,34 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Icon,
   IconButton,
   Stack,
   Toolbar,
   Tooltip,
   Typography
 } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import { useContext, useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { VentureReport, VentureReportService } from "../../services/dasVentureReportService";
-import { HEALTH_STATUS_CHIPS } from "../../components/StatusChip";
+import { NavLink } from 'react-router-dom';
 import { EntityTable } from "../../components/EntityTable";
+import { HEALTH_STATUS_CHIPS } from "../../components/StatusChip";
 import VentureReportDialog from "../../components/VentureReportDialog";
+import { VentureReport, VentureReportService } from "../../services/dasVentureReportService";
 
 
 const ReportingPage = () => {
   const ventureReportService = VentureReportService.instance();
   const notifications = useNotifications();
   const { setLoading } = useContext(LoadingContext);
-  const navigate = useNavigate();
 
   const [pageInfo, setPageInfo] = useState<PageInfo<VentureReport>>({ rows: [], totalRowCount: 0 });
   const [queryModel, setQueryModel] = useState<QueryModel>();
-  const [showAddDialog, setShowAddDialog] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [selectedReport, setSelectedReport] = useState<VentureReport>();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -51,10 +54,10 @@ const ReportingPage = () => {
     }
   };
 
-
-  const columns: GridColDef<VentureReport[][number]>[] = [
+  const columns: GridColDef<VentureReport>[] = [
     {
-      field: 'venture_id', headerName: 'Venture',
+      field: 'venture_id',
+      headerName: 'Venture',
       renderCell: (params) => (
         <Tooltip title="click to view venture">
           <NavLink to={`/ventures/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
@@ -83,18 +86,80 @@ const ReportingPage = () => {
     }
   ];
 
+  function changeSelectedReport(id: any): void {
+    ventureReportService.getById(id)
+      .then(found => {
+        setTitle('Edit report');
+        setSelectedReport(found!);
+        setShowDialog(true);
+      })
+  }
+
   function toolbar() {
+    function handleNewReport(): void {
+      setTitle('Add report');
+      setSelectedReport(ventureReportService.empty());
+      setShowDialog(true);
+    }
+
+    function handleEdit(): void {
+      changeSelectedReport(selectedIds[0]);
+    }
+
+    function handleDelete(): void {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete the reports? This action cannot be undone."
+      );
+
+      if (!confirmed) {
+        return;
+      }
+      setLoading(true);
+      Promise
+        .all(selectedIds.map(id => ventureReportService.delete(id)))
+        .then(() => {
+          fetchData();
+          notifications.success("Reports deleted!")
+        })
+        .catch(error => {
+          console.error("Error deleting report:", error);
+          notifications.error(`Failed to delete report: ${error instanceof Error ? error.message : "Unknown error"}`);
+        })
+        .finally(() => setLoading(false));
+    }
+
     return (
       <Stack direction='row' alignItems={'center'}>
         <Toolbar>
-          <IconButton color='primary' onClick={() => setShowAddDialog(true)}><PlusCircleOutlined /></IconButton>
+          <IconButton color='primary' onClick={handleNewReport}><PlusCircleOutlined /></IconButton>
+          <IconButton color='primary' disabled={selectedIds.length !== 1} onClick={handleEdit}><EditOutlined /></IconButton>
+          <IconButton color='primary' disabled={selectedIds.length === 0} onClick={handleDelete}><DeleteOutlined /></IconButton>
         </Toolbar>
       </Stack>
     );
   }
 
-  function changeSelectedReport(id: any): void {
-    navigate(`/ventures/status-report/${id}`)
+  function handleClose(evt: { report: VentureReport | null | undefined; }): void {
+    if (evt.report) {
+      if (evt.report.id) {
+        ventureReportService.update(evt.report.id, evt.report)
+          .then(() => {
+            notifications.success('Thank you, the report has been updated.')
+          })
+      } else {
+        ventureReportService.insert(evt.report)
+          .then(() => {
+            notifications.success('Thank you, the report has been added.')
+          })
+      }
+    }
+    setShowDialog(false)
+  }
+
+  function handleSelection(selectionModel: GridRowSelectionModel): void {
+    if (selectionModel) {
+      setSelectedIds(Array.from(selectionModel.ids) as string[])
+    }
   }
 
   return (
@@ -115,11 +180,13 @@ const ReportingPage = () => {
             columns={columns}
             toolbar={toolbar}
             onRowDoubleClick={(evt) => changeSelectedReport(evt.id)}
+            onSelect={handleSelection}
           />
           <VentureReportDialog
-            title={'Add Venture Report'}
-            onClose={() => setShowAddDialog(false)}
-            open={showAddDialog} />
+            title={title}
+            report={selectedReport!}
+            onClose={handleClose}
+            open={showDialog} />
         </CardContent>
       </Card >
     </>

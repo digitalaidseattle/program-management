@@ -6,7 +6,7 @@
  */
 import { DialogProps } from '@mui/material';
 
-import { useNotifications, UserContext } from '@digitalaidseattle/core';
+import { UserContext } from '@digitalaidseattle/core';
 import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import React, { useContext, useEffect, useState } from 'react';
 import { VentureReport, VentureReportService } from '../services/dasVentureReportService';
@@ -16,14 +16,14 @@ import { Venture, ventureService } from '../services/dasVentureService';
 
 interface VentureReportDialogProps extends DialogProps {
     title: string;
+    report: VentureReport;
     onClose: (evt: { report: VentureReport | null | undefined }) => void;
 }
 
-const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, open, onClose }) => {
+const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report: initial, open, onClose }) => {
     const ventureReportService = VentureReportService.instance();
 
     const { user } = useContext(UserContext);
-    const notifications = useNotifications();
     const [ventures, setVentures] = useState<Venture[]>([]);
     const [inputFields, setInputFields] = useState<InputOption[]>([]);
     const [report, setReport] = useState<VentureReport>();
@@ -32,6 +32,10 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, open, 
         ventureService.getActive()
             .then(v => setVentures(v));
     }, []);
+
+    useEffect(() => {
+        setReport(initial)
+    }, [initial]);
 
     useEffect(() => {
         if (ventures.length > 0) {
@@ -80,6 +84,19 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, open, 
                 ]
             },
             {
+                name: 'phase',
+                label: 'Phase',
+                type: 'select',
+                disabled: false,
+                options: [
+                    { value: 'discovery', label: 'Discovery' },
+                    { value: 'build', label: 'Build' },
+                    { value: 'pilot', label: 'Pilot' },
+                    { value: 'live', label: 'Live' },
+                    { value: 'scaling', label: 'Scaling' },
+                ]
+            },
+            {
                 name: 'successes',
                 label: 'Successes',
                 size: 2,
@@ -105,7 +122,7 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, open, 
             },
             {
                 name: 'asks',
-                label: 'Asks',
+                label: 'Any other comments',
                 size: 2,
                 disabled: false
             },
@@ -119,15 +136,7 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, open, 
     }
 
     function handleChange(changed: VentureReport | null) {
-        if (changed) {
-            ventureReportService.insert(changed)
-                .then(inserted => {
-                    onClose({ report: inserted });
-                    notifications.success('Thank you, the report has been added.')
-                })
-        } else {
-            onClose({ report: changed });
-        }
+        onClose({ report: changed })
     }
 
     return (
