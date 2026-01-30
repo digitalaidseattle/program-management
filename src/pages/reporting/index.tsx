@@ -1,4 +1,4 @@
-import { ArrowsAltOutlined, DeleteOutlined, EditOutlined, HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 import { LoadingContext, useNotifications } from '@digitalaidseattle/core';
 import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Icon,
   IconButton,
   Stack,
   Toolbar,
