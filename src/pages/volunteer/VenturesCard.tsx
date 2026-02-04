@@ -7,11 +7,11 @@ import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import { EntityProps } from '../../components/utils';
+import { EntityPropsOpt } from '../../components/utils';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
-export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
+export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) => {
   const [cards, setCards] = useState<ReactNode[]>([]);
 
   const navigate = useNavigate();
@@ -40,7 +40,8 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
           avatarImageSrc={storageService.getUrl(`logos/${staffing.venture!.id}`)}
           cardContent={
             <Stack>
-              <Typography fontWeight={600}>{staffing.status} :</Typography> {staffing.role?.name}
+              <Typography fontWeight={600}>{staffing.status} </Typography>
+              <Typography fontWeight={300}>{staffing.role?.name}</Typography> 
             </Stack>
           }
           menuItems={[
@@ -51,7 +52,7 @@ export const VenturesCard: React.FC<EntityProps<Volunteer>> = ({ entity }) => {
   }
 
   function handleOpen(discipline_id: string): void {
-    navigate(`/venture/${discipline_id}`)
+    navigate(`/ventures/${discipline_id}`)
   }
 
   return (< >

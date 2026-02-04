@@ -12,6 +12,12 @@ export type EntityProps<T> = {
     onChange: (evt: any) => void;
 }
 
+// TODO merge with EntityProps
+export type EntityPropsOpt<T> = {
+    entity: T;
+    onChange?: (evt: any) => void;
+}
+
 export type EntityCardProps<T> = {
     entity: T
     cardStyles?: any
@@ -27,3 +33,5 @@ export interface EntityDialogProps<T> {
 export function dateToString(date: Date) {
     return dayjs(date).format('MM/DD/YYYY');
 }
+
+

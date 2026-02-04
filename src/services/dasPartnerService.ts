@@ -11,6 +11,7 @@ import { AssociativeTableService } from "./associativeTableService";
 import { Profile } from "./dasProfileService";
 import { User } from "@digitalaidseattle/core";
 
+
 type Partner = {
     id: string;
     airtable_id: string;
@@ -64,6 +65,27 @@ function MAPPER(json: any): Partner {
 
 class PartnerService extends SupabaseEntityService<Partner> {
 
+    static STATUSES = [
+        'Official relationship',
+        'Warm relationship',
+        'Cold relationship',
+        'Do not contact'
+    ];
+
+    static TYPES = [
+        'Partner',
+        'Ally'
+    ];
+
+    static _instance: PartnerService;
+
+    static instance(): PartnerService {
+        if (!this._instance) {
+            this._instance = new PartnerService();
+        }
+        return this._instance;
+    }
+
     public constructor() {
         super("partner", DEFAULT_SELECT, MAPPER);
     }
@@ -74,7 +96,7 @@ class PartnerService extends SupabaseEntityService<Partner> {
             .select(DEFAULT_SELECT)
             .eq('airtable_id', airtableId)
             .single()
-            .then((resp: any) => resp.data);
+            .then((resp: any) => this.mapper(resp.data)!);
     }
 
     getLogoUrl(partner: Partner): string | undefined {
@@ -85,6 +107,22 @@ class PartnerService extends SupabaseEntityService<Partner> {
         const current = entity.logo_url ? entity.logo_url.split(':') : [];
         const idx = current.length < 2 ? 1 : Number(current[1]);
         return `logos/${entity.id}:${idx}`; // idx helps deal with CDN
+    }
+
+    async findByStatus(status: string): Promise<Partner[]> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .eq('status', status)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+    }
+
+    async findByType(type: string): Promise<Partner[]> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .eq('type', type)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
     }
 
 }
@@ -117,9 +155,9 @@ class Profile2ProfileService extends AssociativeTableService<Profile2Partner> {
 
 }
 
-const partnerService = new PartnerService();
+const partnerService = PartnerService.instance();
 const profile2PartnerService = new Profile2ProfileService();
 
-export { partnerService, profile2PartnerService };
+export { partnerService, profile2PartnerService, PartnerService };
 export type { Contact, Partner, Profile2Partner };
 

@@ -47,39 +47,32 @@ const TeamDetails: React.FC<TeamDetailsdProps> = ({ entity, onChange, editable =
           </Stack>
         </Grid>
         <Grid size={6}>
-          <Card >
-            <CardHeader
-              title='Details'>
-            </CardHeader>
-            <CardContent>
-              <Stack gap={1}>
-                <Card>
-                  <CardHeader title="Purpose" />
-                  <CardContent>
-                    <Markdown>{entity.purpose}</Markdown>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader title="What is NOT included in this Team?" />
-                  <CardContent>
-                    <Markdown>{entity.not_included}</Markdown>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader title="New to the team?" />
-                  <CardContent>
-                    <Markdown>{entity.welcome_message}</Markdown>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader title="Slack" />
-                  <CardContent>
-                    <Markdown>{entity.slack_channel}</Markdown>
-                  </CardContent>
-                </Card>
-              </Stack>
-            </CardContent>
-          </Card>
+          <Stack gap={1}>
+            <Card>
+              <CardHeader title="Purpose" />
+              <CardContent>
+                <Markdown>{entity.purpose}</Markdown>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader title="What is NOT included in this Team?" />
+              <CardContent>
+                <Markdown>{entity.not_included}</Markdown>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader title="New to the team?" />
+              <CardContent>
+                <Markdown>{entity.welcome_message}</Markdown>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader title="Slack" />
+              <CardContent>
+                <Markdown>{entity.slack_channel}</Markdown>
+              </CardContent>
+            </Card>
+          </Stack>
         </Grid>
 
       </Grid>

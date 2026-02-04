@@ -1,18 +1,23 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vitest/config';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, process.cwd());
 
-    return {
-        test: {
-            // Your Vitest settings here
-            environment: 'jsdom', // or 'node' depending on your usage
-            globals: true,
-            setupFiles: ['./vitest.setup.ts'], // ✅ include your setup file
-        },
-        define: {
-            'import.meta.env': JSON.stringify(env),
-            'process.env': JSON.stringify(env),
-        },
-    };
+export default defineConfig({
+    test: {
+        environment: 'jsdom',
+        globals: true,
+        setupFiles: ['./vitest.setup.ts'],
+        css: false, // ⬅ ignore css imports
+        server: {
+            deps: {
+                inline: [
+                    '@mui/material',
+                    '@mui/system',
+                    '@mui/icons-material',
+                    '@mui/x-data-grid',
+                    '@mui/x-date-pickers',
+                ],
+            },
+        }
+    },
+
 });

@@ -69,7 +69,7 @@ const RolesPage = () => {
   }
 
   function handleRowDoubleClick(event: any) {
-    navigate(`/role/${event.id}`)
+    navigate(`/data/role/${event.id}`)
   }
 
   return (

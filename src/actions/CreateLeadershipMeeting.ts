@@ -21,7 +21,7 @@ export async function createLeadershipMeeting(): Promise<Meeting | null> {
 
     const meeting: Meeting = {
         id: uuid(),
-        name: `Leadership   `,
+        name: `Leadership`,
         type: 'leadership',
         start_date: startTime.toDate(),
         end_date: startTime.add(50, 'm').toDate(),
@@ -31,7 +31,6 @@ export async function createLeadershipMeeting(): Promise<Meeting | null> {
     }
 
     const leaders = await team2VolunteerService.findLeaders();
-    console.log(leaders)
     const attendees = leaders
         .map(t2v => ({
             id: uuid(),

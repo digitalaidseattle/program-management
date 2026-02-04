@@ -1,3 +1,4 @@
+import { TabbedPanelsCard } from '@digitalaidseattle/mui';
 import {
   Breadcrumbs,
   Link,
@@ -9,11 +10,10 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { StaffingTable } from '../../components/StaffingTable';
 import { EntityProps } from '../../components/utils';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
-import { Venture, ventureService } from '../../services/dasVentureService';
-import { TabbedPanelsCard } from '@digitalaidseattle/mui';
 import VentureReportDisplay from '../../components/VentureReportDisplay';
-import { ventureReportService, VentureReport } from '../../services/dasVentureReportService';
+import { Staffing, staffingService } from '../../services/dasStaffingService';
+import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
+import { Venture, ventureService } from '../../services/dasVentureService';
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [current, setCurrent] = useState<Staffing[]>([]);
@@ -31,6 +31,8 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
 }
 
 const ReportPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
+  const ventureReportService = VentureReportService.instance();
+
   const [reports, setReports] = useState<VentureReport[]>([]);
 
   useEffect(() => {
@@ -67,9 +69,10 @@ const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
       <>
         <TabbedPanelsCard panels={
           [
-            { 
-              header: 'Staffing', 
-              children: <StaffingPanel entity={entity} onChange={handleStaffingChange} /> },
+            {
+              header: 'Staffing',
+              children: <StaffingPanel entity={entity} onChange={handleStaffingChange} />
+            },
             {
               header: 'Report',
               children: <ReportPanel entity={entity} onChange={handleReportChange} />

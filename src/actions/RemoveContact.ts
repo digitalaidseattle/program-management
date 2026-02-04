@@ -11,9 +11,9 @@ import { profileService } from "../services/dasProfileService";
 
 export async function removeContact(contact: Contact): Promise<boolean> {
     const filepath = profileService.getPicUrl(contact);
-    return storageService.removeFile(filepath!)
-        .then(async () => {
-            return profileService.delete(contact.id)
-                .then(() => true)
-        })
+    if (filepath) {
+        await storageService.removeFile(filepath)
+    }
+    return profileService.delete(contact.id)
+        .then(() => true)
 }
