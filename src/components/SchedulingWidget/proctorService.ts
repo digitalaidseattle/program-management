@@ -1,62 +1,55 @@
 /**
- *  dasStaffingService.ts
+ *  proctorService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
  */
 
-import Airtable, { FieldSet, Record, Records } from 'airtable';
-
-import { AirtableEntityService } from "@digitalaidseattle/airtable";
+import { CodaRow, CodaService } from '../../services/codaService';
 
 type Proctor = {
     id: string,
     name: string,
     email: string,
 }
+// @ts-ignore - Environment variables are defined at runtime
+const PROCTOR_TABLE_ID = import.meta.env.VITE_CODA_PROCTOR_TABLE_ID;
 
-const applicantAirtableClient = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_APPLICANT_PAT });
-const PROCTOR_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_PROCTOR_TABLE;
-const LINK_TABLE = import.meta.env.VITE_AIRTABLE_APPLICANT_SCHEDULE_LINK_TABLE;
+// Column IDs discovered from Coda API for proctor table
+const NAME_KEY = 'c-mFmHr9G0kc';        // "Name" column
+const DAS_EMAIL_KEY = 'c-8mnE-hcSOT';  // "DAS email" column
+const PERSONAL_EMAIL_KEY = 'c-yVZXbtwgEP'; // "Personal email" column
 
-class ProctorService extends AirtableEntityService<Proctor> {
+function coda2Entity(row: CodaRow): Proctor {
+    // Use DAS email as primary, fallback to personal email
+    const dasEmail = row.values[DAS_EMAIL_KEY] || '';
+    const personalEmail = row.values[PERSONAL_EMAIL_KEY] || '';
+    const email = dasEmail || personalEmail;
 
-    public constructor() {
-        super(applicantAirtableClient, PROCTOR_TABLE);
-        this.base = applicantAirtableClient.base(import.meta.env.VITE_AIRTABLE_APPLICANT_BASE_ID);
+    const proctor = {
+        id: row.id,
+        name: row.values[NAME_KEY] || '',
+        email: email,
+    } as Proctor;
+    return proctor;
+}
+
+class ProctorService extends CodaService<Proctor> {
+
+    constructor() {
+        super(PROCTOR_TABLE_ID, undefined, coda2Entity, undefined);
     }
 
-    transform(r: Record<FieldSet>): Proctor {
-        return {
-            id: r.id,
-            name: r.fields['Name'],
-            email: r.fields['OS email']
-        } as Proctor
+    async getAll(): Promise<Proctor[]> {
+        return super.getAll()
+            .then(proctors => proctors.filter(p => p.name !== '' && p.email !== ''))
     }
 
-    transformEntity(_entity: Partial<Proctor>): Partial<FieldSet> {
-        //TODO
-        const fields: Partial<FieldSet> = {};
-
-        return fields;
-    }
-
-    async findByEmail(email: string): Promise<Proctor | null> {
-        const filter = `LOWER({OS email}) = "${email.toLowerCase()}"`
-        const proctors = await this.getAll(1, filter);
-        return proctors.length == 0 ? null : proctors[0];
-    }
-
-    async addBookingLinks(proctor: Proctor, bookingLinks: string[]): Promise<Records<FieldSet>> {
-        const records = bookingLinks.map((link) => ({
-            fields: {
-                'Scheduling link': link,
-                'Status': 'Available',
-                'Interviewer': [proctor.id]
-            }
-        }));
-        const booked = await this.base(LINK_TABLE).create(records);
-        return booked
+    async findByEmail(email: string): Promise<Proctor | undefined | null> {
+        if (!email) return null;
+        const emailLower = email.toLowerCase();
+        const proctors = await this.getAll();
+        return proctors.find(proctor => proctor.email.toLowerCase() === emailLower);
     }
 
 }

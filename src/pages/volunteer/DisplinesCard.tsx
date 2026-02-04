@@ -83,7 +83,7 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
     }
 
     function handleOpen(discipline_id: string): void {
-        navigate(`/discipline/${discipline_id}`)
+        navigate(`/disciplines/${discipline_id}`)
     }
 
     function handleAdd(selected: string | null | undefined): void {

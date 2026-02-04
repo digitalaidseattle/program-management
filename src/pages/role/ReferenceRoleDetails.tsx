@@ -7,6 +7,7 @@ import {
   CardHeader,
   Grid
 } from '@mui/material';
+
 import Markdown from 'react-markdown';
 import { FieldRow } from '../../components/FieldRow';
 import { Role, roleService } from '../../services/dasRoleService';
@@ -18,7 +19,6 @@ const ReferenceRoleDetails = ({ entity }: { entity: Role }) => {
       <CardHeader
         title={entity.name}
       />
-
       <CardContent>
         <Grid container>
           <Grid size={3}>

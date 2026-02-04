@@ -9,7 +9,7 @@ import { storageService } from "../App";
 import { Contact, Partner, profile2PartnerService } from "../services/dasPartnerService";
 import { profileService } from "../services/dasProfileService";
 
-export async function addContact(partner: Partner, contact: Contact, picture: File): Promise<Contact> {
+export async function addContact(partner: Partner, contact: Contact, picture: File | undefined): Promise<Contact> {
     // insert profile
     // insert picture
     // insert partner2profile

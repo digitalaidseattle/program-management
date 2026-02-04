@@ -1,5 +1,11 @@
-
-
+/**
+ * 
+ * TemplateConfig.tsx
+ * 
+ * @Copyright 2026 Digital Aid Seattle
+ * 
+ */
+import { NavLink } from "react-router-dom";
 import {
     CalendarOutlined,
     CompassOutlined,
@@ -21,23 +27,22 @@ import logo from "./assets/images/logo-light-icon.svg";
 
 import { LayoutConfiguration, MenuItem } from "@digitalaidseattle/mui";
 import packageJson from '../package.json';
-import { Link } from 'react-router-dom';
 
 export const TemplateConfig = () => {
     const home =
-    {
-        id: 'home-dashboard',
-        title: 'Home',
-        type: 'group',
-        children: [
-            {
-                id: 'dashboard',
-                title: 'Home',
-                type: 'item',
-                url: '/',
-                icon: <HomeOutlined />
-            }]
-    }
+        {
+            id: 'home-dashboard',
+            title: 'Home',
+            type: 'group',
+            children: [
+                {
+                    id: 'dashboard',
+                    title: 'Home',
+                    type: 'item',
+                    url: '/',
+                    icon: <HomeOutlined />
+                }]
+        } as MenuItem;
 
     const meetings =
     {
@@ -77,19 +82,18 @@ export const TemplateConfig = () => {
                 id: 'reporting',
                 title: 'Reporting',
                 type: 'item',
-                url: '/reporting',
+                url: '/ventures/reporting',
                 icon: <PaperClipOutlined />
             },
-            {
-                id: 'staffing',
-                title: 'Staffing',
-                type: 'item',
-                url: '/staffing',
-                icon: <MehOutlined />
-            }
+            // {
+            //     id: 'staffing',
+            //     title: 'Staffing',
+            //     type: 'item',
+            //     url: '/staffing',
+            //     icon: <MehOutlined />
+            // }
         ]
     } as MenuItem;
-
 
     const reference = {
         id: 'reference-group',
@@ -227,20 +231,24 @@ export const TemplateConfig = () => {
     } as MenuItem;
 
 
+    console.log('disabled menu items', meetings, recruiting, reference, data);
+
+    const menuItems = [home, ventures,];
+
     return ({
         appName: 'DAS Program Management',
         logoUrl: logo,
         drawerWidth: 240,
-        menuItems: [home, meetings, ventures, recruiting, reference, data],
+        menuItems: menuItems,
         toolbarItems: [],
         profileItems: [
-            <Link
-                style={{ 'textDecoration': 'none' }}
-                color="secondary"
-                to={`/profile`}>
-                Profile
-            </Link>,
-            <Link
+            // <Link
+            //     style={{ 'textDecoration': 'none' }}
+            //     color="secondary"
+            //     to={`/profile`}>
+            //     Profile
+            // </Link>,
+            <NavLink
                 style={{ 'textDecoration': 'none' }}
                 color="secondary"
                 to={`/privacy`}>
@@ -253,6 +261,7 @@ export const TemplateConfig = () => {
                 to={`/time-off`}>
                 Time Off
             </Link>
+            </NavLink>
         ],
         version: packageJson.version,
     } as LayoutConfiguration);

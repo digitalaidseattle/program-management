@@ -27,7 +27,7 @@ describe("ProfileService", () => {
         const spyStorage = vi.spyOn(storageService, 'getUrl').mockReturnValue('/cdn/profiles/test:1');
 
         const url = service.getPicUrl(profile);
-        expect(spyStorage).toBeCalledWith('/profiles/test');
+        expect(spyStorage).toBeCalledWith('/profiles/idid');
         expect(url).toBe('/cdn/profiles/test:1');
     });
 });
