@@ -36,6 +36,7 @@ import { PlenaryPage } from './view-meeting/PlenaryPage.tsx';
 import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
+import TimeOffPage from '../components/TimeOffPage';
 import ReportingPage from './reporting/index.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
 import ReferenceVenturesPage from './reference/ventures.tsx';
@@ -82,6 +83,10 @@ const reference = {
     {
       path: "ventures/reporting",
       element: <ReportingPage />,
+    },
+    {
+      path: "timeoff",
+      element: <TimeOffPage />,
     },
     {
       path: "all-meetings",
