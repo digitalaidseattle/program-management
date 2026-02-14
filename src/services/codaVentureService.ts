@@ -9,7 +9,7 @@ import { CodaRow, CodaService } from './codaService';
 import { Venture } from './dasVentureService';
 
 // @ts-ignore - Environment variables are defined at runtime
-const VENTURE_TABLE_ID = '24QYb2RP0g';
+const VENTURE_TABLE_ID = 'grid-UdXLv7wwqh';
 
 function coda2Entity(row: CodaRow): Venture {
     console.log(row)
