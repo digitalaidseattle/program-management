@@ -9,7 +9,7 @@ import { DialogProps } from '@mui/material';
 import { UserContext } from '@digitalaidseattle/core';
 import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import React, { useContext, useEffect, useState } from 'react';
-import { VentureReport, VentureReportService } from '../services/dasVentureReportService';
+import { VentureReport } from '../services/dasVentureReportService';
 import { Venture, ventureService } from '../services/dasVentureService';
 
 // material-ui
@@ -21,7 +21,6 @@ interface VentureReportDialogProps extends DialogProps {
 }
 
 const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report: initial, open, onClose }) => {
-    const ventureReportService = VentureReportService.instance();
 
     const { user } = useContext(UserContext);
     const [ventures, setVentures] = useState<Venture[]>([]);
@@ -44,13 +43,13 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report
     }, [ventures]);
 
     useEffect(() => {
-        if (user && inputFields.length > 0) {
+        if (user && initial) {
             setReport({
-                ...ventureReportService.empty(),
-                reported_by: user!.email
+                ...initial,
+                reported_by: (initial.reported_by.trim() !== '') ? initial.reported_by : user.email
             });
         }
-    }, [user, inputFields]);
+    }, [initial, user]);
 
     function createInputFields(): InputOption[] {
         return [
