@@ -11,7 +11,7 @@ import { AirtableService } from './airtableService';
 import { disciplineService } from './dasDisciplineService';
 import { partnerService, profile2PartnerService } from './dasPartnerService';
 import { Profile, profileService } from './dasProfileService';
-import { Role, roleService } from './dasRoleService';
+import { Role, RoleService } from './dasRoleService';
 import { Staffing, staffingService } from './dasStaffingService';
 import { Team2Tool, team2ToolService } from './dasTeam2ToolService';
 import { team2VolunteerService } from './dasTeam2VolunteerService';
@@ -35,6 +35,7 @@ const FORECAST_TABLE = 'tblbIMTclZeJ6IA4i';
 const CONTACT_TABLE = 'tblWyd8yGHbKdchXs';
 
 class MigrationService {
+    roleService = RoleService.instance();
 
     migrators: { [key: string]: () => Promise<void> } = {
         'Volunteers': this.migrateVolunteers,
@@ -234,7 +235,7 @@ class MigrationService {
                         urgency: record['Urgency']
                     } as unknown as Role)
                 });
-                roleService.batchInsert(transformed)
+                this.roleService.batchInsert(transformed)
             })
     }
 
@@ -382,7 +383,7 @@ class MigrationService {
                     console.log(r)
                     const venture = r['Prospective Ventures'] ? await ventureService.findByAirtableId(r['Prospective Ventures'][0]) : null;
                     const team = r['Cadre Teams'] ? await teamService.findByAirtableId(r['Cadre Teams'][0]) : null;
-                    const role = r['Role'] ? await roleService.findByAirtableId(r['Role'][0]) : null;
+                    const role = r['Role'] ? await this.roleService.findByAirtableId(r['Role'][0]) : null;
                     const volunteer = r['Volunteer Assigned'] ? await volunteerService.findByAirtableId(r['Volunteer Assigned'][0]) : null;
                     const supa = ({
                         id: uuid(),
@@ -656,7 +657,7 @@ class MigrationService {
         return new AirtableService(ROLES_TABLE).getAll()
             .then(records => {
                 records.forEach(async record => {
-                    const supa = await roleService.findByAirtableId(record.id)
+                    const supa = await this.roleService.findByAirtableId(record.id)
                     if (supa) {
 
                         const url = record['image'] ? record['image'][0].url : null;
@@ -674,7 +675,7 @@ class MigrationService {
                                             })
                                     }))
                         }
-                        roleService.update(supa.id!,
+                        this.roleService.update(supa.id!,
                             {
                                 pic: pic,
                                 headline: record['Headline'], // 'Headline'

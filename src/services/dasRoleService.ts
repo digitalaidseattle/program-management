@@ -23,7 +23,16 @@ type Role = Entity & {
 
 class RoleService extends SupabaseEntityService<Role> {
 
-    STATUSES = ['Active', 'Inactive'];
+    static STATUSES = ['Active', 'Inactive'];
+
+    static _instance: RoleService;
+
+    static instance(): RoleService {
+        if (!this._instance) {
+            this._instance = new RoleService();
+        }
+        return this._instance;
+    }
 
     public constructor() {
         super("role");
@@ -42,10 +51,17 @@ class RoleService extends SupabaseEntityService<Role> {
         return entity.pic ? storageService.getUrl(entity.pic) : undefined
     }
 
+    async findByStatus(status: string): Promise<Role[]> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select('*')
+            .eq('status', status)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+    }
 }
 
-const roleService = new RoleService();
+const roleService = RoleService.instance();
 
-export { roleService };
+export { roleService, RoleService };
 export type { Role };
 

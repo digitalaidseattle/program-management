@@ -1,36 +1,112 @@
 /**
- *  reference/teams/index.tsx
+ *  reference/partners/index.tsx
  *
  *  @copyright 2025 Digital Aid Seattle
  *
  */
 
-
-import { ListCard } from '../../components/ListCard';
+import { CheckOutlined } from "@ant-design/icons";
 
 import { useEffect, useState } from 'react';
+import { useParams } from "react-router";
+import {
+  Divider,
+  ListItemIcon,
+  MenuItem
+} from '@mui/material';
+
 import { EntityListPage } from '../../components/EntityListPage';
-import { Partner, partnerService } from '../../services/dasPartnerService';
+import { ListCard } from '../../components/ListCard';
+import { MoreButton } from "./MoreButton";
+
+import { Partner, PartnerService } from '../../services/dasPartnerService';
 import { ReferencePartnerDetails } from '../partner/ReferencePartnerDetails';
 
 const ReferencePartnersPage = () => {
+  const partnerService = PartnerService.instance();
+  const { id } = useParams<string>();
+
   const [entities, setEntities] = useState<Partner[]>([]);
+  const [filter, setFilter] = useState<string>('all');
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  useEffect(() => {
+    // externally requested record, only getAll guarantees finding the record
+    if (id) {
+      setFilter('all');
+    }
+  }, []);
 
   useEffect(() => {
     fetchData()
-  }, []);
+  }, [filter]);
 
   async function fetchData() {
-    const found = await partnerService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    const found = await filteredData();
     setEntities(found);
   }
+  async function filteredData(): Promise<Partner[]> {
+    if (PartnerService.STATUSES.includes(filter)) {
+      return await partnerService
+        .findByStatus(filter)
+        .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    }
+
+    if (PartnerService.TYPES.includes(filter)) {
+      return await partnerService
+        .findByType(filter)
+        .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+    }
+
+    return await partnerService
+      .getAll()
+      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
+  }
+
+  function filterMenu() {
+    return <>
+      <MenuItem onClick={() => handleFilterChange('all')}>
+        <ListItemIcon>
+          {filter === 'all' && <CheckOutlined />}
+        </ListItemIcon>
+        Show All
+      </MenuItem>
+      <Divider />
+      {PartnerService.STATUSES.map(status => {
+        return <MenuItem
+          key={status}
+          onClick={() => handleFilterChange(`${status}`)}>
+          <ListItemIcon>
+            {filter === status && <CheckOutlined />}
+          </ListItemIcon>
+          {status}
+        </MenuItem>
+      })}
+      <Divider />
+      {PartnerService.TYPES.map(type => {
+        return <MenuItem
+          key={type}
+          onClick={() => handleFilterChange(`${type}`)}>
+          <ListItemIcon>
+            {filter === type && <CheckOutlined />}
+          </ListItemIcon>
+          {type}
+        </MenuItem>
+      })}
+    </>
+  }
+
+  function handleFilterChange(newFilter: string) {
+    setFilter(newFilter);
+  };
 
   return (
     <EntityListPage
       title={'Partners'}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
+      pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

@@ -14,12 +14,12 @@ import {
 import { ListCard } from '../../components/ListCard';
 
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { EntityListPage } from '../../components/EntityListPage';
 import { profileService } from '../../services/dasProfileService';
 import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
 import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
 import { MoreButton } from "./MoreButton";
-import { useParams } from "react-router";
 
 
 const ReferenceVolunteersPage = () => {
@@ -27,13 +27,14 @@ const ReferenceVolunteersPage = () => {
 
   const [entities, setEntities] = useState<Volunteer[]>([]);
   const [filter, setFilter] = useState<string>('active');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
     if (id) {
       setFilter('all');
     }
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     fetchData()
@@ -106,8 +107,10 @@ const ReferenceVolunteersPage = () => {
   return (
     <EntityListPage
       title={'Volunteers'}
-      pageAction={<MoreButton menuItems={filterMenu()} />}
       entities={entities}
+      filterBy={searchValue}
+      onFilter={setSearchValue}
+      pageAction={<MoreButton menuItems={filterMenu()} />}
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}

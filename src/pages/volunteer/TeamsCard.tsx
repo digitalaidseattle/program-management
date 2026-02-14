@@ -84,7 +84,7 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
   }
 
   function handleOpen(team_id: string): void {
-    navigate(`/team/${team_id}`)
+    navigate(`/teams/${team_id}`)
   }
 
   function handleAdd(selected: string | null | undefined): void {
@@ -121,6 +121,5 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
       message={"Are you sure?"}
       handleConfirm={handleRemoveConfirm}
       handleCancel={() => setOpenConfirmation(false)} />
-
   </>)
 }

@@ -26,9 +26,11 @@ import { EntityProps } from '../../components/utils';
 import VentureReportDisplay from '../../components/VentureReportDisplay';
 import { profileService } from '../../services/dasProfileService';
 import { Staffing, staffingService } from '../../services/dasStaffingService';
-import { VentureReport, ventureReportService } from '../../services/dasVentureReportService';
+import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
 import { Venture } from '../../services/dasVentureService';
 import { STATUS_COMP } from '../ventures/Utils';
+
+const ventureReportService = VentureReportService.instance();
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [staffing, setStaffing] = useState<Staffing[]>([]);

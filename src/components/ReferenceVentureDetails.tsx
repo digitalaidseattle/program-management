@@ -21,14 +21,14 @@ import {
 import { ReactNode, useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
-import { FieldRow } from '../../components/FieldRow';
-import { EntityProps } from '../../components/utils';
-import VentureReportDisplay from '../../components/VentureReportDisplay';
-import { profileService } from '../../services/dasProfileService';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
-import { VentureReport, ventureReportService } from '../../services/dasVentureReportService';
-import { Venture } from '../../services/dasVentureService';
-import { STATUS_COMP } from '../ventures/Utils';
+import { FieldRow } from './FieldRow';
+import { EntityProps } from './utils';
+import { profileService } from '../services/dasProfileService';
+import { Staffing, staffingService } from '../services/dasStaffingService';
+import { VentureReport, VentureReportService } from '../services/dasVentureReportService';
+import { Venture } from '../services/dasVentureService';
+import { STATUS_COMP } from '../pages/ventures/Utils';
+import { VentureReportDetails } from "./VentureReportDetails";
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [staffing, setStaffing] = useState<Staffing[]>([]);
@@ -38,7 +38,6 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const showMenu = Boolean(anchorEl);
-
 
   useEffect(() => {
     if (entity) {
@@ -157,27 +156,36 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   </Card>
 }
 
-const ReportPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
-  const [reports, setReports] = useState<VentureReport[]>([]);
-
+const VentureReportDetailsCard = ({ venture }: { venture: Venture }) => {
+  const ventureReportService = VentureReportService.instance();
+  const [report, setReport] = useState<VentureReport>();
   useEffect(() => {
-    if (entity) {
-      ventureReportService.findByVentureId(entity.id)
-        .then(data => setReports(data))
+    if (venture) {
+      ventureReportService.findLatestByVentureId(venture.id)
+        .then(data => {
+          setReport(data)
+        })
         .catch(err => {
           console.error('Failed to load venture reports', err);
-          setReports([]);
+          setReport(undefined);
         });
     } else {
-      setReports([]);
+      setReport(undefined);
     }
-  }, [entity]);
+  }, [venture]);
 
-  return <VentureReportDisplay reports={reports} />;
+  return (
+    <Card>
+      <CardHeader title="Latest Status Report" />
+      <CardContent>
+        {report && <VentureReportDetails report={report} />}
+        {!report && <Typography>No status report found.</Typography>}
+      </CardContent>
+    </Card>
+  )
 }
 
 const ReferenceVentureDetails = ({ entity }: { entity: Venture }) => {
-
   return (entity &&
     <Card>
       <CardHeader
@@ -186,7 +194,7 @@ const ReferenceVentureDetails = ({ entity }: { entity: Venture }) => {
       <CardContent>
         <Grid container spacing={2}>
 
-          <Grid size={6}>
+          <Grid size={12}>
             <FieldRow label="Partner">
               <Typography>{entity.partner?.name}</Typography>
             </FieldRow>
@@ -197,21 +205,36 @@ const ReferenceVentureDetails = ({ entity }: { entity: Venture }) => {
               <Typography>{entity.program_areas.join(', ')}</Typography>
             </FieldRow>
           </Grid>
-          <Grid size={6}>
-            <FieldRow label="Problem">
-              <Markdown>{entity.problem}</Markdown>
-            </FieldRow>
-            <FieldRow label="Solution">
-              <Markdown>{entity.solution}</Markdown>
-            </FieldRow>
-            <FieldRow label="Impact">
-              <Markdown>{entity.impact}</Markdown>
-            </FieldRow>
+          <Grid size={4}>
+            <Card>
+              <CardHeader title="Problem" />
+              <CardContent>
+                <Markdown>{entity.problem}</Markdown>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={4}>
+            <Card>
+              <CardHeader title="Solution" />
+              <CardContent>
+                <Markdown>{entity.solution}</Markdown>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={4}>
+            <Card>
+              <CardHeader title="Impact" />
+              <CardContent>
+                <Markdown>{entity.impact}</Markdown>
+              </CardContent>
+            </Card>
           </Grid>
           <Grid size={12}>
             <StaffingPanel entity={entity} onChange={() => { }} />
           </Grid>
-          <ReportPanel entity={entity} onChange={() => { }} />
+          <Grid size={12}>
+            <VentureReportDetailsCard venture={entity} />
+          </Grid>
         </Grid>
       </CardContent>
     </Card>

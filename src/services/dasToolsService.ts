@@ -23,6 +23,19 @@ type Tool = {
 
 class ToolService extends SupabaseEntityService<Tool> {
 
+    static STATUSES = [
+        'active',
+        'inactive',
+    ];
+
+    static _instance: ToolService;
+
+    static instance(): ToolService {
+        if (!this._instance) {
+            this._instance = new ToolService();
+        }
+        return this._instance;
+    }
     public constructor() {
         super("tool");
     }
@@ -46,10 +59,18 @@ class ToolService extends SupabaseEntityService<Tool> {
         const idx = current.length < 2 ? 1 : Number(current[1]);
         return `logos/${tool.id}:${idx}`; // idx helps deal with CDN
     }
+
+    async findByStatus(status: string): Promise<Tool[]> {
+        return await supabaseClient
+            .from(this.tableName)
+            .select('*')
+            .eq('status', status)
+            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+    }
 }
 
-const toolService = new ToolService();
+const toolService = ToolService.instance();
 
-export { toolService };
+export { toolService, ToolService };
 export type { Tool };
 
