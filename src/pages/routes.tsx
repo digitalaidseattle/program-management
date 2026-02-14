@@ -19,7 +19,6 @@ import { ProfilePage } from './profile/index.tsx';
 import ReferenceDisciplinesPage from './reference/disciplines.tsx';
 import ReferencePartnersPage from './reference/partners.tsx';
 import ReferenceRolesPage from './reference/roles.tsx';
-import ReferenceTeamsPage from './reference/teams..tsx';
 import ReferenceToolsPage from './reference/tools.tsx';
 import ReferenceVenturesPage from './reference/ventures.tsx';
 import ReferenceVolunteersPage from './reference/volunteers.tsx';
@@ -41,12 +40,9 @@ import { TeamMeetingPage } from './view-meeting/TeamMeetingPage.tsx';
 import { VolunteerPage } from './volunteer';
 import VolunteersPage from './volunteers';
 import TimeOffPage from '../components/TimeOffPage';
-import ReportingPage from './reporting/index.tsx';
-import ReferenceRolesPage from './reference/roles.tsx';
-import ReferenceVenturesPage from './reference/ventures.tsx';
-import ReferenceTeamsPage from './reference/teams.tsx';
 import { VentureStatusReportPage } from './venture/VenturesStatusReportPage.tsx';
 import { RouteObject } from 'react-router';
+import ReferenceTeamsPage from './reference/teams.tsx';
 
 const reference = {
   path: "/",
