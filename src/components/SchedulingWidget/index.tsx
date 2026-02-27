@@ -42,6 +42,7 @@ export const SchedulingWidget = () => {
     // Handle OAuth callback once
     useEffect(() => {
         const authCode = searchParams.get('code');
+        console.log('useEffect', authCode, accessToken);
         if (authCode && !accessToken) {
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
@@ -49,6 +50,7 @@ export const SchedulingWidget = () => {
                     // Remove code from URL to prevent re-processing on reload
                     const url = new URL(window.location.href);
                     url.searchParams.delete('code');
+                    console.log('replace', url);
                     window.history.replaceState({}, '', url.toString());
                 })
                 .catch((error) => {
