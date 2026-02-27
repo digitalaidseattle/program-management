@@ -6,7 +6,7 @@
  */
 import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
