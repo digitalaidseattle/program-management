@@ -53,10 +53,10 @@ export const SchedulingWidget = () => {
                     setAccessToken(token);
                     setInitialized(true);
                     // Remove code from URL to prevent re-processing on reload
-                    // const url = new URL(window.location.href);
-                    // url.searchParams.delete('code');
-                    // console.log('replace', url);
-                    // window.history.replaceState({}, '', url.toString());
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('code');
+                    console.log('replace', url);
+                    window.history.replaceState({}, '', url.toString());
                 })
                 .catch((error) => {
                     notifications.error('Failed to authenticate with Calendly. Please try again.');
