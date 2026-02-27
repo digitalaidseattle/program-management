@@ -29,6 +29,8 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
+    const [initialized, setInitialized] = useState<boolean>(false);
+
     // Load proctor once on mount using authenticated user's email
     useEffect(() => {
         authService.getUser()
@@ -45,10 +47,11 @@ export const SchedulingWidget = () => {
     }, [searchParams]);
 
     useEffect(() => {
-        if (authCode && !accessToken) {
+        if (authCode && !initialized) {
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
                     setAccessToken(token);
+                    setInitialized(true);
                     // Remove code from URL to prevent re-processing on reload
                     // const url = new URL(window.location.href);
                     // url.searchParams.delete('code');
@@ -60,7 +63,7 @@ export const SchedulingWidget = () => {
                     console.error('Scheduling widget - ', error);
                 });
         }
-    }, [authCode, accessToken]);
+    }, [authCode, initialized]);
 
     // Update step and load events once when both are ready
     useEffect(() => {
