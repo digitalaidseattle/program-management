@@ -28,24 +28,10 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
-    const redirectUri = useMemo(() => {
-        return `${window.location.origin}`;
-    }, []);
-
-    const oauthProcessedRef = useRef(false);
-
+     const oauthProcessedRef = useRef(false);
 
     // Load proctor once on mount using authenticated user's email
     useEffect(() => {
-        const authCode = searchParams.get('code');
-        if (authCode) {
-            calendlyService.exchangeCodeForToken(authCode, redirectUri)
-                .then(accessToken => setAccessToken(accessToken))
-                .catch(() => {
-                    notifications.error('Failed to authenticate with Calendly. Please try again.');
-                });
-        }
-
         authService.getUser()
             .then(user => {
                 if (user) {
@@ -62,8 +48,9 @@ export const SchedulingWidget = () => {
             oauthProcessedRef.current = true;
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => setAccessToken(token))
-                .catch(() => {
+                .catch((error) => {
                     notifications.error('Failed to authenticate with Calendly. Please try again.');
+                    console.error('Scheduling widget - ', error);
                     oauthProcessedRef.current = false;
                 });
         }
@@ -73,7 +60,6 @@ export const SchedulingWidget = () => {
     useEffect(() => {
         fetchData();
     }, [selectedProctor]);
-
 
     // Handle OAuth callback once - process code and clean URL
     useEffect(() => {
