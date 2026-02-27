@@ -6,7 +6,7 @@
  */
 import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
@@ -28,8 +28,6 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
-     const oauthProcessedRef = useRef(false);
-
     // Load proctor once on mount using authenticated user's email
     useEffect(() => {
         authService.getUser()
@@ -44,28 +42,7 @@ export const SchedulingWidget = () => {
     // Handle OAuth callback once
     useEffect(() => {
         const authCode = searchParams.get('code');
-        if (authCode && !oauthProcessedRef.current && !accessToken) {
-            oauthProcessedRef.current = true;
-            calendlyService.exchangeCodeForToken(authCode, window.location.origin)
-                .then(token => setAccessToken(token))
-                .catch((error) => {
-                    notifications.error('Failed to authenticate with Calendly. Please try again.');
-                    console.error('Scheduling widget - ', error);
-                    oauthProcessedRef.current = false;
-                });
-        }
-    }, [searchParams, notifications, accessToken]);
-
-    // Update step and load events once when both are ready
-    useEffect(() => {
-        fetchData();
-    }, [selectedProctor]);
-
-    // Handle OAuth callback once - process code and clean URL
-    useEffect(() => {
-        const authCode = searchParams.get('code');
-        if (authCode &&  !accessToken) {
-            setLoading(true);
+        if (authCode && !accessToken) {
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
                     setAccessToken(token);
@@ -74,13 +51,17 @@ export const SchedulingWidget = () => {
                     url.searchParams.delete('code');
                     window.history.replaceState({}, '', url.toString());
                 })
-                .catch(() => {
+                .catch((error) => {
                     notifications.error('Failed to authenticate with Calendly. Please try again.');
-                })
-                .finally(() => setLoading(false));
+                    console.error('Scheduling widget - ', error);
+                });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [searchParams, notifications, accessToken]);
+
+    // Update step and load events once when both are ready
+    useEffect(() => {
+        fetchData();
+    }, [selectedProctor]);
 
     // Update step and load events once when both are ready
     useEffect(() => {
