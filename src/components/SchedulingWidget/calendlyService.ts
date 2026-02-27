@@ -96,6 +96,7 @@ class CalendlyService {
             throw new Error('No access token received from Calendly');
         }
 
+        console.log('returning token', data.access_token);
         return data.access_token;
     }
 
