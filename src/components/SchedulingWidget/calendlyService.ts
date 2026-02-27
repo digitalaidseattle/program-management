@@ -84,8 +84,6 @@ class CalendlyService {
             })
         });
 
-        console.log('exchangeCodeForToken', resp);
-
         if (!resp.ok) {
             const error = await resp.json().catch(() => ({ message: resp.statusText }));
             throw new Error(`Failed to exchange code for token: ${error.message || resp.statusText}`);
@@ -96,7 +94,6 @@ class CalendlyService {
             throw new Error('No access token received from Calendly');
         }
 
-        console.log('returning token', data.access_token);
         return data.access_token;
     }
 
