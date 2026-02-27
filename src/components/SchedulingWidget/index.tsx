@@ -20,6 +20,7 @@ export const SchedulingWidget = () => {
     const notifications = useNotifications();
 
     const [selectedProctor, setSelectedProctor] = useState<Proctor | null>();
+    const [authCode, setAuthCode] = useState<string | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [numLinks, setNumLinks] = useState<number>(DEFAULT_LINK_COUNT);
     const [activeStep, setActiveStep] = useState<number>(0);
@@ -39,10 +40,11 @@ export const SchedulingWidget = () => {
             });
     }, [authService]);
 
-    // Handle OAuth callback once
     useEffect(() => {
-        const authCode = searchParams.get('code');
-        console.log('useEffect', authCode, accessToken);
+        setAuthCode(searchParams.get('code'));
+    }, [searchParams]);
+
+    useEffect(() => {
         if (authCode && !accessToken) {
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
@@ -58,7 +60,7 @@ export const SchedulingWidget = () => {
                     console.error('Scheduling widget - ', error);
                 });
         }
-    }, [searchParams, notifications, accessToken]);
+    }, [authCode, accessToken]);
 
     // Update step and load events once when both are ready
     useEffect(() => {
