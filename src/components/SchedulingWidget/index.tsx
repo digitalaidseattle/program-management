@@ -49,7 +49,6 @@ export const SchedulingWidget = () => {
                     // Remove code from URL to prevent re-processing on reload
                     const url = new URL(window.location.href);
                     url.searchParams.delete('code');
-                    console.log('replace', url);
                     window.history.replaceState({}, '', url.toString());
                 })
                 .catch((error) => {
@@ -61,7 +60,7 @@ export const SchedulingWidget = () => {
 
     // Update step and load events once when both are ready
     useEffect(() => {
-        fetchData();
+        fetchSchedulingLinks();
     }, [selectedProctor]);
 
     // Update step and load events once when both are ready
@@ -72,7 +71,7 @@ export const SchedulingWidget = () => {
         }
     }, [accessToken]);
 
-    async function fetchData() {
+    async function fetchSchedulingLinks() {
         if (selectedProctor) {
             setLoading(true);
             schedulingLinkService.findByName(selectedProctor.name)
@@ -134,7 +133,7 @@ export const SchedulingWidget = () => {
                 schedulingLinkService.batchInsert(schedulingLiks)
                     .then(schedulingLinks => {
                         notifications.success(`Successfully created ${schedulingLinks.length} scheduling link${schedulingLinks.length === 1 ? '' : 's'} and added them to Coda.`);
-                        fetchData();
+                        setTimeout(fetchSchedulingLinks, 5000);
                     })
             } catch (err) {
                 console.error('Error creating booking links:', err);
