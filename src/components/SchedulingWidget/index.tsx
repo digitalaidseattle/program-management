@@ -84,15 +84,21 @@ export const SchedulingWidget = () => {
     async function fetchEvents(accessToken: string) {
         console.log('fetchEvents', accessToken);
         calendlyService.getUser(accessToken)
-            .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
-            .then(events => {
-                setEvents(events);
-                setInterviewEventUri(events.length > 0 ? events[0].uri : null);
-            })
-            .catch(() => {
+            .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri)
+                .then(events => {
+                    setEvents(events);
+                    setInterviewEventUri(events.length > 0 ? events[0].uri : null);
+                })
+                .catch((error) => {
+                    console.log('Failed to get EventTypes', error)
+                    notifications.error('Your authentication with Calendly expired. Try it again.');
+                    setAccessToken(null);
+                }))
+            .catch((error) => {
+                console.log('Failed to getUser', error)
                 notifications.error('Your authentication with Calendly expired. Try it again.');
                 setAccessToken(null);
-            });
+            })
     }
 
     async function authenticate() {
