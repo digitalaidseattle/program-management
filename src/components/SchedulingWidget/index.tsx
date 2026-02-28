@@ -6,7 +6,7 @@
  */
 import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
@@ -20,7 +20,6 @@ export const SchedulingWidget = () => {
     const notifications = useNotifications();
 
     const [selectedProctor, setSelectedProctor] = useState<Proctor | null>();
-    const [authCode, setAuthCode] = useState<string | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [numLinks, setNumLinks] = useState<number>(DEFAULT_LINK_COUNT);
     const [activeStep, setActiveStep] = useState<number>(0);
@@ -29,7 +28,6 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
-    const [initialized, setInitialized] = useState<boolean>(false);
 
     // Load proctor once on mount using authenticated user's email
     useEffect(() => {
@@ -43,15 +41,11 @@ export const SchedulingWidget = () => {
     }, [authService]);
 
     useEffect(() => {
-        setAuthCode(searchParams.get('code'));
-    }, [searchParams]);
-
-    useEffect(() => {
-        if (authCode && !initialized) {
+        const authCode = searchParams.get('code');
+        if (authCode && !accessToken) {
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
                     setAccessToken(token);
-                    setInitialized(true);
                     // Remove code from URL to prevent re-processing on reload
                     const url = new URL(window.location.href);
                     url.searchParams.delete('code');
@@ -63,7 +57,7 @@ export const SchedulingWidget = () => {
                     console.error('Scheduling widget - ', error);
                 });
         }
-    }, [authCode, initialized]);
+    }, [searchParams]);
 
     // Update step and load events once when both are ready
     useEffect(() => {
@@ -73,20 +67,10 @@ export const SchedulingWidget = () => {
     // Update step and load events once when both are ready
     useEffect(() => {
         setActiveStep(accessToken ? 1 : 0);
-
-        if (accessToken && selectedProctor) {
-            calendlyService.getUser(accessToken)
-                .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
-                .then(events => {
-                    setEvents(events);
-                    setInterviewEventUri(events.length > 0 ? events[0].uri : null);
-                })
-                .catch(() => {
-                    notifications.error('Your authentication with Calendly expired. Try it again.');
-                    setAccessToken(null);
-                });
+        if (accessToken) {
+            fetchEvents(accessToken);
         }
-    }, [accessToken, selectedProctor, notifications]);
+    }, [accessToken]);
 
     async function fetchData() {
         if (selectedProctor) {
@@ -97,9 +81,23 @@ export const SchedulingWidget = () => {
         }
     }
 
+    async function fetchEvents(accessToken: string) {
+        console.log('fetchEvents', accessToken);
+        calendlyService.getUser(accessToken)
+            .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
+            .then(events => {
+                setEvents(events);
+                setInterviewEventUri(events.length > 0 ? events[0].uri : null);
+            })
+            .catch(() => {
+                notifications.error('Your authentication with Calendly expired. Try it again.');
+                setAccessToken(null);
+            });
+    }
+
     async function authenticate() {
+        setAccessToken(null);
         const calendlyUri = calendlyService.getAuthUri(window.location.origin);
-        console.log('Changing url', calendlyUri);
         window.location.replace(calendlyUri);
     }
 
