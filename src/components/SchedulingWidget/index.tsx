@@ -132,7 +132,7 @@ export const SchedulingWidget = () => {
                 })
                 schedulingLinkService.batchInsert(schedulingLiks)
                     .then(schedulingLinks => {
-                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling link${schedulingLinks.length === 1 ? '' : 's'} and added them to Coda.  It will take a while for the increase to display here.`);
+                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling links and added them to Coda.  It will take a while for the increase to display here.`);
                         setTimeout(fetchSchedulingLinks, 60000);
                     })
             } catch (err) {
@@ -181,7 +181,7 @@ export const SchedulingWidget = () => {
                                     value={numLinks}
                                     label="Choose number of links"
                                     onChange={(evt) => setNumLinks(evt.target.value as number)}>
-                                    {[1, 2, 3, 5, 10].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
+                                    {[2, 3, 5, 10, 20].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
                                 </Select>
                             </FormControl>
                             <Button variant={'contained'} onClick={makeLinks} disabled={loading}>Do it!</Button>
