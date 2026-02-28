@@ -132,8 +132,8 @@ export const SchedulingWidget = () => {
                 })
                 schedulingLinkService.batchInsert(schedulingLiks)
                     .then(schedulingLinks => {
-                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling link${schedulingLinks.length === 1 ? '' : 's'} and added them to Coda.  It will take a few seconds for the increase to display here.`);
-                        setTimeout(fetchSchedulingLinks, 10000);
+                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling link${schedulingLinks.length === 1 ? '' : 's'} and added them to Coda.  It will take a while for the increase to display here.`);
+                        setTimeout(fetchSchedulingLinks, 60000);
                     })
             } catch (err) {
                 console.error('Error creating booking links:', err);
