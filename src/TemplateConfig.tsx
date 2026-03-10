@@ -240,7 +240,7 @@ export const TemplateConfig = () => {
 
     console.log('disabled menu items', meetings, recruiting, reference, data);
 
-    const menuItems = [home, ventures, data,];
+    const menuItems = [home, ventures,];
 
     return ({
         appName: 'DAS Program Management',
