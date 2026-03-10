@@ -59,7 +59,7 @@ const ReportingPage = () => {
       headerName: 'Venture',
       renderCell: (params) => (
         <Tooltip title="click to view venture">
-          <NavLink to={`/ventures/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
+          <NavLink to={`/ventures/list/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
         </Tooltip>
       ),
       width: 300,
@@ -165,7 +165,7 @@ const ReportingPage = () => {
     <>
       <Breadcrumbs aria-label="breadcrumb">
         <NavLink to="/" ><IconButton size="medium"><HomeOutlined /></IconButton></NavLink>
-        <NavLink to={`/ventures`} >Ventures</NavLink>
+        <NavLink to={`/ventures/list`} >Ventures</NavLink>
         <Typography color="text.primary">Reports </Typography>
       </Breadcrumbs>
       <Card>

@@ -44,7 +44,7 @@ export const VentureStatusReportPage = () => {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <NavLink to="/" ><IconButton size="medium"><HomeOutlined /></IconButton></NavLink>
-                <NavLink to={`/ventures`} >Ventures</NavLink>
+                <NavLink to={`/ventures/list`} >Ventures</NavLink>
                 <NavLink to={`/ventures/reporting`} >Reports</NavLink>
                 <Typography color="text.primary">Report Detail</Typography>
             </Breadcrumbs>

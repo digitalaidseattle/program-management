@@ -79,6 +79,13 @@ export const TemplateConfig = () => {
         type: 'group',
         children: [
             {
+                id: 'all-ventures',
+                title: 'All Ventures',
+                type: 'item',
+                url: '/ventures/list',
+                icon: <RocketOutlined />
+            },
+            {
                 id: 'reporting',
                 title: 'Reporting',
                 type: 'item',
@@ -174,7 +181,7 @@ export const TemplateConfig = () => {
                 id: 'ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures',
+                url: '/data/ventures',
                 icon: <RocketOutlined />
             },
             {
