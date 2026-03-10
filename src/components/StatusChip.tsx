@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import { HealthStatus } from '../services/dasVentureReportService';
 
 // define new chip styles here
-export type StatusColor = 'green' | 'yellow' | 'red';
+export type StatusColor = 'green' | 'yellow' | 'red' | 'blue' | 'gray';
 
 export const STATUS_CHIP_COLORS: Record<StatusColor, { text: string; border: string; background: string }> = {
   green: {
@@ -20,6 +20,16 @@ export const STATUS_CHIP_COLORS: Record<StatusColor, { text: string; border: str
     text: '#CF171D',
     border: '#F1A2A6',
     background: '#FCE3E4'
+  },
+  blue: {
+    text: '#1767CF',
+    border: '#9CBDEE',
+    background: '#EAF2FF'
+  },
+  gray: {
+    text: '#475467',
+    border: '#D0D5DD',
+    background: '#F2F4F7'
   }
 };
 
@@ -59,3 +69,12 @@ export const HEALTH_STATUS_INDICATOR_COLORS: Record<HealthStatus, string> = {
   blocked: STATUS_CHIP_COLORS['red'].border
 };
 
+export const VENTURE_STATUS_CHIPS: Record<string, ReactElement> = {
+  'Active': <StatusChip label="Active" color="blue" />,
+  'Delivered': <StatusChip label="Delivered" color="green" />,
+  'Paused': <StatusChip label="Paused" color="yellow" />,
+  'Declined': <StatusChip label="Declined" color="red" />,
+  'Submitted by Partner': <StatusChip label="Submitted by Partner" color="gray" />,
+  'Ready for consideration': <StatusChip label="Ready for consideration" color="gray" />,
+  'Under evaluation': <StatusChip label="Under evaluation" color="gray" />
+};

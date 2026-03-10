@@ -43,6 +43,7 @@ import TimeOffPage from '../components/TimeOffPage';
 import { VentureStatusReportPage } from './venture/VenturesStatusReportPage.tsx';
 import { RouteObject } from 'react-router';
 import ReferenceTeamsPage from './reference/teams.tsx';
+import AllVenturesPage from './venture/AllVenturesPage.tsx';
 
 const reference = {
   path: "/",
@@ -79,6 +80,10 @@ const reference = {
     {
       path: "staffing",
       element: <StaffingPage />,
+    },
+    {
+      path: "ventures/all",
+      element: <AllVenturesPage />,
     },
     {
       path: "ventures/reporting",

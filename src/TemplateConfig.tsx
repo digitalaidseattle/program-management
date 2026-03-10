@@ -79,6 +79,13 @@ export const TemplateConfig = () => {
         type: 'group',
         children: [
             {
+                id: 'all-ventures',
+                title: 'All Ventures',
+                type: 'item',
+                url: '/ventures/all',
+                icon: <RocketOutlined />
+            },
+            {
                 id: 'reporting',
                 title: 'Reporting',
                 type: 'item',
@@ -174,7 +181,7 @@ export const TemplateConfig = () => {
                 id: 'ventures',
                 title: 'Ventures',
                 type: 'item',
-                url: '/ventures',
+                url: '/data/ventures',
                 icon: <RocketOutlined />
             },
             {
@@ -233,7 +240,7 @@ export const TemplateConfig = () => {
 
     console.log('disabled menu items', meetings, recruiting, reference, data);
 
-    const menuItems = [home, ventures,];
+    const menuItems = [home, ventures, data,];
 
     return ({
         appName: 'DAS Program Management',
