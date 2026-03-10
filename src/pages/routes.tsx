@@ -44,7 +44,7 @@ import { VentureStatusReportPage } from './venture/VenturesStatusReportPage.tsx'
 import { RouteObject } from 'react-router';
 import ReferenceTeamsPage from './reference/teams.tsx';
 import AllVenturesPage from './venture/AllVenturesPage.tsx';
-import VentureDetailsRawPage from './venture/VentureDetailsRawPage.tsx';
+import VentureDetailsPage from './venture/VentureDetailsPage.tsx';
 
 const reference = {
   path: "/",
@@ -92,7 +92,7 @@ const reference = {
     },
     {
       path: "ventures/list/:id",
-      element: <VentureDetailsRawPage />,
+      element: <VentureDetailsPage />,
     },
     {
       path: "timeoff",

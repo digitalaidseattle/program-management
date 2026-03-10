@@ -23,7 +23,7 @@ export const VentureReportDetails = ({ report }: { report: VentureReport }) => {
           avatar={<Avatar sx={{ fontSize: 10, bgcolor: blue[500] }}>{dayjs(report.reporting_date).format('MM YYYY')}</Avatar>}
           title={report.venture?.title || report.venture?.venture_code}
           subheader={
-            <Stack direction={'row'}>
+            <Stack direction={'column'}>
               <Typography component="span">Reported by {report.reported_by || 'Unknown'}</Typography>
               <Typography component="span">Reporting date: {dayjs(report.reporting_date).format('MM/DD/YYYY')}</Typography>
             </Stack>
