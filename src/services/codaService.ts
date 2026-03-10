@@ -33,6 +33,10 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
         this.entityToCodaMapper = entityToCodaMapper ?? ((_entity: any) => ({} as any));
     }
 
+    upsert(_entity: T, _select?: string, _mapper?: ((json: any) => T) | undefined, _user?: User): Promise<T> {
+        throw new Error("Method not implemented.");
+    }
+
     getById(_id: Identifier, _select?: string, _mapper?: ((json: any) => T) | undefined): Promise<T | null> {
         throw new Error("Method not implemented.");
     }

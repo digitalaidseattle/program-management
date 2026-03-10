@@ -59,7 +59,6 @@ const ReadOnlyForm: React.FC<ReadOnlyFormProps<any>> = <T,>({ entity, inputField
                 )
             }
             case 'rating':   // TODO
-            case 'debounce':
             case 'string':
             default:
                 return (
