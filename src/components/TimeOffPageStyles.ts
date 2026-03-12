@@ -23,7 +23,6 @@ export const emptyCell: SxProps<Theme> = {
 };
 
 export const rightCard: SxProps<Theme> = (theme: Theme) => ({
-  height: "100%",
   borderRadius: 3,
   border: `1px solid ${theme.palette.grey[200]}`,
   bgcolor: "rgba(255,255,255,0.7)",
