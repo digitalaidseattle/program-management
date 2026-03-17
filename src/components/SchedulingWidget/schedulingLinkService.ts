@@ -10,6 +10,7 @@ import { CodaRow, CodaService } from "../../services/codaService";
 
 // @ts-ignore - Environment variables are defined at runtime
 // @ts-ignore
+const CODA_DOC_ID = import.meta.env.VITE_CODA_DOC_ID;
 const LINK_TABLE_ID = import.meta.env.VITE_CODA_SCHEDULE_LINK_TABLE_ID;
 
 // Column IDs discovered from Coda API for schedule link table (grid-mp-Lzk8BLN)
@@ -56,7 +57,7 @@ class SchedulingLinkService extends CodaService<SchedulingLink> {
     }
 
     constructor() {
-        super(LINK_TABLE_ID, "*", coda2entity, entity2coda)
+        super(CODA_DOC_ID, LINK_TABLE_ID, { mapper: coda2entity, entityToCodaMapper: entity2coda });
     }
 
     // REVIEW lookup current user?

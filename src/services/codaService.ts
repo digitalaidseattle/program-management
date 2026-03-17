@@ -10,10 +10,6 @@ import { Entity } from "@digitalaidseattle/supabase";
 
 // @ts-ignore - Vite injects env at runtime
 const CODA_API_TOKEN = import.meta.env.VITE_CODA_API_TOKEN;
-// @ts-ignore
-const CODA_DOC_ID = import.meta.env.VITE_CODA_DOC_ID;
-
-const CODA_API_BASE = `https://coda.io/apis/v1/docs/${CODA_DOC_ID}`;
 
 type CodaRow = {
     id: string;
@@ -21,17 +17,27 @@ type CodaRow = {
 }
 
 abstract class CodaService<T extends Entity> implements EntityService<T> {
+    documentId = '';
     tableName = '';
     select = '*';
     mapper = (json: any) => (json as T);
     entityToCodaMapper = (_entity: T) => ({} as any);
+    documentBase = '';
 
-    constructor(tableName: string, select?: string, mapper?: (json: any) => T, entityToCodaMapper?: (_entity: T) => {}) {
+    constructor(documentId: string, tableName: string, opts?: { select?: string, mapper?: (json: any) => T, entityToCodaMapper?: (_entity: T) => {} }) {
+        this.documentId = documentId;
         this.tableName = tableName;
-        this.select = select ?? '*';
-        this.mapper = mapper ?? ((json: any) => json);
-        this.entityToCodaMapper = entityToCodaMapper ?? ((_entity: any) => ({} as any));
+        this.documentBase = `https://coda.io/apis/v1/docs/${this.documentId}/tables/${this.tableName}`;
+        this.select = opts ? opts.select ?? '*' : "*";
+        this.mapper = opts ? opts.mapper ?? ((json: any) => json) : ((json: any) => json);
+        this.entityToCodaMapper = opts ? opts.entityToCodaMapper ?? ((_entity: any) => ({} as any)) : ((_entity: any) => ({} as any));
+
     }
+
+    getDocumentBase() {
+        return
+    }
+
 
     upsert(_entity: T, _select?: string, _mapper?: ((json: any) => T) | undefined, _user?: User): Promise<T> {
         throw new Error("Method not implemented.");
@@ -54,7 +60,13 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
     }
 
     async getAll(_count?: number, _select?: string, _mapper?: (json: any) => T): Promise<T[]> {
-        const url = `${CODA_API_BASE}/tables/${this.tableName}/rows`;
+        const params = new URLSearchParams({
+            limit: "200",
+            useColumnNames: "true",
+            valueFormat: "rich"
+        });
+        const url = `${this.documentBase}/rows?${params}`;
+
         const resp = await fetch(url, {
             headers: { 'Authorization': `Bearer ${CODA_API_TOKEN}` }
         });
@@ -73,7 +85,7 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
         // async createRows(tableId: string, rows: { cells: { column: string, value: any }[] }[]): Promise<any> {
         const rows = entities.map(entity => this.entityToCodaMapper(entity));
 
-        const resp = await fetch(`${CODA_API_BASE}/tables/${this.tableName}/rows`, {
+        const resp = await fetch(`${this.documentBase}/rows`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${CODA_API_TOKEN}`,
@@ -100,8 +112,7 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
     }
 
     async findBy(column: string, name: string): Promise<T[]> {
-        const url = `${CODA_API_BASE}/tables/${this.tableName}/rows?query=${column}:"${name}"`;
-        console.log(url)
+        const url = `${this.documentBase}/rows?query=${column}:"${name}"`;
         const resp = await fetch(encodeURI(url), {
             headers: { 'Authorization': `Bearer ${CODA_API_TOKEN}` }
         });

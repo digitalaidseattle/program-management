@@ -21,6 +21,7 @@ import { EntityTable } from "../../components/EntityTable";
 import { HEALTH_STATUS_CHIPS } from "../../components/StatusChip";
 import VentureReportDialog from "../../components/VentureReportDialog";
 import { VentureReport, ventureReportSave, VentureReportService } from "../../services/dasVentureReportService";
+import { CodaVentureService } from "../../services/codaVentureService";
 
 
 const ReportingPage = () => {
@@ -34,6 +35,11 @@ const ReportingPage = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<VentureReport>();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    CodaVentureService.getInstance().getAll()
+      .then(cvs => console.log(cvs));
+  }, [])
 
   useEffect(() => {
     fetchData();
