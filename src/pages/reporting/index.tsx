@@ -20,7 +20,8 @@ import { NavLink } from 'react-router-dom';
 import { EntityTable } from "../../components/EntityTable";
 import { HEALTH_STATUS_CHIPS } from "../../components/StatusChip";
 import VentureReportDialog from "../../components/VentureReportDialog";
-import { VentureReport, VentureReportService } from "../../services/dasVentureReportService";
+import { VentureReport, ventureReportSave, VentureReportService } from "../../services/dasVentureReportService";
+import { CodaVentureService } from "../../services/codaVentureService";
 
 
 const ReportingPage = () => {
@@ -34,6 +35,11 @@ const ReportingPage = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [selectedReport, setSelectedReport] = useState<VentureReport>();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    CodaVentureService.getInstance().getAll()
+      .then(cvs => console.log(cvs));
+  }, [])
 
   useEffect(() => {
     fetchData();
@@ -140,17 +146,11 @@ const ReportingPage = () => {
 
   function handleClose(evt: { report: VentureReport | null | undefined; }): void {
     if (evt.report) {
-      if (evt.report.id) {
-        ventureReportService.update(evt.report.id, evt.report)
-          .then(() => {
-            notifications.success('Thank you, the report has been updated.')
-          })
-      } else {
-        ventureReportService.insert(evt.report)
-          .then(() => {
-            notifications.success('Thank you, the report has been added.')
-          })
-      }
+      ventureReportSave(evt.report)
+        .then(() => {
+          notifications.success('Thank you, the report has been added.');
+          fetchData();
+        })
     }
     setShowDialog(false)
   }

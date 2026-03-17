@@ -6,7 +6,7 @@
  */
 import { LoadingContext, useAuthService, useNotifications } from '@digitalaidseattle/core';
 import { Box, Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, Step, StepLabel, Stepper, Typography } from '@mui/material';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { calendlyService, EventType } from './calendlyService';
 import { Proctor, proctorService } from './proctorService';
@@ -28,24 +28,9 @@ export const SchedulingWidget = () => {
     const { loading, setLoading } = useContext(LoadingContext);
     const [availableLinks, setAvailableLinks] = useState<SchedulingLink[]>([]);
 
-    const redirectUri = useMemo(() => {
-        return `${window.location.origin}`;
-    }, []);
-
-    const oauthProcessedRef = useRef(false);
-
 
     // Load proctor once on mount using authenticated user's email
     useEffect(() => {
-        const authCode = searchParams.get('code');
-        if (authCode) {
-            calendlyService.exchangeCodeForToken(authCode, redirectUri)
-                .then(accessToken => setAccessToken(accessToken))
-                .catch(() => {
-                    notifications.error('Failed to authenticate with Calendly. Please try again.');
-                });
-        }
-
         authService.getUser()
             .then(user => {
                 if (user) {
@@ -55,31 +40,9 @@ export const SchedulingWidget = () => {
             });
     }, [authService]);
 
-    // Handle OAuth callback once
     useEffect(() => {
         const authCode = searchParams.get('code');
-        if (authCode && !oauthProcessedRef.current && !accessToken) {
-            oauthProcessedRef.current = true;
-            calendlyService.exchangeCodeForToken(authCode, window.location.origin)
-                .then(token => setAccessToken(token))
-                .catch(() => {
-                    notifications.error('Failed to authenticate with Calendly. Please try again.');
-                    oauthProcessedRef.current = false;
-                });
-        }
-    }, [searchParams, notifications, accessToken]);
-
-    // Update step and load events once when both are ready
-    useEffect(() => {
-        fetchData();
-    }, [selectedProctor]);
-
-
-    // Handle OAuth callback once - process code and clean URL
-    useEffect(() => {
-        const authCode = searchParams.get('code');
-        if (authCode &&  !accessToken) {
-            setLoading(true);
+        if (authCode && !accessToken) {
             calendlyService.exchangeCodeForToken(authCode, window.location.origin)
                 .then(token => {
                     setAccessToken(token);
@@ -88,33 +51,27 @@ export const SchedulingWidget = () => {
                     url.searchParams.delete('code');
                     window.history.replaceState({}, '', url.toString());
                 })
-                .catch(() => {
+                .catch((error) => {
                     notifications.error('Failed to authenticate with Calendly. Please try again.');
-                })
-                .finally(() => setLoading(false));
+                    console.error('Scheduling widget - ', error);
+                });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [searchParams]);
+
+    // Update step and load events once when both are ready
+    useEffect(() => {
+        fetchSchedulingLinks();
+    }, [selectedProctor]);
 
     // Update step and load events once when both are ready
     useEffect(() => {
         setActiveStep(accessToken ? 1 : 0);
-
-        if (accessToken && selectedProctor) {
-            calendlyService.getUser(accessToken)
-                .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri))
-                .then(events => {
-                    setEvents(events);
-                    setInterviewEventUri(events.length > 0 ? events[0].uri : null);
-                })
-                .catch(() => {
-                    notifications.error('Your authentication with Calendly expired. Try it again.');
-                    setAccessToken(null);
-                });
+        if (accessToken) {
+            fetchEvents(accessToken);
         }
-    }, [accessToken, selectedProctor, notifications]);
+    }, [accessToken]);
 
-    async function fetchData() {
+    async function fetchSchedulingLinks() {
         if (selectedProctor) {
             setLoading(true);
             schedulingLinkService.findByName(selectedProctor.name)
@@ -123,7 +80,28 @@ export const SchedulingWidget = () => {
         }
     }
 
+    async function fetchEvents(accessToken: string) {
+        console.log('fetchEvents', accessToken);
+        calendlyService.getUser(accessToken)
+            .then(user => calendlyService.getEventTypes(accessToken, user.resource.uri)
+                .then(events => {
+                    setEvents(events);
+                    setInterviewEventUri(events.length > 0 ? events[0].uri : null);
+                })
+                .catch((error) => {
+                    console.log('Failed to get EventTypes', error)
+                    notifications.error('Your authentication with Calendly expired. Try it again.');
+                    setAccessToken(null);
+                }))
+            .catch((error) => {
+                console.log('Failed to getUser', error)
+                notifications.error('Your authentication with Calendly expired. Try it again.');
+                setAccessToken(null);
+            })
+    }
+
     async function authenticate() {
+        setAccessToken(null);
         const calendlyUri = calendlyService.getAuthUri(window.location.origin);
         window.location.replace(calendlyUri);
     }
@@ -154,8 +132,8 @@ export const SchedulingWidget = () => {
                 })
                 schedulingLinkService.batchInsert(schedulingLiks)
                     .then(schedulingLinks => {
-                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling link${schedulingLinks.length === 1 ? '' : 's'} and added them to Coda.`);
-                        fetchData();
+                        notifications.success(`Successfully created ${schedulingLinks.length} scheduling links and added them to Coda.  It will take a while for the increase to display here.`);
+                        setTimeout(fetchSchedulingLinks, 60000);
                     })
             } catch (err) {
                 console.error('Error creating booking links:', err);
@@ -203,7 +181,7 @@ export const SchedulingWidget = () => {
                                     value={numLinks}
                                     label="Choose number of links"
                                     onChange={(evt) => setNumLinks(evt.target.value as number)}>
-                                    {[1, 2, 3, 5, 10].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
+                                    {[2, 3, 5, 10, 20].map((value: number) => <MenuItem key={`${value}`} value={value}>{value}</MenuItem>)}
                                 </Select>
                             </FormControl>
                             <Button variant={'contained'} onClick={makeLinks} disabled={loading}>Do it!</Button>

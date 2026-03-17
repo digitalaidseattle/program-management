@@ -6,16 +6,16 @@
  */
 
 import { v4 as uuid } from 'uuid';
-import { Identifier } from "@digitalaidseattle/core";
+import { Entity, Identifier, User } from "@digitalaidseattle/core";
 import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import type { Venture } from "./dasVentureService";
 
 export type HealthStatus = 'on_track' | 'at_risk' | 'blocked';
 
-export type VentureReport = {
-    id: string;
+export type VentureReport = Entity & {
     venture_id: string;
     venture?: Venture;
+    venture_name: string;
     reported_by: string;
     reporting_date?: Date | null;
     health: HealthStatus;
@@ -27,6 +27,17 @@ export type VentureReport = {
     next_steps?: string | null;
 }
 const DEFAULT_SELECT = "*, venture(*)";
+
+export async function ventureReportSave(report: VentureReport): Promise<VentureReport> {
+    const ventureReportService = VentureReportService.instance();
+
+    const cleaned = { ...report };
+    cleaned.venture_name = report.venture?.venture_code ?? "";
+    delete cleaned.venture;
+
+    return ventureReportService.upsert(cleaned)
+}
+
 
 class VentureReportService extends SupabaseEntityService<VentureReport> {
 
@@ -46,6 +57,7 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
         return {
             id: uuid(),
             venture_id: '',
+            venture_name: '',
             reported_by: '',
             reporting_date: new Date(),
             health: 'on_track',
@@ -55,6 +67,20 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
             asks: '',
             staffing_need: '',
             next_steps: '',
+        }
+    }
+
+    async upsert(entity: VentureReport, select?: string, mapper?: (json: any) => VentureReport, _user?: User): Promise<VentureReport> {
+        const { data, error } = await supabaseClient
+            .from(this.tableName)
+            .upsert(entity)
+            .select(select ?? DEFAULT_SELECT)
+        if (error) {
+            console.error(error)
+            throw error;
+        } else {
+            const aMapper = mapper ?? this.mapper;
+            return aMapper(data)!
         }
     }
 
