@@ -35,7 +35,6 @@ const FORECAST_TABLE = 'tblbIMTclZeJ6IA4i';
 const CONTACT_TABLE = 'tblWyd8yGHbKdchXs';
 
 class MigrationService {
-    roleService = RoleService.instance();
 
     migrators: { [key: string]: () => Promise<void> } = {
         'Volunteers': this.migrateVolunteers,
@@ -66,17 +65,19 @@ class MigrationService {
         return new AirtableService(VENTURES_TABLE).getAll()
             .then(records => {
                 const transformed = records.map(record => {
+                    console.log(record);
+
                     const supa = ({
                         id: uuid(),
                         airtable_id: record.id,
-                        painpoint: record.fields['Painpoint Shorthand'],
-                        status: record.fields['Status'],
-                        problem: record.fields['Problem (for DAS website)'],
-                        solution: record.fields['Solution (for DAS website)'],
-                        impact: record.fields['Impact (for DAS website)'],
-                        program_areas: record.fields['Foci (from Partner)'],
-                        venture_code: record.fields['Prospective Venture Code'],
-                        partner_airtable_id: record.fields["Partner"]
+                        painpoint: record['Painpoint Shorthand'],
+                        status: record['Status'],
+                        problem: record['Problem (for DAS website)'],
+                        solution: record['Solution (for DAS website)'],
+                        impact: record['Impact (for DAS website)'],
+                        program_areas: record['Foci (from Partner)'],
+                        venture_code: record['Prospective Venture Code'],
+                        partner_airtable_id: record["Partner"]
                     }) as any;
                     delete supa.airtable_partner_id;
                     return supa
@@ -92,22 +93,22 @@ class MigrationService {
                     return ({
                         id: uuid(),
                         airtable_id: record.id,
-                        name: record.fields['Org name'],
-                        type: record.fields['Type'],
-                        shorthand_name: record.fields['Org shorthand'],
-                        status: record.fields['Status'],
-                        description: record.fields['Org description'],
-                        gdrive_link: record.fields['Gdrive link URL'],
-                        hubspot_link: record.fields["Hubspot interface"],
-                        miro_link: record.fields["Miro Board Link"],
-                        overview_link: record.fields["Overview link"],
-                        logo_url: record.fields["logo"] ? (record.fields["logo"] as any[])[0].url : undefined,
-                        internal_champion: record.fields["Internal Champion"],
-                        website: record.fields["Website"],
-                        foci: record.fields["Foci"],
-                        ally_utility: record.fields["Ally utility"],
-                        general_phone: record.fields["General phone"],
-                        internal_thoughts: record.fields["Internal thoughts"]
+                        name: record['Org name'],
+                        type: record['Type'],
+                        shorthand_name: record['Org shorthand'],
+                        status: record['Status'],
+                        description: record['Org description'],
+                        gdrive_link: record['Gdrive link URL'],
+                        hubspot_link: record["Hubspot interface"],
+                        miro_link: record["Miro Board Link"],
+                        overview_link: record["Overview link"],
+                        logo_url: record["logo"] ? (record["logo"] as any[])[0].url : undefined,
+                        internal_champion: record["Internal Champion"],
+                        website: record["Website"],
+                        foci: record["Foci"],
+                        ally_utility: record["Ally utility"],
+                        general_phone: record["General phone"],
+                        internal_thoughts: record["Internal thoughts"]
                     })
                 });
                 partnerService.batchInsert(transformed)
@@ -120,34 +121,35 @@ class MigrationService {
         return new AirtableService(VOLUNTEER_TABLE).getAll()
             .then(records => {
                 records.forEach(r => {
+                    console.log(r)
                     const profileId = uuid()
                     volunteers.push({
                         id: uuid(),
                         profile_id: profileId,
-                        airtable_id: r.fields['Name'],
-                        status: r.fields['Manual Status'],
-                        affliation: r.fields['Affiliation (from Volunteer Affiliation)'],
-                        join_date: r.fields['join date'],
-                        position: r.fields['Position'],
-                        disciplines: r.fields['Disciplines'],
-                        github: r.fields['Github'],
-                        das_email: r.fields['DAS email'],
-                        slack_id: r.fields['Slack ID'],
-                        hope_to_give: r.fields['In DAS I hope to give'],
-                        hope_to_get: r.fields['In DAS, I hope to get'],
-                        communication_preferences: r.fields['Communication preferences'],
-                        linkedin: r.fields['Linkedin URL'],
-                        tool_ids: r.fields['Tools we use']
+                        airtable_id: r.id,
+                        status: r['Manual Status'],
+                        affliation: r['Affiliation (from Volunteer Affiliation)'],
+                        join_date: r['join date'],
+                        position: r['Position'],
+                        disciplines: r['Disciplines'],
+                        github: r['Github'],
+                        das_email: r['DAS email'],
+                        slack_id: r['Slack ID'],
+                        hope_to_give: r['In DAS I hope to give'],
+                        hope_to_get: r['In DAS, I hope to get'],
+                        communication_preferences: r['Communication preferences'],
+                        linkedin: r['Linkedin URL'],
+                        tool_ids: r['Tools we use']
                     });
                     profiles.push({
                         id: profileId,
-                        name: r.fields['Name'],
-                        first_name: r.fields['First name'],
-                        last_name: r.fields['Last name'],
-                        email: r.fields['Personal email'],
-                        phone: r.fields['Phone'],
-                        location: r.fields['Location'],
-                        pic: r.fields["pic"] ? (r.fields["pic"] as any[])[0].url : undefined
+                        name: r['Name'],
+                        first_name: r['First name'],
+                        last_name: r['Last name'],
+                        email: r['Personal email'],
+                        phone: r['Phone'],
+                        location: r['Location'],
+                        pic: r["pic"] ? (r["pic"] as any[])[0].url : undefined
                     })
                 });
                 profileService.batchInsert(profiles)
@@ -162,14 +164,14 @@ class MigrationService {
                     return ({
                         id: uuid(),
                         airtable_id: r.id,
-                        name: r.fields['Name'],
-                        experts: r.fields['in-house expert(s)'],
-                        status: r.fields['status'],
-                        overview: r.fields['Onboarding overview'],
-                        logo: r.fields["logo"] ? (r.fields["logo"] as any[])[0].url : undefined,
-                        description: r.fields['Description'],
-                        teams: r.fields['Teams'],
-                        admins: r.fields['Admin(s)']
+                        name: r['Name'],
+                        experts: r['in-house expert(s)'],
+                        status: r['status'],
+                        overview: r['Onboarding overview'],
+                        logo: r["logo"] ? (r["logo"] as any[])[0].url : undefined,
+                        description: r['Description'],
+                        teams: r['Teams'],
+                        admins: r['Admin(s)']
                     })
                 });
                 toolService.batchInsert(transformed)
@@ -183,12 +185,12 @@ class MigrationService {
                     return ({
                         id: uuid(),
                         airtable_id: r.id,
-                        name: r.fields['Name'],
-                        volunteer_ids: r.fields['Volunteers'],
-                        status: r.fields['Status'],
-                        details: r.fields['Details'],
-                        slack: r.fields['Our Slack channel'],
-                        senior_ids: r.fields["Senior"],
+                        name: r['Name'],
+                        volunteer_ids: r['Volunteers'],
+                        status: r['Status'],
+                        details: r['Details'],
+                        slack: r['Our Slack channel'],
+                        senior_ids: r["Senior"],
                         icon: ''
                     })
                 });
@@ -203,20 +205,20 @@ class MigrationService {
                     return ({
                         id: uuid(),
                         airtable_id: r.id,
-                        name: r.fields['Team name'],
-                        volunteer_ids: r.fields['volunteers on team'],
-                        welcome_message: r.fields['Welcome message'],
-                        okrs: r.fields['OKRs 2'],
-                        forecast_ids: r.fields['Team forecast'],
-                        purpose: r.fields['Purpose'],
-                        status: r.fields['Status'],
-                        leader_ids: r.fields['Leader'],
-                        tool_ids: r.fields['tools'],
-                        decision_making: r.fields['Decision-making process'],
-                        not_included: r.fields['What is NOT included in this Team?'],
-                        knowledge_management: r.fields['Knowledge Management plan'],
-                        new_to_the_team: r.fields['New to the team?'],
-                        slack_channel: r.fields['Slack Channel']
+                        name: r['Team name'],
+                        volunteer_ids: r['volunteers on team'],
+                        welcome_message: r['Welcome message'],
+                        okrs: r['OKRs 2'],
+                        forecast_ids: r['Team forecast'],
+                        purpose: r['Purpose'],
+                        status: r['Status'],
+                        leader_ids: r['Leader'],
+                        tool_ids: r['tools'],
+                        decision_making: r['Decision-making process'],
+                        not_included: r['What is NOT included in this Team?'],
+                        knowledge_management: r['Knowledge Management plan'],
+                        new_to_the_team: r['New to the team?'],
+                        slack_channel: r['Slack Channel']
                     })
                 });
                 teamService.batchInsert(transformed)
@@ -235,10 +237,9 @@ class MigrationService {
                         urgency: record['Urgency']
                     } as unknown as Role)
                 });
-                this.roleService.batchInsert(transformed)
+                RoleService.instance().batchInsert(transformed)
             })
     }
-
 
     joinTeamVolunteer(): Promise<void> {
         return teamService.getAll()
@@ -255,10 +256,8 @@ class MigrationService {
                                         leader: (team.leader_ids ?? []).includes(volunteer.airtable_id)
                                     })
                                 }))
-
                             .then(resp => {
                                 if (resp.length > 0) {
-                                    console.log(resp);
                                     team2VolunteerService.batchInsert(resp)
                                 }
                             })
@@ -377,13 +376,14 @@ class MigrationService {
     }
 
     migrateStaffingNeeds(): Promise<void> {
+        const roleService = RoleService.instance()
         return new AirtableService(STAFFING_TABLE).getAll()
             .then(records => {
                 Promise.all(records.map(async r => {
                     console.log(r)
                     const venture = r['Prospective Ventures'] ? await ventureService.findByAirtableId(r['Prospective Ventures'][0]) : null;
                     const team = r['Cadre Teams'] ? await teamService.findByAirtableId(r['Cadre Teams'][0]) : null;
-                    const role = r['Role'] ? await this.roleService.findByAirtableId(r['Role'][0]) : null;
+                    const role = r['Role'] ? await roleService.findByAirtableId(r['Role'][0]) : null;
                     const volunteer = r['Volunteer Assigned'] ? await volunteerService.findByAirtableId(r['Volunteer Assigned'][0]) : null;
                     const supa = ({
                         id: uuid(),
@@ -654,10 +654,11 @@ class MigrationService {
     }
 
     async updateRoles(): Promise<void> {
+        const roleService = RoleService.instance();
         return new AirtableService(ROLES_TABLE).getAll()
             .then(records => {
                 records.forEach(async record => {
-                    const supa = await this.roleService.findByAirtableId(record.id)
+                    const supa = await roleService.findByAirtableId(record.id)
                     if (supa) {
 
                         const url = record['image'] ? record['image'][0].url : null;
@@ -675,7 +676,7 @@ class MigrationService {
                                             })
                                     }))
                         }
-                        this.roleService.update(supa.id!,
+                        roleService.update(supa.id!,
                             {
                                 pic: pic,
                                 headline: record['Headline'], // 'Headline'

@@ -27,6 +27,13 @@ type Venture = {
 }
 
 const DEFAULT_SELECT = "*, partner(*)";
+function JSON_2_ENTITY(json: any): Venture {
+    const entity = {
+        ...json,
+        program_areas: JSON.parse(json.program_areas)
+    }
+    return entity;
+}
 
 class VentureService extends SupabaseEntityService<Venture> {
 
@@ -49,7 +56,7 @@ class VentureService extends SupabaseEntityService<Venture> {
     }
 
     public constructor() {
-        super("venture", DEFAULT_SELECT);
+        super("venture", DEFAULT_SELECT, JSON_2_ENTITY);
     }
 
     empty(): Venture {
@@ -103,4 +110,6 @@ class VentureService extends SupabaseEntityService<Venture> {
 const ventureService = VentureService.instance();
 export { ventureService, VentureService };
 export type { Venture };
+
+
 
