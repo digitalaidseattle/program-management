@@ -50,6 +50,7 @@ class MigrationService {
         'Team/Tool': this.joinTeamTool,
         'Volunteer/Tool': this.joinVolunteerTool,
         'Staffing Needs': this.migrateStaffingNeeds,
+        'Volunteer Pics': this.downloadVolunteerPics,
         'Partner Logos': this.downloadPartnerLogos,
         'Tool Logos': this.downloadToolLogos,
         'Team Logos': this.downloadTeamIcons,
