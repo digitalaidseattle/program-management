@@ -10,7 +10,6 @@ import {
   IconButton,
   Stack,
   Toolbar,
-  Tooltip,
   Typography
 } from '@mui/material';
 import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
@@ -20,8 +19,8 @@ import { NavLink } from 'react-router-dom';
 import { EntityTable } from "../../components/EntityTable";
 import { HEALTH_STATUS_CHIPS } from "../../components/StatusChip";
 import VentureReportDialog from "../../components/VentureReportDialog";
-import { VentureReport, ventureReportSave, VentureReportService } from "../../services/dasVentureReportService";
 import { CodaVentureService } from "../../services/codaVentureService";
+import { VentureReport, ventureReportSave, VentureReportService } from "../../services/dasVentureReportService";
 
 
 const ReportingPage = () => {
@@ -61,12 +60,13 @@ const ReportingPage = () => {
 
   const columns: GridColDef<VentureReport>[] = [
     {
-      field: 'venture_id',
+      field: 'id',
       headerName: 'Venture',
       renderCell: (params) => (
-        <Tooltip title="click to view venture">
-          <NavLink to={`/ventures/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
-        </Tooltip>
+        params.row.venture!.venture_code
+        // <Tooltip title="click to view venture">
+        //   <NavLink to={`/ventures/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
+        // </Tooltip>
       ),
       width: 300,
     },

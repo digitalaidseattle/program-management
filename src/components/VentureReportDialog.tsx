@@ -29,7 +29,7 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report
 
     useEffect(() => {
         ventureService.getActive()
-            .then(v => setVentures(v));
+            .then(v => setVentures(v.sort((v1, v2) => v1.venture_code.localeCompare(v2.venture_code))));
     }, []);
 
     useEffect(() => {
