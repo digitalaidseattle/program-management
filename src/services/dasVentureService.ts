@@ -30,8 +30,8 @@ const DEFAULT_SELECT = "*, partner(*)";
 function JSON_2_ENTITY(json: any): Venture {
     const entity = {
         ...json,
-        program_areas: JSON.parse(json.program_areas)
     }
+
     return entity;
 }
 

@@ -99,7 +99,7 @@ CREATE TABLE venture (
     problem text,
     solution text,
     impact text,
-    program_areas text,
+    program_areas text[],
     venture_code text,
     partner_airtable_id text []
 );
