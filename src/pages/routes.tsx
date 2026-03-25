@@ -45,6 +45,7 @@ import { RouteObject } from 'react-router';
 import ReferenceTeamsPage from './reference/teams.tsx';
 import AllVenturesPage from './venture/AllVenturesPage.tsx';
 import VentureDetailsPage from './venture/VentureDetailsPage.tsx';
+import VentureMigrationPage from './migration/codaMigration.tsx';
 
 const reference = {
   path: "/",
@@ -149,7 +150,11 @@ const reference = {
     {
       path: "ventures/:id?",
       element: <ReferenceVenturesPage />,
-    }, ,
+    },
+    {
+      path: "coda-ventures",
+      element: <VentureMigrationPage />,
+    },
     {
       path: "ventures/status-report/:id?",
       element: <VentureStatusReportPage />,

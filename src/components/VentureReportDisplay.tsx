@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { HEALTH_STATUS_INDICATOR_COLORS } from '../components/StatusChip.tsx';
 import { VentureReport } from '../services/dasVentureReportService';
 import { VentureReportDetails } from './VentureReportDetails.tsx';
+import { Identifier } from '@digitalaidseattle/core';
 
 interface VentureReportDisplayProps {
   reports: VentureReport[]
@@ -12,7 +13,7 @@ interface VentureReportDisplayProps {
 }
 const MONTH_YEAR_FORMAT = 'MMMM YYYY';
 export default function VentureReportDisplay({ reports, initialReportId }: VentureReportDisplayProps) {
-  const [selectedReportId, setSelectedReportId] = useState<string>(initialReportId ?? reports[0]?.id ?? '')
+  const [selectedReportId, setSelectedReportId] = useState<Identifier>(initialReportId!)
 
   const report = useMemo(() => {
     if (reports.length === 0) {
@@ -45,7 +46,7 @@ export default function VentureReportDisplay({ reports, initialReportId }: Ventu
               <ListItemButton
                 key={period.id}
                 selected={period.id === report?.id}
-                onClick={() => setSelectedReportId(period.id)}
+                onClick={() => setSelectedReportId(period.id!)}
               >
                 <ListItemText
                   primary={
