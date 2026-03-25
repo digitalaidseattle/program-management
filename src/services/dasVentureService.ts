@@ -27,10 +27,23 @@ type Venture = {
 
 const DEFAULT_SELECT = "*, partner(*)";
 
+function normalizeProgramAreas(value: unknown): string[] {
+
+    if (value == null) {
+        return [];
+    }
+
+    if (Array.isArray(value)) {
+        return value.filter((item): item is string => typeof item === "string");
+    }
+
+    return [];
+}
+
 function MAPPER(json: any): Venture {
     const venture = {
         ...json,
-        program_areas: JSON.parse(json.program_areas) ?? []
+        program_areas: normalizeProgramAreas(json.program_areas)
     }
     return venture;
 }
@@ -93,4 +106,3 @@ class VentureService extends SupabaseEntityService<Venture> {
 const ventureService = VentureService.instance();
 export { ventureService, VentureService };
 export type { Venture };
-
