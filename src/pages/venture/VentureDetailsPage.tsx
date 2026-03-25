@@ -1,78 +1,14 @@
 import { BulbOutlined, FireOutlined, LeftOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { Avatar, Box, Card, CardContent, CardHeader, Chip, Grid, Link, Stack, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridSortModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import VentureReportDisplay from "../../components/VentureReportDisplay";
+import { StaffingTable } from "../../components/StaffingTable";
 import { partnerService } from "../../services/dasPartnerService";
-import { profileService } from "../../services/dasProfileService";
 import { staffingService, Staffing } from "../../services/dasStaffingService";
 import { VentureReport, VentureReportService } from "../../services/dasVentureReportService";
 import { ventureService, Venture } from "../../services/dasVentureService";
-import { PARTNER_STATUS_CHIPS, STAFFING_STATUS_CHIPS, StatusChip, VENTURE_STATUS_CHIPS } from "../../components/StatusChip";
-
-const StaffingPanel = ({ items }: { items: Staffing[] }) => {
-  const [sortModel, setSortModel] = useState<GridSortModel>([{ field: "status", sort: "desc" }]);
-
-  const columns: GridColDef[] = [
-    {
-      field: "role.name",
-      headerName: "Roles",
-      flex: 1,
-      minWidth: 220,
-      renderCell: (params: GridRenderCellParams) => params.row.role?.name ?? "N/A",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 170,
-      renderCell: (params: GridRenderCellParams) =>
-        params.row.status
-          ? STAFFING_STATUS_CHIPS[params.row.status] ?? <StatusChip label={params.row.status} color="gray" />
-          : <StatusChip label="N/A" color="red" />,
-    },
-    {
-      field: "volunteer.name",
-      headerName: "Volunteer",
-      flex: 1,
-      minWidth: 260,
-      renderCell: (params: GridRenderCellParams) => (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ height: "100%" }}>
-          <Avatar
-            variant="rounded"
-            src={params.row.volunteer ? profileService.getPicUrl(params.row.volunteer.profile!) : undefined}
-            sx={{ width: 30, height: 30, objectFit: "contain" }}
-          />
-          <Typography>{params.row.volunteer ? params.row.volunteer.profile!.name : "Unassigned"}</Typography>
-        </Stack>
-      ),
-    },
-  ];
-
-  return (
-    <Box sx={{ height: "100%", minHeight: 0 }}>
-      <DataGrid
-        rows={items}
-        columns={columns}
-        sortingMode="client"
-        sortModel={sortModel}
-        onSortModelChange={setSortModel}
-        disableRowSelectionOnClick
-        autoPageSize
-        sx={{
-          height: "100%",
-          "& .MuiDataGrid-cell": {
-            display: "flex",
-            alignItems: "center",
-          },
-          "& .MuiDataGrid-cellContent": {
-            lineHeight: "normal",
-          },
-        }}
-      />
-    </Box>
-  );
-};
+import { PARTNER_STATUS_CHIPS, StatusChip, VENTURE_STATUS_CHIPS } from "../../components/StatusChip";
 
 const VentureDetailsPage = () => {
   const ventureReportService = VentureReportService.instance();
@@ -240,7 +176,14 @@ const VentureDetailsPage = () => {
             <CardContent sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", p: 2 }}>
               {loading && <Typography>Loading staffing...</Typography>}
               {!loading && staffing.length === 0 && <Typography>No staffing rows found.</Typography>}
-              {!loading && staffing.length > 0 && <StaffingPanel items={staffing} />}
+              {!loading && staffing.length > 0 && (
+                <StaffingTable
+                  title="Staffing"
+                  items={staffing}
+                  columnKeys={["role", "status", "volunteer"]}
+                  autoPageSize={true}
+                />
+              )}
             </CardContent>
           </Card>
         </Grid>
