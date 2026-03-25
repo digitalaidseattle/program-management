@@ -1,38 +1,9 @@
-import { supabaseClient } from "@digitalaidseattle/supabase";
 import { useStorageService } from "@digitalaidseattle/core";
 import { Box, Card, CardActionArea, CardContent, Checkbox, FormControl, Grid, InputLabel, ListItemText, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { StatusChip, VENTURE_STATUS_CHIPS } from "../../components/StatusChip";
 import { useNavigate } from "react-router-dom";
-import { VentureService } from "../../services/dasVentureService";
-
-type VentureRow = {
-  id: string;
-  airtable_id: string | null;
-  partner_id: string | null;
-  title: string | null;
-  painpoint: string | null;
-  status: string | null;
-  problem: string | null;
-  solution: string | null;
-  impact: string | null;
-  program_areas: string | null;
-  venture_code: string | null;
-  partner_airtable_id: string[] | null;
-  program_areas_parsed?: string[];
-};
-
-const parseProgramAreas = (value: string | null): string[] => {
-  if (!value) {
-    return [];
-  }
-  try {
-    const parsed = JSON.parse(value);
-    return Array.isArray(parsed) ? parsed.map((v) => String(v)) : [];
-  } catch {
-    return [];
-  }
-};
+import { Venture, ventureService, VentureService } from "../../services/dasVentureService";
 
 const STATUS_SORT_ORDER = [
   "Active",
@@ -51,7 +22,7 @@ const statusSortRank = (status: string | null): number => {
 const AllVenturesPage = () => {
   const storageService = useStorageService()!;
   const navigate = useNavigate();
-  const [ventures, setVentures] = useState<VentureRow[]>([]);
+  const [ventures, setVentures] = useState<Venture[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -61,20 +32,11 @@ const AllVenturesPage = () => {
   useEffect(() => {
     const fetchVentures = async () => {
       try {
-        const { data, error } = await supabaseClient
-          .from("venture")
-          .select("*");
-
-        if (error) {
-          setError(error.message);
-          return;
-        }
-        setVentures(
-          ((data as VentureRow[]) ?? []).map((venture) => ({
-            ...venture,
-            program_areas_parsed: parseProgramAreas(venture.program_areas),
-          }))
-        );
+        const data = await ventureService.getAll();
+        setVentures(data ?? []);
+        setError(null);
+      } catch (err: any) {
+        setError(err?.message ?? "Failed to load ventures.");
       } finally {
         setLoading(false);
       }
@@ -85,7 +47,7 @@ const AllVenturesPage = () => {
 
   const programAreaOptions = useMemo(() => {
     return Array.from(
-      new Set(ventures.flatMap((venture) => venture.program_areas_parsed ?? []))
+      new Set(ventures.flatMap((venture) => venture.program_areas ?? []))
     ).sort((a, b) => a.localeCompare(b));
   }, [ventures]);
 
@@ -104,7 +66,7 @@ const AllVenturesPage = () => {
 
         const matchesProgramArea =
           programAreaFilter.length === 0 ||
-          (venture.program_areas_parsed ?? []).some((area) => programAreaFilter.includes(area));
+          (venture.program_areas ?? []).some((area) => programAreaFilter.includes(area));
 
         return matchesSearch && matchesStatus && matchesProgramArea;
       })
