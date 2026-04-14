@@ -8,11 +8,21 @@ import { Card, CardContent, CardHeader, List, ListItemButton, ListItemText } fro
 import { useState } from 'react';
 import AddMeetingDialog from '../AddMeetingDialog';
 import VentureReportDialog from '../VentureReportDialog';
-import { VentureReportService } from '../../services/dasVentureReportService';
+import { VentureReport, ventureReportSave, VentureReportService } from '../../services/dasVentureReportService';
+import { useNotifications } from '@digitalaidseattle/core';
 
 export const MyTasksWidget = () => {
+    const notifications = useNotifications();
     const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
     const [showAddVentureReportDialog, setShowAddVentureReportDialog] = useState<boolean>(false);
+
+    function handleVentureReportClose(evt: { report: VentureReport | null | undefined; }): void {
+        if (evt.report) {
+            ventureReportSave(evt.report)
+                .then(() => notifications.success('Thank you, the report has been added.'))
+        }
+        setShowAddVentureReportDialog(false)
+    }
 
     return (
         <Card sx={{ height: "100%" }}>
@@ -48,7 +58,7 @@ export const MyTasksWidget = () => {
                 <VentureReportDialog
                     title={'Add Venture Report'}
                     report={VentureReportService.instance().empty()}
-                    onClose={() => setShowAddVentureReportDialog(false)}
+                    onClose={handleVentureReportClose}
                     open={showAddVentureReportDialog} />
             </CardContent>
         </Card>

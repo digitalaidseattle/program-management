@@ -13,23 +13,19 @@ type Proctor = {
     email: string,
 }
 // @ts-ignore - Environment variables are defined at runtime
+const CODA_DOC_ID = import.meta.env.VITE_CODA_DOC_ID;
 const PROCTOR_TABLE_ID = import.meta.env.VITE_CODA_PROCTOR_TABLE_ID;
-
-// Column IDs discovered from Coda API for proctor table
-const NAME_KEY = 'c-mFmHr9G0kc';        // "Name" column
-const DAS_EMAIL_KEY = 'c-8mnE-hcSOT';  // "DAS email" column
-const PERSONAL_EMAIL_KEY = 'c-yVZXbtwgEP'; // "Personal email" column
 
 function coda2Entity(row: CodaRow): Proctor {
     // Use DAS email as primary, fallback to personal email
-    const dasEmail = row.values[DAS_EMAIL_KEY] || '';
-    const personalEmail = row.values[PERSONAL_EMAIL_KEY] || '';
-    const email = dasEmail || personalEmail;
+    const dasEmail = row.values['DAS email'];
+    const personalEmail = row.values['Personal email'];
+    const email: string = (dasEmail || personalEmail) ?? '';
 
     const proctor = {
         id: row.id,
-        name: row.values[NAME_KEY] || '',
-        email: email,
+        name: (row.values['Name'] || '').replace(/`/g, ''),
+        email: (email || '').replace(/`/g, ''),
     } as Proctor;
     return proctor;
 }
@@ -37,7 +33,7 @@ function coda2Entity(row: CodaRow): Proctor {
 class ProctorService extends CodaService<Proctor> {
 
     constructor() {
-        super(PROCTOR_TABLE_ID, undefined, coda2Entity, undefined);
+        super(CODA_DOC_ID, PROCTOR_TABLE_ID, { mapper: coda2Entity });
     }
 
     async getAll(): Promise<Proctor[]> {

@@ -4,6 +4,7 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+import { v4 as uuid } from 'uuid';
 
 import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { Partner, partnerService } from "./dasPartnerService";
@@ -11,32 +12,31 @@ import { Partner, partnerService } from "./dasPartnerService";
 type Venture = {
     id: string
     airtable_id: string
-    partner_id: string
-    title: string
-    painpoint: string
-    status: string
-    problem: string
-    solution: string
-    impact: string
+    coda_id?: string;
+    partner_id: string | null;
+    title: string;
+    painpoint: string;
+    status: string;
+    problem: string;
+    solution: string;
+    impact: string;
     program_areas: string[];
     venture_code: string;
     partner_airtable_id: string[],
-    partner?: Partner
-
+    partner?: Partner;
 }
 
 const DEFAULT_SELECT = "*, partner(*)";
-
-function MAPPER(json: any): Venture {
-    const venture = {
+function JSON_2_ENTITY(json: any): Venture {
+    const entity = {
         ...json,
-        program_areas: JSON.parse(json.program_areas) ?? []
     }
-    return venture;
+
+    return entity;
 }
 
 class VentureService extends SupabaseEntityService<Venture> {
-    
+
     static STATUSES = [
         'Active',
         'Declined',
@@ -56,7 +56,24 @@ class VentureService extends SupabaseEntityService<Venture> {
     }
 
     public constructor() {
-        super("venture", DEFAULT_SELECT, MAPPER);
+        super("venture", DEFAULT_SELECT, JSON_2_ENTITY);
+    }
+
+    empty(): Venture {
+        return {
+            id: uuid(),
+            airtable_id: '',
+            partner_id: null,
+            title: '',
+            painpoint: '',
+            status: '',
+            problem: '',
+            solution: '',
+            impact: '',
+            program_areas: [],
+            venture_code: '',
+            partner_airtable_id: [],
+        } as Venture;
     }
 
     async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Venture): Promise<PageInfo<Venture>> {
@@ -93,4 +110,6 @@ class VentureService extends SupabaseEntityService<Venture> {
 const ventureService = VentureService.instance();
 export { ventureService, VentureService };
 export type { Venture };
+
+
 
