@@ -179,7 +179,6 @@ const ReportPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
 }
 
 const ReferenceVentureDetails = ({ entity }: { entity: Venture }) => {
-
   return (entity &&
     <Card>
       <CardHeader

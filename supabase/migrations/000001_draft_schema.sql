@@ -60,7 +60,7 @@ DROP TABLE IF EXISTS team;
 CREATE TABLE team (
     id UUID PRIMARY KEY,
     airtable_id text,
-    team text,
+    name text,
     volunteer_ids text [],
     welcome_message text,
     okrs text,
@@ -99,7 +99,7 @@ CREATE TABLE venture (
     problem text,
     solution text,
     impact text,
-    program_areas text,
+    program_areas text[],
     venture_code text,
     partner_airtable_id text []
 );

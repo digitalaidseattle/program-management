@@ -1,5 +1,5 @@
 ALTER TABLE
-    role DROP column urgency;
+    role DROP column IF EXISTS urgency;
 
 ALTER TABLE
     role
