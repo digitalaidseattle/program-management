@@ -1,110 +1,33 @@
-/**
- *  TimeOffPage.tsx
- *
- */
-
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useMemo, useState, FormEvent } from "react";
 import {
   Box,
   Button,
   Card,
   CardHeader,
+  Checkbox,
+  Divider,
+  Grid,
+  IconButton,
   TextField,
   Typography,
-  Table,
-  Grid,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Divider,
-  Checkbox,
-  IconButton,
 } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { DeleteOutlined } from "@ant-design/icons";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridValueFormatter,
+  GridValueGetter,
+} from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+
 import { useVolunteer } from "../hooks/useVolunteer";
-import { supabaseClient } from "@digitalaidseattle/supabase";
-import * as styles from "./TimeOffPageStyles";
+import { MyMeeting, TimeOffEntry } from "../types/timeOff";
+import { formatDate } from "../utils/meetingUtils";
+import { timeOffService } from "../services/timeOffService";
 
 dayjs.extend(utc);
-
-export interface TimeOffEntry {
-  id: string;
-  start: string;
-  end: string;
-  reason?: string;
-}
-
-type MeetingInfo = {
-  id: string;
-  name: string;
-  start_date: string;
-  end_date: string;
-  type?: string | null;
-};
-
-type MyMeeting = {
-  attendee_id: string;
-  status: string | null;
-  meeting: MeetingInfo;
-};
-
-type TimeOffRow = {
-  id: string;
-  start_at: string;
-  end_at: string;
-  reason: string | null;
-};
-
-type MeetingRelation = MeetingInfo | MeetingInfo[] | null;
-
-type MeetingAttendeeRow = {
-  id: string;
-  status: string | null;
-  meeting: MeetingRelation;
-};
-
-type MeetingTimeInfo = {
-  start_date: string;
-  end_date: string;
-};
-
-type MeetingTimeRelation = MeetingTimeInfo | MeetingTimeInfo[] | null;
-
-type MeetingOverlapRow = {
-  id: string;
-  status: string | null;
-  meeting: MeetingTimeRelation;
-};
-
-const getSingleMeeting = (meeting: MeetingRelation): MeetingInfo | null => {
-  if (!meeting) return null;
-  return Array.isArray(meeting) ? meeting[0] ?? null : meeting;
-};
-
-const getMeetingTime = (
-  meeting: MeetingTimeRelation
-): MeetingTimeInfo | null => {
-  if (!meeting) return null;
-  return Array.isArray(meeting) ? meeting[0] ?? null : meeting;
-};
-
-const isMeetingOverlapping = (
-  startA: string,
-  endA: string,
-  startB: string,
-  endB: string
-) => {
-  return dayjs(startA).isBefore(dayjs(endB)) && dayjs(endA).isAfter(dayjs(startB));
-};
-
-const formatDate = (value: string) => {
-  if (!value) return "—";
-  const d = dayjs(value);
-  return d.isValid() ? d.format("DD/MM/YYYY HH:mm") : value;
-};
 
 const TimeOffPage = () => {
   const [entries, setEntries] = useState<TimeOffEntry[]>([]);
@@ -115,82 +38,33 @@ const TimeOffPage = () => {
   const { volunteer } = useVolunteer();
 
   useEffect(() => {
-    const loadTimeOff = async () => {
+    const run = async () => {
       if (!volunteer?.id) return;
 
-      const { data, error } = await supabaseClient
-        .from("time_off")
-        .select("id, start_at, end_at, reason")
-        .eq("volunteer_id", volunteer.id)
-        .order("start_at", { ascending: true });
-
-      if (error) {
+      try {
+        const data = await timeOffService.loadTimeOffEntries(volunteer.id);
+        setEntries(data);
+      } catch (error) {
         console.error("Failed to load time off:", error);
-        return;
       }
-
-      const rows = (data ?? []) as unknown as TimeOffRow[];
-
-      setEntries(
-        rows.map((row) => ({
-          id: row.id,
-          start: row.start_at,
-          end: row.end_at,
-          reason: row.reason ?? undefined,
-        }))
-      );
     };
 
-    loadTimeOff();
+    run();
   }, [volunteer?.id]);
 
   useEffect(() => {
-    const loadMyMeetings = async () => {
-      const profileId = volunteer?.profile_id;
-      if (!profileId) return;
+    const run = async () => {
+      if (!volunteer?.profile_id) return;
 
-      const { data, error } = await supabaseClient
-        .from("meeting_attendee")
-        .select(`
-          id,
-          status,
-          meeting:meeting_id (
-            id,
-            name,
-            start_date,
-            end_date,
-            type
-          )
-        `)
-        .eq("profile_id", profileId);
-
-      if (error) {
+      try {
+        const data = await timeOffService.loadMyMeetings(volunteer.profile_id);
+        setMyMeetings(data);
+      } catch (error) {
         console.error("Failed to load my meetings:", error);
-        return;
       }
-
-      const rows = (data ?? []) as unknown as MeetingAttendeeRow[];
-
-      const normalizedMeetings = rows
-        .map((row) => {
-          const meeting = getSingleMeeting(row.meeting);
-          if (!meeting) return null;
-
-          return {
-            attendee_id: row.id,
-            status: row.status ?? null,
-            meeting,
-          };
-        })
-        .filter((row): row is MyMeeting => row !== null)
-        .sort((a, b) =>
-          dayjs(a.meeting.start_date).valueOf() - dayjs(b.meeting.start_date).valueOf()
-        );
-
-      setMyMeetings(normalizedMeetings);
     };
 
-    loadMyMeetings();
+    run();
   }, [volunteer?.profile_id]);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -198,185 +72,63 @@ const TimeOffPage = () => {
 
     if (!start || !end || !volunteer?.id || !volunteer?.profile_id) return;
 
-    const startIso = dayjs(start).utc().toISOString();
-    const endIso = dayjs(end).utc().toISOString();
+    try {
+      const { entry, markedAbsentIds } = await timeOffService.createTimeOff({
+        volunteerId: volunteer.id,
+        profileId: volunteer.profile_id,
+        start,
+        end,
+        reason,
+      });
 
-    if (dayjs(endIso).isBefore(dayjs(startIso))) {
-      console.warn("End date must be after start date");
-      return;
-    }
-
-    const { data, error } = await supabaseClient
-      .from("time_off")
-      .insert([
-        {
-          volunteer_id: volunteer.id,
-          start_at: startIso,
-          end_at: endIso,
-          reason: reason.trim() || null,
-        },
-      ])
-      .select("id, start_at, end_at, reason")
-      .single();
-
-    if (error) {
-      console.error("Failed to create time off:", error);
-      return;
-    }
-
-    const inserted = data as unknown as TimeOffRow;
-
-    setEntries((prev) =>
-      [...prev, {
-        id: inserted.id,
-        start: inserted.start_at,
-        end: inserted.end_at,
-        reason: inserted.reason ?? undefined,
-      }].sort((a, b) => dayjs(a.start).valueOf() - dayjs(b.start).valueOf())
-    );
-
-    setStart("");
-    setEnd("");
-    setReason("");
-
-    const { data: overlaps, error: overlapErr } = await supabaseClient
-      .from("meeting_attendee")
-      .select(`
-        id,
-        status,
-        meeting:meeting_id (
-          start_date,
-          end_date
+      setEntries((prev) =>
+        [...prev, entry].sort(
+          (a, b) => dayjs(a.start).valueOf() - dayjs(b.start).valueOf()
         )
-      `)
-      .eq("profile_id", volunteer.profile_id);
-
-    if (overlapErr) {
-      console.error("Failed to check meeting overlaps:", overlapErr);
-      return;
-    }
-
-    const overlapRows = (overlaps ?? []) as unknown as MeetingOverlapRow[];
-
-    const overlappingAttendeeIds = overlapRows
-      .map((row) => {
-        const meeting = getMeetingTime(row.meeting);
-        if (!meeting) return null;
-
-        const status = (row.status ?? "").toLowerCase();
-
-        return isMeetingOverlapping(
-          meeting.start_date,
-          meeting.end_date,
-          startIso,
-          endIso
-        ) && status !== "absent"
-          ? row.id
-          : null;
-      })
-      .filter((id): id is string => id !== null);
-
-    if (overlappingAttendeeIds.length > 0) {
-      const { error: updateError } = await supabaseClient
-        .from("meeting_attendee")
-        .update({ status: "absent" })
-        .in("id", overlappingAttendeeIds);
-
-      if (updateError) {
-        console.error("Failed to mark meeting absences:", updateError);
-        return;
-      }
+      );
 
       setMyMeetings((prev) =>
         prev.map((meeting) =>
-          overlappingAttendeeIds.includes(meeting.attendee_id)
+          markedAbsentIds.includes(meeting.attendee_id)
             ? { ...meeting, status: "absent" }
             : meeting
         )
       );
+
+      setStart("");
+      setEnd("");
+      setReason("");
+    } catch (error) {
+      console.error("Failed to create time off:", error);
     }
   };
 
   const handleDeleteTimeOff = async (entry: TimeOffEntry) => {
     if (!volunteer?.profile_id) return;
 
-    const startIso = entry.start;
-    const endIso = entry.end;
+    try {
+      const { restoredIds } = await timeOffService.deleteTimeOff({
+        profileId: volunteer.profile_id,
+        entry,
+      });
 
-    const { data: overlaps, error: overlapErr } = await supabaseClient
-      .from("meeting_attendee")
-      .select(`
-        id,
-        status,
-        meeting:meeting_id (
-          start_date,
-          end_date
-        )
-      `)
-      .eq("profile_id", volunteer.profile_id);
-
-    if (overlapErr) {
-      console.error("Failed to check meeting overlaps for delete:", overlapErr);
-      return;
-    }
-
-    const overlapRows = (overlaps ?? []) as unknown as MeetingOverlapRow[];
-
-    const overlappingAbsentIds = overlapRows
-      .map((row) => {
-        const meeting = getMeetingTime(row.meeting);
-        if (!meeting) return null;
-
-        const status = (row.status ?? "").toLowerCase();
-
-        return status === "absent" &&
-          isMeetingOverlapping(
-            meeting.start_date,
-            meeting.end_date,
-            startIso,
-            endIso
-          )
-          ? row.id
-          : null;
-      })
-      .filter((id): id is string => id !== null);
-
-    if (overlappingAbsentIds.length > 0) {
-      const { error: restoreErr } = await supabaseClient
-        .from("meeting_attendee")
-        .update({ status: "going" })
-        .in("id", overlappingAbsentIds);
-
-      if (restoreErr) {
-        console.error("Failed to restore meeting statuses:", restoreErr);
-        return;
-      }
+      setEntries((prev) => prev.filter((e) => e.id !== entry.id));
 
       setMyMeetings((prev) =>
         prev.map((meeting) =>
-          overlappingAbsentIds.includes(meeting.attendee_id)
+          restoredIds.includes(meeting.attendee_id)
             ? { ...meeting, status: "going" }
             : meeting
         )
       );
-    }
-
-    const { error } = await supabaseClient
-      .from("time_off")
-      .delete()
-      .eq("id", entry.id);
-
-    if (error) {
+    } catch (error) {
       console.error("Failed to delete time off:", error);
-      return;
     }
-
-    setEntries((prev) => prev.filter((e) => e.id !== entry.id));
   };
 
   const toggleAbsent = async (attendeeId: string, makeAbsent: boolean) => {
-    const nextStatus = makeAbsent ? "absent" : "going";
     const previousMeetings = myMeetings;
+    const nextStatus = makeAbsent ? "absent" : "going";
 
     setMyMeetings((prev) =>
       prev.map((m) =>
@@ -384,173 +136,222 @@ const TimeOffPage = () => {
       )
     );
 
-    const { error } = await supabaseClient
-      .from("meeting_attendee")
-      .update({ status: nextStatus })
-      .eq("id", attendeeId);
-
-    if (error) {
+    try {
+      await timeOffService.toggleMeetingAbsent(attendeeId, makeAbsent);
+    } catch (error) {
       console.error("Failed to update meeting status:", error);
       setMyMeetings(previousMeetings);
     }
   };
 
+  const timeOffColumns = useMemo<GridColDef<TimeOffEntry>[]>(
+    () => [
+      {
+        field: "start",
+        headerName: "Start date",
+        flex: 1,
+        minWidth: 180,
+        valueFormatter: ((value) => formatDate(String(value ?? ""))) as GridValueFormatter,
+      },
+      {
+        field: "end",
+        headerName: "End date",
+        flex: 1,
+        minWidth: 180,
+        valueFormatter: ((value) => formatDate(String(value ?? ""))) as GridValueFormatter,
+      },
+      {
+        field: "reason",
+        headerName: "Reason",
+        flex: 1,
+        minWidth: 180,
+        renderCell: (params: GridRenderCellParams<TimeOffEntry, string | undefined>) =>
+          params.value || "—",
+      },
+      {
+        field: "actions",
+        headerName: "",
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        align: "right",
+        headerAlign: "right",
+        width: 70,
+        renderCell: (params: GridRenderCellParams<TimeOffEntry>) => (
+          <IconButton
+            aria-label="delete time off"
+            onClick={() => handleDeleteTimeOff(params.row)}
+            size="small"
+          >
+            <DeleteOutlined />
+          </IconButton>
+        ),
+      },
+    ],
+    [handleDeleteTimeOff]
+  );
+
+  const meetingColumns = useMemo<GridColDef<MyMeeting>[]>(
+    () => [
+      {
+        field: "absent",
+        headerName: "Absent",
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        width: 90,
+        renderCell: (params: GridRenderCellParams<MyMeeting>) => {
+          const isAbsent = (params.row.status ?? "").toLowerCase() === "absent";
+
+          return (
+            <Checkbox
+              checked={isAbsent}
+              onChange={(e) =>
+                toggleAbsent(params.row.attendee_id, e.target.checked)
+              }
+            />
+          );
+        },
+      },
+      {
+        field: "meetingName",
+        headerName: "Meeting",
+        flex: 1,
+        minWidth: 180,
+        valueGetter: ((_, row) => row.meeting.name) as GridValueGetter<MyMeeting, string>,
+      },
+      {
+        field: "meetingStart",
+        headerName: "Time",
+        flex: 1,
+        minWidth: 180,
+        valueGetter: ((_, row) => row.meeting.start_date) as GridValueGetter<
+          MyMeeting,
+          string
+        >,
+        valueFormatter: ((value) => formatDate(String(value ?? ""))) as GridValueFormatter,
+      },
+      {
+        field: "status",
+        headerName: "Status",
+        width: 120,
+        renderCell: (params: GridRenderCellParams<MyMeeting, string | null>) =>
+          params.value ?? "—",
+      },
+    ],
+    [toggleAbsent]
+  );
+
   return (
-    <Box sx={styles.rootBox}>
+    <Box>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 7 }}>
-          <Typography variant="h5" fontWeight={600}>
-            Time off of DAS entirely?
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="h5">Time off of DAS entirely?</Typography>
+          <Typography variant="body1" color="text.secondary" gutterBottom>
             Enter the time span below.
           </Typography>
 
-          {/* TIME OFF TABLE CARD */}
-          <Card elevation={0} sx={styles.leftCard}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={styles.headerCell}>start date</TableCell>
-                  <TableCell sx={styles.headerCell}>end date</TableCell>
-                  <TableCell sx={styles.headerCell}>reason</TableCell>
-                  <TableCell sx={styles.headerCell} align="right" />
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {entries.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={4} sx={styles.emptyCell}>
-                      No time off added yet.
-                    </TableCell>
-                  </TableRow>
-                )}
-
-                {entries.map((entry) => (
-                  <TableRow key={entry.id}>
-                    <TableCell>{formatDate(entry.start)}</TableCell>
-                    <TableCell>{formatDate(entry.end)}</TableCell>
-                    <TableCell>{entry.reason || "—"}</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        aria-label="delete time off"
-                        onClick={() => handleDeleteTimeOff(entry)}
-                        size="small"
-                      >
-                        <DeleteOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <Card>
+            <Box sx={{ height: 420, width: "100%" }}>
+              <DataGrid
+                rows={entries}
+                columns={timeOffColumns}
+                getRowId={(row) => row.id}
+                disableRowSelectionOnClick
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                  pagination: {
+                    paginationModel: { pageSize: 5, page: 0 },
+                  },
+                }}
+              />
+            </Box>
           </Card>
         </Grid>
 
         <Grid size={{ xs: 12, md: 5 }}>
-          {/* ADD TIME OFF CARD */}
-          <Card elevation={0} sx={styles.rightCard}>
+          <Card>
             <CardHeader
               title="Add time off"
               subheader="Set a start and end date, and optionally add a reason."
-              sx={{ px: 0, pb: 0 }}
             />
+            <Divider />
 
-            <Divider sx={styles.rightDivider} />
+            <Box component="form" onSubmit={handleSubmit} p={2}>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    fullWidth
+                    label="Start date"
+                    type="datetime-local"
+                    value={start}
+                    onChange={(e) => setStart(e.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                  />
+                </Grid>
 
-            <Box component="form" onSubmit={handleSubmit} sx={styles.formBox}>
-              <TextField
-                label="Start date"
-                type="datetime-local"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                size="small"
-              />
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    fullWidth
+                    label="End date"
+                    type="datetime-local"
+                    value={end}
+                    onChange={(e) => setEnd(e.target.value)}
+                    InputLabelProps={{ shrink: true }}
+                    size="small"
+                  />
+                </Grid>
 
-              <TextField
-                label="End date"
-                type="datetime-local"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                size="small"
-              />
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    fullWidth
+                    label="Reason (optional)"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    multiline
+                    minRows={2}
+                    size="small"
+                  />
+                </Grid>
 
-              <TextField
-                label="Reason (optional)"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                multiline
-                minRows={2}
-                size="small"
-              />
-
-              <Box sx={styles.formButtonRow}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={!start || !end}
-                >
-                  Add time off
-                </Button>
-              </Box>
+                <Grid size={{ xs: 12 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={!start || !end}
+                  >
+                    Add time off
+                  </Button>
+                </Grid>
+              </Grid>
             </Box>
           </Card>
 
-          {/* MY MEETINGS CARD */}
-          <Card elevation={0} sx={styles.leftCard}>
-            <CardHeader
-              title="My meetings"
-              subheader="Mark meetings you will miss"
-              sx={{ pb: 0 }}
-            />
-            <Divider sx={{ mx: 2, my: 2 }} />
+          <Box mt={3}>
+            <Card>
+              <CardHeader
+                title="My meetings"
+                subheader="Mark meetings you will miss"
+              />
+              <Divider />
 
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={styles.headerCell}>absent</TableCell>
-                  <TableCell sx={styles.headerCell}>meeting</TableCell>
-                  <TableCell sx={styles.headerCell}>time</TableCell>
-                  <TableCell sx={styles.headerCell}>status</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {myMeetings.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={4} sx={styles.emptyCell}>
-                      No meetings found.
-                    </TableCell>
-                  </TableRow>
-                )}
-
-                {myMeetings.map((row) => {
-                  const isAbsent = (row.status ?? "").toLowerCase() === "absent";
-
-                  return (
-                    <TableRow key={row.attendee_id}>
-                      <TableCell>
-                        <Checkbox
-                          checked={isAbsent}
-                          onChange={(e) =>
-                            toggleAbsent(row.attendee_id, e.target.checked)
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>{row.meeting.name}</TableCell>
-                      <TableCell>
-                        {formatDate(row.meeting.start_date)}
-                      </TableCell>
-                      <TableCell>{row.status ?? "—"}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </Card>
+              <Box sx={{ height: 420, width: "100%" }}>
+                <DataGrid
+                  rows={myMeetings}
+                  columns={meetingColumns}
+                  getRowId={(row) => row.attendee_id}
+                  disableRowSelectionOnClick
+                  pageSizeOptions={[5, 10, 25]}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { pageSize: 5, page: 0 },
+                    },
+                  }}
+                />
+              </Box>
+            </Card>
+          </Box>
         </Grid>
       </Grid>
     </Box>
