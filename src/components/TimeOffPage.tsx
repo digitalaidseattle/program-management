@@ -16,8 +16,6 @@ import {
   DataGrid,
   GridColDef,
   GridRenderCellParams,
-  GridValueFormatter,
-  GridValueGetter,
 } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -151,22 +149,23 @@ const TimeOffPage = () => {
         headerName: "Start date",
         flex: 1,
         minWidth: 180,
-        valueFormatter: ((value) => formatDate(String(value ?? ""))) as GridValueFormatter,
+        valueFormatter: (value) => formatDate(String(value ?? "")),
       },
       {
         field: "end",
         headerName: "End date",
         flex: 1,
         minWidth: 180,
-        valueFormatter: ((value) => formatDate(String(value ?? ""))) as GridValueFormatter,
+        valueFormatter: (value) => formatDate(String(value ?? "")),
       },
       {
         field: "reason",
         headerName: "Reason",
         flex: 1,
         minWidth: 180,
-        renderCell: (params: GridRenderCellParams<TimeOffEntry, string | undefined>) =>
-          params.value || "—",
+        renderCell: (
+          params: GridRenderCellParams<TimeOffEntry, string | undefined>
+        ) => params.value || "—",
       },
       {
         field: "actions",
@@ -188,7 +187,7 @@ const TimeOffPage = () => {
         ),
       },
     ],
-    [handleDeleteTimeOff]
+    []
   );
 
   const meetingColumns = useMemo<GridColDef<MyMeeting>[]>(
@@ -218,18 +217,15 @@ const TimeOffPage = () => {
         headerName: "Meeting",
         flex: 1,
         minWidth: 180,
-        valueGetter: ((_, row) => row.meeting.name) as GridValueGetter<MyMeeting, string>,
+        valueGetter: (_value, row) => row.meeting.name,
       },
       {
         field: "meetingStart",
         headerName: "Time",
         flex: 1,
         minWidth: 180,
-        valueGetter: ((_, row) => row.meeting.start_date) as GridValueGetter<
-          MyMeeting,
-          string
-        >,
-        valueFormatter: ((value) => formatDate(String(value ?? ""))) as GridValueFormatter,
+        valueGetter: (_value, row) => row.meeting.start_date,
+        valueFormatter: (value) => formatDate(String(value ?? "")),
       },
       {
         field: "status",
@@ -239,7 +235,7 @@ const TimeOffPage = () => {
           params.value ?? "—",
       },
     ],
-    [toggleAbsent]
+    []
   );
 
   return (
