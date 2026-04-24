@@ -72,7 +72,6 @@ class SchedulingLinkService extends CodaService<SchedulingLink> {
 
     async findByName(name: string): Promise<SchedulingLink[]> {
         const links = await this.findBy(CODA_COLUMNS.interviewer, name);
-        console.log(links)
         return links
     }
 
