@@ -39,9 +39,9 @@ function entity2coda(schedulingLink: SchedulingLink) {
 
 function coda2entity(row: CodaRow): SchedulingLink {
     return {
-        url: row.values[CODA_COLUMNS.url],
-        status: row.values[CODA_COLUMNS.status],
-        interviewer: row.values[CODA_COLUMNS.interviewer]
+        url: row.values['Link'].url,
+        status: CodaService.removeBackTicks(row.values['Status']),
+        interviewer: row.values['Interviewer'].name
     } as SchedulingLink;
 }
 
@@ -71,7 +71,9 @@ class SchedulingLinkService extends CodaService<SchedulingLink> {
     }
 
     async findByName(name: string): Promise<SchedulingLink[]> {
-        return this.findBy(CODA_COLUMNS.interviewer, name);
+        const links = await this.findBy(CODA_COLUMNS.interviewer, name);
+        console.log(links)
+        return links
     }
 
 }

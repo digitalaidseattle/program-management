@@ -17,6 +17,17 @@ type CodaRow = {
 }
 
 abstract class CodaService<T extends Entity> implements EntityService<T> {
+
+    static removeBackTicks(value: string | string[]): string | string[] {
+        if (Array.isArray(value)) {
+            return value.map(v => v.replace(/```/g, ""));
+        }
+        if (typeof value !== 'string') {
+            return ""
+        }
+        return value ? value.replace(/```/g, "") : '';
+    }
+
     documentId = '';
     tableName = '';
     select = '*';
@@ -35,9 +46,8 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
     }
 
     getDocumentBase() {
-        return
+        return this.documentBase;
     }
-
 
     upsert(_entity: T, _select?: string, _mapper?: ((json: any) => T) | undefined, _user?: User): Promise<T> {
         throw new Error("Method not implemented.");
@@ -112,11 +122,14 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
     }
 
     async findBy(column: string, name: string): Promise<T[]> {
-        const url = `${this.documentBase}/rows?query=${column}:"${name}"`;
-        const resp = await fetch(encodeURI(url), {
+        const url = new URL(`${this.documentBase}/rows`);
+        url.searchParams.set("limit", "200");
+        url.searchParams.set("useColumnNames", "true");
+        url.searchParams.set("valueFormat", "rich");
+        url.searchParams.set("query",`"${column}":"${name}"` );
+        const resp = await fetch(url.toString(), {
             headers: { 'Authorization': `Bearer ${CODA_API_TOKEN}` }
         });
-
         if (!resp.ok) {
             const error = await resp.json().catch(() => ({ message: resp.statusText }));
             throw new Error(`Failed to fetch rows: ${error.message || resp.statusText}`);
