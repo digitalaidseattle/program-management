@@ -27,9 +27,24 @@ type Venture = {
 }
 
 const DEFAULT_SELECT = "*, partner(*)";
+
+function normalizeProgramAreas(value: unknown): string[] {
+
+    if (value == null) {
+        return [];
+    }
+
+    if (Array.isArray(value)) {
+        return value.filter((item): item is string => typeof item === "string");
+    }
+
+    return [];
+}
+
 function JSON_2_ENTITY(json: any): Venture {
     const entity = {
         ...json,
+        program_areas: normalizeProgramAreas(json.program_areas)
     }
 
     return entity;

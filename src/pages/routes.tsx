@@ -43,6 +43,8 @@ import TimeOffPage from '../components/TimeOffPage';
 import { VentureStatusReportPage } from './venture/VenturesStatusReportPage.tsx';
 import { RouteObject } from 'react-router';
 import ReferenceTeamsPage from './reference/teams.tsx';
+import AllVenturesPage from './venture/AllVenturesPage.tsx';
+import VentureDetailsPage from './venture/VentureDetailsPage.tsx';
 import VentureMigrationPage from './migration/codaMigration.tsx';
 
 const reference = {
@@ -82,8 +84,16 @@ const reference = {
       element: <StaffingPage />,
     },
     {
+      path: "ventures/list",
+      element: <AllVenturesPage />,
+    },
+    {
       path: "ventures/reporting",
       element: <ReportingPage />,
+    },
+    {
+      path: "ventures/list/:id",
+      element: <VentureDetailsPage />,
     },
     {
       path: "timeoff",
