@@ -5,63 +5,12 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { storageService } from "../App";
+import { getCoreServices, PageInfo, QueryModel, User } from "@digitalaidseattle/core";
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { AssociativeTableService } from "./associativeTableService";
+import { Contact, Partner, PartnerDao } from "./dasPartnerDao";
 import { Profile } from "./dasProfileService";
-import { User } from "@digitalaidseattle/core";
 
-
-type Partner = {
-    id: string;
-    airtable_id: string;
-    name: string
-    type: string
-    shorthand_name: string
-    status: string
-    description: string
-    gdrive_link: string
-    hubspot_link: string
-    miro_link: string
-    overview_link: string,
-    logo_url: string,
-    internal_champion: string[],
-    website: string,
-    foci: string[],
-    ally_utility: string,
-    general_phone: string,
-    internal_thoughts: string,
-    contact?: Contact[]
-}
-
-type Profile2Partner = {
-    profile_id: string;
-    partner_id: string;
-    partner?: Partner;
-    profile?: Profile
-    title: string;
-}
-
-type Contact = Profile & {
-    title: string;
-}
-
-const DEFAULT_SELECT = '*, profile2partner(*, profile(*))';
-
-function MAPPER(json: any): Partner {
-    const partner = {
-        ...json,
-        contact: json.profile2partner
-            .map((p2p: any) => (
-                {
-                    ...p2p.profile,
-                    title: p2p.title
-                }
-            ))
-    }
-    delete partner.profile2partner;
-    return partner;
-}
 
 class PartnerService extends SupabaseEntityService<Partner> {
 
@@ -77,9 +26,9 @@ class PartnerService extends SupabaseEntityService<Partner> {
         'Ally'
     ];
 
-    static _instance: PartnerService;
+    private static _instance: PartnerService;
 
-    static instance(): PartnerService {
+    static getInstance(): PartnerService {
         if (!this._instance) {
             this._instance = new PartnerService();
         }
@@ -87,19 +36,23 @@ class PartnerService extends SupabaseEntityService<Partner> {
     }
 
     public constructor() {
-        super("partner", DEFAULT_SELECT, MAPPER);
+        super(PartnerDao.getInstance());
+    }
+
+    getDao(): PartnerDao {
+        return this.dao as PartnerDao;
+    }
+
+    async find(queryModel: QueryModel): Promise<PageInfo<Partner>> {
+        return this.getDao().find(queryModel);
     }
 
     async findByAirtableId(airtableId: string): Promise<Partner> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq('airtable_id', airtableId)
-            .single()
-            .then((resp: any) => this.mapper(resp.data)!);
+        return this.getDao().findByAirtableId(airtableId);
     }
 
     getLogoUrl(partner: Partner): string | undefined {
+        const storageService = getCoreServices().storageService!;
         return partner.logo_url ? storageService.getUrl(partner.logo_url) : undefined
     }
 
@@ -110,24 +63,34 @@ class PartnerService extends SupabaseEntityService<Partner> {
     }
 
     async findByStatus(status: string): Promise<Partner[]> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq('status', status)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+        return this.getDao().findByStatus(status);
     }
 
     async findByType(type: string): Promise<Partner[]> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq('type', type)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+        return this.getDao().findByType(type);
     }
 
 }
 
-class Profile2ProfileService extends AssociativeTableService<Profile2Partner> {
+
+type Profile2Partner = {
+    profile_id: string;
+    partner_id: string;
+    partner?: Partner;
+    profile?: Profile
+    title: string;
+}
+
+class Profile2PartnerService extends AssociativeTableService<Profile2Partner> {
+
+    private static _instance: Profile2PartnerService;
+
+    static getInstance(): Profile2PartnerService {
+        if (!this._instance) {
+            this._instance = new Profile2PartnerService();
+        }
+        return this._instance;
+    }
 
     public constructor() {
         super("profile2partner");
@@ -135,7 +98,7 @@ class Profile2ProfileService extends AssociativeTableService<Profile2Partner> {
 
     async update(partner_id: string, profile_id: string, changes: Partial<Profile2Partner>, _user?: User): Promise<Profile2Partner> {
         try {
-            const { data, error } = await supabaseClient
+            const { data, error } = await this.getClient()
                 .from(this.tableName)
                 .update(changes)
                 .eq('partner_id', partner_id)
@@ -155,9 +118,6 @@ class Profile2ProfileService extends AssociativeTableService<Profile2Partner> {
 
 }
 
-const partnerService = PartnerService.instance();
-const profile2PartnerService = new Profile2ProfileService();
-
-export { partnerService, profile2PartnerService, PartnerService };
+export { PartnerService, Profile2PartnerService };
 export type { Contact, Partner, Profile2Partner };
 

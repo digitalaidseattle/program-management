@@ -12,11 +12,14 @@ import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2Te
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
-import { Team2Volunteer, team2VolunteerService } from '../../services/dasTeam2VolunteerService';
-import { Team, teamService } from '../../services/dasTeamService';
+import { Team2VolunteerService, Team2Volunteer } from '../../services/dasTeam2VolunteerService';
+import { Team, TeamService } from '../../services/dasTeamService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
 export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+  const teamService = TeamService.getInstance();
+  const team2VolunteerService = Team2VolunteerService.getInstance();
+
   const [current, setCurrent] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);

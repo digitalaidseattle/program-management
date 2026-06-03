@@ -10,11 +10,14 @@ import { toggleVolunteer2DisciplineSeniorFlag } from "../../actions/ToggleVolunt
 import { ListCard } from "../../components/ListCard";
 import { ManagedListCard } from "../../components/ManagedListCard";
 import { EntityPropsOpt } from "../../components/utils";
-import { Discipline, disciplineService } from "../../services/dasDisciplineService";
-import { Volunteer2Discipline, volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
+import { Discipline, DisciplineService } from "../../services/dasDisciplineService";
+import { Volunteer2Discipline, Volunteer2DisciplineService } from "../../services/dasVolunteer2DisciplineService";
 import { Volunteer } from "../../services/dasVolunteerService";
 
 export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+    const disciplineService = DisciplineService.getInstance();
+    const volunteer2DisciplineService = Volunteer2DisciplineService.getInstance();
+
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);

@@ -22,7 +22,7 @@ import { Role, RoleService } from '../../services/dasRoleService';
 import { ReferenceRoleDetails } from '../role/ReferenceRoleDetails';
 
 const ReferenceRolesPage = () => {
-  const roleService = RoleService.instance();
+  const roleService = RoleService.getInstance();
   const { id } = useParams<string>();
 
   const [entities, setEntities] = useState<Role[]>([]);

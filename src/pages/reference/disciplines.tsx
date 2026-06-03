@@ -22,7 +22,8 @@ import { Discipline, DisciplineService } from '../../services/dasDisciplineServi
 import { ReferenceDisciplineDetails } from '../discipline/ReferenceDisciplineDetails';
 
 const ReferenceDisciplinesPage = () => {
-  const disciplineService = DisciplineService.instance();
+  const disciplineService = DisciplineService.getInstance();
+  
   const { id } = useParams<string>();
 
   const [entities, setEntities] = useState<Discipline[]>([]);
@@ -61,7 +62,7 @@ const ReferenceDisciplinesPage = () => {
       .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
   }
 
- 
+
   function filterMenu() {
     return <>
       <MenuItem onClick={() => handleFilterChange('all')}>

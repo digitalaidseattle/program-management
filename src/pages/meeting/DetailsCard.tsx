@@ -15,9 +15,12 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '@digitalaidseattle/core';
 import dayjs from 'dayjs';
 import { EntityProps } from '../../components/utils';
-import { Meeting, meetingService, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
+import { Meeting, MeetingService, MeetingTopic, MeetingTopicService } from '../../services/dasMeetingService';
 
 const DetailsCard: React.FC<EntityProps<Meeting>> = ({ entity: meeting, onChange }) => {
+    const meetingService = MeetingService.getInstance()
+    const meetingTopicService = MeetingTopicService.getInstance();
+
     const [iceBreakerTopic, setIceBreaker] = useState<MeetingTopic>();
     const { user } = useContext(UserContext);
 

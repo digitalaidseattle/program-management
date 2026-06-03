@@ -6,8 +6,7 @@ import {
     Typography
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { Meeting, meetingService } from "../../services/dasMeetingService";
-
+import { Meeting, MeetingService } from "../../services/dasMeetingService";
 
 import { RefreshContext } from "@digitalaidseattle/core";
 import dayjs from "dayjs";
@@ -20,6 +19,7 @@ import { NextMeetingCard } from "./NextMeetingCard";
 import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
 
 function AdhocMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
+    const meetingService = MeetingService.getInstance();
     const [meeting, setMeeting] = useState<Meeting>();
     const { id } = useParams<string>();
     const { refresh } = useContext(RefreshContext);
@@ -72,6 +72,7 @@ function AdhocMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
 };
 
 const AdhocMeetingPage = () => {
+    const meetingService = MeetingService.getInstance();
     const [meeting, setMeeting] = useState<Meeting>();
 
     useEffect(() => {

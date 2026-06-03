@@ -8,10 +8,12 @@ import { CARD_HEADER_SX } from '.';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
+import { Staffing, StaffingService } from '../../services/dasStaffingService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
 export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) => {
+  const staffingService = StaffingService.getInstance();
+
   const [cards, setCards] = useState<ReactNode[]>([]);
 
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) =>
           cardContent={
             <Stack>
               <Typography fontWeight={600}>{staffing.status} </Typography>
-              <Typography fontWeight={300}>{staffing.role?.name}</Typography> 
+              <Typography fontWeight={300}>{staffing.role?.name}</Typography>
             </Stack>
           }
           menuItems={[

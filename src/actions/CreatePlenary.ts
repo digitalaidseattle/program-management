@@ -6,8 +6,8 @@
  */
 
 import { v4 as uuid } from 'uuid';
-import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
-import { volunteerService } from "../services/dasVolunteerService";
+import { Meeting, MeetingAttendee, MeetingAttendeeService, MeetingService } from "../services/dasMeetingService";
+import { VolunteerService } from "../services/dasVolunteerService";
 import dayjs from 'dayjs';
 
 export async function createPlenaryMeeting(): Promise<Meeting | null> {
@@ -33,7 +33,7 @@ export async function createPlenaryMeeting(): Promise<Meeting | null> {
         team_id: undefined
     }
 
-    const volunteers = await volunteerService.getActive()
+    const volunteers = await VolunteerService.getInstance().getActive()
     const attendees = volunteers.filter(v => v.status === 'Cadre')
         .map(v => ({
             id: uuid(),
@@ -43,7 +43,7 @@ export async function createPlenaryMeeting(): Promise<Meeting | null> {
             email: v.das_email,
         } as MeetingAttendee))
 
-    const inserted = await meetingService.insert(meeting);
-    await meetingAttendeeService.batchInsert(attendees);
-    return meetingService.getById(inserted.id)
+    const inserted = await MeetingService.getInstance().insert(meeting);
+    await MeetingAttendeeService.getInstance().batchInsert(attendees);
+    return MeetingService.getInstance().getById(inserted.id)
 }

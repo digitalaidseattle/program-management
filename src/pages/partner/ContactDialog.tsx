@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import { UploadImage } from '../../components/UploadImage';
 import { Contact } from '../../services/dasPartnerService';
-import { profileService } from '../../services/dasProfileService';
+import { ProfileService } from '../../services/dasProfileService';
 
 interface ContactDialogProps {
     title: string;
@@ -21,6 +21,8 @@ interface ContactDialogProps {
 }
 
 function ContactDialog({ title, open, entity, onChange }: ContactDialogProps) {
+    const profileService = ProfileService.getInstance();
+
     const [dirty, setDirty] = React.useState<boolean>(false);
     const [clone, setClone] = useState<Contact>();
     const [picture, setPicture] = useState<File>();

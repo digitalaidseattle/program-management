@@ -10,7 +10,8 @@ import { UserContext } from '@digitalaidseattle/core';
 import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import React, { useContext, useEffect, useState } from 'react';
 import { VentureReport } from '../services/dasVentureReportService';
-import { Venture, ventureService } from '../services/dasVentureService';
+import { VentureService } from '../services/dasVentureService';
+import { Venture } from '../services/dasVentureDao';
 
 // material-ui
 
@@ -28,7 +29,7 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report
     const [report, setReport] = useState<VentureReport>();
 
     useEffect(() => {
-        ventureService.getActive()
+        VentureService.getInstance().getActive()
             .then(v => setVentures(v.sort((v1, v2) => v1.venture_code.localeCompare(v2.venture_code))));
     }, []);
 

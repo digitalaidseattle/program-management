@@ -24,15 +24,18 @@ import { useNavigate } from 'react-router-dom';
 import { FieldRow } from '../../components/FieldRow';
 import { EntityProps } from '../../components/utils';
 import VentureReportDisplay from '../../components/VentureReportDisplay';
-import { profileService } from '../../services/dasProfileService';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
+import { ProfileService } from '../../services/dasProfileService';
+import { Staffing, StaffingService } from '../../services/dasStaffingService';
 import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
 import { Venture } from '../../services/dasVentureService';
 import { STATUS_COMP } from '../ventures/Utils';
 
-const ventureReportService = VentureReportService.instance();
+const ventureReportService = VentureReportService.getInstance();
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
+  const profileService = ProfileService.getInstance();
+  const staffingService = StaffingService.getInstance();
+
   const [staffing, setStaffing] = useState<Staffing[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [cards, setCards] = useState<ReactNode[]>([]);

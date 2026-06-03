@@ -21,7 +21,7 @@ import { Tool, ToolService } from '../../services/dasToolsService';
 import { ReferenceToolDetails } from '../tool/ReferenceToolDetails';
 
 const ReferenceToolsPage = () => {
-  const toolService = ToolService.instance();
+  const toolService = ToolService.getInstance();
 
   const { id } = useParams<string>();
 

@@ -7,8 +7,8 @@
 
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
-import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
-import { team2VolunteerService } from '../services/dasTeam2VolunteerService';
+import { Meeting, MeetingAttendee, MeetingAttendeeService, MeetingService } from "../services/dasMeetingService";
+import { Team2VolunteerService } from '../services/dasTeam2VolunteerService';
 
 export async function createLeadershipMeeting(): Promise<Meeting | null> {
 
@@ -30,7 +30,7 @@ export async function createLeadershipMeeting(): Promise<Meeting | null> {
         notes: ''
     }
 
-    const leaders = await team2VolunteerService.findLeaders();
+    const leaders = await Team2VolunteerService.getInstance().findLeaders();
     const attendees = leaders
         .map(t2v => ({
             id: uuid(),
@@ -41,7 +41,7 @@ export async function createLeadershipMeeting(): Promise<Meeting | null> {
             team_id: t2v.team_id
         } as MeetingAttendee))
 
-    await meetingService.insert(meeting);
-    await meetingAttendeeService.batchInsert(attendees);
-    return meetingService.getById(meeting.id)
+    await MeetingService.getInstance().insert(meeting);
+    await MeetingAttendeeService.getInstance().batchInsert(attendees);
+    return MeetingService.getInstance().getById(meeting.id)
 }

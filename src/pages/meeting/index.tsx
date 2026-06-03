@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router';
 import { EntityProps } from '../../components/utils';
-import { Meeting, meetingService } from '../../services/dasMeetingService';
+import { Meeting, MeetingService } from '../../services/dasMeetingService';
 import { AnniversariesCard } from './AnniversaryCard';
 import { AttendeesCard } from './AttendeesCard';
 import { DetailsCard } from './DetailsCard';
@@ -49,6 +49,8 @@ const MeetingDetails: React.FC<EntityProps<Meeting>> = ({ entity: meeting, onCha
 }
 
 const MeetingPage = () => {
+  const meetingService = MeetingService.getInstance();
+
   const [entity, setEntity] = useState<Meeting>();
   const { id } = useParams<string>();
 

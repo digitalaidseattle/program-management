@@ -6,7 +6,6 @@
  */
 
 import { Identifier } from "@digitalaidseattle/core";
-import { supabaseClient } from "@digitalaidseattle/supabase";
 import { AssociativeTableService } from "./associativeTableService";
 import { Team } from "./dasTeamService";
 import { Volunteer } from "./dasVolunteerService";
@@ -20,15 +19,25 @@ type Team2Volunteer = {
     volunteer?: Volunteer
 }
 
-const TABLE_TEAM_2_VOLUNTER = 'team2volunteer';
-class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
+const TABLE_TEAM_2_VOLUNTEER = 'team2volunteer';
+class Team2VolunteerService extends AssociativeTableService<Team2Volunteer> {
+
+    static _instance: Team2VolunteerService;
+
+    static getInstance(): Team2VolunteerService {
+        if (!this._instance) {
+            this._instance = new Team2VolunteerService();
+        }
+        return this._instance;
+    }
+
 
     constructor() {
-        super(TABLE_TEAM_2_VOLUNTER)
+        super(TABLE_TEAM_2_VOLUNTEER)
     }
 
     async update(team2Volunteer: Team2Volunteer, updates: Partial<Team2Volunteer>): Promise<Team2Volunteer> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .update(updates)
             .eq('team_id', team2Volunteer.team_id)
@@ -38,7 +47,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async addVolunteerTeamLeader(volunteer: Volunteer, team: Team, leader: true): Promise<Team2Volunteer> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .update(
                 { leader: leader }
@@ -50,7 +59,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async addVolunteerToTeam(volunteer: Volunteer, team: Team): Promise<Team2Volunteer> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .insert(
                 {
@@ -64,7 +73,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async removeVolunteerFromTeam(volunteer: Volunteer, team: Team): Promise<boolean> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .delete()
             .eq('volunteer_id', volunteer.id)
@@ -73,7 +82,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async findTeamsByVolunteerId(volunteerId: Identifier): Promise<Team[]> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .select('*, team(*)')
             .eq('volunteer_id', volunteerId)
@@ -81,7 +90,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async findVolunteersByTeamId(teamId: Identifier): Promise<Volunteer[]> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
             .eq('team_id', teamId)
@@ -95,7 +104,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async findByVolunteerId(volunteerId: Identifier): Promise<Team2Volunteer[]> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .select('*, team(*)')
             .eq('volunteer_id', volunteerId)
@@ -103,7 +112,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async findByTeamId(teamId: string): Promise<Team2Volunteer[]> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
             .eq('team_id', teamId)
@@ -111,7 +120,7 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
     }
 
     async findLeaders(): Promise<Team2Volunteer[]> {
-        return supabaseClient
+        return this.getClient()
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
             .eq('leader', true)
@@ -121,8 +130,6 @@ class DASTeam2VolunteerService extends AssociativeTableService<Team2Volunteer> {
 }
 
 
-const team2VolunteerService = new DASTeam2VolunteerService();
-
-export { team2VolunteerService };
+export { Team2VolunteerService };
 export type { Team2Volunteer };
 

@@ -5,7 +5,7 @@
  *
  */
 import { useEffect, useState } from "react";
-import { Role, roleService } from "../services/dasRoleService";
+import { Role, RoleService } from "../services/dasRoleService";
 
 const useRoles = () => {
     const [status, setStatus] = useState('idle');
@@ -17,7 +17,7 @@ const useRoles = () => {
 
     const fetchData = async () => {
         setStatus('fetching');
-        const response = await roleService.getAll()
+        const response = await RoleService.getInstance().getAll()
             .then(roles => roles.sort((r1, r2) => r1.name.localeCompare(r2.name)));
         setData(response);
         setStatus('fetched');

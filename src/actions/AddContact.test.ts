@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { storageService } from "../App";
-import { Contact, Partner, profile2PartnerService } from "../services/dasPartnerService";
-import { Profile, profileService } from "../services/dasProfileService";
+import { Contact, Partner, Profile2PartnerService } from "../services/dasPartnerService";
+import { Profile, ProfileService } from "../services/dasProfileService";
 import { addContact } from "./AddContact";
+import { getCoreServices } from "@digitalaidseattle/core";
 
 describe("AddContact", () => {
 
@@ -23,6 +23,7 @@ describe("AddContact", () => {
     // });
 
     it("basic", () => {
+        const profileService = ProfileService.getInstance();
         const partner = { id: "partner_id" } as Partner;
         const contact = { id: "contact_id", title: "Senor" } as Contact;
         const picture = {} as File;
@@ -31,8 +32,8 @@ describe("AddContact", () => {
 
         const getNextPicSpy = vi.spyOn(profileService, 'getNextPicUrl').mockReturnValue("picurl");
         const insertProfileSpy = vi.spyOn(profileService, 'insert').mockResolvedValue(insertedContact);
-        const uploadSpy = vi.spyOn(storageService, 'upload');
-        const uploadP2PSpy = vi.spyOn(profile2PartnerService, 'insert');
+        const uploadSpy = vi.spyOn(getCoreServices().storageService!, 'upload');
+        const uploadP2PSpy = vi.spyOn(Profile2PartnerService.getInstance(), 'insert');
         const getByIdSpy = vi.spyOn(profileService, 'getById').mockResolvedValue(foundProfile);
 
         addContact(partner, contact, picture)
@@ -51,13 +52,15 @@ describe("AddContact", () => {
     });
 
     it("no pic", () => {
+        const profileService = ProfileService.getInstance();
+
         const partner = { id: "partner_id" } as Partner;
         const contact = { id: "contact_id", title: "Senor" } as Contact;
         const insertedContact = { id: "updated_id" } as Profile;
         const foundProfile = { id: "found_id" } as Profile;
 
         const insertProfileSpy = vi.spyOn(profileService, 'insert').mockResolvedValue(insertedContact);
-        const uploadP2PSpy = vi.spyOn(profile2PartnerService, 'insert');
+        const uploadP2PSpy = vi.spyOn(Profile2PartnerService.getInstance(), 'insert');
         const getByIdSpy = vi.spyOn(profileService, 'getById').mockResolvedValue(foundProfile);
 
         addContact(partner, contact, undefined)

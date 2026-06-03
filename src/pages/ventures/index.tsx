@@ -1,18 +1,19 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { useStorageService, PageInfo, QueryModel } from '@digitalaidseattle/core';
 import { Avatar, Box, Chip, Stack } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
-import { Venture, ventureService } from '../../services/dasVentureService';
+import { Venture, VentureService } from '../../services/dasVentureService';
 import { VentureDetails } from '../venture';
 import { STATUS_COMP } from './Utils';
 
 const VenturesPage = () => {
+  const ventureService = VentureService.getInstance();
+
   const [pageInfo, setPageInfo] = useState<PageInfo<Venture>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
   const storageService = useStorageService()!;

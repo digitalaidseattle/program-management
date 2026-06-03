@@ -5,8 +5,7 @@
  *
  */
 
-import { Entity } from "@digitalaidseattle/core";
-import { PageInfo } from "@digitalaidseattle/supabase";
+import { Entity, PageInfo } from "@digitalaidseattle/core";
 import { Card, CardContent, CardHeader, Stack, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";

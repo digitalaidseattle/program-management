@@ -1,7 +1,6 @@
 import { DeleteOutlined, EditOutlined, HomeOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
-import { LoadingContext, useNotifications } from '@digitalaidseattle/core';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { LoadingContext, PageInfo, QueryModel, useNotifications } from '@digitalaidseattle/core';
 import {
   Breadcrumbs,
   Card,
@@ -24,7 +23,7 @@ import { VentureReport, ventureReportSave, VentureReportService } from "../../se
 
 
 const ReportingPage = () => {
-  const ventureReportService = VentureReportService.instance();
+  const ventureReportService = VentureReportService.getInstance();
   const notifications = useNotifications();
   const { setLoading } = useContext(LoadingContext);
 

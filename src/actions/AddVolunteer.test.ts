@@ -1,11 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
-import { Profile, profileService } from "../services/dasProfileService";
-import { Volunteer, volunteerService } from "../services/dasVolunteerService";
+import { Profile, ProfileService } from "../services/dasProfileService";
+import { VolunteerService } from "../services/dasVolunteerService";
 import { addVolunteer } from "./AddVolunteer";
+import { Volunteer } from "../services/dasVolunteerDao";
 
 describe("addDisciplineToVolunteer", () => {
 
     it("basic", () => {
+        const profileService = ProfileService.getInstance();
+
         const profile = {
             first_name: 'first',
             last_name: 'last',
@@ -19,7 +22,7 @@ describe("addDisciplineToVolunteer", () => {
 
         const insertProfileSpy = vi.spyOn(profileService, 'insert')
             .mockResolvedValue(insertedProfile);
-        const insertVolunteerSpy = vi.spyOn(volunteerService, 'insert')
+        const insertVolunteerSpy = vi.spyOn(VolunteerService.getInstance(), 'insert')
             .mockResolvedValue(insertedVolunteer);
 
         addVolunteer(volunteer)

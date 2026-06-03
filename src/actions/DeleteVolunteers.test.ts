@@ -6,14 +6,18 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { storageService } from "../App";
-import { profileService } from "../services/dasProfileService";
-import { Volunteer, volunteerService } from "../services/dasVolunteerService";
+import { ProfileService } from "../services/dasProfileService";
+import { VolunteerService } from "../services/dasVolunteerService";
 import { deleteVolunteers } from "./DeleteVolunteers";
+import { Volunteer } from "../services/dasVolunteerDao";
+import { getCoreServices } from "@digitalaidseattle/core";
 
 describe("deleteVolunteers", () => {
 
     it("basic", () => {
+        const profileService = ProfileService.getInstance();
+        const storageService = getCoreServices().storageService!;
+
         const ids = ['test_id'];
         const found = {
             id: "test_id",
@@ -23,11 +27,11 @@ describe("deleteVolunteers", () => {
             }
         } as Volunteer;
 
-        const getByIdSpy = vi.spyOn(volunteerService, 'getById')
+        const getByIdSpy = vi.spyOn(VolunteerService.getInstance(), 'getById')
             .mockResolvedValue(found);
         const removeFileSpy = vi.spyOn(storageService, 'removeFile')
             .mockResolvedValue(found);
-        const deleteVolunteerSpy = vi.spyOn(volunteerService, 'delete')
+        const deleteVolunteerSpy = vi.spyOn(VolunteerService.getInstance(), 'delete')
             .mockResolvedValue();
         const deleteProfileSpy = vi.spyOn(profileService, 'delete')
             .mockResolvedValue();

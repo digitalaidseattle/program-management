@@ -5,11 +5,14 @@
  *
  */
 
-import { storageService } from "../App";
+import { getCoreServices } from "@digitalaidseattle/core";
 import { Contact } from "../services/dasPartnerService";
-import { profileService } from "../services/dasProfileService";
+import { ProfileService } from "../services/dasProfileService";
 
 export async function removeContact(contact: Contact): Promise<boolean> {
+    const profileService = ProfileService.getInstance();
+    const storageService = getCoreServices().storageService!;
+
     const filepath = profileService.getPicUrl(contact);
     if (filepath) {
         await storageService.removeFile(filepath)

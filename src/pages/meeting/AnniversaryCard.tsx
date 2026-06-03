@@ -13,8 +13,8 @@ import {
 
 import dayjs from 'dayjs';
 import { EntityProps } from '../../components/utils';
-import { Meeting, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
-import { volunteerService } from '../../services/dasVolunteerService';
+import { Meeting, MeetingTopic, MeetingTopicService } from '../../services/dasMeetingService';
+import { VolunteerService } from '../../services/dasVolunteerService';
 import { } from 'airtable';
 import { useEffect, useState } from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -22,6 +22,9 @@ import { useNotifications } from '@digitalaidseattle/core';
 
 
 function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const volunteerService = VolunteerService.getInstance();
+    const meetingTopicService = MeetingTopicService.getInstance()
+
     const [anniversaries, setAnniversaries] = useState<MeetingTopic[]>([]);
 
     const notifications = useNotifications();
@@ -34,7 +37,8 @@ function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) 
 
     async function addTopics(): Promise<void> {
         const cadre = await volunteerService.findCadreVolunteers();
-        meetingTopicService.findIntros()
+        meetingTopicService
+            .findIntros()
             .then(topics => {
                 const start6 = dayjs(meeting.start_date).subtract(7, 'month');
                 const end6 = dayjs(meeting.start_date).subtract(6, 'month');

@@ -12,7 +12,7 @@ import { createPlenaryMeeting } from '../actions/CreatePlenary';
 import { createTeamMeeting } from '../actions/CreateTeamMeeting';
 import { useVolunteer } from '../hooks/useVolunteer';
 import { Meeting, MeetingType } from '../services/dasMeetingService';
-import { Team, teamService } from '../services/dasTeamService';
+import { Team, TeamService } from '../services/dasTeamService';
 
 // material-ui
 
@@ -31,6 +31,8 @@ const LABELS = {
     'leadership': 'Leadership'
 }
 const AddMeetingDialog: React.FC<AddMeetingDialogProps> = ({ title, meetingTypes, open, onClose }) => {
+    const teamService = TeamService.getInstance();
+    
     const { volunteer } = useVolunteer();
     const [teams, setTeams] = useState<Team[]>([]);
     const [meetingType, setMeetingType] = useState<string>('adhoc');

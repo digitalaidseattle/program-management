@@ -7,8 +7,8 @@
 
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
-import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
-import { Volunteer } from '../services/dasVolunteerService';
+import { Meeting, MeetingAttendee, MeetingAttendeeService, MeetingService } from "../services/dasMeetingService";
+import { Volunteer } from '../services/dasVolunteerDao';
 
 export async function createAdhocMeeting(volunteer: Volunteer): Promise<Meeting | null> {
 
@@ -35,7 +35,7 @@ export async function createAdhocMeeting(volunteer: Volunteer): Promise<Meeting 
         email: volunteer.das_email,
     } as MeetingAttendee);
 
-    const inserted = await meetingService.insert(meeting);
-    await meetingAttendeeService.insert(attendee);
-    return meetingService.getById(inserted.id)
+    const inserted = await MeetingService.getInstance().insert(meeting);
+    await MeetingAttendeeService.getInstance().insert(attendee);
+    return MeetingService.getInstance().getById(inserted.id)
 }

@@ -6,11 +6,12 @@
  */
 
 import { Discipline } from "../services/dasDisciplineService";
-import { Volunteer2Discipline, volunteer2DisciplineService } from "../services/dasVolunteer2DisciplineService";
-import { Volunteer } from "../services/dasVolunteerService";
+import { Volunteer2Discipline, Volunteer2DisciplineService } from "../services/dasVolunteer2DisciplineService";
+import { Volunteer } from "../services/dasVolunteerDao";
 
 export function addDisciplineToVolunteer(discipline: Discipline, volunteer: Volunteer): Promise<Volunteer2Discipline> {
     // other steps could go here.
     // maybe audit history or notifications
-    return volunteer2DisciplineService.addDisciplineToVolunteer(discipline, volunteer);
+    return Volunteer2DisciplineService.getInstance()
+        .addDisciplineToVolunteer(discipline, volunteer);
 }

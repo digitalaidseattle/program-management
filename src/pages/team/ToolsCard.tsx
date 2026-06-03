@@ -10,9 +10,9 @@ import { removeToolFromTeam } from '../../actions/RemoveToolFromTeam';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityProps } from '../../components/utils';
-import { Team2Tool, team2ToolService } from '../../services/dasTeam2ToolService';
+import { Team2Tool, Team2ToolService } from '../../services/dasTeam2ToolService';
 import { Team } from '../../services/dasTeamService';
-import { Tool, toolService } from '../../services/dasToolsService';
+import { Tool, ToolService } from '../../services/dasToolsService';
 
 type ToolsCarddProps = EntityProps<Team> & {
   editable?: boolean
@@ -23,6 +23,9 @@ const STATUS_COMP: { [key: string]: JSX.Element } = {
   'inactive': <Chip label='Inactive' color='default' />
 }
 export const ToolsCard: React.FC<ToolsCarddProps> = ({ entity, editable = false, onChange }) => {
+  const toolService = ToolService.getInstance();
+  const team2ToolService = Team2ToolService.getInstance();
+
   const [current, setCurrent] = useState<Team2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [tools, setTools] = useState<Tool[]>([]);

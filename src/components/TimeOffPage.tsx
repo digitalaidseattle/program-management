@@ -21,15 +21,15 @@ import {
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useVolunteer } from '../hooks/useVolunteer';
-import { supabaseClient } from "@digitalaidseattle/supabase";
 import * as styles from "./TimeOffPageStyles";
+import { SupabaseConfiguration } from "@digitalaidseattle/supabase";
 
 dayjs.extend(utc);
 
 export interface TimeOffEntry {
   id: string;
-  start: string; 
-  end: string;   
+  start: string;
+  end: string;
   reason?: string;
 }
 
@@ -43,18 +43,18 @@ const TimeOffPage = () => {
   useEffect(() => {
     const load = async () => {
       if (!volunteer?.id) return;
-  
-      const { data, error } = await supabaseClient
+
+      const { data, error } = await SupabaseConfiguration.getInstance().getSupabaseClient()
         .from("time_off")
         .select("id, start_at, end_at, reason")
         .eq("volunteer_id", volunteer.id)
         .order("start_at", { ascending: true });
-  
+
       if (error) {
         console.error("Failed to load time off:", error);
         return;
       }
-  
+
       setEntries(
         (data ?? []).map((row) => ({
           id: row.id,
@@ -64,28 +64,28 @@ const TimeOffPage = () => {
         }))
       );
     };
-  
+
     load();
   }, [volunteer?.id]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-  
+
     if (!start || !end || !volunteer?.id) return;
-  
+
     const startIso = dayjs(start).utc().toISOString();
     const endIso = dayjs(end).utc().toISOString();
-  
+
     if (dayjs(endIso).isBefore(dayjs(startIso))) {
       console.warn("End date must be after start date");
       return;
     }
-  
-    const { data, error } = await supabaseClient
+
+    const { data, error } = await SupabaseConfiguration.getInstance().getSupabaseClient()
       .from("time_off")
       .insert([
         {
-          volunteer_id: volunteer.id,   
+          volunteer_id: volunteer.id,
           start_at: startIso,
           end_at: endIso,
           reason: reason.trim() || null,
@@ -93,12 +93,12 @@ const TimeOffPage = () => {
       ])
       .select("id, start_at, end_at, reason")
       .single();
-  
+
     if (error) {
       console.error("Failed to create time off:", error);
       return;
     }
-  
+
     // Update UI
     setEntries((prev) => [
       ...prev,
@@ -109,7 +109,7 @@ const TimeOffPage = () => {
         reason: data.reason ?? undefined,
       },
     ]);
-  
+
     setStart("");
     setEnd("");
     setReason("");
@@ -118,7 +118,7 @@ const TimeOffPage = () => {
   // Time displayed in military time
   const formatDate = (value: string) => {
     if (!value) return "—";
-  
+
     const d = dayjs(value);
     return d.isValid() ? d.format("DD/MM/YYYY HH:mm") : value;
   };

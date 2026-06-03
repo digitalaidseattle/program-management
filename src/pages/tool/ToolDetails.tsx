@@ -1,5 +1,6 @@
 
 // material-ui
+import { getCoreServices } from '@digitalaidseattle/core';
 import { InputForm, InputOption } from '@digitalaidseattle/mui';
 import {
   Card,
@@ -8,13 +9,14 @@ import {
   Grid,
   Typography
 } from '@mui/material';
-import { storageService } from '../../App';
 import { EditField } from '../../components/EditField';
 import { UploadImage } from '../../components/UploadImage';
 import { EntityProps } from '../../components/utils';
-import { Tool, toolService } from '../../services/dasToolsService';
+import { Tool, ToolService, } from '../../services/dasToolsService';
 
 const ToolDetails: React.FC<EntityProps<Tool>> = ({ entity, onChange }) => {
+  const toolService = ToolService.getInstance();
+  const storageService = getCoreServices().storageService!;
 
   const fields = [
     {

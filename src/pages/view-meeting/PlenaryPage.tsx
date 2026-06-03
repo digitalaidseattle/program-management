@@ -12,10 +12,10 @@ import {
     Typography
 } from "@mui/material";
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { Meeting, MeetingAttendee, meetingService, MeetingTopic, meetingTopicService } from "../../services/dasMeetingService";
+import { Meeting, MeetingAttendee, MeetingService, MeetingTopic, MeetingTopicService } from "../../services/dasMeetingService";
 
 import { EntityProps } from "../../components/utils";
-import { Volunteer, volunteerService } from "../../services/dasVolunteerService";
+import { Volunteer, VolunteerService } from "../../services/dasVolunteerService";
 
 import { RefreshContext, useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
@@ -29,6 +29,9 @@ import { MeetingDetailsProps } from "./utils";
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #ce80e8ff -11.18%, #e5d9e5ff 111.48%)" };
 
 function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopic>) {
+    const meetingTopicService = MeetingTopicService.getInstance();
+    const volunteerService = VolunteerService.getInstance();
+
     const [volunteer, setVolunteer] = useState<Volunteer>();
     const storageService = useStorageService()!;
 
@@ -81,6 +84,8 @@ function VolunteersCarouselCard({ title, topics, onChange }: VolunteersCarouselC
 }
 
 function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const meetingTopicService = MeetingTopicService.getInstance();
+
     const [topics, setTopics] = useState<MeetingTopic[]>([]);
 
     useEffect(() => {
@@ -123,6 +128,8 @@ function ShoutoutsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
 }
 
 function TeamCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const meetingTopicService = MeetingTopicService.getInstance();
+
     const [topics, setTopics] = useState<MeetingTopic[]>([]);
 
     useEffect(() => {
@@ -206,6 +213,8 @@ function AttendeesCard({ meeting }: { meeting: Meeting, sx?: SxProps, onChange: 
 }
 
 function PlenaryDetails({ meeting: initial }: MeetingDetailsProps) {
+    const meetingService = MeetingService.getInstance();
+    
     const [iceBreaker, setIceBreaker] = useState<string>('');
     const [meeting, setMeeting] = useState<Meeting>();
 
@@ -288,6 +297,8 @@ function PlenaryDetails({ meeting: initial }: MeetingDetailsProps) {
 }
 
 function PlenaryPage() {
+    const meetingService = MeetingService.getInstance();
+
     const [meeting, setMeeting] = useState<Meeting>();
 
     useEffect(() => {
@@ -299,4 +310,4 @@ function PlenaryPage() {
 
 };
 
-export { PlenaryPage, PlenaryDetails };
+export { PlenaryDetails, PlenaryPage };

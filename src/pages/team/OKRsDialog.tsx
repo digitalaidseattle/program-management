@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 import { InputOption } from '@digitalaidseattle/mui';
-import { OKR, okrService, Team } from '../../services/dasTeamService';
+import { OKR, OKRService, Team } from '../../services/dasTeamService';
 import ElementsDialog from './ElementsDialog';
 
 interface OKRsDialogProps {
@@ -20,6 +20,7 @@ interface OKRsDialogProps {
 }
 
 function OKRsDialog({ open, team, onChange, onClose }: OKRsDialogProps) {
+    const okrService = OKRService.getInstance();
 
     const [elements, setElements] = useState<OKR[]>([]);
 

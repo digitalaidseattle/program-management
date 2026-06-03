@@ -5,24 +5,12 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { storageService } from "../App";
-
-
-type Discipline = {
-    id: string,
-    airtable_id: string, // eligible to delete after final migration
-    name: string,
-    volunteer_ids: string[],  // eligible to delete after final migration
-    details: string,
-    senior_ids: string[], // eligible to delete after final migration
-    slack: string,
-    status: string,
-    icon: string // remove optional one day
-}
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Discipline, DisciplineDao } from "./dasDisciplineDao";
+import { getCoreServices, PageInfo, QueryModel } from "@digitalaidseattle/core";
 
 class DisciplineService extends SupabaseEntityService<Discipline> {
-    
+
     static STATUSES = [
         'Public',
         'Internal'
@@ -30,7 +18,7 @@ class DisciplineService extends SupabaseEntityService<Discipline> {
 
     static _instance: DisciplineService;
 
-    static instance(): DisciplineService {
+    static getInstance(): DisciplineService {
         if (!this._instance) {
             this._instance = new DisciplineService();
         }
@@ -39,19 +27,23 @@ class DisciplineService extends SupabaseEntityService<Discipline> {
 
 
     public constructor() {
-        super("discipline");
+        super(DisciplineDao.getInstance());
+    }
+
+    getDao(): DisciplineDao {
+        return this.dao as DisciplineDao;
+    }
+
+    async find(queryModel: QueryModel): Promise<PageInfo<Discipline>> {
+        return this.getDao().find(queryModel);
     }
 
     async findByAirtableId(airtableId: string): Promise<Discipline> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('airtable_id', airtableId)
-            .single()
-            .then((resp: any) => resp.data);
+        return this.getDao().findByAirtableId(airtableId);
     }
 
     getIconUrl(entity: Discipline): string | undefined {
+        const storageService = getCoreServices().storageService!;
         return storageService.getUrl(entity.icon);
     }
 
@@ -62,16 +54,11 @@ class DisciplineService extends SupabaseEntityService<Discipline> {
     }
 
     async findByStatus(status: string): Promise<Discipline[]> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('status', status)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+        return this.getDao().findByStatus(status)
     }
 }
 
-const disciplineService = DisciplineService.instance();
 
-export { disciplineService, DisciplineService };
+export { DisciplineService };
 export type { Discipline };
 

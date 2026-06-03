@@ -8,11 +8,13 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Tool, toolService } from '../../services/dasToolsService';
+import { Tool, ToolService } from '../../services/dasToolsService';
 import { ToolDetails } from './ToolDetails';
 
 
 const ToolPage = () => {
+  const toolService = ToolService.getInstance();
+
   const [entity, setEntity] = useState<Tool>();
   const { id } = useParams<string>();
 

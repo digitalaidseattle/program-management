@@ -5,11 +5,13 @@
  *
  */
 
-import { storageService } from "../App";
-import { Contact, Partner, profile2PartnerService } from "../services/dasPartnerService";
-import { profileService } from "../services/dasProfileService";
+import { getCoreServices } from "@digitalaidseattle/core";
+import { Contact, Partner, Profile2PartnerService } from "../services/dasPartnerService";
+import { ProfileService } from "../services/dasProfileService";
 
 export async function addContact(partner: Partner, contact: Contact, picture: File | undefined): Promise<Contact> {
+    const profileService = ProfileService.getInstance();
+    const storageService = getCoreServices().storageService!
     // insert profile
     // insert picture
     // insert partner2profile
@@ -27,7 +29,7 @@ export async function addContact(partner: Partner, contact: Contact, picture: Fi
         await storageService.upload(filePath, picture);
     }
 
-    await profile2PartnerService.insert(
+    await Profile2PartnerService.getInstance().insert(
         {
             partner_id: partner.id,
             profile_id: profile.id,

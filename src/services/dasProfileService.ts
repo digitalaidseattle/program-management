@@ -4,60 +4,45 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { v4 as uuid } from 'uuid';
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { storageService } from "../App";
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Profile, ProfileDao } from './dasProfileDao';
+import { getCoreServices } from "@digitalaidseattle/core";
 
 
-type Profile = {
-    id: string;
-    name: string,
-    first_name: string,
-    last_name: string,
-    email: string,
-    phone: string,
-    location: string,
-    pic: string
-}
-const DEFAULT_SELECT = "*";
 class ProfileService extends SupabaseEntityService<Profile> {
-    empty(): Profile {
-        return ({
-            id: uuid(),
-            name: '',
-            first_name: '',
-            last_name: '',
-            email: '',
-            phone: '',
-            location: '',
-            pic: ''
-        })
+    static _instance: ProfileService;
+
+    static getInstance(): ProfileService {
+        if (!this._instance) {
+            this._instance = new ProfileService();
+        }
+        return this._instance;
     }
 
     public constructor() {
-        super("profile");
+        super(ProfileDao.getInstance());
+    }
+
+    getDao(): ProfileDao {
+        return this.dao as ProfileDao;
+    }
+
+    empty(): Profile {
+        return this.getDao().empty();
     }
 
     async findByEmail(email: string): Promise<Profile> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .ilike('email', email.toLowerCase())
-            .single()
-            .then((resp: any) => resp.data);
+        return this.getDao().findByEmail(email);
     }
 
     async findByName(name: string): Promise<Profile> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq('name', name)
-            .single()
-            .then((resp: any) => resp.data);
+        return this.findByName(name);
     }
 
     getPicUrl(profile: Profile): string | undefined {
+        const storageService = getCoreServices().storageService!;
+
         // FIXME: migrate url to pic attribute
         return profile.pic ? storageService.getUrl(`/profiles/${profile.id}`) : undefined;
         // return profile.pic ? storageService.getUrl(profile.pic) : undefined;
@@ -70,8 +55,7 @@ class ProfileService extends SupabaseEntityService<Profile> {
     }
 }
 
-const profileService = new ProfileService();
 
-export { profileService, ProfileService };
+export { ProfileService };
 export type { Profile };
 

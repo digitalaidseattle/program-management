@@ -4,8 +4,7 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Entity } from "@digitalaidseattle/core";
-import { PageInfo, QueryModel } from "@digitalaidseattle/supabase";
+import { Entity, PageInfo, QueryModel } from "@digitalaidseattle/core";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef, GridFilterModel, GridRowSelectionModel, GridSortModel, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";

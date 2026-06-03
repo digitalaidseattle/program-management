@@ -5,7 +5,7 @@
  *
  */
 import { useEffect, useState } from "react";
-import { volunteerService } from "../services/dasVolunteerService";
+import { VolunteerService } from "../services/dasVolunteerService";
 
 
 const useVolunteers = () => {
@@ -15,7 +15,7 @@ const useVolunteers = () => {
     useEffect(() => {
         const fetchData = async () => {
             setStatus('fetching');
-            const response = await volunteerService.getActive()
+            const response = await VolunteerService.getInstance().getActive()
             setData(response);
             setStatus('fetched');
         };

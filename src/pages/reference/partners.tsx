@@ -23,7 +23,7 @@ import { Partner, PartnerService } from '../../services/dasPartnerService';
 import { ReferencePartnerDetails } from '../partner/ReferencePartnerDetails';
 
 const ReferencePartnersPage = () => {
-  const partnerService = PartnerService.instance();
+  const partnerService = PartnerService.getInstance();
   const { id } = useParams<string>();
 
   const [entities, setEntities] = useState<Partner[]>([]);

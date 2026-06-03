@@ -5,63 +5,54 @@
  *
  */
 
-import { Entity, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { storageService } from "../App";
-
-type Role = Entity & {
-    pic: string | null;
-    name: string;
-    status: string;
-    urgency: number;
-    headline: string; // 'Headline'
-    location: string;  // 'Location'
-    responsibilities: string; // 'Responsibilities
-    qualifications: string; // 'Preferred Qualifications
-    key_attributes: string; //Key attributes for success
-    tags: string[]; //Role tags
-}
+import { getCoreServices, PageInfo, QueryModel, StorageService } from "@digitalaidseattle/core";
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Role, RoleDao } from "./dasRoleDao";
 
 class RoleService extends SupabaseEntityService<Role> {
+
 
     static STATUSES = ['Active', 'Inactive'];
 
     static _instance: RoleService;
 
-    static instance(): RoleService {
+    static getInstance(): RoleService {
         if (!this._instance) {
             this._instance = new RoleService();
         }
         return this._instance;
     }
 
+
+    storageService: StorageService;
+
     public constructor() {
-        super("role");
+        super(RoleDao.getInstance());
+        this.storageService = getCoreServices().storageService!;
+    }
+
+    getDao(): RoleDao {
+        return this.dao as RoleDao;
+    }
+
+    async find(queryModel: QueryModel): Promise<PageInfo<Role>> {
+        return this.getDao().find(queryModel);
     }
 
     async findByAirtableId(airtableId: string): Promise<Role> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('airtable_id', airtableId)
-            .single()
-            .then((resp: any) => resp.data);
+        return await this.getDao().findByAirtableId(airtableId);
     }
 
     getIconUrl(entity: Role): string | undefined {
-        return entity.pic ? storageService.getUrl(entity.pic) : undefined
+        return entity.pic ? this.storageService.getUrl(entity.pic) : undefined
     }
 
     async findByStatus(status: string): Promise<Role[]> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('status', status)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+        return this.getDao().findByStatus(status);
     }
 }
 
-const roleService = RoleService.instance();
 
-export { roleService, RoleService };
+export { RoleService };
 export type { Role };
 

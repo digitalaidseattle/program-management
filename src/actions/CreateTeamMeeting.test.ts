@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
+import { Meeting, MeetingAttendee, MeetingAttendeeService, MeetingService } from "../services/dasMeetingService";
 import { Team } from "../services/dasTeamService";
 import { createTeamMeeting } from "./CreateTeamMeeting";
 
@@ -33,11 +33,11 @@ describe("CreateTeamMeeting", () => {
         const insertedAttendee = {} as MeetingAttendee;
         const inserted = { id: "inserted_id" } as Meeting;
         const found = {} as Meeting;
-        const insertMeetingSpy = vi.spyOn(meetingService, 'insert')
+        const insertMeetingSpy = vi.spyOn(MeetingService.getInstance(), 'insert')
             .mockResolvedValue(inserted);
-        const insertAttendeeSpy = vi.spyOn(meetingAttendeeService, 'batchInsert')
+        const insertAttendeeSpy = vi.spyOn(MeetingAttendeeService.getInstance(), 'batchInsert')
             .mockResolvedValue([insertedAttendee]);
-        const getByIdSpy = vi.spyOn(meetingService, 'getById')
+        const getByIdSpy = vi.spyOn(MeetingService.getInstance(), 'getById')
             .mockResolvedValue(found);
 
         createTeamMeeting(team)

@@ -1,11 +1,13 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { Card, CardContent, CardHeader, IconButton, TextField } from "@mui/material";
-import { EntityProps } from "../../components/utils";
-import { Meeting, meetingService } from "../../services/dasMeetingService";
 import { useEffect, useState } from "react";
+import { EntityProps } from "../../components/utils";
+import { Meeting, MeetingService } from "../../services/dasMeetingService";
 import { CARD_HEADER_SX } from "./utils";
 
 export function NotesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const meetingService = MeetingService.getInstance();
+
     const [notes, setNotes] = useState<string>();
     const [pristine, setPristine] = useState<boolean>(true);
 

@@ -13,18 +13,19 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef, GridRowSelectionModel, Toolbar } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { storageService } from '../../App';
+import { addContact } from '../../actions/AddContact';
+import { removeContact } from '../../actions/RemoveContact';
+import { updateContact } from '../../actions/UpdateContact';
 import { EditField } from '../../components/EditField';
 import { UploadImage } from '../../components/UploadImage';
 import { EntityProps } from '../../components/utils';
-import { Contact, Partner, partnerService } from '../../services/dasPartnerService';
-import { profileService } from '../../services/dasProfileService';
-import { removeContact } from '../../actions/RemoveContact';
+import { Contact, Partner, PartnerService } from '../../services/dasPartnerService';
+import { ProfileService } from '../../services/dasProfileService';
 import ContactDialog from './ContactDialog';
-import { addContact } from '../../actions/AddContact';
-import { updateContact } from '../../actions/UpdateContact';
+import { getCoreServices } from '@digitalaidseattle/core';
 
 const ContactsTable = ({ entity: partner, onChange }: EntityProps<Partner>) => {
+  const profileService = ProfileService.getInstance();
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -152,6 +153,9 @@ const ContactsTable = ({ entity: partner, onChange }: EntityProps<Partner>) => {
 }
 
 const PartnerDetails: React.FC<EntityProps<Partner>> = ({ entity: partner, onChange }) => {
+  const partnerService = PartnerService.getInstance();
+  const storageService = getCoreServices().storageService!;
+
   const fields = [
     { name: 'name', label: 'Name', type: 'string' },
     { name: 'website', label: 'Website', type: 'string' },

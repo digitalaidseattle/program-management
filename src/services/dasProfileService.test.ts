@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { storageService } from "../App";
 import { Profile, ProfileService } from "./dasProfileService";
+import { getCoreServices } from "@digitalaidseattle/core";
 
 describe("ProfileService", () => {
 
@@ -22,6 +22,7 @@ describe("ProfileService", () => {
 
     it("getPicUrl", () => {
         const service = new ProfileService();
+        const storageService = getCoreServices().storageService!;
 
         const profile = { id: 'idid', pic: '/profiles/test' } as Profile;
         const spyStorage = vi.spyOn(storageService, 'getUrl').mockReturnValue('/cdn/profiles/test:1');

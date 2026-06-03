@@ -11,11 +11,13 @@ import { useParams } from 'react-router';
 import { StaffingTable } from '../../components/StaffingTable';
 import { EntityProps } from '../../components/utils';
 import VentureReportDisplay from '../../components/VentureReportDisplay';
-import { Staffing, staffingService } from '../../services/dasStaffingService';
+import { Staffing, StaffingService } from '../../services/dasStaffingService';
 import { VentureReport, VentureReportService } from '../../services/dasVentureReportService';
-import { Venture, ventureService } from '../../services/dasVentureService';
+import { Venture, VentureService } from '../../services/dasVentureService';
 
 const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
+  const staffingService = StaffingService.getInstance();
+
   const [current, setCurrent] = useState<Staffing[]>([]);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
 }
 
 const ReportPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
-  const ventureReportService = VentureReportService.instance();
+  const ventureReportService = VentureReportService.getInstance();
 
   const [reports, setReports] = useState<VentureReport[]>([]);
 
@@ -86,6 +88,7 @@ const VentureDetails: React.FC<EntityProps<Venture>> = ({ entity, onChange }) =>
 }
 
 const VenturePage = () => {
+  const ventureService = VentureService.getInstance();
   const [entity, setEntity] = useState<Venture>();
   const { id } = useParams<string>();
 

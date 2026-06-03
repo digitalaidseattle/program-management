@@ -5,11 +5,10 @@
  *
  */
 
-import { EntityService, Identifier, User } from "@digitalaidseattle/core";
-import { Entity } from "@digitalaidseattle/supabase";
+import { Entity, EntityService, Identifier, User } from "@digitalaidseattle/core";
+import { Configuration } from "./coda/Configuration";
 
 // @ts-ignore - Vite injects env at runtime
-const CODA_API_TOKEN = import.meta.env.VITE_CODA_API_TOKEN;
 
 type CodaRow = {
     id: string;
@@ -42,7 +41,11 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
         this.select = opts ? opts.select ?? '*' : "*";
         this.mapper = opts ? opts.mapper ?? ((json: any) => json) : ((json: any) => json);
         this.entityToCodaMapper = opts ? opts.entityToCodaMapper ?? ((_entity: any) => ({} as any)) : ((_entity: any) => ({} as any));
+    }
 
+    mapJson(_json: any): T {
+        //TODO replace with mapper
+        throw new Error("Method not implemented.");
     }
 
     getDocumentBase() {
@@ -78,7 +81,7 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
         const url = `${this.documentBase}/rows?${params}`;
 
         const resp = await fetch(url, {
-            headers: { 'Authorization': `Bearer ${CODA_API_TOKEN}` }
+            headers: { 'Authorization': `Bearer ${Configuration.getInstance().apiToken}` }
         });
 
         if (!resp.ok) {
@@ -98,7 +101,7 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
         const resp = await fetch(`${this.documentBase}/rows`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${CODA_API_TOKEN}`,
+                'Authorization': `Bearer ${Configuration.getInstance().apiToken}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ rows })
@@ -128,7 +131,7 @@ abstract class CodaService<T extends Entity> implements EntityService<T> {
         url.searchParams.set("valueFormat", "rich");
         url.searchParams.set("query",`"${column}":"${name}"` );
         const resp = await fetch(url.toString(), {
-            headers: { 'Authorization': `Bearer ${CODA_API_TOKEN}` }
+            headers: { 'Authorization': `Bearer ${Configuration.getInstance().apiToken}` }
         });
         if (!resp.ok) {
             const error = await resp.json().catch(() => ({ message: resp.statusText }));

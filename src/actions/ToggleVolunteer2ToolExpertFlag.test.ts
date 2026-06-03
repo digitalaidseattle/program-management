@@ -5,7 +5,7 @@
  *
  */
 import { describe, expect, it, vi } from "vitest";
-import { Volunteer2Tool, volunteer2ToolService } from "../services/dasVolunteer2ToolService";
+import { Volunteer2Tool, Volunteer2ToolService } from "../services/dasVolunteer2ToolService";
 import { toggleVolunteer2ToolExpertFlag } from "./ToggleVolunteer2ToolExpertFlag";
 
 describe("toggleVolunteer2TeamLeaderFlag", () => {
@@ -17,7 +17,7 @@ describe("toggleVolunteer2TeamLeaderFlag", () => {
         const v2t = { expert: true } as Volunteer2Tool;
         const updated = {} as Volunteer2Tool;
 
-        const updateSpy = vi.spyOn(volunteer2ToolService, 'update')
+        const updateSpy = vi.spyOn(Volunteer2ToolService.getInstance(), 'update')
             .mockResolvedValue(updated);
 
         toggleVolunteer2ToolExpertFlag(v2t)
@@ -31,7 +31,7 @@ describe("toggleVolunteer2TeamLeaderFlag", () => {
         const v2t = {} as Volunteer2Tool;
         const updated = {} as Volunteer2Tool;
 
-        const updateSpy = vi.spyOn(volunteer2ToolService, 'update')
+        const updateSpy = vi.spyOn(Volunteer2ToolService.getInstance(), 'update')
             .mockResolvedValue(updated);
 
         toggleVolunteer2ToolExpertFlag(v2t)

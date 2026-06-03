@@ -5,10 +5,10 @@
  *
  */
 import { describe, expect, it, vi } from "vitest";
-import { team2ToolService } from "../services/dasTeam2ToolService";
+import { Team2ToolService } from "../services/dasTeam2ToolService";
 import { Team } from "../services/dasTeamService";
-import { Tool } from "../services/dasToolsService";
 import { removeToolFromTeam } from "./RemoveToolFromTeam";
+import { Tool } from "../services/dasToolsDao";
 
 describe("removeToolFromTeam", () => {
 
@@ -16,7 +16,7 @@ describe("removeToolFromTeam", () => {
         const tool = {} as Tool;
         const team = {} as Team;
 
-        const removeSpy = vi.spyOn(team2ToolService, 'removeToolFromTeam')
+        const removeSpy = vi.spyOn(Team2ToolService.getInstance(), 'removeToolFromTeam')
             .mockResolvedValue(true);
 
         removeToolFromTeam(tool, team)

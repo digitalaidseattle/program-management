@@ -18,7 +18,7 @@ import {
     Typography
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { Meeting, meetingService } from "../../services/dasMeetingService";
+import { Meeting, MeetingService, } from "../../services/dasMeetingService";
 
 import { dateToString, EntityProps } from "../../components/utils";
 
@@ -28,7 +28,7 @@ import dayjs from "dayjs";
 import Markdown from "react-markdown";
 import { useParams } from "react-router";
 import ImHereButton from "../../components/ImHereButton";
-import { Forecast, OKR, Team, teamService } from "../../services/dasTeamService";
+import { Forecast, OKR, Team, TeamService } from "../../services/dasTeamService";
 import { AttendeesCard } from "./AttendeesCard";
 import { MeetingToolbar } from "./MeetingToolbar";
 import { NotesCard } from "./NotesCard";
@@ -36,6 +36,7 @@ import { TopicsCard } from "./TopicsCard";
 import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
 
 function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
+    const teamService = TeamService.getInstance();
     const [team, setTeam] = useState<Team>();
     const [okrs, setOkrs] = useState<OKR[]>([]);
 
@@ -84,6 +85,8 @@ function OKRsCard({ entity: meeting }: EntityProps<Meeting>) {
 }
 
 function ForecastsCard({ entity: meeting }: EntityProps<Meeting>) {
+    const teamService = TeamService.getInstance();
+
     const [team, setTeam] = useState<Team>();
     const [forecasts, setForecasts] = useState<Forecast[]>([]);
 
@@ -127,6 +130,8 @@ function ForecastsCard({ entity: meeting }: EntityProps<Meeting>) {
 }
 
 function TeamMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
+    const meetingService = MeetingService.getInstance();
+
     const [meeting, setMeeting] = useState<Meeting>();
 
     useEffect(() => {
@@ -179,6 +184,8 @@ function TeamMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
 };
 
 const TeamMeetingPage = () => {
+    const meetingService = MeetingService.getInstance();
+
     const [meeting, setMeeting] = useState<Meeting>();
     const { id } = useParams<string>();
     const { refresh } = useContext(RefreshContext);

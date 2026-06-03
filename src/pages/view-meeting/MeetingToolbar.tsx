@@ -5,10 +5,11 @@
  *
  */
 import { Box, Button, Card, Checkbox, Grid, SxProps, Toolbar, Tooltip } from "@mui/material";
-import { Meeting, meetingService } from "../../services/dasMeetingService";
+import { Meeting, MeetingService } from "../../services/dasMeetingService";
 import googleMeet from "../../assets/images/icons/google-meet.png";
 
 export function MeetingToolbar({ entity: meeting, sx, onChange }: { entity: Meeting, sx?: SxProps, onChange: (updated: any) => void }) {
+    const meetingService = MeetingService.getInstance();
 
     function handleStatusChange(newStatus: 'new' | 'concluded' | undefined): void {
         if (meeting) {

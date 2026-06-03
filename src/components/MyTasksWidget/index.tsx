@@ -57,7 +57,7 @@ export const MyTasksWidget = () => {
                     open={showAddMeetingDialog} />
                 <VentureReportDialog
                     title={'Add Venture Report'}
-                    report={VentureReportService.instance().empty()}
+                    report={VentureReportService.getInstance().empty()}
                     onClose={handleVentureReportClose}
                     open={showAddVentureReportDialog} />
             </CardContent>

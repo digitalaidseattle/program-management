@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 
 import { InputOption } from '@digitalaidseattle/mui';
 import dayjs from 'dayjs';
-import { Forecast, forecastService, Team } from '../../services/dasTeamService';
+import { Forecast, ForecastService, Team } from '../../services/dasTeamService';
 import ElementsDialog from './ElementsDialog';
 
 interface ForecastsDialogProps {
@@ -19,6 +19,7 @@ interface ForecastsDialogProps {
     onClose: () => void;
 }
 function ForecastsDialog({ open, team, onChange, onClose }: ForecastsDialogProps) {
+    const forecastService = ForecastService.getInstance();
 
     const [elements, setElements] = useState<Forecast[]>([]);
 

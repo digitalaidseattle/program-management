@@ -5,14 +5,13 @@
  *
  */
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { PageInfo, QueryModel, useStorageService } from '@digitalaidseattle/core';
 import { Avatar, Box, Rating } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { EntityTable } from '../../components/EntityTable';
-import { Role, roleService } from '../../services/dasRoleService';
+import { Role, RoleService } from '../../services/dasRoleService';
 
 
 const RolesPage = () => {
@@ -63,7 +62,7 @@ const RolesPage = () => {
 
   function onChange(queryModel?: QueryModel) {
     if (queryModel) {
-      roleService.find(queryModel)
+      RoleService.getInstance().find(queryModel)
         .then(pageInfo => setPageInfo(pageInfo))
     }
   }

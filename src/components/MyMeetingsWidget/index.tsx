@@ -11,13 +11,13 @@ import dayjs from 'dayjs';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useVolunteer } from '../../hooks/useVolunteer';
-import { Meeting, meetingAttendeeService } from '../../services/dasMeetingService';
+import { Meeting, MeetingAttendeeService } from '../../services/dasMeetingService';
 import AddMeetingDialog from '../AddMeetingDialog';
 
 export const MyMeetingsWidget = () => {
     const navigate = useNavigate();
     const notification = useNotifications();
-    const {  setLoading } = useContext(LoadingContext);
+    const { setLoading } = useContext(LoadingContext);
 
     const { volunteer } = useVolunteer();
     const [meetings, setMeetings] = useState<Meeting[]>([]);
@@ -33,7 +33,7 @@ export const MyMeetingsWidget = () => {
     }, [volunteer]);
 
     function findCurrentMeetings(profileId: string): Promise<Meeting[]> {
-        return meetingAttendeeService
+        return MeetingAttendeeService.getInstance()
             .findByProfileId(profileId)
             .then(atts => {
                 return atts

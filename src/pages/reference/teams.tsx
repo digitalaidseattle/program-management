@@ -21,7 +21,7 @@ import { Team, TeamService } from '../../services/dasTeamService';
 import { TeamDetails } from '../team';
 
 const ReferenceTeamsPage = () => {
-  const teamService = TeamService.instance();
+  const teamService = TeamService.getInstance();
   const { id } = useParams<string>();
   const storageService = useStorageService()!;
   const [entities, setEntities] = useState<Team[]>([]);

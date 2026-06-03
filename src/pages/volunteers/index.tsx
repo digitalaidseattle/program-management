@@ -1,9 +1,8 @@
 
 // material-ui
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useNotifications, useStorageService } from '@digitalaidseattle/core';
+import { PageInfo, QueryModel, useNotifications, useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import {
   Avatar,
   Box,
@@ -21,10 +20,11 @@ import { useNavigate } from 'react-router';
 import { addVolunteer } from '../../actions/AddVolunteer';
 import { deleteVolunteers } from '../../actions/DeleteVolunteers';
 import { EntityTable } from '../../components/EntityTable';
-import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
+import { Volunteer, VolunteerService, } from '../../services/dasVolunteerService';
 import VolunteerDialog from './VolunteerDialog';
 
 const VolunteersPage = () => {
+  const volunteerService = VolunteerService.getInstance();
   const navigate = useNavigate();
   const notifications = useNotifications();
 

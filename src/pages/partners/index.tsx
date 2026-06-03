@@ -1,7 +1,6 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { PageInfo, QueryModel, useStorageService } from '@digitalaidseattle/core';
 import {
   Avatar,
   Box
@@ -10,7 +9,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import ListDetailPage from '../../components/ListDetailPage';
-import { Partner, partnerService } from '../../services/dasPartnerService';
+import { Partner, PartnerService } from '../../services/dasPartnerService';
 
 const PartnersPage = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo<Partner>>({ rows: [], totalRowCount: 0 });
@@ -77,7 +76,7 @@ const PartnersPage = () => {
 
   function onChange(queryModel?: QueryModel) {
     if (queryModel) {
-      partnerService.find(queryModel)
+      PartnerService.getInstance().find(queryModel)
         .then(pageInfo => setPageInfo(pageInfo))
     }
   }

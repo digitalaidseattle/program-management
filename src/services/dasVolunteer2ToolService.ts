@@ -6,10 +6,10 @@
  */
 
 import { Identifier } from "@digitalaidseattle/core";
-import { supabaseClient } from "@digitalaidseattle/supabase";
+import { SupabaseConfiguration } from "@digitalaidseattle/supabase";
 import { AssociativeTableService } from "./associativeTableService";
-import { Tool } from "./dasToolsService";
-import { Volunteer } from "./dasVolunteerService";
+import { Tool } from "./dasToolsDao";
+import { Volunteer } from "./dasVolunteerDao";
 
 
 type Volunteer2Tool = {
@@ -21,14 +21,22 @@ type Volunteer2Tool = {
 }
 
 const ASSOC_TABLE = 'volunteer2tool';
-class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
+class Volunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
+    static _instance: Volunteer2ToolService;
+
+    static getInstance(): Volunteer2ToolService {
+        if (!this._instance) {
+            this._instance = new Volunteer2ToolService();
+        }
+        return this._instance;
+    }
 
     constructor() {
         super(ASSOC_TABLE)
     }
 
     async update(volunteer2Tool: Volunteer2Tool, updates: Partial<Volunteer2Tool>): Promise<Volunteer2Tool> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .update(updates)
             .eq('tool_id', volunteer2Tool.tool_id)
@@ -38,7 +46,7 @@ class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
     }
 
     async addToolToVolunteer(tool: Tool, volunteer: Volunteer): Promise<boolean> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .insert(
                 {
@@ -51,7 +59,7 @@ class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
     }
 
     async removeToolFromVolunteer(tool: Tool, volunteer: Volunteer): Promise<boolean> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .delete()
             .eq('tool_id', tool.id)
@@ -60,7 +68,7 @@ class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
     }
 
     async findToolsByVolunteerId(volunteerId: Identifier): Promise<Tool[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, tool(*)')
             .eq('volunteer_id', volunteerId)
@@ -68,7 +76,7 @@ class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
     }
 
     async findByVolunteerId(volunteerId: Identifier): Promise<Volunteer2Tool[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, tool(*)')
             .eq('volunteer_id', volunteerId)
@@ -76,19 +84,15 @@ class DASVolunteer2ToolService extends AssociativeTableService<Volunteer2Tool> {
     }
 
     async findVolunteersByToolId(id: string): Promise<Volunteer[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
             .eq('tool_id', id)
             .then((resp: any) => resp.data.map((d: any) => d.volunteer));
     }
-
-
 }
 
 
-const volunteer2ToolService = new DASVolunteer2ToolService();
-
-export { volunteer2ToolService };
+export { Volunteer2ToolService };
 export type { Volunteer2Tool };
 

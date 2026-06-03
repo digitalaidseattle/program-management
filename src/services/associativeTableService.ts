@@ -1,18 +1,26 @@
 import { User } from "@digitalaidseattle/core";
-import { supabaseClient } from "@digitalaidseattle/supabase";
+import { SupabaseConfiguration } from "@digitalaidseattle/supabase";
+import { SupabaseClient } from "@supabase/supabase-js";
 
-export class AssociativeTableService<T> {
+export abstract class AssociativeTableService<T> {
 
     tableName: string;
+    client: SupabaseClient;
 
     constructor(table: string) {
         this.tableName = table;
+        this.client = SupabaseConfiguration.getInstance().getSupabaseClient()
     }
+
+    getClient(): SupabaseClient {
+        return this.client;
+    }
+
     async insert(entity: T, _user?: User): Promise<T[]> {
         try {
-            const { data, error } = await supabaseClient
+            const { data, error } = await this.getClient()
                 .from(this.tableName)
-                .insert(entity)
+                .insert([entity] as any)
                 .select('*')
             if (error) {
                 console.error('Error inserting entity:', error.message);
@@ -27,9 +35,9 @@ export class AssociativeTableService<T> {
 
     async batchInsert(entities: T[], _user?: User): Promise<T[]> {
         try {
-            const { data, error } = await supabaseClient
+            const { data, error } = await this.getClient()
                 .from(this.tableName)
-                .insert(entities)
+                .insert(entities as any)
                 .select('*')
             if (error) {
                 console.error('Error inserting entity:', error.message);

@@ -9,11 +9,14 @@ import { toggleVolunteer2ToolExpertFlag } from '../../actions/ToggleVolunteer2To
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
-import { Tool, toolService } from '../../services/dasToolsService';
-import { Volunteer2Tool, volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
+import { Tool, ToolService, } from '../../services/dasToolsService';
+import { Volunteer2Tool, Volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer } from '../../services/dasVolunteerService';
 
 export const ToolsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+  const toolService = ToolService.getInstance();
+  const volunteer2ToolService = Volunteer2ToolService.getInstance();
+
   const [current, setCurrent] = useState<Volunteer2Tool[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [tools, setTools] = useState<Tool[]>([]);

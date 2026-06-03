@@ -5,31 +5,13 @@
  *
  */
 
-import { v4 as uuid } from 'uuid';
-import { Entity, Identifier, User } from "@digitalaidseattle/core";
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import type { Venture } from "./dasVentureService";
+import { Identifier, PageInfo, QueryModel } from "@digitalaidseattle/core";
+import { SupabaseEntityService } from '@digitalaidseattle/supabase';
+import { HealthStatus, VentureReport, VentureReportDao } from './dasVentureReportDao';
 
-export type HealthStatus = 'on_track' | 'at_risk' | 'blocked';
-
-export type VentureReport = Entity & {
-    venture_id: string;
-    venture?: Venture;
-    venture_name: string;
-    reported_by: string;
-    reporting_date?: Date | null;
-    health: HealthStatus;
-    changes_by_partner?: string | null;
-    successes?: string | null;
-    challenges?: string | null;
-    asks?: string | null;
-    staffing_need?: string | null;
-    next_steps?: string | null;
-}
-const DEFAULT_SELECT = "*, venture(*)";
 
 export async function ventureReportSave(report: VentureReport): Promise<VentureReport> {
-    const ventureReportService = VentureReportService.instance();
+    const ventureReportService = VentureReportService.getInstance();
 
     const cleaned = { ...report };
     cleaned.venture_name = report.venture?.venture_code ?? "";
@@ -38,11 +20,10 @@ export async function ventureReportSave(report: VentureReport): Promise<VentureR
     return ventureReportService.upsert(cleaned)
 }
 
-
 class VentureReportService extends SupabaseEntityService<VentureReport> {
 
     static _instance: VentureReportService;
-    static instance() {
+    static getInstance() {
         if (!this._instance) {
             this._instance = new VentureReportService();
         }
@@ -50,80 +31,34 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
     }
 
     constructor() {
-        super("venture_report", DEFAULT_SELECT);
+        super(VentureReportDao.getInstance());
+    }
+
+    getDao(): VentureReportDao {
+        return this.dao as VentureReportDao;
     }
 
     empty(): VentureReport {
-        return {
-            id: uuid(),
-            venture_id: '',
-            venture_name: '',
-            reported_by: '',
-            reporting_date: new Date(),
-            health: 'on_track',
-            changes_by_partner: '',
-            successes: '',
-            challenges: '',
-            asks: '',
-            staffing_need: '',
-            next_steps: '',
-        }
+        return this.getDao().empty();
     }
 
-    async upsert(entity: VentureReport, select?: string, mapper?: (json: any) => VentureReport, _user?: User): Promise<VentureReport> {
-        const { data, error } = await supabaseClient
-            .from(this.tableName)
-            .upsert(entity)
-            .select(select ?? DEFAULT_SELECT)
-        if (error) {
-            console.error(error)
-            throw error;
-        } else {
-            const aMapper = mapper ?? this.mapper;
-            return aMapper(data)!
-        }
+    async find(queryModel: QueryModel): Promise<PageInfo<VentureReport>> {
+        return this.getDao().find(queryModel);
     }
 
     async findByVentureId(ventureId: Identifier): Promise<VentureReport[]> {
-        const { data, error } = await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq("venture_id", ventureId)
-            .order("reporting_date", { ascending: false });
-
-        if (error) {
-            throw error;
-        }
-        return (data ?? []) as VentureReport[];
+        return this.getDao().findByVentureId(ventureId);
     }
 
     async findLatestByVentureId(ventureId: Identifier): Promise<VentureReport | undefined> {
-        const { data, error } = await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq("venture_id", ventureId)
-            .order("reporting_date", { ascending: false })
-            .limit(1)
-
-        if (error) {
-            throw error;
-        }
-        return data.length === 1 ? data[0] : undefined;
+        return this.getDao().findLatestByVentureId(ventureId);
     }
 
-    async findRecentReports(limit = 100): Promise<VentureReport[]> {
-        const { data, error } = await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .order("reporting_date", { ascending: false })
-            .limit(limit);
+    async findRecentReports(limit: number): Promise<VentureReport[]> {
+        return this.getDao().findRecentReports(limit);
 
-        if (error) {
-            throw error;
-        }
-
-        return data ?? [];
     }
 }
 
 export { VentureReportService };
+export type { VentureReport, HealthStatus };

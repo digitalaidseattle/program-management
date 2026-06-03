@@ -8,9 +8,10 @@ import {
 import dayjs from "dayjs";
 import { useContext, useEffect, useState } from "react";
 
+import { RefreshContext } from "@digitalaidseattle/core";
 import ImHereButton from "../../components/ImHereButton";
-import { Meeting, MeetingAttendee, meetingService } from "../../services/dasMeetingService";
-import { Team, teamService } from "../../services/dasTeamService";
+import { Meeting, MeetingAttendee, MeetingService, } from "../../services/dasMeetingService";
+import { Team, TeamService, } from "../../services/dasTeamService";
 import { AttendeesCard } from "./AttendeesCard";
 import { ForecastsCard } from "./ForecastsCard";
 import { MeetingToolbar } from "./MeetingToolbar";
@@ -18,9 +19,10 @@ import { NotesCard } from "./NotesCard";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { TopicsCard } from "./TopicsCard";
 import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
-import { RefreshContext } from "@digitalaidseattle/core";
 
 function LeadershipMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
+    const teamService = TeamService.getInstance();
+    const meetingService = MeetingService.getInstance();
     const [meeting, setMeeting] = useState<Meeting>();
     const [selectedAttendee, setSelectedAttendee] = useState<MeetingAttendee>();
     const [team, setTeam] = useState<Team>();
@@ -100,6 +102,7 @@ function LeadershipMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
 };
 
 const LeadershipMeetingPage = () => {
+    const meetingService = MeetingService.getInstance();
     const [meeting, setMeeting] = useState<Meeting>();
 
     useEffect(() => {

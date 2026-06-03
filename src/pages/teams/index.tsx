@@ -1,19 +1,21 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { useStorageService, PageInfo, QueryModel } from '@digitalaidseattle/core';
+import { } from '@digitalaidseattle/supabase';
 import { Avatar, Box } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
-import { Team, teamService } from '../../services/dasTeamService';
+import { Team, TeamService } from '../../services/dasTeamService';
 import { TeamDetails } from '../team';
 
 
 
 const TeamsPage = () => {
+  const teamService = TeamService.getInstance();
+
   const [pageInfo, setPageInfo] = useState<PageInfo<Team>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
   const storageService = useStorageService()!;
@@ -95,7 +97,7 @@ const TeamsPage = () => {
           key={entity.id}
           title={entity.name}
           avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />,
-        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')}/>,
+        detailRenderer: entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />,
       }}
 
     />

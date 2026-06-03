@@ -6,27 +6,12 @@
  */
 import { v4 as uuid } from 'uuid';
 
-import { PageInfo, QueryModel, supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { Partner, partnerService } from "./dasPartnerService";
+import { DataAccessOptions, PageInfo, QueryModel } from "@digitalaidseattle/core";
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { PartnerService } from "./dasPartnerService";
+import { Venture, VentureDAO } from './dasVentureDao';
 
-type Venture = {
-    id: string
-    airtable_id: string
-    coda_id?: string;
-    partner_id: string | null;
-    title: string;
-    painpoint: string;
-    status: string;
-    problem: string;
-    solution: string;
-    impact: string;
-    program_areas: string[];
-    venture_code: string;
-    partner_airtable_id: string[],
-    partner?: Partner;
-}
 
-const DEFAULT_SELECT = "*, partner(*)";
 
 class VentureService extends SupabaseEntityService<Venture> {
 
@@ -41,15 +26,16 @@ class VentureService extends SupabaseEntityService<Venture> {
 
     static _instance: VentureService;
 
-    static instance(): VentureService {
+    static getInstance(): VentureService {
         if (!this._instance) {
             this._instance = new VentureService();
         }
         return this._instance;
     }
 
+
     public constructor() {
-        super("venture", DEFAULT_SELECT);
+        super(VentureDAO.getInstance());
     }
 
     empty(): Venture {
@@ -69,21 +55,19 @@ class VentureService extends SupabaseEntityService<Venture> {
         } as Venture;
     }
 
-    async find(queryModel: QueryModel, select?: string, mapper?: (json: any) => Venture): Promise<PageInfo<Venture>> {
-        return super.find(queryModel, select ?? DEFAULT_SELECT, mapper);
+    getDao(): VentureDAO {
+        return this.dao as VentureDAO;
+    }
+    async find(queryModel: QueryModel, options?: DataAccessOptions<Venture>): Promise<PageInfo<Venture>> {
+        return this.getDao().find(queryModel, options);
     }
 
     async findByAirtableId(airtableId: string): Promise<Venture> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq('airtable_id', airtableId)
-            .single()
-            .then((resp: any) => this.mapper(resp.data)!);
+        return this.getDao().findByAirtableId(airtableId);
     }
 
     getLogoUrl(entity: Venture): string | undefined {
-        return partnerService.getLogoUrl(entity.partner!);
+        return PartnerService.getInstance().getLogoUrl(entity.partner!);
     }
 
     async getActive(): Promise<Venture[]> {
@@ -91,16 +75,11 @@ class VentureService extends SupabaseEntityService<Venture> {
     }
 
     async findByStatus(status: string): Promise<Venture[]> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(DEFAULT_SELECT)
-            .eq('status', status)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+        return this.getDao().findByStatus(status);
     }
 
 }
 
-const ventureService = VentureService.instance();
-export { ventureService, VentureService };
+export { VentureService };
 export type { Venture };
 

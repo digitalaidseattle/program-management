@@ -1,18 +1,18 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { PageInfo, QueryModel, useStorageService } from '@digitalaidseattle/core';
 import { Avatar, Box } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
-import { Discipline, disciplineService } from '../../services/dasDisciplineService';
+import { Discipline, DisciplineService } from '../../services/dasDisciplineService';
 import { DisciplineDetails } from '../discipline';
 
 
 const DisciplinesPage = () => {
+  const disciplineService = DisciplineService.getInstance();
   const [pageInfo, setPageInfo] = useState<PageInfo<Discipline>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
 

@@ -18,10 +18,12 @@ import { useParams } from 'react-router';
 import { EditField } from '../../components/EditField';
 import { EntityProps } from '../../components/utils';
 import { Role, RoleService } from '../../services/dasRoleService';
-import { storageService } from '../../App';
+import { getCoreServices } from '@digitalaidseattle/core';
 
 const RoleDetails: React.FC<EntityProps<Role>> = ({ entity, onChange }) => {
-  const roleService = RoleService.instance();
+  const roleService = RoleService.getInstance();
+  const storageService = getCoreServices().storageService!;
+
   const [role, setRole] = useState<Role>();
 
   useEffect(() => {
@@ -152,7 +154,7 @@ const RoleDetails: React.FC<EntityProps<Role>> = ({ entity, onChange }) => {
 }
 
 const RolePage = () => {
-  const roleService = RoleService.instance();
+  const roleService = RoleService.getInstance();
 
   const [entity, setEntity] = useState<Role>();
   const { id } = useParams<string>();

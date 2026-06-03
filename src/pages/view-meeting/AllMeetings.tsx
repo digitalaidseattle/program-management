@@ -27,15 +27,20 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 
 import { RefreshContext, useAuthService } from "@digitalaidseattle/core";
 import { PickerValue } from "@mui/x-date-pickers/internals";
-import { Meeting, meetingAttendeeService, meetingService } from "../../services/dasMeetingService";
-import { Team, teamService } from "../../services/dasTeamService";
-import { volunteerService } from "../../services/dasVolunteerService";
+import { Meeting, MeetingAttendeeService, MeetingService, } from "../../services/dasMeetingService";
+import { Team, TeamService, } from "../../services/dasTeamService";
+import { VolunteerService } from "../../services/dasVolunteerService";
 import { AdhocMeetingDetails } from "./AdhocMeetingPage";
 import { LeadershipMeetingDetails } from "./LeadershipMeetingPage";
 import { PlenaryDetails } from "./PlenaryPage";
 import { TeamMeetingDetails } from "./TeamMeetingPage";
 
 const AllMeetingsPage = () => {
+    const volunteerService = VolunteerService.getInstance();
+    const teamService = TeamService.getInstance();
+    const meetingService = MeetingService.getInstance();
+    const meetingAttendeeService = MeetingAttendeeService.getInstance();
+
     const theme = useTheme();
     const authService = useAuthService();
     const [profileId, setProfileId] = useState<string>();

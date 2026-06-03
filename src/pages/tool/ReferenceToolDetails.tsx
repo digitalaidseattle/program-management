@@ -13,15 +13,20 @@ import {
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useNavigate } from "react-router";
-import { storageService } from '../../App';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import { team2ToolService } from '../../services/dasTeam2ToolService';
+import { Team2ToolService } from '../../services/dasTeam2ToolService';
 import { Team } from '../../services/dasTeamService';
-import { Tool, toolService } from '../../services/dasToolsService';
-import { volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
+import { Tool, ToolService } from '../../services/dasToolsService';
+import { Volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
 import { Volunteer } from '../../services/dasVolunteerService';
+import { getCoreServices } from '@digitalaidseattle/core';
 
 const ReferenceToolDetails = ({ entity }: { entity: Tool }) => {
+  const volunteer2ToolService = Volunteer2ToolService.getInstance();
+  const storageService = getCoreServices().storageService!;
+
+  const toolService = ToolService.getInstance();
+  const team2ToolService = Team2ToolService.getInstance();
   const navigate = useNavigate();
   const [teamCards, setTeamCards] = useState<React.ReactNode[]>([]);
   const [volunteerCards, setVolunteerCards] = useState<React.ReactNode[]>([]);

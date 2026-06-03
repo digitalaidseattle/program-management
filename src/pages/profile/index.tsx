@@ -4,6 +4,7 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
+import { getCoreServices } from '@digitalaidseattle/core';
 import {
     Avatar,
     Card,
@@ -13,20 +14,23 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { storageService } from '../../App';
+import { useEffect, useState } from 'react';
+import { ExternalLink } from '../../components/ExternalLink';
 import { FieldRow } from '../../components/FieldRow';
 import { TextEdit } from '../../components/TextEdit';
 import { useVolunteer } from '../../hooks/useVolunteer';
-import { profileService } from '../../services/dasProfileService';
-import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { ExternalLink } from '../../components/ExternalLink';
+import { ProfileService } from '../../services/dasProfileService';
+import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 import { DisciplinesCard } from '../volunteer/DisplinesCard';
-import { ToolsCard } from '../volunteer/ToolsCard';
 import { TeamsCard } from '../volunteer/TeamsCard';
+import { ToolsCard } from '../volunteer/ToolsCard';
 
 export const ProfilePage = () => {
+    const volunteerService = VolunteerService.getInstance();
+    const profileService = ProfileService.getInstance();
+    const storageService = getCoreServices().storageService!;
+
     const { volunteer: initial } = useVolunteer();
 
     const [volunteer, setVolunteer] = useState<Volunteer>();

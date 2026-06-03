@@ -6,8 +6,8 @@
  */
 import { describe, expect, it, vi } from "vitest";
 import { Discipline } from "../services/dasDisciplineService";
-import { volunteer2DisciplineService } from "../services/dasVolunteer2DisciplineService";
-import { Volunteer } from "../services/dasVolunteerService";
+import { Volunteer2DisciplineService } from "../services/dasVolunteer2DisciplineService";
+import { Volunteer } from "../services/dasVolunteerDao";
 import { removeDisciplineFromVolunteer } from "./RemoveDisciplineFromVolunteer";
 
 describe("removeDisciplineFromVolunteer", () => {
@@ -16,7 +16,7 @@ describe("removeDisciplineFromVolunteer", () => {
         const discipline = { id: "discipline_id" } as Discipline;
         const volunteer = { id: "volunteer_id" } as Volunteer;
 
-        const addDisciplineToVolunteerSpy = vi.spyOn(volunteer2DisciplineService, 'removeDisciplineFromVolunteer')
+        const addDisciplineToVolunteerSpy = vi.spyOn(Volunteer2DisciplineService.getInstance(), 'removeDisciplineFromVolunteer')
             .mockResolvedValue(true);
 
         removeDisciplineFromVolunteer(discipline, volunteer)

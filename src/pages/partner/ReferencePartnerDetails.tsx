@@ -17,7 +17,7 @@ import { useMemo } from 'react';
 import { ExternalLink } from '../../components/ExternalLink';
 import { FieldRow } from '../../components/FieldRow';
 import { Contact, Partner } from '../../services/dasPartnerService';
-import { profileService } from '../../services/dasProfileService';
+import { ProfileService } from '../../services/dasProfileService';
 
 // DAS relationship with partner color
 const statusColor = (status?: string) => {
@@ -30,6 +30,8 @@ const statusColor = (status?: string) => {
 };
 
 const ReferencePartnerDetails = ({ entity: partner }: { entity: Partner }) => {
+  const profileService = ProfileService.getInstance();
+
   const storage = useStorageService()!;
   const logo_url = storage.getUrl(`logos/${partner.id}`);
 

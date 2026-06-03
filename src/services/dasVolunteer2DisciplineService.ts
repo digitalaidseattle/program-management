@@ -6,10 +6,10 @@
  */
 
 import { Identifier } from "@digitalaidseattle/core";
-import { supabaseClient } from "@digitalaidseattle/supabase";
 import { Discipline } from "./dasDisciplineService";
-import { Volunteer } from "./dasVolunteerService";
 import { AssociativeTableService } from "./associativeTableService";
+import { SupabaseConfiguration } from "@digitalaidseattle/supabase";
+import { Volunteer } from "./dasVolunteerDao";
 
 
 type Volunteer2Discipline = {
@@ -22,14 +22,21 @@ type Volunteer2Discipline = {
 }
 
 const ASSOC_TABLE = 'volunteer2discipline';
-class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2Discipline> {
+class Volunteer2DisciplineService extends AssociativeTableService<Volunteer2Discipline> {
+    static _instance: Volunteer2DisciplineService;
 
+    static getInstance(): Volunteer2DisciplineService {
+        if (!this._instance) {
+            this._instance = new Volunteer2DisciplineService();
+        }
+        return this._instance;
+    }
     constructor() {
         super(ASSOC_TABLE)
     }
 
     async update(volunteer2Discipline: Volunteer2Discipline, updates: Partial<Volunteer2Discipline>): Promise<Volunteer2Discipline> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .update(updates)
             .eq('volunteer_id', volunteer2Discipline.volunteer_id)
@@ -39,7 +46,7 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
     }
 
     async addDisciplineToVolunteer(discipline: Discipline, volunteer: Volunteer): Promise<Volunteer2Discipline> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .insert(
                 {
@@ -52,7 +59,7 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
     }
 
     async removeDisciplineFromVolunteer(discipline: Discipline, volunteer: Volunteer): Promise<boolean> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .delete()
             .eq('discipline_id', discipline.id)
@@ -61,7 +68,7 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
     }
 
     async findDisciplinesByVolunteerId(volunteerId: Identifier): Promise<Discipline[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, discipline(*)')
             .eq('volunteer_id', volunteerId)
@@ -70,7 +77,7 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
 
 
     async findVolunteersByDisciplineId(disciplineId: Identifier): Promise<Volunteer[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
             .eq('discipline_id', disciplineId)
@@ -78,7 +85,7 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
     }
 
     async findByDisciplineId(disciplineId: Identifier): Promise<Volunteer2Discipline[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, volunteer(*, profile(*))')
             .eq('discipline_id', disciplineId)
@@ -86,7 +93,7 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
     }
 
     async findByVolunteerId(volunteerId: Identifier): Promise<Volunteer2Discipline[]> {
-        return supabaseClient
+        return SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)
             .select('*, discipline(*)')
             .eq('volunteer_id', volunteerId)
@@ -96,8 +103,6 @@ class DASVolunteer2DisciplineService extends AssociativeTableService<Volunteer2D
 }
 
 
-const volunteer2DisciplineService = new DASVolunteer2DisciplineService();
-
-export { volunteer2DisciplineService };
+export { Volunteer2DisciplineService };
 export type { Volunteer2Discipline };
 

@@ -16,13 +16,16 @@ import { ListCard } from '../../components/ListCard';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { EntityListPage } from '../../components/EntityListPage';
-import { profileService } from '../../services/dasProfileService';
-import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
+import { ProfileService } from '../../services/dasProfileService';
+import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
 import { MoreButton } from "./MoreButton";
 
 
 const ReferenceVolunteersPage = () => {
+  const volunteerService = VolunteerService.getInstance();
+  const profileService = ProfileService.getInstance();
+
   const { id } = useParams<string>();
 
   const [entities, setEntities] = useState<Volunteer[]>([]);

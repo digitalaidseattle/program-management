@@ -8,10 +8,12 @@ import { Card, CardContent, CardHeader, Rating, Table, TableBody, TableCell, Tab
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { EntityProps } from "../../components/utils";
-import { Forecast, forecastService, Team } from "../../services/dasTeamService";
+import { Forecast, ForecastService, Team } from "../../services/dasTeamService";
 import { CARD_HEADER_SX } from "./utils";
 
 const ForecastsCard: React.FC<EntityProps<Team>> = ({ entity, onChange }) => {
+    const forecastService = ForecastService.getInstance();
+
     const [forecasts, setForecasts] = useState<Forecast[]>([]);
 
     useEffect(() => {

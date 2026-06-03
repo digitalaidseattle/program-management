@@ -16,13 +16,15 @@ import { InputFormDialog, InputOption } from "@digitalaidseattle/mui";
 import { ColumnsPanelTrigger, DataGrid, FilterPanelTrigger, GridAddIcon, GridColDef, GridDeleteIcon, GridFilterListIcon, GridFilterModel, GridPaginationModel, GridRenderCellParams, GridRowParams, GridRowSelectionModel, GridSortModel, GridViewColumnIcon, Toolbar, ToolbarButton } from "@mui/x-data-grid";
 import useRoles from "../../hooks/useRoles";
 import useVolunteers from "../../hooks/useVolunteers";
-import { Staffing, staffingService } from "../../services/dasStaffingService";
+import { Staffing, StaffingService } from "../../services/dasStaffingService";
 import { STAFFING_COMP } from "../ventures/Utils";
 import { useNotifications } from "@digitalaidseattle/core";
 
 const PAGE_SIZE = 10;
 
 const AllPositions = () => {
+      const staffingService = StaffingService.getInstance();
+
     const notifications = useNotifications();
 
     const [staffing, setStaffing] = useState<Staffing[]>();

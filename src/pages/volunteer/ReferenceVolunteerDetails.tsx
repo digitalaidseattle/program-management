@@ -5,7 +5,7 @@
  */
 import { Avatar, Box, Card, CardContent, CardHeader, Grid } from "@mui/material";
 import dayjs from "dayjs";
-import { profileService } from "../../services/dasProfileService";
+import { ProfileService } from "../../services/dasProfileService";
 import { Volunteer } from "../../services/dasVolunteerService";
 import { TeamsCard } from "./TeamsCard";
 import { DisciplinesCard } from "./DisplinesCard";
@@ -13,6 +13,8 @@ import { ToolsCard } from "./ToolsCard";
 import { VenturesCard } from "./VenturesCard";
 
 const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
+    const profileService = ProfileService.getInstance();
+
     return (
         <Card>
             <CardHeader title={entity.profile?.name} />

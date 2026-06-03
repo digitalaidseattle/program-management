@@ -21,13 +21,16 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
-import { useNotifications } from "@digitalaidseattle/core";
-import { storageService } from "../../App";
+import { getCoreServices, useNotifications } from "@digitalaidseattle/core";
 import { ScrollList } from "../../components/ScrollList";
-import { Staffing, staffingService } from "../../services/dasStaffingService";
-import { Volunteer, volunteerService } from "../../services/dasVolunteerService";
+import { Staffing, StaffingService } from "../../services/dasStaffingService";
+import { Volunteer, VolunteerService } from "../../services/dasVolunteerService";
 
 const VolunteerMatching = () => {
+    const volunteerService = VolunteerService.getInstance();
+    const staffingService = StaffingService.getInstance();
+    const storageService = getCoreServices().storageService!;
+
     const theme = useTheme();
     const notifications = useNotifications();
 

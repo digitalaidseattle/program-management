@@ -20,17 +20,21 @@ import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { useNavigate } from 'react-router';
 
-import { storageService } from '../../App';
 import { ManagedListCard } from '../../components/ManagedListCard';
-import { Discipline, disciplineService } from '../../services/dasDisciplineService';
-import { volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
+import { Discipline, DisciplineService } from '../../services/dasDisciplineService';
+import { Volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
 import { Volunteer } from '../../services/dasVolunteerService';
+import { getCoreServices } from "@digitalaidseattle/core";
 
 type VolunteerWithSenior = Volunteer & {
   senior: boolean;
 }
 
 const ReferenceDisciplineDetails = ({ entity }: { entity: Discipline }) => {
+  const disciplineService = DisciplineService.getInstance();
+  const volunteer2DisciplineService = Volunteer2DisciplineService.getInstance();
+  const storageService = getCoreServices().storageService!;
+
   const navigate = useNavigate();
 
   const [volunteerCards, setVolunteerCards] = useState<React.ReactNode[]>([]);

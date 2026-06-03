@@ -11,14 +11,17 @@ import {
 import { useEffect, useState } from 'react';
 
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useNotifications, useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog, SelectItemDialog } from '@digitalaidseattle/mui';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { EntityProps } from '../../components/utils';
-import { Meeting, MeetingAttendee, meetingAttendeeService } from '../../services/dasMeetingService';
-import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
-import { useNotifications, useStorageService } from '@digitalaidseattle/core';
+import { Meeting, MeetingAttendee, MeetingAttendeeService } from '../../services/dasMeetingService';
+import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 
 function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const volunteerService = VolunteerService.getInstance();
+    const meetingAttendeeService = MeetingAttendeeService.getInstance();
+
     const [attendees, setAttendees] = useState<MeetingAttendee[]>([]);
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [showConfirmationDialog, setShowConfirmationDialog] = useState<boolean>(false);

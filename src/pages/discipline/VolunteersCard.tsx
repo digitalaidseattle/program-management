@@ -11,10 +11,13 @@ import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityProps } from '../../components/utils';
 import { Discipline } from '../../services/dasDisciplineService';
-import { Volunteer2Discipline, volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
-import { Volunteer, volunteerService } from '../../services/dasVolunteerService';
+import { Volunteer2Discipline, Volunteer2DisciplineService } from '../../services/dasVolunteer2DisciplineService';
+import { Volunteer } from '../../services/dasVolunteerDao';
+import { VolunteerService } from '../../services/dasVolunteerService';
 
 export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onChange }) => {
+    const volunteer2DisciplineService = Volunteer2DisciplineService.getInstance();
+
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
@@ -26,7 +29,7 @@ export const VolunteersCard: React.FC<EntityProps<Discipline>> = ({ entity, onCh
     const storageService = useStorageService()!;
 
     useEffect(() => {
-        volunteerService.getActive()
+        VolunteerService.getInstance().getActive()
             .then(vols => setVolunteers(vols));
     }, []);
 

@@ -5,13 +5,15 @@
  *
  */
 
+import { getCoreServices } from "@digitalaidseattle/core";
 import { describe, expect, it, vi } from "vitest";
-import { storageService } from "../App";
-import { Contact, Partner, Profile2Partner, profile2PartnerService } from "../services/dasPartnerService";
-import { Profile, profileService } from "../services/dasProfileService";
+import { Contact, Partner, Profile2Partner, Profile2PartnerService } from "../services/dasPartnerService";
+import { Profile, ProfileService } from "../services/dasProfileService";
 import { updateContact } from "./UpdateContact";
 
 describe("UpdateContact", () => {
+    const profileService = ProfileService.getInstance();
+    const storageService = getCoreServices().storageService!;
 
     it.beforeEach(() => {
         vi.resetAllMocks();
@@ -40,7 +42,7 @@ describe("UpdateContact", () => {
             .mockResolvedValue(updatedProfile);
         const uploadSpy = vi.spyOn(storageService, 'upload')
             .mockResolvedValue(true);
-        const updateP2pSpy = vi.spyOn(profile2PartnerService, 'update')
+        const updateP2pSpy = vi.spyOn(Profile2PartnerService.getInstance(), 'update')
             .mockResolvedValue(updatedP2p);
         const getByIdSpy = vi.spyOn(profileService, 'getById')
             .mockResolvedValue(found);
@@ -85,7 +87,7 @@ describe("UpdateContact", () => {
             .mockResolvedValue(updatedProfile);
         const uploadSpy = vi.spyOn(storageService, 'upload')
             .mockResolvedValue(true);
-        const updateP2pSpy = vi.spyOn(profile2PartnerService, 'update')
+        const updateP2pSpy = vi.spyOn(Profile2PartnerService.getInstance(), 'update')
             .mockResolvedValue(updatedP2p);
         const getByIdSpy = vi.spyOn(profileService, 'getById')
             .mockResolvedValue(found);
@@ -129,7 +131,7 @@ describe("UpdateContact", () => {
             .mockResolvedValue(updatedProfile);
         const uploadSpy = vi.spyOn(storageService, 'upload')
             .mockResolvedValue(true);
-        const updateP2pSpy = vi.spyOn(profile2PartnerService, 'update')
+        const updateP2pSpy = vi.spyOn(Profile2PartnerService.getInstance(), 'update')
             .mockResolvedValue(updatedP2p);
         const getByIdSpy = vi.spyOn(profileService, 'getById')
             .mockResolvedValue(found);

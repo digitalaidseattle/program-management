@@ -9,7 +9,7 @@ import {
     TableRow
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Meeting, MeetingTopic, meetingTopicService } from "../../services/dasMeetingService";
+import { Meeting, MeetingTopic, MeetingTopicService, } from "../../services/dasMeetingService";
 
 import { EntityProps } from "../../components/utils";
 
@@ -17,6 +17,8 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { CARD_HEADER_SX } from "./utils";
 
 export function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const meetingTopicService = MeetingTopicService.getInstance();
+
     const [topics, setTopics] = useState<MeetingTopic[]>([]);
 
     useEffect(() => {

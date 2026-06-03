@@ -5,11 +5,14 @@
  *
  */
 
-import { storageService } from "../App";
-import { Contact, Partner, profile2PartnerService } from "../services/dasPartnerService";
-import { profileService } from "../services/dasProfileService";
+import { getCoreServices } from "@digitalaidseattle/core";
+import { Contact, Partner, Profile2PartnerService } from "../services/dasPartnerService";
+import { ProfileService } from "../services/dasProfileService";
 
 export async function updateContact(partner: Partner, contact: Contact, picture: File | undefined): Promise<Contact> {
+    const profileService = ProfileService.getInstance();
+    const storageService = getCoreServices().storageService!;
+
     const filePath = picture ? profileService.getNextPicUrl(contact) : contact.pic;
     const upload = {
         ...contact,
@@ -27,7 +30,7 @@ export async function updateContact(partner: Partner, contact: Contact, picture:
         await storageService.upload(filePath, picture);
     }
 
-    await profile2PartnerService.update(partner.id, profile.id, { title: contact.title });
+    await Profile2PartnerService.getInstance().update(partner.id, profile.id, { title: contact.title });
 
     return profileService.getById(contact.id)
         .then(found => ({

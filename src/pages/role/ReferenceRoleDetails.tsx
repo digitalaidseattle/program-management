@@ -10,7 +10,7 @@ import {
 
 import Markdown from 'react-markdown';
 import { FieldRow } from '../../components/FieldRow';
-import { Role, roleService } from '../../services/dasRoleService';
+import { Role, RoleService } from '../../services/dasRoleService';
 
 const ReferenceRoleDetails = ({ entity }: { entity: Role }) => {
 
@@ -26,7 +26,7 @@ const ReferenceRoleDetails = ({ entity }: { entity: Role }) => {
               sx={
                 {
                   height: '100%',
-                  backgroundImage: `url(${roleService.getIconUrl(entity)})`,
+                  backgroundImage: `url(${RoleService.getInstance().getIconUrl(entity)})`,
                   backgroundSize: 'contain', // or 'contain'
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center',

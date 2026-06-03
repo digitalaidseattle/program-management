@@ -14,7 +14,7 @@ import { VentureReportDetails } from "../../components/VentureReportDetails";
 import { VentureReport, VentureReportService } from "../../services/dasVentureReportService";
 
 export const VentureStatusReportPage = () => {
-    const service = VentureReportService.instance();
+    const service = VentureReportService.getInstance();
     const { id } = useParams<string>();
     const { setLoading } = useContext(LoadingContext);
     const notifications = useNotifications();

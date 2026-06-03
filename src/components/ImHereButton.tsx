@@ -9,7 +9,7 @@ import { CheckOutlined } from "@ant-design/icons";
 import { Button, SxProps, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useVolunteer } from "../hooks/useVolunteer";
-import { Meeting, MeetingAttendee, meetingAttendeeService } from "../services/dasMeetingService";
+import { Meeting, MeetingAttendee, MeetingAttendeeService } from "../services/dasMeetingService";
 
 function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProps, onChange: (ma: MeetingAttendee) => void }) {
     const { volunteer } = useVolunteer();
@@ -30,7 +30,8 @@ function ImHereButton({ meeting, sx, onChange }: { meeting: Meeting, sx?: SxProp
 
     function handleClick() {
         if (meetingAttendee) {
-            meetingAttendeeService.update(meetingAttendee.id, { status: 'present' })
+            MeetingAttendeeService.getInstance()
+                .update(meetingAttendee.id, { status: 'present' })
                 .then((updated) => onChange(updated))
         }
     }

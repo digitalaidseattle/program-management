@@ -13,13 +13,14 @@ import { Meeting, MeetingAttendee } from "../../services/dasMeetingService";
 
 import { CheckCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { useStorageService } from "@digitalaidseattle/core";
-import { Team, teamService } from "../../services/dasTeamService";
+import { Team, TeamService,  } from "../../services/dasTeamService";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
 import { CARD_HEADER_SX } from "./utils";
 import { ScrollList } from "../../components/ScrollList";
 
 
 function AttendeesCard({ entity: meeting }: { entity: Meeting, sx?: SxProps, onChange: (updated: any) => void }) {
+    const teamService = TeamService.getInstance();
     const theme = useTheme();
 
     const [teams, setTeams] = useState<Team[]>([]);

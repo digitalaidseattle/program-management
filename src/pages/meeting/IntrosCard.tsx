@@ -13,8 +13,8 @@ import {
 
 import dayjs from 'dayjs';
 import { EntityProps } from '../../components/utils';
-import { Meeting, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
-import { volunteerService } from '../../services/dasVolunteerService';
+import { Meeting, MeetingTopic, MeetingTopicService } from '../../services/dasMeetingService';
+import { VolunteerService } from '../../services/dasVolunteerService';
 import { } from 'airtable';
 import { useEffect, useState } from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -22,6 +22,9 @@ import { useNotifications } from '@digitalaidseattle/core';
 
 
 function IntrosCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+    const volunteerService = VolunteerService.getInstance();
+    const meetingTopicService = MeetingTopicService.getInstance();
+
     const [intros, setIntros] = useState<MeetingTopic[]>([]);
 
     const notifications = useNotifications();

@@ -6,9 +6,9 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { Meeting, MeetingAttendee, meetingAttendeeService, meetingService } from "../services/dasMeetingService";
-import { Volunteer } from "../services/dasVolunteerService";
+import { Meeting, MeetingAttendee, MeetingAttendeeService, MeetingService} from "../services/dasMeetingService";
 import { createAdhocMeeting } from "./CreateAdhocMeeting";
+import { Volunteer } from "../services/dasVolunteerDao";
 
 describe("CreateAdhocMeeting", () => {
     it.beforeEach(() => {
@@ -26,13 +26,13 @@ describe("CreateAdhocMeeting", () => {
         } as Volunteer;
         const insertedAttendee = {} as MeetingAttendee;
         const inserted = { id: "inserted_id" } as Meeting;
-        const found = { } as Meeting;
+        const found = {} as Meeting;
 
-        const insertMeetingSpy = vi.spyOn(meetingService, 'insert')
+        const insertMeetingSpy = vi.spyOn(MeetingService.getInstance(), 'insert')
             .mockResolvedValue(inserted);
-        const insertAttendeddSpy = vi.spyOn(meetingAttendeeService, 'insert')
+        const insertAttendeddSpy = vi.spyOn(MeetingAttendeeService.getInstance(), 'insert')
             .mockResolvedValue(insertedAttendee);
-        const getByIdSpy = vi.spyOn(meetingService, 'getById')
+        const getByIdSpy = vi.spyOn(MeetingService.getInstance(), 'getById')
             .mockResolvedValue(found);
 
         createAdhocMeeting(volunteer)

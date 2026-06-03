@@ -5,125 +5,104 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { Profile } from "./dasProfileService";
-import { Identifier } from "@digitalaidseattle/core";
+import { Identifier, PageInfo, QueryModel } from "@digitalaidseattle/core";
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { v4 as uuid } from 'uuid';
+import {
+    Meeting,
+    MeetingAttendee,
+    MeetingAttendeeDao,
+    MeetingDao,
+    MeetingTopic,
+    MeetingTopicDao,
+    MeetingType
+} from "./dasMeetingDao";
 import { Volunteer } from "./dasVolunteerService";
-import { Team } from "./dasTeamService";
-import dayjs from "dayjs";
 
-type MeetingAttendee = {
-    id: string;
-    meeting_id: string;
-    meeting?: Meeting;
-    profile_id: string;
-    profile?: Profile;
-    team_id?: string;  // leadership meeting
-    team?: string;
-    status: 'present' | 'absent' | 'unknown';
-    email: string;
-}
-
-type MeetingTopic = {
-    id: string,
-    meeting_id: string;
-    type: 'icebreaker' | 'shoutout' | 'team' | 'intro' | 'anniversary',
-    subject_id: string[]; // ids for intro/anniversary/shoutouts
-    subject: string; // alternate subject
-    message: string;
-    source: string; // who/team submitted it
-    discussed: boolean;
-}
-
-type MeetingType = "adhoc" | "team" | "plenary" | "leadership";
-type Meeting = {
-    id: string;
-    name: string;
-    type: MeetingType;
-    start_date: Date;
-    end_date: Date;
-    meeting_attendee?: MeetingAttendee[];
-    meeting_topic?: MeetingTopic[];
-    meeting_url: string;
-    status: 'new' | 'concluded';
-    notes: string;
-    team_id?: string;
-    team?: Team;
-}
-
-const MEETING_SELECT = '*, meeting_attendee(*, profile(*)), meeting_topic(*)';
 class MeetingService extends SupabaseEntityService<Meeting> {
 
+    private static _instance: MeetingService;
+
+    static getInstance(): MeetingService {
+        if (!this._instance) {
+            this._instance = new MeetingService();
+        }
+        return this._instance;
+    }
+
     public constructor() {
-        super("meeting");
+        super(MeetingDao.getInstance());
+    }
+
+    getDao(): MeetingDao {
+        return this.dao as MeetingDao;
+    }
+
+    async find(queryModel: QueryModel): Promise<PageInfo<Meeting>> {
+        return this.getDao().find(queryModel);
     }
 
     async findByAirtableId(airtableId: string): Promise<Meeting> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('airtable_id', airtableId)
-            .single()
-            .then((resp: any) => resp.data);
+        return this.getDao().findByAirtableId(airtableId)
     }
 
     async getCurrent(type: string): Promise<Meeting> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select(MEETING_SELECT)
-            .eq('type', type)
-            .eq('status', 'new')
-            .order('start_date', { ascending: false })
-            .then((resp: any) => resp.data[0]);
+        return this.getDao().getCurrent(type);
     }
 
-    async getById(entityId: Identifier, select?: string): Promise<Meeting | null> {
-        return super.getById(entityId, select ?? MEETING_SELECT)
+    async getById(entityId: Identifier, select?: string, mapper?: ((json: any) => Meeting) | undefined): Promise<Meeting | null> {
+        return this.getDao().getById(entityId, { select: select, mapper: mapper });
     }
 
     async findByMonth(month: Date): Promise<Meeting[]> {
-        const start_date = dayjs(month).startOf('month');
-        const end_date = start_date.add(1, 'month');
-        return await supabaseClient
-            .from(this.tableName)
-            .select(MEETING_SELECT)
-            .gte('start_date', start_date.toISOString())
-            .lt('start_date', end_date.toISOString())
-            .then((resp: any) => resp.data);
+        return this.getDao().findByMonth(month);
     }
 
 }
 
 class MeetingAttendeeService extends SupabaseEntityService<MeetingAttendee> {
+    private static _instance: MeetingAttendeeService;
+
+    static getInstance(): MeetingAttendeeService {
+        if (!this._instance) {
+            this._instance = new MeetingAttendeeService();
+        }
+        return this._instance;
+    }
 
     public constructor() {
-        super("meeting_attendee");
+        super(MeetingAttendeeDao.getInstance());
+    }
+
+    getDao(): MeetingAttendeeDao {
+        return this.dao as MeetingAttendeeDao;
     }
 
     createFromVolunteer(volunteer: Volunteer, meeting: Meeting): MeetingAttendee {
-        return ({
-            id: uuid(),
-            meeting_id: meeting.id,
-            profile_id: volunteer.profile!.id,
-            email: volunteer.das_email,
-            status: 'unknown'
-        });
+        return this.getDao().createFromVolunteer(volunteer, meeting);
     }
 
     async findByProfileId(id: string): Promise<MeetingAttendee[]> {
-        return supabaseClient
-            .from(this.tableName)
-            .select('*, meeting(*)')
-            .eq('profile_id', id)
-            .then((resp: any) => resp.data);
+        return this.getDao().findByProfileId(id);
     }
 }
 
 class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
+    private static _instance: MeetingTopicService;
+
+    static getInstance(): MeetingTopicService {
+        if (!this._instance) {
+            this._instance = new MeetingTopicService();
+        }
+        return this._instance;
+    }
 
     public constructor() {
-        super("meeting_topic");
+        super(MeetingTopicDao.getInstance());
+    }
+
+    getDao(): MeetingTopicDao {
+        return this.dao as MeetingTopicDao;
     }
 
     empty(meetingId: string): MeetingTopic {
@@ -140,19 +119,11 @@ class MeetingTopicService extends SupabaseEntityService<MeetingTopic> {
     }
 
     async findIntros(): Promise<MeetingTopic[]> {
-        return supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('type', 'intro')
-            .then((resp: any) => resp.data);
+        return this.findIntros();
     }
 
 }
 
-const meetingService = new MeetingService();
-const meetingAttendeeService = new MeetingAttendeeService();
-const meetingTopicService = new MeetingTopicService();
-
-export { meetingService, meetingAttendeeService, meetingTopicService };
-export type { Meeting, MeetingType, MeetingAttendee, MeetingTopic };
+export { MeetingAttendeeService, MeetingService, MeetingTopicService };
+export type { Meeting, MeetingAttendee, MeetingTopic, MeetingType };
 

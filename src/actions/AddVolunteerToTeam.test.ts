@@ -6,10 +6,10 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { Team2Volunteer, team2VolunteerService } from "../services/dasTeam2VolunteerService";
+import { Team2Volunteer, Team2VolunteerService } from "../services/dasTeam2VolunteerService";
 import { Team } from "../services/dasTeamService";
-import { Volunteer } from "../services/dasVolunteerService";
 import { addVolunteerToTeam } from "./AddVolunteerToTeam";
+import { Volunteer } from "../services/dasVolunteerDao";
 
 describe("addVolunteerToTeam", () => {
 
@@ -18,7 +18,7 @@ describe("addVolunteerToTeam", () => {
         const volunteer = { id: "volunteer_id" } as Volunteer;
         const t2v = {} as Team2Volunteer;
 
-        const addSpy = vi.spyOn(team2VolunteerService, 'addVolunteerToTeam')
+        const addSpy = vi.spyOn(Team2VolunteerService.getInstance(), 'addVolunteerToTeam')
             .mockResolvedValue(t2v);
 
         addVolunteerToTeam(volunteer, team)

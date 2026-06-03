@@ -22,7 +22,7 @@ import {
 // third-party
 
 // project import
-import { PageInfo } from '@digitalaidseattle/supabase';
+import { PageInfo } from '@digitalaidseattle/core';
 import { Staffing } from '../services/dasStaffingService';
 import { STAFFING_COMP } from '../pages/ventures/Utils';
 

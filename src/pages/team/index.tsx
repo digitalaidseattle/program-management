@@ -15,12 +15,12 @@ import { useEffect, useState } from 'react';
 import Markdown from "react-markdown";
 import { useParams } from 'react-router';
 import { EntityProps } from '../../components/utils';
-import { Team, teamService } from '../../services/dasTeamService';
+import { Team, TeamService } from '../../services/dasTeamService';
 import { ForecastsCard } from './ForecastsCard';
 import { OKRsCard } from './OKRsCard';
 import { ToolsCard } from './ToolsCard';
 import { VolunteersCard } from './VolunteersCard';
-import { storageService } from '../../App';
+import { getCoreServices } from '@digitalaidseattle/core';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
@@ -29,6 +29,8 @@ type TeamDetailsdProps = EntityProps<Team> & {
 }
 
 const TeamDetails: React.FC<TeamDetailsdProps> = ({ entity, onChange, editable = false }) => {
+  const storageService = getCoreServices().storageService!;
+
   return (entity &&
     <Stack gap={2}>
       <Grid container spacing={2}>
@@ -83,6 +85,8 @@ const TeamDetails: React.FC<TeamDetailsdProps> = ({ entity, onChange, editable =
 }
 
 const TeamPage = () => {
+  const teamService = TeamService.getInstance();
+
   const [entity, setEntity] = useState<Team>();
   const { id } = useParams<string>();
 

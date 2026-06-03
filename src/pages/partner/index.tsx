@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Partner, partnerService } from '../../services/dasPartnerService';
+import { Partner, PartnerService } from '../../services/dasPartnerService';
 import { PartnerDetails } from './PartnerDetails';
 
 const PartnerPage = () => {
@@ -19,7 +19,7 @@ const PartnerPage = () => {
 
   function refresh() {
     if (id) {
-      partnerService.getById(id)
+      PartnerService.getInstance().getById(id)
         .then((en) => setEntity(en!));
     }
   }

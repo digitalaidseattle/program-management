@@ -18,11 +18,13 @@ import { Venture, VentureService } from '../../services/dasVentureService';
 import { MoreButton } from "./MoreButton";
 
 import { EntityListPage } from '../../components/EntityListPage';
-import { partnerService } from '../../services/dasPartnerService';
 import { ReferenceVentureDetails } from "../../components/ReferenceVentureDetails";
+import { PartnerService } from "../../services/dasPartnerService";
 
 const ReferenceVenturesPage = () => {
-  const ventureService = VentureService.instance();
+  const ventureService = VentureService.getInstance();
+  const partnerService = PartnerService.getInstance()
+
   const { id } = useParams<string>();
   const [entities, setEntities] = useState<Venture[]>([]);
   const [filter, setFilter] = useState<string>('Active');

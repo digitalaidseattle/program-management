@@ -4,8 +4,7 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Entity } from "@digitalaidseattle/core";
-import { PageInfo } from "@digitalaidseattle/supabase";
+import { Entity, PageInfo } from "@digitalaidseattle/core";
 import { Grid } from "@mui/material";
 
 type EntityGridProps<T extends Entity> = {

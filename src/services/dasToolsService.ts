@@ -5,21 +5,9 @@
  *
  */
 
-import { supabaseClient, SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { storageService } from "../App";
-
-type Tool = {
-    id: string,
-    airtable_id: string,
-    name: string,
-    experts: string[],
-    status: string,
-    overview: string,
-    logo: string,
-    description: string,
-    teams: string[],
-    admins: string[]
-}
+import { SupabaseEntityService } from "@digitalaidseattle/supabase";
+import { Tool, ToolsDao } from "./dasToolsDao";
+import { getCoreServices, PageInfo, QueryModel } from "@digitalaidseattle/core";
 
 class ToolService extends SupabaseEntityService<Tool> {
 
@@ -30,27 +18,31 @@ class ToolService extends SupabaseEntityService<Tool> {
 
     static _instance: ToolService;
 
-    static instance(): ToolService {
+    static getInstance(): ToolService {
         if (!this._instance) {
             this._instance = new ToolService();
         }
         return this._instance;
     }
+
     public constructor() {
-        super("tool");
+        super(ToolsDao.getInstance());
+    }
+
+    getDao(): ToolsDao {
+        return this.dao as ToolsDao;
+    }
+
+    async find(queryModel: QueryModel): Promise<PageInfo<Tool>> {
+        return this.getDao().find(queryModel);
     }
 
     async findByAirtableId(airtableId: string): Promise<Tool> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('airtable_id', airtableId)
-            .single()
-            .then((resp: any) => resp.data);
-
+        return this.getDao().findByAirtableId(airtableId);
     }
 
     getLogoUrl(tool: Tool): string | undefined {
+        const storageService = getCoreServices().storageService!;
         return tool.logo ? storageService.getUrl(tool.logo) : undefined
     }
 
@@ -61,16 +53,11 @@ class ToolService extends SupabaseEntityService<Tool> {
     }
 
     async findByStatus(status: string): Promise<Tool[]> {
-        return await supabaseClient
-            .from(this.tableName)
-            .select('*')
-            .eq('status', status)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+        return this.getDao().findByStatus(status);
     }
 }
 
-const toolService = ToolService.instance();
 
-export { toolService, ToolService };
-export type { Tool };
+export { ToolService };
+export type { Tool }
 

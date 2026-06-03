@@ -5,11 +5,12 @@
  *
  */
 
-import { Volunteer2Tool, volunteer2ToolService } from "../services/dasVolunteer2ToolService";
+import { Volunteer2Tool, Volunteer2ToolService } from "../services/dasVolunteer2ToolService";
 
 export function toggleVolunteer2ToolExpertFlag(v2t: Volunteer2Tool): Promise<Volunteer2Tool> {
     // other steps could go here.
     // maybe audit history or notifications
     const newValue = v2t.expert === undefined ? true : !v2t.expert;
-    return volunteer2ToolService.update(v2t, { expert: newValue })
+    return Volunteer2ToolService.getInstance()
+        .update(v2t, { expert: newValue })
 }

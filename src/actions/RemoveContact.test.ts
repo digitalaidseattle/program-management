@@ -6,17 +6,19 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { storageService } from "../App";
 import { Contact } from "../services/dasPartnerService";
-import { profileService } from "../services/dasProfileService";
+import { ProfileService } from "../services/dasProfileService";
 import { removeContact } from "./RemoveContact";
+import { getCoreServices } from "@digitalaidseattle/core";
 
 describe("removeContact", () => {
+    const profileService = ProfileService.getInstance();
+    const storageService = getCoreServices().storageService!;
 
     it.beforeEach(() => {
         vi.resetAllMocks();
     })
-    
+
     it("basic", () => {
 
         const contact = {

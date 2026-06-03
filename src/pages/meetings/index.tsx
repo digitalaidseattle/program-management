@@ -1,16 +1,17 @@
 
-// material-ui
+import { ReactNode, useState } from 'react';
+import { useNavigate } from 'react-router';
+
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
 import { IconButton, Stack, Toolbar } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
-import { ReactNode, useState } from 'react';
-import { useNavigate } from 'react-router';
+
+import { PageInfo, QueryModel } from '@digitalaidseattle/core';
 import AddMeetingDialog from '../../components/AddMeetingDialog';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
-import { Meeting, meetingService } from '../../services/dasMeetingService';
+import { Meeting, MeetingService } from '../../services/dasMeetingService';
 import { MeetingDetails } from '../meeting';
 
 const columns: GridColDef<Meeting[][number]>[] = [
@@ -64,6 +65,8 @@ function MeetingToolbar(): ReactNode {
 }
 
 const MeetingsPage = () => {
+  const meetingService = MeetingService.getInstance();
+
   const [pageInfo, setPageInfo] = useState<PageInfo<Meeting>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
 

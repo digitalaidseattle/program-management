@@ -1,14 +1,15 @@
 
 // material-ui
-import { PageInfo, QueryModel } from '@digitalaidseattle/supabase';
+import { PageInfo, QueryModel } from '@digitalaidseattle/core';
 import { Avatar, Box, Chip } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import ListDetailPage from '../../components/ListDetailPage';
-import { Tool, toolService } from '../../services/dasToolsService';
+import { Tool, ToolService, } from '../../services/dasToolsService';
 
 const ToolsPage = () => {
+  const toolService = ToolService.getInstance();
   const [pageInfo, setPageInfo] = useState<PageInfo<Tool>>({ rows: [], totalRowCount: 0 });
   const navigate = useNavigate();
 
@@ -40,10 +41,10 @@ const ToolsPage = () => {
     {
       field: 'status', headerName: 'Status', width: 200,
       renderCell: (params) => (
-         <Chip label={params.row.status} color={params.row.status === 'active' ? 'success' : 'error'} />
+        <Chip label={params.row.status} color={params.row.status === 'active' ? 'success' : 'error'} />
       ),
     },
-   
+
 
     { field: 'description', headerName: 'Description', width: 800 },
 

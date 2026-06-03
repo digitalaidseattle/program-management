@@ -5,16 +5,16 @@
  *
  */
 import { describe, expect, it, vi } from "vitest";
-import { Volunteer2Discipline, volunteer2DisciplineService } from "../services/dasVolunteer2DisciplineService";
+import { Volunteer2Discipline, Volunteer2DisciplineService } from "../services/dasVolunteer2DisciplineService";
 import { toggleVolunteer2DisciplineSeniorFlag } from "./ToggleVolunteer2DisciplineSeniorFlag";
 
 describe("toggleVolunteer2DisciplineSeniorFlag", () => {
 
     it("basic", () => {
-        const v2d = {senior: false} as Volunteer2Discipline;
+        const v2d = { senior: false } as Volunteer2Discipline;
         const updated = {} as Volunteer2Discipline;
 
-        const updateSpy = vi.spyOn(volunteer2DisciplineService, 'update')
+        const updateSpy = vi.spyOn(Volunteer2DisciplineService.getInstance(), 'update')
             .mockResolvedValue(updated);
 
         toggleVolunteer2DisciplineSeniorFlag(v2d)

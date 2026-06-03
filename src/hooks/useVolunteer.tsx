@@ -6,11 +6,12 @@
  */
 import { useAuthService } from "@digitalaidseattle/core";
 import { useEffect, useState } from "react";
-import { Volunteer, volunteerService } from "../services/dasVolunteerService";
+import { Volunteer, VolunteerService } from "../services/dasVolunteerService";
 
 
 export const useVolunteer = () => {
     const authService = useAuthService();
+    const volunteerService = VolunteerService.getInstance();
 
     const [status, setStatus] = useState<string>('');
     const [volunteer, setVolunteer] = useState<Volunteer>();

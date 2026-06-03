@@ -16,9 +16,10 @@ import { useEffect, useState } from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
 import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import { EntityProps } from '../../components/utils';
-import { Meeting, MeetingTopic, meetingTopicService } from '../../services/dasMeetingService';
+import { Meeting, MeetingTopic, MeetingTopicService } from '../../services/dasMeetingService';
 
 function TopicsCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
+  const meetingTopicService = MeetingTopicService.getInstance();
 
   const [topics, setTopics] = useState<MeetingTopic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<MeetingTopic>();
