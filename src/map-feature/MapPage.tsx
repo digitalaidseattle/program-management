@@ -25,7 +25,7 @@ import { Configuration as MapConfiguration } from './library/Configuration';
 import { Volunteer } from './VolunteerDao';
 
 const Labels = {
-  title: 'Map Example',
+  title: 'Where in the world is...',
   saveButton: 'Save',
   resetButton: 'Reset',
 }
@@ -70,6 +70,8 @@ function MobileVolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onC
 }
 
 const MapPage = () => {
+    const teamMemberService = TeamMemberService.getInstance();
+    const locationService = LocationService.getInstance();
 
   const [initialized, setInitialized] = useState(false);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
@@ -103,7 +105,6 @@ const MapPage = () => {
   }, [volunteers]);
 
   async function fetchActiveVolunteers() {
-    const teamMemberService = TeamMemberService.getInstance();
     teamMemberService.getAll()
       .then(resp => {
         setVolunteers(
@@ -114,7 +115,6 @@ const MapPage = () => {
   }
 
   async function fetchLocations() {
-    const teamMemberService = TeamMemberService.getInstance();
     const locs: Location[] = [];
     for (const v of volunteers) {
       const loc = await teamMemberService.getLocation(v);
@@ -122,13 +122,15 @@ const MapPage = () => {
         locs.push(loc);
       }
     }
+    const uni = locationService.unique(locations);
+    console.log(locs, uni)
     setLocations(locs);
-    setUniqueLocations(LocationService.getInstance().unique(locations));
+    setUniqueLocations(uni);
   }
 
   async function handleVolunteerSelection(volunteer: Volunteer | null) {
     if (volunteer) {
-      const loc = await LocationService.getInstance().findByName(volunteer.location.trim());
+      const loc = await locationService.findByName(volunteer.location.trim());
       if (loc) {
         setSelectedLocation(loc);
       } else {
