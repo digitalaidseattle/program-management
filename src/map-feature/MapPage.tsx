@@ -70,8 +70,8 @@ function MobileVolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onC
 }
 
 const MapPage = () => {
-    const teamMemberService = TeamMemberService.getInstance();
-    const locationService = LocationService.getInstance();
+  const teamMemberService = TeamMemberService.getInstance();
+  const locationService = LocationService.getInstance();
 
   const [initialized, setInitialized] = useState(false);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
@@ -104,6 +104,11 @@ const MapPage = () => {
     fetchLocations();
   }, [volunteers]);
 
+  useEffect(() => {
+    const unique = locationService.unique(locations);
+    setUniqueLocations(unique);
+  }, [locations]);
+
   async function fetchActiveVolunteers() {
     teamMemberService.getAll()
       .then(resp => {
@@ -122,10 +127,7 @@ const MapPage = () => {
         locs.push(loc);
       }
     }
-    const uni = locationService.unique(locations);
-    console.log(locs, uni)
     setLocations(locs);
-    setUniqueLocations(uni);
   }
 
   async function handleVolunteerSelection(volunteer: Volunteer | null) {
