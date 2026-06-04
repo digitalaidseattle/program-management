@@ -10,6 +10,7 @@ import {
     CalendarOutlined,
     CompassOutlined,
     CrownOutlined,
+    GlobalOutlined,
     HeartOutlined,
     HomeOutlined,
     IdcardOutlined,
@@ -41,6 +42,13 @@ export const TemplateConfig = () => {
                     type: 'item',
                     url: '/',
                     icon: <HomeOutlined />
+                },
+                {
+                    id: 'maps',
+                    title: 'Where in the world is...',
+                    type: 'item',
+                    url: '/where',
+                    icon: <GlobalOutlined />
                 }]
         } as MenuItem;
 
