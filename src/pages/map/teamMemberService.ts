@@ -7,8 +7,9 @@
  *
  */
 
-import { Location, LocationService } from './library/LocationService';
-import { Volunteer, VolunteerDao } from './VolunteerDao';
+import { Location, LocationService } from '../../map-feature/LocationService';
+import {  VolunteerDao } from '../../data/coda/VolunteerDao';
+import { Volunteer } from '../../data/types';
 
 class TeamMemberService {
     private static instance: TeamMemberService;

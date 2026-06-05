@@ -18,17 +18,11 @@ import {
   useTheme
 } from '@mui/material';
 
-import { Map } from './library/Map';
-import { Location, LocationService } from './library/LocationService';
+import { Map } from '../../map-feature/Map';
+import { Location, LocationService } from '../../map-feature/LocationService';
 import { TeamMemberService } from './teamMemberService';
-import { Configuration as MapConfiguration } from './library/Configuration';
-import { Volunteer } from './VolunteerDao';
-
-const Labels = {
-  title: 'Where in the world is...',
-  saveButton: 'Save',
-  resetButton: 'Reset',
-}
+import { Configuration as MapConfiguration } from '../../map-feature/Configuration';
+import { Volunteer } from '../../data/types';
 
 const MAP_HEIGHT = 'calc(100dvh - 140px)';
 
@@ -38,7 +32,7 @@ function VolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onClick: 
       <CardHeader
         title={volunteer.name}
         subheader={volunteer.role}
-        avatar={<Avatar alt={volunteer.name} src={volunteer.url} />} >
+        avatar={<Avatar alt={volunteer.name} src={volunteer.pic} />} >
       </CardHeader>
     </Card>
   )
@@ -49,7 +43,7 @@ function MobileVolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onC
     <Card onClick={onClick} sx={{
       height: 180, width: 240,
       backgroundSize: 'cover',
-      backgroundPosition: 'center', backgroundImage: `url(${volunteer.url})`
+      backgroundPosition: 'center', backgroundImage: `url(${volunteer.pic})`
     }}>
       <Box flexDirection="column"
         justifyContent="flex-end"
@@ -69,7 +63,7 @@ function MobileVolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onC
   )
 }
 
-const MapPage = () => {
+const VolunteerMap = () => {
   const teamMemberService = TeamMemberService.getInstance();
   const locationService = LocationService.getInstance();
 
@@ -147,7 +141,7 @@ const MapPage = () => {
   function singleVolunteerPopup(volunteer: Volunteer) {
     return (
       <Stack>
-        <img src={volunteer.url} />
+        <img src={volunteer.pic} />
         <Typography fontWeight={600}>{volunteer.name}</Typography>
         <Typography fontWeight={400}>{volunteer.role}</Typography>
         <Typography fontWeight={400}>{volunteer.location}</Typography>
@@ -188,24 +182,17 @@ const MapPage = () => {
         onClick={() => handleVolunteerSelection(volunteer)} />
   }
 
-  return (
-    <Card>
-      <CardHeader
-        title={Labels.title}
+  return (initialized &&
+    <Box height={MAP_HEIGHT}>
+      <Map
+        items={volunteers}
+        pins={uniqueLocations}
+        selectedLocation={selectedLocation}
+        renderCard={volunteer => renderCard(volunteer)}
+        renderPopup={async (loc) => await renderPopup(loc)}
       />
-      {initialized && (
-        <Box height={MAP_HEIGHT}>
-          <Map
-            items={volunteers}
-            pins={uniqueLocations}
-            selectedLocation={selectedLocation}
-            renderCard={volunteer => renderCard(volunteer)}
-            renderPopup={async (loc) => await renderPopup(loc)}
-          />
-        </Box>
-      )}
-    </Card>
+    </Box>
   );
 }
 
-export default MapPage;
+export default VolunteerMap;

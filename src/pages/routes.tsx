@@ -44,7 +44,7 @@ import { VentureStatusReportPage } from './venture/VenturesStatusReportPage.tsx'
 import { RouteObject } from 'react-router';
 import ReferenceTeamsPage from './reference/teams.tsx';
 import VentureMigrationPage from './migration/codaMigration.tsx';
-import MapPage from '../map-feature/MapPage.tsx';
+import MapPage from './map/index.tsx';
 
 const reference = {
   path: "/",

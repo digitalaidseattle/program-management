@@ -5,8 +5,8 @@
  *
  */
 import { describe, expect, it } from 'vitest';
-import { Volunteer } from './VolunteerDao';
 import { TeamMemberService } from './teamMemberService';
+import { Volunteer } from '../../data/types';
 
 describe('mappingService tests', () => {
 
