@@ -17,7 +17,7 @@ const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
 
     return (
         <Card>
-            <CardHeader title={entity.profile?.name} />
+            <CardHeader title={entity.name} />
             <CardContent>
                 <Grid container spacing={2}>
                     <Grid size={6}>
@@ -35,8 +35,8 @@ const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
                             }}
                         >
                             <Avatar
-                                src={profileService.getPicUrl(entity.profile!)}
-                                alt={`${entity.profile!.name} picture `}
+                                src={profileService.getPicUrl(entity)}
+                                alt={`${entity.name} picture `}
                                 variant="rounded"
                                 sx={{
                                     borderRadius: 3,
@@ -52,7 +52,7 @@ const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
                                     },
                                 }}
                             >
-                                {entity.profile!.name ?? '?'}
+                                {entity.name ?? '?'}
                             </Avatar>
                         </Box>
                     </Grid>
@@ -60,15 +60,15 @@ const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
                         <p>Join Date: {dayjs(entity.join_date).format('MMMM D, YYYY')}</p>
                         <p>Status: {entity.status}</p>
                         <p>LinkedIn: {entity.linkedin}</p>
-                        <p>Email: {entity.profile?.email}</p>
-                        <p>Phone: {entity.profile?.phone}</p>
-                        <p>Location: {entity.profile?.location}</p>
+                        <p>Email: {entity.email}</p>
+                        <p>Location: {entity.location}</p>
+                        <p>Position: {entity.position}</p>
                     </Grid>
                     <Grid size={12}>
                         <TeamsCard entity={entity} />
-                        <DisciplinesCard entity={entity} />
+                       {/*  <DisciplinesCard entity={entity} />
                         <ToolsCard entity={entity} />
-                        <VenturesCard entity={entity} />
+                        <VenturesCard entity={entity} /> */}
                     </Grid>
                 </Grid>
 

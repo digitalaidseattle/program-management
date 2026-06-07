@@ -20,9 +20,7 @@ const Labels = {
 const MapPage = () => {
   return (
     <Card>
-      <CardHeader
-        title={Labels.title}
-      />
+      <CardHeader title={Labels.title} />
       <VolunteerMap />
     </Card>
   );

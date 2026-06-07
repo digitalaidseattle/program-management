@@ -6,24 +6,23 @@ import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
-import { addVolunteerToTeam } from '../../actions/AddVolunteerToTeam';
-import { removeVolunteerFromTeam } from '../../actions/RemoveVolunteerFromTeam';
 import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
-import { Team2VolunteerService, Team2Volunteer } from '../../services/dasTeam2VolunteerService';
-import { Team, TeamService } from '../../services/dasTeamService';
-import { Volunteer } from '../../services/dasVolunteerService';
+import { Team } from '../../data/types';
+import { Team2Volunteer } from '../../services/dasTeam2VolunteerService';
+import { TeamService } from '../../services/dasTeamService';
+import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 
 export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
   const teamService = TeamService.getInstance();
-  const team2VolunteerService = Team2VolunteerService.getInstance();
+  const volunteerService = VolunteerService.getInstance();
 
-  const [current, setCurrent] = useState<Team2Volunteer[]>([]);
+  const [current, setCurrent] = useState<Team[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [available, setAvailable] = useState<Team[]>([]);
+  const [teamLeads, setTeamLeads] = useState<Team[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
   const [selectedItem, setSelectedItem] = useState<Team>();
 
@@ -42,41 +41,38 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
   }, [entity]);
 
   function refresh() {
-    team2VolunteerService.findByVolunteerId(entity.id)
-      .then((t2v) => setCurrent(t2v.sort((t1, t2) => t1.team!.name.localeCompare(t2.team!.name))))
+    volunteerService.findTeams(entity.id)
+      .then((teams) => {
+        setCurrent(teams.sort((t1, t2) => t1.name.localeCompare(t2.name)));
+      })
   }
 
   useEffect(() => {
-    const currentIds = current.map(t => t.team!.id);
-    setAvailable(teams
-      .filter(t => !currentIds.includes(t.id))
-      .sort((t1, t2) => t1.name.localeCompare(t2.name)))
     setCards(createCards(current))
-
   }, [teams, current]);
 
-  function createCards(items: Team2Volunteer[]) {
-    return items
-      .map(t2v => {
+  function createCards(teams: Team[]) {
+    return teams
+      .map(team => {
         return <ListCard
-          key={t2v.team!.id}
-          title={t2v.team!.name}
-          avatarImageSrc={storageService.getUrl(`icons/${t2v.team!.id}`)}
-          highlightOptions={{
-            title: "Team Lead",
-            highlight: t2v.leader ?? false,
-            toggleHighlight: () => {
-              onChange && toggleVolunteer2TeamLeaderFlag(t2v)
-                .then(data => handleChange(data))
-            }
-          }}
-          menuItems={[
-            <MenuItem key={1} onClick={() => handleOpen(t2v.team!.id)}> Open</MenuItem >,
-            <MenuItem key={2} onClick={() => {
-              setSelectedItem(t2v.team!);
-              setOpenConfirmation(true);
-            }}>Remove...</MenuItem>
-          ]}
+          key={team.id}
+          title={team.name}
+        // avatarImageSrc={storageService.getUrl(`icons/${t2v.team!.id}`)}
+        // highlightOptions={{
+        //   title: "Team Lead",
+        //   highlight: team.leader ?? false,
+        //   toggleHighlight: () => {
+        //     onChange && toggleVolunteer2TeamLeaderFlag(t2v)
+        //       .then(data => handleChange(data))
+        //   }
+        // }}
+        // menuItems={[
+        //   <MenuItem key={1} onClick={() => handleOpen(team)}> Open</MenuItem >,
+        //   <MenuItem key={2} onClick={() => {
+        //     setSelectedItem(team);
+        //     setOpenConfirmation(true);
+        //   }}>Remove...</MenuItem>
+        // ]}
         />
       })
   }
@@ -86,25 +82,24 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
     onChange!(data)
   }
 
-  function handleOpen(team_id: string): void {
-    navigate(`/teams/${team_id}`)
+  function handleOpen(team: Team): void {
+    navigate(`/teams/${team.id}`)
   }
 
   function handleAdd(selected: string | null | undefined): void {
-    const team = available.find(t => t.id === selected);
-    addVolunteerToTeam(entity, team!)
-      .then(() => handleChange(true))
-
+    // const team = available.find(t => t.id === selected);
+    // addVolunteerToTeam(entity, team!)
+    //   .then(() => handleChange(true))
   }
 
   function handleRemoveConfirm(): void {
-    if (selectedItem) {
-      removeVolunteerFromTeam(entity, selectedItem)
-        .then(data => {
-          handleChange(data);
-          setOpenConfirmation(false);
-        })
-    }
+    // if (selectedItem) {
+    //   removeVolunteerFromTeam(entity, selectedItem)
+    //     .then(data => {
+    //       handleChange(data);
+    //       setOpenConfirmation(false);
+    //     })
+    // }
   }
 
   return (< >
@@ -112,11 +107,11 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
       title='Teams'
       items={cards}
       headerSx={CARD_HEADER_SX}
-      addOpts={onChange && {
-        title: 'Join Team',
-        available: available.map(v => ({ label: v.name, value: v.id })),
-        handleAdd: handleAdd
-      }}
+    // addOpts={onChange && {
+    //   title: 'Join Team',
+    //   available: available.map(v => ({ label: v.name, value: v.id })),
+    //   handleAdd: handleAdd
+    // }}
     />
     <ConfirmationDialog
       title="Confirm removal from this team"

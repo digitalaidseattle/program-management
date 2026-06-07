@@ -74,7 +74,6 @@ export function Map<T>({
     const [cards, setCards] = useState<ReactNode>();
 
     useEffect(() => {
-        console.log(configuration)
         setPopupInfo(selectedLocation);
     }, [selectedLocation]);
 

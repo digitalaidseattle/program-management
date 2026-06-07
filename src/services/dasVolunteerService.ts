@@ -6,11 +6,13 @@
  */
 
 import { PageInfo, QueryModel } from "@digitalaidseattle/core";
-import { SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { Volunteer, VolunteerDao } from './dasVolunteerDao';
 import { ProfileService } from "./dasProfileService";
+import { VolunteerDao } from "../data/coda/VolunteerDao";
+import { Team, Volunteer } from "../data/types";
 
-class VolunteerService extends SupabaseEntityService<Volunteer> {
+class VolunteerService {
+
+
 
     private static instance: VolunteerService;
 
@@ -21,17 +23,22 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
         return VolunteerService.instance;
     }
 
+    dao: VolunteerDao;
+    private constructor() {
+        this.dao = VolunteerDao.getInstance();
+    }
+
+    getDao(): VolunteerDao {
+        return this.dao as VolunteerDao;
+    }
+
     empty(): Volunteer {
         const profile = ProfileService.getInstance().empty();
         return this.getDao().empty(profile);
     }
 
-    public constructor() {
-        super(VolunteerDao.getInstance());
-    }
-
-    getDao(): VolunteerDao {
-        return this.dao as VolunteerDao;
+    async getAll(): Promise<Volunteer[]> {
+        return this.getDao().getAll();
     }
 
     async find(queryModel: QueryModel): Promise<PageInfo<Volunteer>> {
@@ -46,12 +53,15 @@ class VolunteerService extends SupabaseEntityService<Volunteer> {
         return this.getDao().findCadreVolunteers();
     }
 
-    async findByAirtableId(airtableId: string): Promise<Volunteer> {
-        return await this.getDao().findByAirtableId(airtableId);
+    async findByDasEmail(email: string): Promise<Volunteer | null> {
+        const volunteers = await this.getDao().findBy('email', email);
+        return volunteers.length === 1 ? volunteers[0] : null;
     }
 
-    async findByDasEmail(email: string): Promise<Volunteer> {
-        return this.getDao().findByDasEmail(email);
+    async findTeams(id: string): Promise<Team[]> {
+        const volunteer = await this.getDao().getById(id);
+        console.log(volunteer)
+        return volunteer!.teams!;
     }
 }
 

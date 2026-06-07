@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router';
 import { addVolunteer } from '../../actions/AddVolunteer';
 import { deleteVolunteers } from '../../actions/DeleteVolunteers';
 import { EntityTable } from '../../components/EntityTable';
-import { Volunteer, VolunteerService, } from '../../services/dasVolunteerService';
+import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 import VolunteerDialog from './VolunteerDialog';
 
 const VolunteersPage = () => {
@@ -56,8 +56,8 @@ const VolunteersPage = () => {
           }}
         >
           <Avatar
-            alt={params.row.profile ? params.row.profile.name : ''}
-            src={storageService.getUrl(`profiles/${params.row.profile!.id}`)}
+            alt={params.row.name}
+            src={storageService.getUrl(`profiles/${params.row.pic}`)}
             sx={{ width: 40, height: 40, objectFit: 'contain' }}
             variant="rounded"
           />
@@ -68,7 +68,7 @@ const VolunteersPage = () => {
     },
     {
       field: 'profile.name', headerName: 'Name', width: 175,
-      renderCell: (params) => params.row.profile!.name
+      renderCell: (params) => params.row.name
     },
     {
       field: 'status',
@@ -135,10 +135,10 @@ const VolunteersPage = () => {
   }
 
   function handleAdd(volunteer: Volunteer | null): void {
-    if (volunteer && volunteer.profile) {
-      addVolunteer(volunteer)
-        .then(() => navigate(`/data/volunteer/${volunteer.id}`));
-    }
+    // if (volunteer) {
+    //   addVolunteer(volunteer)
+    //     .then(() => navigate(`/data/volunteer/${volunteer.id}`));
+    // }
     setShowAddDialog(false);
   }
 

@@ -12,11 +12,10 @@ import { HealthStatus, VentureReport, VentureReportDao } from './dasVentureRepor
 
 export async function ventureReportSave(report: VentureReport): Promise<VentureReport> {
     const ventureReportService = VentureReportService.getInstance();
-
     const cleaned = { ...report };
-    cleaned.venture_name = report.venture?.venture_code ?? "";
     delete cleaned.venture;
 
+    console.log(cleaned);
     return ventureReportService.upsert(cleaned)
 }
 
@@ -61,4 +60,5 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
 }
 
 export { VentureReportService };
-export type { VentureReport, HealthStatus };
+export type { HealthStatus, VentureReport };
+

@@ -16,7 +16,6 @@ import { ListCard } from '../../components/ListCard';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { EntityListPage } from '../../components/EntityListPage';
-import { ProfileService } from '../../services/dasProfileService';
 import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 import { ReferenceVolunteerDetails } from '../volunteer/ReferenceVolunteerDetails';
 import { MoreButton } from "./MoreButton";
@@ -24,7 +23,6 @@ import { MoreButton } from "./MoreButton";
 
 const ReferenceVolunteersPage = () => {
   const volunteerService = VolunteerService.getInstance();
-  const profileService = ProfileService.getInstance();
 
   const { id } = useParams<string>();
 
@@ -53,24 +51,24 @@ const ReferenceVolunteersPage = () => {
       case 'all':
         return volunteerService
           .getAll()
-          .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+          .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
       case 'cadre':
         return volunteerService
           .getAll()
           .then(data => data
             .filter(v => ['Cadre'].includes(v.status))
-            .sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+            .sort((a, b) => (a.name.localeCompare(b.name))))
       case 'contributor':
         return volunteerService
           .getAll()
           .then(data => data
             .filter(v => ['Contributor'].includes(v.status))
-            .sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+            .sort((a, b) => (a.name.localeCompare(b.name))))
       case 'active':
       default:
         return volunteerService
           .getActive()
-          .then(data => data.sort((a, b) => (a.profile!.name.localeCompare(b.profile!.name))))
+          .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
     }
   }
 
@@ -117,8 +115,8 @@ const ReferenceVolunteersPage = () => {
       listItemRenderer={entity =>
         <ListCard
           key={entity.id}
-          title={entity.profile!.name}
-          avatarImageSrc={profileService.getPicUrl(entity.profile!)} />}
+          title={entity.name}
+          avatarImageSrc={entity.pic} /> }//profileService.getPicUrl(entity)} />}
       detailRenderer={entity => <ReferenceVolunteerDetails entity={entity} />} />
   );
 };

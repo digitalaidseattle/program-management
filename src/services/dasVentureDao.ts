@@ -27,7 +27,7 @@ type Venture = {
     partner?: Partner;
 }
 
-const DEFAULT_SELECT = "*, partner(*)";
+const DEFAULT_SELECT = "*";
 
 class VentureDAO extends SupabaseDAO<Venture> {
 
@@ -92,7 +92,10 @@ class VentureDAO extends SupabaseDAO<Venture> {
             .from(this.tableName)
             .select(DEFAULT_SELECT)
             .eq('status', status)
-            .then((resp: any) => resp.data.map((json: any) => this.mapper(json)));
+            .then((resp: any) => {
+                console.log(resp)
+                return resp.data.map((json: any) => this.mapper(json))}
+            );
     }
 
 }

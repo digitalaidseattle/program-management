@@ -1,0 +1,81 @@
+import { Entity } from "@digitalaidseattle/core";
+
+export type Venture = Entity & {
+    airtable_id: string
+    coda_id?: string;
+    partner_id: string | null;
+    title: string;
+    painpoint: string;
+    status: string;
+    problem: string;
+    solution: string;
+    impact: string;
+    program_areas: string[];
+    venture_code: string;
+    partner_airtable_id: string[],
+    // partner?: Partner;
+}
+
+export type Profile = {
+    id: string;
+    name: string,
+    first_name: string,
+    last_name: string,
+    email: string,
+    phone: string,
+    location: string,
+    pic: string
+}
+
+export type VolunteerStatusType =
+    "Active" |
+    "Cadre" |
+    "new prospect" |
+    "past" |
+    "taking a break" |
+    "on call" |
+    "rejected" |
+    "Offboarding Cadre" |
+    "Onboarding" |
+    "Board only" |
+    "Contributor" |
+    "Offboarding Contributor";
+
+export type Volunteer = Profile & {
+    role: string,
+    status: VolunteerStatusType,
+    linkedin: string,
+    join_date: Date,
+    position: string;
+    disciplines: string[];
+    tool_ids: string[];
+    github: string;
+    das_email: string;
+    slack_id: string;
+    hope_to_give: string;
+    hope_to_get: string;
+    communication_preferences: string;
+    team_lead?: Team[];
+    teams?: Team[];
+}
+
+export type Team = Entity & {
+    name: string;
+    airtable_id: string;
+    volunteer_ids: string[];  // Deprecated: use Team2Volunteer join table instead
+    welcome_message: string;
+    okrs: string;
+    forecast_ids: string;  // Deprecated - airtable artifact
+    purpose: string;
+    status: string;
+    leader_ids: string[];  // Deprecated - airtable artifact
+    tool_ids: string[];  // Deprecated - airtable artifact
+    decision_making: string;
+    not_included: string;
+    knowledge_management: string;
+    new_to_the_team: string;
+    slack_channel: string;
+    volunteer?: Volunteer[];
+    // okr?: OKR[];
+    // forecast?: Forecast[];
+}

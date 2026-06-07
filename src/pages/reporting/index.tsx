@@ -62,7 +62,7 @@ const ReportingPage = () => {
       field: 'id',
       headerName: 'Venture',
       renderCell: (params) => (
-        params.row.venture!.venture_code
+        params.row.venture_name
         // <Tooltip title="click to view venture">
         //   <NavLink to={`/ventures/${params.row.venture_id}`} >{params.row.venture!.venture_code}</NavLink>
         // </Tooltip>

@@ -59,7 +59,7 @@ export function EntityListPage<T extends Entity>({
 
     useEffect(() => {
         if (selectedItem) {
-            window.history.pushState({}, '', `${selectedItem.id}`)
+            window.history.pushState({}, '', `/volunteers/${selectedItem.id}`)
         }
     }, [selectedItem]);
 

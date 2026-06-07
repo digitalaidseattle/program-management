@@ -9,9 +9,9 @@ import { DialogProps } from '@mui/material';
 import { UserContext } from '@digitalaidseattle/core';
 import { InputFormDialog, InputOption } from '@digitalaidseattle/mui';
 import React, { useContext, useEffect, useState } from 'react';
+import { VentureDao } from '../data/coda/VentureDao';
+import { Venture } from '../data/types';
 import { VentureReport } from '../services/dasVentureReportService';
-import { VentureService } from '../services/dasVentureService';
-import { Venture } from '../services/dasVentureDao';
 
 // material-ui
 
@@ -29,7 +29,7 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report
     const [report, setReport] = useState<VentureReport>();
 
     useEffect(() => {
-        VentureService.getInstance().getActive()
+        VentureDao.getInstance().getActive()
             .then(v => setVentures(v.sort((v1, v2) => v1.venture_code.localeCompare(v2.venture_code))));
     }, []);
 
@@ -66,11 +66,11 @@ const VentureReportDialog: React.FC<VentureReportDialogProps> = ({ title, report
                 disabled: true
             },
             {
-                name: 'venture_id',
+                name: 'venture_name',
                 label: 'Venture',
                 type: 'select',
                 disabled: false,
-                options: ventures.map(v => ({ value: v.id, label: v.venture_code }))
+                options: ventures.map(v => ({ value: v.venture_code, label: v.venture_code }))
             },
             {
                 name: 'health',

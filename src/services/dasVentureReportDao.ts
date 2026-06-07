@@ -13,7 +13,7 @@ import { Venture } from "./dasVentureDao";
 export type HealthStatus = 'on_track' | 'at_risk' | 'blocked';
 
 export type VentureReport = Entity & {
-    venture_id: string;
+    venture_id: string | null;
     venture?: Venture;
     venture_name: string;
     reported_by: string;
@@ -50,7 +50,7 @@ class VentureReportDao extends SupabaseDAO<VentureReport> {
     empty(): VentureReport {
         return {
             id: uuid(),
-            venture_id: '',
+            venture_id: null,
             venture_name: '',
             reported_by: '',
             reporting_date: new Date(),
