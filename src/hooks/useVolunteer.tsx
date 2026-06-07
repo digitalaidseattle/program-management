@@ -6,7 +6,8 @@
  */
 import { useAuthService } from "@digitalaidseattle/core";
 import { useEffect, useState } from "react";
-import { Volunteer, VolunteerService } from "../services/dasVolunteerService";
+import { VolunteerService } from "../services/dasVolunteerService";
+import { Volunteer } from "../data/types";
 
 
 export const useVolunteer = () => {
@@ -25,7 +26,7 @@ export const useVolunteer = () => {
                     if (user) {
                         volunteerService
                             .findByDasEmail(user.email)
-                            .then(volunteer => setVolunteer(volunteer))
+                            .then(volunteer => setVolunteer(volunteer!))
                     }
                 })
                 .finally(() => setStatus('fetched'));

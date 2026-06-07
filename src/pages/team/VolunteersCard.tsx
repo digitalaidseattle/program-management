@@ -47,13 +47,13 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
     const currentIds = current.map(t => t.volunteer_id);
     setAvailable(volunteers
       .filter(t => !currentIds.includes(t.id))
-      .sort((t1, t2) => t1.profile!.name.localeCompare(t2.profile!.name)))
+      .sort((t1, t2) => t1.name.localeCompare(t2.name)))
     setCards(createCards(current))
   }, [volunteers, current]);
 
   function refresh() {
     team2VolunteerService.findByTeamId(entity.id)
-      .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.profile!.name.localeCompare(e2.volunteer!.profile!.name))))
+      .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.name.localeCompare(e2.volunteer!.name))))
   }
 
   function createCards(items: Team2Volunteer[]) {
@@ -72,8 +72,8 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
         return (
           <ListCard
             key={`${idx}`}
-            title={t2v.volunteer!.profile!.name}
-            avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.profile!.id}`)}
+            title={t2v.volunteer!.name}
+            avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.id}`)}
             menuItems={menuItems}
             cardContent={
               <Stack>
@@ -129,7 +129,7 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
       items={cards}
       addOpts={editable ? {
         title: 'Add volunteer',
-        available: available.map(v => ({ label: v.profile!.name, value: v.id })),
+        available: available.map(v => ({ label: v.name, value: v.id })),
         handleAdd: handleAdd
       } : undefined}
     />

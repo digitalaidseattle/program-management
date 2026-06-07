@@ -35,7 +35,7 @@ export async function createLeadershipMeeting(): Promise<Meeting | null> {
         .map(t2v => ({
             id: uuid(),
             meeting_id: meeting.id,
-            profile_id: t2v.volunteer!.profile!.id,
+            profile_id: t2v.volunteer!.id,
             status: 'unknown',
             email: t2v.volunteer!.das_email,
             team_id: t2v.team_id

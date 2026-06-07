@@ -56,7 +56,7 @@ function VolunteerDialog({ title, open, entity, handleSuccess }: VolunteerDialog
             const mapped = {
                 ...entity,
                 profile: {
-                    ...entity.profile,
+                    ...entity,
                     first_name: volunteer!.first_name || '',
                     last_name: volunteer!.last_name || '',
                     email: volunteer!.email || '',

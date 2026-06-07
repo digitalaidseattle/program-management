@@ -35,7 +35,7 @@ export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
         .map(v => ({
             id: uuid(),
             meeting_id: meeting.id,
-            profile_id: v.profile!.id,
+            profile_id: v.id,
             status: 'unknown',
             email: v.das_email,
         } as MeetingAttendee))

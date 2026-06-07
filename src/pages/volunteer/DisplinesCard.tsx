@@ -4,7 +4,7 @@ import { MenuItem } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { CARD_HEADER_SX } from ".";
-import { addDisciplineToVolunteer } from "../../actions/AddDisciplineToVolunteer";
+// import { addDisciplineToVolunteer } from "../../actions/AddDisciplineToVolunteer";
 import { removeDisciplineFromVolunteer } from "../../actions/RemoveDisciplineFromVolunteer";
 import { toggleVolunteer2DisciplineSeniorFlag } from "../../actions/ToggleVolunteer2DisciplineSeniorFlag";
 import { ListCard } from "../../components/ListCard";
@@ -21,7 +21,7 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
     const [current, setCurrent] = useState<Volunteer2Discipline[]>([]);
     const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
     const [desciplines, setDisciplines] = useState<Discipline[]>([]);
-    const [available, setAvailable] = useState<Discipline[]>([]);
+    // const [available, setAvailable] = useState<Discipline[]>([]);
     const [cards, setCards] = useState<ReactNode[]>([]);
     const [selectedItem, setSelectedItem] = useState<Discipline>();
 
@@ -41,10 +41,10 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
     }, [entity]);
 
     useEffect(() => {
-        const currentIds = current.map(t => t.discipline_id);
-        setAvailable(desciplines
-            .filter(t => !currentIds.includes(t.id))
-            .sort((t1, t2) => t1.name.localeCompare(t2.name)))
+        // const currentIds = current.map(t => t.discipline_id);
+        // setAvailable(desciplines
+        //     .filter(t => !currentIds.includes(t.id))
+        //     .sort((t1, t2) => t1.name.localeCompare(t2.name)))
         setCards(createCards(current))
     }, [desciplines, current]);
 
@@ -89,11 +89,11 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
         navigate(`/disciplines/${discipline_id}`)
     }
 
-    function handleAdd(selected: string | null | undefined): void {
-        const discipline = available.find(t => t.id === selected);
-        addDisciplineToVolunteer(discipline!, entity)
-            .then(() => handleChange(true))
-    }
+    // function handleAdd(selected: string | null | undefined): void {
+    //     const discipline = available.find(t => t.id === selected);
+    //     addDisciplineToVolunteer(discipline!, entity)
+    //         .then(() => handleChange(true))
+    // }
 
     function handleRemoveConfirm(): void {
         if (selectedItem) {
@@ -110,11 +110,11 @@ export const DisciplinesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, o
             title='Disciplines'
             items={cards}
             headerSx={CARD_HEADER_SX}
-            addOpts={onChange && {
-                title: 'Add Discipline',
-                available: available.map(v => ({ label: v.name, value: v.id })),
-                handleAdd: handleAdd
-            }}
+            // addOpts={onChange && {
+            //     title: 'Add Discipline',
+            //     available: available.map(v => ({ label: v.name, value: v.id })),
+            //     handleAdd: handleAdd
+            // }}
         />
         <ConfirmationDialog
             title="Confirm removing this discipline"

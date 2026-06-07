@@ -8,9 +8,9 @@ import dayjs from "dayjs";
 import { ProfileService } from "../../services/dasProfileService";
 import { Volunteer } from "../../services/dasVolunteerService";
 import { TeamsCard } from "./TeamsCard";
-import { DisciplinesCard } from "./DisplinesCard";
-import { ToolsCard } from "./ToolsCard";
-import { VenturesCard } from "./VenturesCard";
+// import { DisciplinesCard } from "./DisplinesCard";
+// import { ToolsCard } from "./ToolsCard";
+// import { VenturesCard } from "./VenturesCard";
 
 const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
     const profileService = ProfileService.getInstance();

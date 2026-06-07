@@ -102,12 +102,12 @@ const VolunteerMatching = () => {
                 }}>
                 <CardHeader
                     title={<Box>
-                        <Typography sx={{ fontWeight: 600 }}>{volunteer.profile!.name}</Typography>
+                        <Typography sx={{ fontWeight: 600 }}>{volunteer.name}</Typography>
                         <Typography>{volunteer.position}</Typography>
                     </Box>}
                     avatar={<Avatar
-                        src={storageService.getUrl(`profiles/${volunteer.profile!.id}`)}
-                        alt={`${volunteer.profile!.name} picture`}
+                        src={storageService.getUrl(`profiles/${volunteer.id}`)}
+                        alt={`${volunteer.name} picture`}
                         sx={{ width: 40, height: 40, objectFit: 'contain' }}
                         variant="rounded" />}
                 />
@@ -153,7 +153,7 @@ const VolunteerMatching = () => {
         if (selectedStaffing && selectedVolunteer) {
             staffingService.update(selectedStaffing.id, { volunteer_id: selectedVolunteer.id, status: 'Filled' })
                 .then(updating => {
-                    notifications.success(`Added ${updating.volunteer!.profile!.name} to ${getOrganizationName(updating)}.`);
+                    notifications.success(`Added ${updating.volunteer!.name} to ${getOrganizationName(updating)}.`);
                     refresh();
                 })
                 .finally(() => {

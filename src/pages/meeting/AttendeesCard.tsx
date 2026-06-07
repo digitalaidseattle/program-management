@@ -61,7 +61,7 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                 >
                     <Avatar
                         alt={params.row.profile ? params.row.profile.name : ''}
-                        src={storageService.getUrl(`profiles/${params.row.profile!.id}`)}
+                        src={storageService.getUrl(`profiles/${params.row.id}`)}
                         sx={{ width: 40, height: 40, objectFit: 'contain' }}
                         variant="rounded"
                     />
@@ -94,8 +94,8 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                 .then(volunteers => {
                     const attendeeIds = new Set((meeting.meeting_attendee ?? []).map(a => a.profile_id));
                     setAvailable(volunteers
-                        .filter(v => !attendeeIds.has(v.profile!.id))
-                        .sort((a, b) => a.profile!.name.localeCompare(b.profile!.name))
+                        .filter(v => !attendeeIds.has(v.id))
+                        .sort((a, b) => a.name.localeCompare(b.name))
                     );
                 });
         }
@@ -136,7 +136,7 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                 const attendee = meetingAttendeeService.createFromVolunteer(volunteer, meeting);
                 meetingAttendeeService.insert(attendee)
                     .then(updated => {
-                        notifications.success(`${volunteer.profile!.name} added as an attendee.'`);
+                        notifications.success(`${volunteer.name} added as an attendee.'`);
                         onChange(updated)
                     })
                     .finally(() => setShowDialog(false));
@@ -173,7 +173,7 @@ function AttendeesCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                     title: 'Add a volunteer',
                     description: 'Select a Cadre or Contributor to add as an attendee to this meeting.'
                 }}
-                records={available.map(v => ({ label: v.profile!.name, value: v.id }))}
+                records={available.map(v => ({ label: v.name, value: v.id }))}
                 onSubmit={handleAddAttendee}
                 onCancel={() => setShowDialog(false)} />
             <ConfirmationDialog

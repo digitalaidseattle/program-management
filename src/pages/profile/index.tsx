@@ -20,15 +20,14 @@ import { ExternalLink } from '../../components/ExternalLink';
 import { FieldRow } from '../../components/FieldRow';
 import { TextEdit } from '../../components/TextEdit';
 import { useVolunteer } from '../../hooks/useVolunteer';
-import { ProfileService } from '../../services/dasProfileService';
-import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
+import { Volunteer } from '../../services/dasVolunteerService';
 import { DisciplinesCard } from '../volunteer/DisplinesCard';
 import { TeamsCard } from '../volunteer/TeamsCard';
 import { ToolsCard } from '../volunteer/ToolsCard';
 
 export const ProfilePage = () => {
-    const volunteerService = VolunteerService.getInstance();
-    const profileService = ProfileService.getInstance();
+    // const volunteerService = VolunteerService.getInstance();
+    // const profileService = ProfileService.getInstance();
     const storageService = getCoreServices().storageService!;
 
     const { volunteer: initial } = useVolunteer();
@@ -39,34 +38,34 @@ export const ProfilePage = () => {
         setVolunteer(initial);
     }, [initial]);
 
-    function handleVolunteerFieldChange(field: string, value: string): void {
-        if (volunteer) {
-            // stringify & parse needed for string keys
-            const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
-            volunteerService.update(volunteer.id, changes)
-                .then(updated => setVolunteer(updated))
-        }
+    function handleVolunteerFieldChange(_field: string, _value: string): void {
+        // if (volunteer) {
+        //     // stringify & parse needed for string keys
+        //     const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
+        //     volunteerService.update(volunteer.id, changes)
+        //         .then(updated => setVolunteer(updated))
+        // }
     }
 
-    function handleProfileChange(field: string, value: string): void {
-        if (volunteer) {
-            const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
-            profileService.update(volunteer.profile!.id, changes)
-                .then(() => volunteerService
-                    .getById(volunteer.id)
-                    .then(updatdeVolunteer => setVolunteer(updatdeVolunteer!)))
-        }
+    function handleProfileChange(_field: string, _value: string): void {
+        // if (volunteer) {
+        //     const changes = JSON.parse(`{ "${field}" : ${JSON.stringify(value)} }`)
+        //     profileService.update(volunteer.id, changes)
+        //         .then(() => volunteerService
+        //             .getById(volunteer.id)
+        //             .then(updatdeVolunteer => setVolunteer(updatdeVolunteer!)))
+        // }
     }
 
     return (volunteer &&
         <Card>
-            <CardHeader title={`${volunteer.profile!.name}`} />
+            <CardHeader title={`${volunteer.name}`} />
             <CardContent>
                 <Grid container>
                     <Grid size={2}>
                         <Avatar
-                            src={storageService.getUrl(`profiles/${volunteer.profile!.id}`)}
-                            alt={`${volunteer.profile!.name} icon`}
+                            src={storageService.getUrl(`profiles/${volunteer.id}`)}
+                            alt={`${volunteer.name} icon`}
                             sx={{
                                 padding: 1,
                                 width: '100%',
@@ -79,7 +78,7 @@ export const ProfilePage = () => {
                     <Grid size={10}>
                         <Stack id='asdf'>
                             <FieldRow label='Name'>
-                                <TextEdit value={volunteer.profile!.name}
+                                <TextEdit value={volunteer.name}
                                     onChange={value => handleProfileChange('name', value)} />
                             </FieldRow>
                             <FieldRow label='Position'>
@@ -94,11 +93,11 @@ export const ProfilePage = () => {
                                 <Typography>{dayjs(volunteer.join_date).format("MMM D, YYYY")}</Typography>
                             </FieldRow>
                             <FieldRow label='Location'>
-                                <TextEdit value={volunteer.profile!.location}
+                                <TextEdit value={volunteer.location}
                                     onChange={value => handleProfileChange('location', value)} />
                             </FieldRow>
                             <FieldRow label='Phone'>
-                                <TextEdit value={volunteer.profile!.phone}
+                                <TextEdit value={volunteer.phone}
                                     onChange={value => handleProfileChange('phone', value)} />
                             </FieldRow>
                             <FieldRow label='Github'>

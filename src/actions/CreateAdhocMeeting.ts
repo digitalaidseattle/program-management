@@ -30,7 +30,7 @@ export async function createAdhocMeeting(volunteer: Volunteer): Promise<Meeting 
     const attendee = ({
         id: uuid(),
         meeting_id: meeting.id,
-        profile_id: volunteer.profile!.id,
+        profile_id: volunteer.id,
         status: 'unknown',
         email: volunteer.das_email,
     } as MeetingAttendee);

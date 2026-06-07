@@ -8,7 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Team2VolunteerService } from "../services/dasTeam2VolunteerService";
 import { Team } from "../services/dasTeamService";
 import { removeVolunteerFromTeam } from "./RemoveVolunteerFromTeam";
-import { Volunteer } from "../services/dasVolunteerDao";
+import { Volunteer } from "../data/types";
 
 describe("removeToolFromTeam", () => {
 

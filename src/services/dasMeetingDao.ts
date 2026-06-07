@@ -117,7 +117,7 @@ class MeetingAttendeeDao extends SupabaseDAO<MeetingAttendee> {
         return ({
             id: uuid(),
             meeting_id: meeting.id,
-            profile_id: volunteer.profile!.id,
+            profile_id: volunteer.id,
             email: volunteer.das_email,
             status: 'unknown'
         });

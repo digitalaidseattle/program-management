@@ -74,11 +74,11 @@ const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
       }}>
       <CardActionArea onClick={() => handleOpen(staffing.volunteer_id)}>
         <CardHeader
-          title={staffing.volunteer ? staffing.volunteer.profile!.name : ''}
+          title={staffing.volunteer ? staffing.volunteer.name : ''}
           subheader={staffing.role?.name}
           avatar={<Avatar
             variant='rounded'
-            src={staffing.volunteer ? profileService.getPicUrl(staffing.volunteer.profile!) : undefined}
+            src={staffing.volunteer ? profileService.getPicUrl(staffing.volunteer) : undefined}
           />}
         />
         <CardContent>{staffing.status}</CardContent>

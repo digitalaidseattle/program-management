@@ -5,18 +5,18 @@
  *
  */
 
-import { ProfileService } from "../services/dasProfileService";
-import { Volunteer } from "../services/dasVolunteerDao";
-import { VolunteerService } from "../services/dasVolunteerService";
+import { Volunteer } from "../data/types";
 
-export async function addVolunteer(volunteer: Volunteer): Promise<Volunteer> {
-    const profileService = ProfileService.getInstance();
+
+export async function addVolunteer(_volunteer: Volunteer): Promise<Volunteer> {
+    throw new Error('not ready')
+    // const profileService = ProfileService.getInstance();
 
     //delete volunteers' profiles' pics and profiles
-    volunteer.profile!.name = `${volunteer.profile!.first_name} ${volunteer.profile!.last_name}`;
-    return profileService.insert(volunteer.profile!)
-        .then(() => {
-            delete volunteer.profile;
-            return VolunteerService.getInstance().insert(volunteer)
-        })
+    // volunteer.profile!.name = `${volunteer.profile!.first_name} ${volunteer.profile!.last_name}`;
+    // return profileService.insert(volunteer.profile!)
+    //     .then(() => {
+    //         delete volunteer.profile;
+    //         return VolunteerService.getInstance().insert(volunteer)
+    //     })
 }

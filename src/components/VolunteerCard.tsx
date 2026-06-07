@@ -32,7 +32,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
     const storageService = useStorageService()!;
 
     function changeHighlight() {
-        alert(`TODO toggle ${volunteer.profile!.name}`);
+        alert(`TODO toggle ${volunteer.name}`);
 
     }
     return (
@@ -56,8 +56,8 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                     objectFit: 'contain',
                     cursor: 'pointer'
                 }}
-                src={storageService.getUrl(`profiles/${volunteer.profile!.id}`)}
-                title={volunteer.profile!.name + ' photo'}
+                src={storageService.getUrl(`profiles/${volunteer.id}`)}
+                title={volunteer.name + ' photo'}
                 onClick={() => navigate(`/volunteer/${volunteer.id}`)}
             />
             <CardContent
@@ -84,7 +84,7 @@ export const VolunteerCard: React.FC<EntityCardProps<Volunteer>> = ({ entity: vo
                             </IconButton>
                         </Tooltip>
                     }
-                    <Typography variant='h4'>{volunteer.profile!.name}</Typography>
+                    <Typography variant='h4'>{volunteer.name}</Typography>
                 </Stack>
                 {STATUS_COMP[volunteer.status]}
             </CardContent>

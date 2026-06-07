@@ -47,8 +47,8 @@ function IntrosCard({ entity: meeting, onChange }: EntityProps<Meeting>) {
                         ...meetingTopicService.empty(meeting.id),
                         type: 'intro' as const,
                         subject_id: [v.id],
-                        subject: `${v.profile!.name}`,
-                        message: `Welcome ${v.profile!.name}`,
+                        subject: `${v.name}`,
+                        message: `Welcome ${v.name}`,
                         source: 'Program Management Bot',
                     }));
                 meetingTopicService.batchInsert(newIntros)

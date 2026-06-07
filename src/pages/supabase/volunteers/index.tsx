@@ -56,8 +56,8 @@ const VolunteersPage = () => {
           }}
         >
           <Avatar
-            alt={params.row.profile ? params.row.profile.name : ''}
-            src={storageService.getUrl(`profiles/${params.row.profile!.id}`)}
+            alt={params.row.name}
+            src={storageService.getUrl(`profiles/${params.row.id}`)}
             sx={{ width: 40, height: 40, objectFit: 'contain' }}
             variant="rounded"
           />
@@ -68,7 +68,7 @@ const VolunteersPage = () => {
     },
     {
       field: 'profile.name', headerName: 'Name', width: 175,
-      renderCell: (params) => params.row.profile!.name
+      renderCell: (params) => params.row.name
     },
     {
       field: 'status',
@@ -135,7 +135,7 @@ const VolunteersPage = () => {
   }
 
   function handleAdd(volunteer: Volunteer | null): void {
-    if (volunteer && volunteer.profile) {
+    if (volunteer) {
       addVolunteer(volunteer)
         .then(() => navigate(`/data/volunteer/${volunteer.id}`));
     }

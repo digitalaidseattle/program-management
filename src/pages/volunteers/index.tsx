@@ -17,7 +17,6 @@ import {
 import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { addVolunteer } from '../../actions/AddVolunteer';
 import { deleteVolunteers } from '../../actions/DeleteVolunteers';
 import { EntityTable } from '../../components/EntityTable';
 import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
@@ -135,6 +134,7 @@ const VolunteersPage = () => {
   }
 
   function handleAdd(volunteer: Volunteer | null): void {
+    console.log('not ready', volunteer)
     // if (volunteer) {
     //   addVolunteer(volunteer)
     //     .then(() => navigate(`/data/volunteer/${volunteer.id}`));

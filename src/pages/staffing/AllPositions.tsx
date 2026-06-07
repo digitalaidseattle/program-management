@@ -213,7 +213,7 @@ const AllPositions = () => {
             staffingService.update(staffing.id, cleaned)
                 .then(updated => {
                     fetchData();
-                    notifications.success(`Updated staffing request${updated.volunteer ? (' for' + updated.volunteer.profile!.name) : ''}.`)
+                    notifications.success(`Updated staffing request${updated.volunteer ? (' for' + updated.volunteer.name) : ''}.`)
                 })
                 .finally(() => setShowStaffingDialog(false));
         }

@@ -27,23 +27,21 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 
 import { RefreshContext, useAuthService } from "@digitalaidseattle/core";
 import { PickerValue } from "@mui/x-date-pickers/internals";
-import { Meeting, MeetingAttendeeService, MeetingService, } from "../../services/dasMeetingService";
+import { Meeting, MeetingService } from "../../services/dasMeetingService";
 import { Team, TeamService, } from "../../services/dasTeamService";
-import { VolunteerService } from "../../services/dasVolunteerService";
 import { AdhocMeetingDetails } from "./AdhocMeetingPage";
 import { LeadershipMeetingDetails } from "./LeadershipMeetingPage";
 import { PlenaryDetails } from "./PlenaryPage";
 import { TeamMeetingDetails } from "./TeamMeetingPage";
 
 const AllMeetingsPage = () => {
-    const volunteerService = VolunteerService.getInstance();
+    // const volunteerService = VolunteerService.getInstance();
     const teamService = TeamService.getInstance();
     const meetingService = MeetingService.getInstance();
-    const meetingAttendeeService = MeetingAttendeeService.getInstance();
+    // const meetingAttendeeService = MeetingAttendeeService.getInstance();
 
     const theme = useTheme();
     const authService = useAuthService();
-    const [profileId, setProfileId] = useState<string>();
     const [teams, setTeams] = useState<Team[]>([]);
     const [meetings, setMeetings] = useState<Meeting[]>([]);
     const [meetingType, setMeetingType] = useState<string>("my");
@@ -55,27 +53,23 @@ const AllMeetingsPage = () => {
 
     useEffect(() => {
         if (authService) {
-            authService
-                .getUser()
-                .then(user => {
-                    if (user) {
-                        volunteerService
-                            .findByDasEmail(user.email)
-                            .then(volunteer => setProfileId(volunteer ? volunteer.profile_id : undefined))
-                    }
-                })
+            // authService
+            //     .getUser()
+            //     .then(user => {
+            //         if (user) {
+            //             volunteerService
+            //                 .findByDasEmail(user.email)
+            //                 .then(volunteer => setProfileId(volunteer ? volunteer.profile_id : undefined))
+            //         }
+            //     })
         }
     }, [authService]);
 
     useEffect(() => {
         refreshMeeting();
         refreshTeams();
-    }, [month, meetingType, teamId, refresh, profileId]);
+    }, [month, meetingType, teamId, refresh]);
 
-    useEffect(() => {
-        refreshMeeting();
-        refreshTeams();
-    }, [month, meetingType, teamId, refresh, profileId]);
 
     function handleMeetingChange(meeting: Meeting) {
         console.log(meeting)
@@ -111,16 +105,16 @@ const AllMeetingsPage = () => {
                     case 'all':
                         setMeetings(meetings);
                         break;
-                    case 'my':
-                        if (profileId) {
-                            meetingAttendeeService
-                                .findByProfileId(profileId)
-                                .then(atts => {
-                                    const attend_ids = atts.map(att => att.meeting_id);
-                                    setMeetings(meetings.filter(meet => attend_ids.includes(meet.id)));
-                                })
-                        }
-                        break;
+                    // case 'my':
+                    //     if (profileId) {
+                    //         meetingAttendeeService
+                    //             .findByProfileId(profileId)
+                    //             .then(atts => {
+                    //                 const attend_ids = atts.map(att => att.meeting_id);
+                    //                 setMeetings(meetings.filter(meet => attend_ids.includes(meet.id)));
+                    //             })
+                    //     }
+                    //     break;
                     case 'team':
                         const found = meetings
                             .filter(m => m.type === meetingType)

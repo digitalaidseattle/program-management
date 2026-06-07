@@ -49,8 +49,8 @@ function AnniversariesCard({ entity: meeting, onChange }: EntityProps<Meeting>) 
                         ...meetingTopicService.empty(meeting.id),
                         type: 'anniversary' as const,
                         subject_id: [v.id],
-                        subject: `${v.profile!.name}`,
-                        message: `${v.profile!.name} joined ${v.join_date}!`,
+                        subject: `${v.name}`,
+                        message: `${v.name} joined ${v.join_date}!`,
                         source: 'Program Management Bot',
                     }));
                 meetingTopicService.batchInsert(sixMonthAnniversaries)

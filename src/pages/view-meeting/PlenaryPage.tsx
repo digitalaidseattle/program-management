@@ -15,7 +15,7 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 import { Meeting, MeetingAttendee, MeetingService, MeetingTopic, MeetingTopicService } from "../../services/dasMeetingService";
 
 import { EntityProps } from "../../components/utils";
-import { Volunteer, VolunteerService } from "../../services/dasVolunteerService";
+import { Volunteer } from "../../services/dasVolunteerService";
 
 import { RefreshContext, useStorageService } from "@digitalaidseattle/core";
 import { DrawerOpenContext, useLayoutConfiguration } from "@digitalaidseattle/mui";
@@ -30,16 +30,16 @@ export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg,  #ce80e8
 
 function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopic>) {
     const meetingTopicService = MeetingTopicService.getInstance();
-    const volunteerService = VolunteerService.getInstance();
+    // const volunteerService = VolunteerService.getInstance();
 
-    const [volunteer, setVolunteer] = useState<Volunteer>();
+    const [volunteer] = useState<Volunteer>();
     const storageService = useStorageService()!;
 
     useEffect(() => {
-        if (topic && topic.subject_id && topic.subject_id.length > 0) {
-            volunteerService.getById(topic.subject_id[0])
-                .then(v => setVolunteer(v!));
-        }
+        // if (topic && topic.subject_id && topic.subject_id.length > 0) {
+        //     volunteerService.getById(topic.subject_id[0])
+        //         .then(v => setVolunteer(v!));
+        // }
     }, [topic]);
 
     function markAsDiscussed() {
@@ -59,8 +59,8 @@ function VolunteerTopicCard({ entity: topic, onChange }: EntityProps<MeetingTopi
                     objectFit: 'fit',
                     cursor: 'pointer'
                 }}
-                src={storageService.getUrl(`profiles/${volunteer.profile!.id}`)}
-                title={volunteer.profile!.name + ' photo'}
+                src={storageService.getUrl(`profiles/${volunteer.id}`)}
+                title={volunteer.name + ' photo'}
             />
         </Card>)
 }

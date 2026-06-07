@@ -1,33 +1,26 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
-import { MenuItem } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
-import { toggleVolunteer2TeamLeaderFlag } from '../../actions/ToggleVolunteer2TeamLeaderFlag';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
 import { Team } from '../../data/types';
-import { Team2Volunteer } from '../../services/dasTeam2VolunteerService';
 import { TeamService } from '../../services/dasTeamService';
 import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
 
-export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChange }) => {
+export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) => {
   const teamService = TeamService.getInstance();
   const volunteerService = VolunteerService.getInstance();
 
   const [current, setCurrent] = useState<Team[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [teamLeads, setTeamLeads] = useState<Team[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
-  const [selectedItem, setSelectedItem] = useState<Team>();
 
-  const navigate = useNavigate();
-  const storageService = useStorageService()!;
+  // const navigate = useNavigate();
 
   useEffect(() => {
     teamService.getAll()
@@ -77,20 +70,20 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity, onChang
       })
   }
 
-  function handleChange(data: any) {
-    refresh();
-    onChange!(data)
-  }
+  // function handleChange(data: any) {
+  //   refresh();
+  //   onChange!(data)
+  // }
 
-  function handleOpen(team: Team): void {
-    navigate(`/teams/${team.id}`)
-  }
+  // function handleOpen(team: Team): void {
+  //   navigate(`/teams/${team.id}`)
+  // }
 
-  function handleAdd(selected: string | null | undefined): void {
-    // const team = available.find(t => t.id === selected);
-    // addVolunteerToTeam(entity, team!)
-    //   .then(() => handleChange(true))
-  }
+  // function handleAdd(selected: string | null | undefined): void {
+  //   const team = available.find(t => t.id === selected);
+  //   addVolunteerToTeam(entity, team!)
+  //     .then(() => handleChange(true))
+  // }
 
   function handleRemoveConfirm(): void {
     // if (selectedItem) {

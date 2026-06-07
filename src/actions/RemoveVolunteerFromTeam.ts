@@ -5,12 +5,12 @@
  *
  */
 
-import { Team2VolunteerService } from "../services/dasTeam2VolunteerService";
+import { Volunteer } from "../data/types";
 import { Team } from "../services/dasTeamService";
-import { Volunteer } from "../services/dasVolunteerDao";
 
-export function removeVolunteerFromTeam(volunteer: Volunteer, team: Team): Promise<boolean> {
+export function removeVolunteerFromTeam(_volunteer: Volunteer, _team: Team): Promise<boolean> {
+    throw new Error('not ready')
     // other steps could go here.
     // maybe audit history or notifications
-    return Team2VolunteerService.getInstance().removeVolunteerFromTeam(volunteer, team);
+    // return Team2VolunteerService.getInstance().removeVolunteerFromTeam(volunteer, team);
 }

@@ -1,5 +1,6 @@
 
 // material-ui
+import { getCoreServices } from '@digitalaidseattle/core';
 import {
   Avatar,
   Card,
@@ -17,27 +18,23 @@ import { ManagedListCard } from '../../components/ManagedListCard';
 import { Team2ToolService } from '../../services/dasTeam2ToolService';
 import { Team } from '../../services/dasTeamService';
 import { Tool, ToolService } from '../../services/dasToolsService';
-import { Volunteer2ToolService } from '../../services/dasVolunteer2ToolService';
-import { Volunteer } from '../../services/dasVolunteerService';
-import { getCoreServices } from '@digitalaidseattle/core';
 
 const ReferenceToolDetails = ({ entity }: { entity: Tool }) => {
-  const volunteer2ToolService = Volunteer2ToolService.getInstance();
   const storageService = getCoreServices().storageService!;
 
   const toolService = ToolService.getInstance();
   const team2ToolService = Team2ToolService.getInstance();
   const navigate = useNavigate();
   const [teamCards, setTeamCards] = useState<React.ReactNode[]>([]);
-  const [volunteerCards, setVolunteerCards] = useState<React.ReactNode[]>([]);
+  const [volunteerCards] = useState<React.ReactNode[]>([]);
 
 
   useEffect(() => {
     if (entity) {
       team2ToolService.findTeamsByToolId(entity.id)
         .then(teams => { setTeamCards(teams.map((team) => createTeamCard(team))) })
-      volunteer2ToolService.findVolunteersByToolId(entity.id)
-        .then(volunteers => { setVolunteerCards(volunteers.map((volunteer) => createVolunteerCard(volunteer))) })
+      // volunteer2ToolService.findVolunteersByToolId(entity.id)
+      //   .then(volunteers => { setVolunteerCards(volunteers.map((volunteer) => createVolunteerCard(volunteer))) })
     }
   }, [entity]);
 
@@ -63,27 +60,27 @@ const ReferenceToolDetails = ({ entity }: { entity: Tool }) => {
     </Card>
   }
 
-  function createVolunteerCard(volunteer: Volunteer) {
-    // FIXME navigate to reference page /volunteer
-    const navUrl = `/data/volunteer/${volunteer.id}`;
-    // FIXME migrate to profile.pic
-    const picUrl = storageService.getUrl(`profiles/${volunteer.profile!.id}`);
+  // function createVolunteerCard(volunteer: Volunteer) {
+  //   // FIXME navigate to reference page /volunteer
+  //   const navUrl = `/data/volunteer/${volunteer.id}`;
+  //   // FIXME migrate to profile.pic
+  //   const picUrl = storageService.getUrl(`profiles/${volunteer.id}`);
 
-    return <Card key={volunteer.id}
-      sx={{ width: 200 }}>
-      <CardActionArea onClick={() => navigate(navUrl)}>
-        <CardHeader
-          title={volunteer.profile!.name}
-          avatar={<Avatar
-            src={picUrl}
-            alt={`${entity.name} icon`}
-            sx={{ width: 40, height: 40, objectFit: 'contain' }}
-            variant="rounded"
-          />}
-        />
-      </CardActionArea>
-    </Card>
-  }
+  //   return <Card key={volunteer.id}
+  //     sx={{ width: 200 }}>
+  //     <CardActionArea onClick={() => navigate(navUrl)}>
+  //       <CardHeader
+  //         title={volunteer.name}
+  //         avatar={<Avatar
+  //           src={picUrl}
+  //           alt={`${entity.name} icon`}
+  //           sx={{ width: 40, height: 40, objectFit: 'contain' }}
+  //           variant="rounded"
+  //         />}
+  //       />
+  //     </CardActionArea>
+  //   </Card>
+  // }
 
   return (entity &&
     <Card sx={{ padding: 0 }}>

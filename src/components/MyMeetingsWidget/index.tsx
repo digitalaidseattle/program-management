@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useVolunteer } from '../../hooks/useVolunteer';
-import { Meeting, MeetingAttendeeService } from '../../services/dasMeetingService';
+import { Meeting } from '../../services/dasMeetingService';
 import AddMeetingDialog from '../AddMeetingDialog';
 
 export const MyMeetingsWidget = () => {
@@ -20,29 +20,29 @@ export const MyMeetingsWidget = () => {
     const { setLoading } = useContext(LoadingContext);
 
     const { volunteer } = useVolunteer();
-    const [meetings, setMeetings] = useState<Meeting[]>([]);
+    const [meetings] = useState<Meeting[]>([]);
     const [showAddMeetingDialog, setShowAddMeetingDialog] = useState<boolean>(false);
 
     useEffect(() => {
         setLoading(true);
         if (volunteer) {
-            findCurrentMeetings(volunteer.profile_id)
-                .then(meetings => setMeetings(meetings))
-                .finally(() => setLoading(false));
+            // findCurrentMeetings(volunteer.profile_id)
+            //     .then(meetings => setMeetings(meetings))
+            //     .finally(() => setLoading(false));
         }
     }, [volunteer]);
 
-    function findCurrentMeetings(profileId: string): Promise<Meeting[]> {
-        return MeetingAttendeeService.getInstance()
-            .findByProfileId(profileId)
-            .then(atts => {
-                return atts
-                    .map(att => att.meeting!)
-                    .filter(meet => meet.status === 'new')
-                    .filter(meet => dayjs(meet.start_date).isAfter(dayjs()))
-                    .sort((m1, m2) => dayjs(m1.start_date).isBefore(dayjs(m2.start_date)) ? -1 : 1);
-            });
-    }
+    // function findCurrentMeetings(profileId: string): Promise<Meeting[]> {
+    //     return MeetingAttendeeService.getInstance()
+    //         .findByProfileId(profileId)
+    //         .then(atts => {
+    //             return atts
+    //                 .map(att => att.meeting!)
+    //                 .filter(meet => meet.status === 'new')
+    //                 .filter(meet => dayjs(meet.start_date).isAfter(dayjs()))
+    //                 .sort((m1, m2) => dayjs(m1.start_date).isBefore(dayjs(m2.start_date)) ? -1 : 1);
+    //         });
+    // }
 
     function handleClose(evt: any) {
         if (evt.meeting) {

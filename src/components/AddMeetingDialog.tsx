@@ -6,11 +6,9 @@
  */
 import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, MenuItem, Select, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { createAdhocMeeting } from '../actions/CreateAdhocMeeting';
 import { createLeadershipMeeting } from '../actions/CreateLeadershipMeeting';
 import { createPlenaryMeeting } from '../actions/CreatePlenary';
 import { createTeamMeeting } from '../actions/CreateTeamMeeting';
-import { useVolunteer } from '../hooks/useVolunteer';
 import { Meeting, MeetingType } from '../services/dasMeetingService';
 import { Team, TeamService } from '../services/dasTeamService';
 
@@ -33,7 +31,6 @@ const LABELS = {
 const AddMeetingDialog: React.FC<AddMeetingDialogProps> = ({ title, meetingTypes, open, onClose }) => {
     const teamService = TeamService.getInstance();
     
-    const { volunteer } = useVolunteer();
     const [teams, setTeams] = useState<Team[]>([]);
     const [meetingType, setMeetingType] = useState<string>('adhoc');
     const [selectedTeam, setSelectedTeam] = useState<string>();
@@ -50,12 +47,12 @@ const AddMeetingDialog: React.FC<AddMeetingDialogProps> = ({ title, meetingTypes
 
     function handleSubmit() {
         switch (meetingType) {
-            case 'adhoc':
-                if (volunteer) {
-                    createAdhocMeeting(volunteer!)
-                        .then(meeting => onClose({ meeting: meeting }));
-                }
-                break;
+            // case 'adhoc':
+            //     if (volunteer) {
+            //         createAdhocMeeting(volunteer!)
+            //             .then(meeting => onClose({ meeting: meeting }));
+            //     }
+            //     break;
             case 'team':
                 if (selectedTeam) {
                     createTeamMeeting(teams.find(t => t.id === selectedTeam)!)
