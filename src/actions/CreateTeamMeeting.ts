@@ -8,7 +8,7 @@
 import dayjs from 'dayjs';
 import { v4 as uuid } from 'uuid';
 import { Meeting, MeetingAttendee, MeetingAttendeeService, MeetingService } from "../services/dasMeetingService";
-import { Team } from '../services/dasTeamService';
+import { Team } from '../data/types';
 
 export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
 
@@ -28,7 +28,7 @@ export async function createTeamMeeting(team: Team): Promise<Meeting | null> {
         meeting_url: 'https://meet.google.com/swr-ixuh-xdc',
         status: 'new',
         notes: '',
-        team_id: team.id,
+        team_id: team.id as string,
     }
 
     const attendees = team.volunteer!

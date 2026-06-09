@@ -11,9 +11,6 @@ import { NavLink } from 'react-router-dom';
 import { CheckOutlined, HomeOutlined } from "@ant-design/icons";
 import {
   Breadcrumbs,
-  Card,
-  CardHeader,
-  Divider,
   IconButton,
   ListItemIcon,
   MenuItem,
@@ -21,11 +18,11 @@ import {
 } from '@mui/material';
 import { EntityListPage } from '../../components/EntityListPage';
 import { ListCard } from '../../components/ListCard';
-import { MoreButton } from "./MoreButton";
 import { VentureDao } from "../../data/coda/VentureDao";
 import { Venture } from "../../data/types";
-import { ReferenceVentureDetails } from "../venture/referenceVentureDetails";
 import { VentureService } from "../../services/dasVentureService";
+import { ReferenceVentureDetails } from "../venture/referenceVentureDetails";
+import { MoreButton } from "./MoreButton";
 
 const ReferenceVenturesPage = () => {
 
@@ -70,6 +67,7 @@ const ReferenceVenturesPage = () => {
       : [...statusFilter, newFilter];
     setStatusFilter(updated);
   };
+
   function filterMenu() {
     return <>
       {VentureService.STATUSES.map(status =>

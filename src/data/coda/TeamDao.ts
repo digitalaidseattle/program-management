@@ -12,16 +12,15 @@ import { Profile } from "../../services/dasProfileDao";
 import { Team, Volunteer } from "../types";
 
 const DOC_ID = "24QYb2RP0g";
-const TABLE_ID = "grid-4vzF6VuaPV";
+const TABLE_ID = "grid-YUAFhqfMkQ";
 
 function jason2Entity(json: any): Team {
     const values = json.values;
-    if (values['First name'] === '```Lakshmi```')
-        console.log(values)
+    console.log(json)
     return {
         id: json.id,
-        name: CodaDao.removeBackTicks(values["Name"]),
-
+        name: json.name,
+        members: values["Team member"]
     } as Team
 }
 export class TeamDao extends CodaDao<Team> {

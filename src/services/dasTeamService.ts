@@ -5,12 +5,12 @@
  *
  */
 
-import { SupabaseEntityService } from "@digitalaidseattle/supabase";
-import { Forecast, ForecastDao, OKR, OKRDao, Team, TeamDao } from "./dasTeamDao";
-import { PageInfo, QueryModel } from "@digitalaidseattle/core";
+import { Identifier, PageInfo, QueryModel } from "@digitalaidseattle/core";
+import { TeamDao } from "../data/coda/TeamDao";
+import { Team } from "../data/types";
 
 
-class TeamService extends SupabaseEntityService<Team> {
+class TeamService {
 
     static STATUSES = [
         'Active',
@@ -27,76 +27,30 @@ class TeamService extends SupabaseEntityService<Team> {
         return this._instance;
     }
 
+    dao: TeamDao;
     public constructor() {
-        super(TeamDao.getInstance());
+        this.dao = TeamDao.getInstance();
     }
 
     getDao(): TeamDao {
         return this.dao as TeamDao;
     }
 
+    async getById(id: Identifier): Promise<Team | null> {
+        return this.getDao().getById(id);
+    }
+
+    async getAll(): Promise<Team[]> {
+        return this.getDao().getAll();
+    }
     async find(queryModel: QueryModel): Promise<PageInfo<Team>> {
         return this.getDao().find(queryModel);
     }
 
-    async findByAirtableId(airtableId: string): Promise<Team> {
-        return this.getDao().findByAirtableId(airtableId);
-    }
-
-    async findByStatus(status: string): Promise<Team[]> {
-        return this.getDao().findByStatus(status);
-    }
 }
 
-class OKRService extends SupabaseEntityService<OKR> {
 
-    static _instance: OKRService;
+export { TeamService };
 
-    static getInstance(): OKRService {
-        if (!this._instance) {
-            this._instance = new OKRService();
-        }
-        return this._instance;
-    }
-
-    public constructor() {
-        super(OKRDao.getInstance());
-    }
-
-    getDao(): OKRDao {
-        return this.dao as OKRDao;
-    }
-
-    empty(team: Team): OKR {
-        return this.getDao().empty(team);
-    }
-}
-
-class ForecastService extends SupabaseEntityService<Forecast> {
-    static _instance: ForecastService;
-
-    static getInstance(): ForecastService {
-        if (!this._instance) {
-            this._instance = new ForecastService();
-        }
-        return this._instance;
-    }
-
-
-    public constructor() {
-        super(ForecastDao.getInstance());
-    }
-
-    getDao(): ForecastDao {
-        return this.dao as ForecastDao;
-    }
-
-    empty(team: Team): Forecast {
-        return this.getDao().empty(team);
-    }
-}
-
-export { ForecastService, OKRService, TeamService };
-
-export type { Forecast, OKR, Team };
+export type { Team };
 

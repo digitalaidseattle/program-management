@@ -11,9 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import { RefreshContext } from "@digitalaidseattle/core";
 import ImHereButton from "../../components/ImHereButton";
 import { Meeting, MeetingAttendee, MeetingService, } from "../../services/dasMeetingService";
-import { Team, TeamService, } from "../../services/dasTeamService";
 import { AttendeesCard } from "./AttendeesCard";
-import { ForecastsCard } from "./ForecastsCard";
 import { MeetingToolbar } from "./MeetingToolbar";
 import { NotesCard } from "./NotesCard";
 import { SelectedAttendeeContext } from "./SelectedAttendeeContext";
@@ -21,11 +19,11 @@ import { TopicsCard } from "./TopicsCard";
 import { CARD_HEADER_SX, MeetingDetailsProps } from "./utils";
 
 function LeadershipMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
-    const teamService = TeamService.getInstance();
+    // const teamService = TeamService.getInstance();
     const meetingService = MeetingService.getInstance();
     const [meeting, setMeeting] = useState<Meeting>();
     const [selectedAttendee, setSelectedAttendee] = useState<MeetingAttendee>();
-    const [team, setTeam] = useState<Team>();
+    // const [team, setTeam] = useState<Team>();
     const { refresh } = useContext(RefreshContext)
 
     useEffect(() => {
@@ -36,26 +34,26 @@ function LeadershipMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
         refreshMeeting();
     }, [refresh]);
 
-    useEffect(() => {
-        // handle refresh when an attendee is selected
-        if (selectedAttendee && meeting) {
-            const attendee = meeting.meeting_attendee?.find(a => a.id === selectedAttendee.id);
-            if (attendee) {
-                teamService.getById(attendee.team_id!)
-                    .then(team => setTeam(team!));
-            } else {
-                setSelectedAttendee(undefined);
-                setTeam(undefined);
-            }
-        }
-    }, [meeting]);
+    // useEffect(() => {
+    //     // handle refresh when an attendee is selected
+    //     if (selectedAttendee && meeting) {
+    //         const attendee = meeting.meeting_attendee?.find(a => a.id === selectedAttendee.id);
+    //         if (attendee) {
+    //             teamService.getById(attendee.team_id!)
+    //                 .then(team => setTeam(team!));
+    //         } else {
+    //             setSelectedAttendee(undefined);
+    //             setTeam(undefined);
+    //         }
+    //     }
+    // }, [meeting]);
 
-    useEffect(() => {
-        if (selectedAttendee) {
-            teamService.getById(selectedAttendee.team_id!)
-                .then(team => setTeam(team!));
-        }
-    }, [selectedAttendee]);
+    // useEffect(() => {
+    //     if (selectedAttendee) {
+    //         teamService.getById(selectedAttendee.team_id!)
+    //             .then(team => setTeam(team!));
+    //     }
+    // }, [selectedAttendee]);
 
     function refreshMeeting() {
         if (meeting) {
@@ -88,7 +86,7 @@ function LeadershipMeetingDetails({ meeting: initial }: MeetingDetailsProps) {
                         <Grid size={5}>
                             <Stack gap={2}>
                                 <TopicsCard entity={meeting} onChange={() => refreshMeeting()} />
-                                <ForecastsCard entity={team!} onChange={(_evt: any) => refreshMeeting()} />
+                                {/* <ForecastsCard entity={team!} onChange={(_evt: any) => refreshMeeting()} /> */}
                             </Stack>
                         </Grid>
                         <Grid size={4}>

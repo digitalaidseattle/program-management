@@ -122,13 +122,13 @@ export const TemplateConfig = () => {
                 url: '/volunteers',
                 icon: <UserOutlined />
             },
-            // {
-            //     id: 'ref-teams',
-            //     title: 'Teams',
-            //     type: 'item',
-            //     url: '/teams',
-            //     icon: <TeamOutlined />
-            // },
+            {
+                id: 'ref-teams',
+                title: 'Teams',
+                type: 'item',
+                url: '/teams',
+                icon: <TeamOutlined />
+            },
             // {
             //     id: 'ref-partners',
             //     title: 'Partners',

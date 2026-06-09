@@ -22,7 +22,7 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
   const volunteerService = VolunteerService.getInstance();
   const team2VolunteerService = Team2VolunteerService.getInstance();
 
-  const [current, setCurrent] = useState<Team2Volunteer[]>([]);
+  const [current] = useState<Team2Volunteer[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [available, setAvailable] = useState<Volunteer[]>([]);
@@ -52,8 +52,9 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
   }, [volunteers, current]);
 
   function refresh() {
-    team2VolunteerService.findByTeamId(entity.id)
-      .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.name.localeCompare(e2.volunteer!.name))))
+    // FIXME
+    // teamService.findVolunteers(entity.id)
+    //   .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.name.localeCompare(e2.volunteer!.name))))
   }
 
   function createCards(items: Team2Volunteer[]) {

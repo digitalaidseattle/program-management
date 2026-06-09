@@ -4,8 +4,20 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { Button, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, MenuItem, Select, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogProps,
+    DialogTitle,
+    MenuItem,
+    Select,
+    Stack,
+    Typography
+} from '@mui/material';
 import { createLeadershipMeeting } from '../actions/CreateLeadershipMeeting';
 import { createPlenaryMeeting } from '../actions/CreatePlenary';
 import { createTeamMeeting } from '../actions/CreateTeamMeeting';
@@ -30,7 +42,7 @@ const LABELS = {
 }
 const AddMeetingDialog: React.FC<AddMeetingDialogProps> = ({ title, meetingTypes, open, onClose }) => {
     const teamService = TeamService.getInstance();
-    
+
     const [teams, setTeams] = useState<Team[]>([]);
     const [meetingType, setMeetingType] = useState<string>('adhoc');
     const [selectedTeam, setSelectedTeam] = useState<string>();
@@ -90,7 +102,7 @@ const AddMeetingDialog: React.FC<AddMeetingDialogProps> = ({ title, meetingTypes
                     <Select value={selectedTeam}
                         disabled={meetingType !== 'team'}
                         onChange={evt => setSelectedTeam(evt.target.value)}>
-                        {teams.map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
+                        {teams.map(item => <MenuItem key={item.id as string} value={item.id as string}>{item.name}</MenuItem>)}
                     </Select>
                 </Stack>
             </DialogContent>

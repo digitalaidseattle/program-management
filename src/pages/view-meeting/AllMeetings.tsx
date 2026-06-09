@@ -184,7 +184,7 @@ const AllMeetingsPage = () => {
                             {meetingType === 'team' &&
                                 <Select value={teamId} onChange={(evt) => setTeamId(evt.target.value)}>
                                     <MenuItem key={'all'} value="all">All teams</MenuItem>
-                                    {teams.map(t => <MenuItem key={t.id} value={t.id}>{t.name}</MenuItem>)}
+                                    {teams.map(t => <MenuItem key={t.id as string} value={t.id as string}>{t.name}</MenuItem>)}
                                 </Select>
                             }
                             <List>

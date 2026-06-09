@@ -37,14 +37,15 @@ export type Profile = {
     location: string,
     pic: string
 }
-export type VolunteerStatusType =
-    "Active" |
-    "Past" |
-    "Taking a break" |
-    "Onboarding" |
-    "Offboarding";
+// FIXME use enum
+// export type VolunteerStatusType =
+//     "Active" |
+//     "Past" |
+//     "Taking a break" |
+//     "Onboarding" |
+//     "Offboarding";
 
-export const VolunteerStatusTypes: VolunteerStatusType[] = [
+export const VolunteerStatusTypes: string[] = [
     'Active',
     'Past',
     'Taking a break',
@@ -55,7 +56,7 @@ export const VolunteerStatusTypes: VolunteerStatusType[] = [
 export type Volunteer = Profile & {
     role: string,
     roles: string[],  // Cadre, Contributor, Director
-    status: VolunteerStatusType,
+    status: string,
     linkedin: string,
     join_date: Date,
     position: string;
@@ -69,6 +70,10 @@ export type Volunteer = Profile & {
     communication_preferences: string;
     team_lead?: Team[];
     teams?: Team[];
+}
+
+export type Forecast = {
+
 }
 
 export type Team = Entity & {
@@ -90,4 +95,6 @@ export type Team = Entity & {
     volunteer?: Volunteer[];
     // okr?: OKR[];
     // forecast?: Forecast[];
+    members: Volunteer[];
+    leads: Volunteer[]
 }

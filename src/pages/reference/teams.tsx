@@ -4,94 +4,70 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { useEffect, useState } from 'react';
-import { useParams } from "react-router";
+import { CheckOutlined, HomeOutlined } from "@ant-design/icons";
 import {
-  Divider,
+  Breadcrumbs,
+  IconButton,
   ListItemIcon,
-  MenuItem
+  MenuItem,
+  Typography
 } from '@mui/material';
-import { CheckOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react';
+import { NavLink, useParams } from "react-router";
 
-import { useStorageService } from '@digitalaidseattle/core';
-import { ListCard } from '../../components/ListCard';
-import { MoreButton } from "./MoreButton";
 import { EntityListPage } from '../../components/EntityListPage';
-import { Team, TeamService } from '../../services/dasTeamService';
-import { TeamDetails } from '../team';
+import { ListCard } from '../../components/ListCard';
+import { Team } from '../../data/types';
+import { TeamService } from '../../services/dasTeamService';
+import { MoreButton } from "./MoreButton";
+import { TeamDetails } from "../team";
 
 const ReferenceTeamsPage = () => {
   const teamService = TeamService.getInstance();
+
   const { id } = useParams<string>();
-  const storageService = useStorageService()!;
-  const [entities, setEntities] = useState<Team[]>([]);
-  const [filter, setFilter] = useState<string>('Active');
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [filtered, setFiltered] = useState<Team[]>([]);
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
-    // externally requested record, only getAll guarantees finding the record
-    if (id) {
-      setFilter('all');
-    }
+    teamService.getAll()
+      .then(tt => setTeams(tt));
   }, []);
 
+
   useEffect(() => {
-    fetchData()
-  }, [filter]);
+    filterData();
+  }, [teams, searchValue]);
 
-  async function fetchData() {
-    const found = await filteredData();
-    setEntities(found);
+  async function filterData() {
+    const found = teams
+      .filter(t => {
+        return (searchValue === "" || t.name.toLowerCase().includes(searchValue))
+      })
+      .sort((a, b) => (a.name.localeCompare(b.name)));
+    setFiltered(found);
   }
 
-  async function filteredData(): Promise<Team[]> {
-    if (TeamService.STATUSES.includes(filter)) {
-      return await teamService
-        .findByStatus(filter)
-        .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
-    }
-
-    return await teamService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.name.localeCompare(b.name))))
-  }
-
-  function filterMenu() {
-    return <>
-      <MenuItem onClick={() => handleFilterChange('all')}>
-        <ListItemIcon>
-          {filter === 'all' && <CheckOutlined />}
-        </ListItemIcon>
-        Show All
-      </MenuItem>
-      <Divider />
-      {TeamService.STATUSES.map(status => {
-        return <MenuItem
-          key={status}
-          onClick={() => handleFilterChange(`${status}`)}>
-          <ListItemIcon>
-            {filter === status && <CheckOutlined />}
-          </ListItemIcon>
-          {status}
-        </MenuItem>
-      })}
-    </>
-  }
-
-  function handleFilterChange(newFilter: string) {
-    setFilter(newFilter);
-  };
 
   return (
-    <EntityListPage
-      title={'Teams'}
-      entities={entities}
-      pageAction={<MoreButton menuItems={filterMenu()} />}
-      listItemRenderer={entity => <ListCard
-        key={entity.id}
-        title={entity.name}
-        avatarImageSrc={storageService.getUrl(`/icons/${entity.id}`)} />}
-      detailRenderer={entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
-    />
+    <>
+      <Breadcrumbs aria-label="breadcrumb">
+        <NavLink to="/" ><IconButton size="medium"><HomeOutlined /></IconButton></NavLink>
+        <Typography color="text.primary">Teams</Typography>
+      </Breadcrumbs>
+      <EntityListPage
+        title={'Teams'}
+        entities={filtered}
+        filterBy={searchValue}
+        onFilter={setSearchValue}
+        listItemRenderer={entity => <ListCard
+          key={entity.id}
+          title={entity.name} />}
+        // detailRenderer={entity => <Typography>{entity.name}</Typography>}
+        detailRenderer={entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
+      />
+    </>
   );
 };
 

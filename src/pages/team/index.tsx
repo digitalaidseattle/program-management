@@ -1,5 +1,6 @@
 
 // material-ui
+import { getCoreServices } from '@digitalaidseattle/core';
 import {
   Avatar,
   Breadcrumbs,
@@ -15,12 +16,9 @@ import { useEffect, useState } from 'react';
 import Markdown from "react-markdown";
 import { useParams } from 'react-router';
 import { EntityProps } from '../../components/utils';
-import { Team, TeamService } from '../../services/dasTeamService';
-import { ForecastsCard } from './ForecastsCard';
-import { OKRsCard } from './OKRsCard';
-import { ToolsCard } from './ToolsCard';
+import { Team } from '../../data/types';
+import { TeamService } from '../../services/dasTeamService';
 import { VolunteersCard } from './VolunteersCard';
-import { getCoreServices } from '@digitalaidseattle/core';
 
 export const CARD_HEADER_SX = { background: "linear-gradient(156.77deg, #7ED321 -11.18%, #F5D76E 111.48%)" }
 
@@ -42,12 +40,12 @@ const TeamDetails: React.FC<TeamDetailsdProps> = ({ entity, onChange, editable =
             <Typography variant="h3">{entity.name}</Typography>
           </Stack>
         </Grid>
-        <Grid size={6}>
+        {/* <Grid size={6}>
           <Stack spacing={2}>
             <OKRsCard entity={entity} editable={editable} onChange={onChange} />
             <ForecastsCard entity={entity} editable={editable} onChange={onChange} />
           </Stack>
-        </Grid>
+        </Grid> */}
         <Grid size={6}>
           <Stack gap={1}>
             <Card>
@@ -79,7 +77,7 @@ const TeamDetails: React.FC<TeamDetailsdProps> = ({ entity, onChange, editable =
 
       </Grid>
       <VolunteersCard entity={entity} onChange={onChange} editable={editable} />
-      <ToolsCard entity={entity} onChange={onChange} />
+      {/* <ToolsCard entity={entity} onChange={onChange} /> */}
     </Stack>
   )
 }
@@ -96,7 +94,7 @@ const TeamPage = () => {
 
   function refresh(_evt: any) {
     if (id) {
-      teamService.getById(id, '*')
+      teamService.getById(id)
         .then((en) => setEntity(en!));
     }
   }
