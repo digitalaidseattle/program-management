@@ -20,7 +20,16 @@ function jason2Entity(json: any): Team {
     return {
         id: json.id,
         name: json.name,
+        leads: values["Team lead"]
+            .map((m: any) => ({
+                id: m.rowId,
+                name: m.name
+            } as Volunteer)),
         members: values["Team member"]
+            .map((m: any) => ({
+                id: m.rowId,
+                name: m.name
+            } as Volunteer))
     } as Team
 }
 export class TeamDao extends CodaDao<Team> {

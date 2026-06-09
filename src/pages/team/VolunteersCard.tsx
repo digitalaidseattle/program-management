@@ -1,18 +1,21 @@
 
 // material-ui
-import { useStorageService } from '@digitalaidseattle/core';
 import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { MenuItem, Stack } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { CARD_HEADER_SX } from '.';
-import { toggleVolunteer2TeamLeaderFlag } from "../../actions/ToggleVolunteer2TeamLeaderFlag";
 import { ListCard } from "../../components/ListCard";
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityProps } from '../../components/utils';
-import { Team2Volunteer, Team2VolunteerService } from '../../services/dasTeam2VolunteerService';
+import { Team2VolunteerService } from '../../services/dasTeam2VolunteerService';
 import { Team } from '../../services/dasTeamService';
 import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
+
+
+type Member = Volunteer & {
+  lead: boolean;
+}
 
 type VolunteersCardProps = EntityProps<Team> & {
   editable?: boolean
@@ -22,15 +25,15 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
   const volunteerService = VolunteerService.getInstance();
   const team2VolunteerService = Team2VolunteerService.getInstance();
 
-  const [current] = useState<Team2Volunteer[]>([]);
-  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
-  const [available, setAvailable] = useState<Volunteer[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+
+  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
+  // const [available, setAvailable] = useState<Volunteer[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
   const [selectedItem, setSelectedItem] = useState<Volunteer>();
 
   const navigate = useNavigate();
-  const storageService = useStorageService()!;
 
   useEffect(() => {
     volunteerService.getActive()
@@ -39,57 +42,53 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
 
   useEffect(() => {
     if (entity) {
-      refresh();
+      fetchData();
     }
-  }, [entity]);
+  }, [volunteers, entity]);
 
   useEffect(() => {
-    const currentIds = current.map(t => t.volunteer_id);
-    setAvailable(volunteers
-      .filter(t => !currentIds.includes(t.id))
-      .sort((t1, t2) => t1.name.localeCompare(t2.name)))
-    setCards(createCards(current))
-  }, [volunteers, current]);
+    console.log(members)
+    setCards(createCards(members))
+  }, [members]);
 
-  function refresh() {
-    // FIXME
-    // teamService.findVolunteers(entity.id)
-    //   .then((t2vs) => setCurrent(t2vs.sort((e1, e2) => e1.volunteer!.name.localeCompare(e2.volunteer!.name))))
+  function fetchData() {
+    setMembers((entity.members ?? [])
+      .map(m => volunteers.find(v => v.id === m.id))
+      .filter(m => !!m)
+      .map(v => v && {
+        ...v,
+        lead: (entity.leads ?? []).find(l => v.id === l.id) !== undefined
+      } as Member)
+      .sort((v1, v2) => v1.name.localeCompare(v2.name)))
   }
 
-  function createCards(items: Team2Volunteer[]) {
-
+  function createCards(items: Member[]) {
     return items
-      .map((t2v, idx) => {
+      .map((member, idx) => {
         const menuItems = [<MenuItem key={'open'}
-          onClick={() => handleOpen(t2v.volunteer_id)}> Open</MenuItem >];
+          onClick={() => handleOpen(member.id)}> Open</MenuItem >];
         if (editable) {
           menuItems.push(<MenuItem key={'remove'}
             onClick={() => {
-              setSelectedItem(t2v.volunteer);
+              setSelectedItem(member);
               setOpenConfirmation(true);
             }}>Remove...</MenuItem>)
         }
         return (
           <ListCard
             key={`${idx}`}
-            title={t2v.volunteer!.name}
-            avatarImageSrc={storageService.getUrl(`profiles/${t2v.volunteer!.id}`)}
+            title={member.name}
+            avatarImageSrc={(member.pic === "" || !member.pic) ? " " : member.pic}  // a blank forces the placeholder to be displayed
             menuItems={menuItems}
             cardContent={
               <Stack>
-                {t2v.volunteer!.position}
+                {member.position}
               </Stack>
             }
             highlightOptions={{
               title: "Team Lead",
-              highlight: t2v.leader ?? false,
-              toggleHighlight: () => {
-                if (editable) {
-                  return toggleVolunteer2TeamLeaderFlag(t2v)
-                    .then(data => handleChange(data))
-                }
-              }
+              highlight: member.lead,
+              toggleHighlight: () => { }
             }}
           />
         )
@@ -97,7 +96,6 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
   }
 
   function handleChange(data: any) {
-    refresh();
     onChange(data)
   }
 
@@ -105,13 +103,13 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
     navigate(`/volunteer/${volunteer_id}`)
   }
 
-  function handleAdd(value: string | null | undefined): void {
-    const selected = available.find(vol => vol.id === value);
-    if (selected) {
-      team2VolunteerService.addVolunteerToTeam(selected, entity!)
-        .then(() => handleChange(true))
-    }
-  }
+  // function handleAdd(value: string | null | undefined): void {
+  //   const selected = available.find(vol => vol.id === value);
+  //   if (selected) {
+  //     team2VolunteerService.addVolunteerToTeam(selected, entity!)
+  //       .then(() => handleChange(true))
+  //   }
+  // }
 
   function handleRemoveConfirm(): void {
     if (selectedItem) {
@@ -128,11 +126,11 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
       title='Members'
       headerSx={CARD_HEADER_SX}
       items={cards}
-      addOpts={editable ? {
-        title: 'Add volunteer',
-        available: available.map(v => ({ label: v.name, value: v.id })),
-        handleAdd: handleAdd
-      } : undefined}
+    // addOpts={editable ? {
+    //   title: 'Add volunteer',
+    //   available: available.map(v => ({ label: v.name, value: v.id })),
+    //   handleAdd: handleAdd
+    // } : undefined}
     />
     <ConfirmationDialog
       title="Confirm removing this volunteer"

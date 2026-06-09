@@ -65,7 +65,7 @@ const ReferenceVolunteerDetails = ({ entity }: { entity: Volunteer }) => {
                         <p>Position: {entity.position}</p>
                     </Grid>
                     <Grid size={12}>
-                        <TeamsCard entity={entity} />
+                        {/* <TeamsCard entity={entity} /> */}
                        {/*  <DisciplinesCard entity={entity} />
                         <ToolsCard entity={entity} />
                         <VenturesCard entity={entity} /> */}

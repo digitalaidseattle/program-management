@@ -17,7 +17,7 @@ import { EntityListPage } from '../../components/EntityListPage';
 import { ListCard } from '../../components/ListCard';
 import { Team } from '../../data/types';
 import { TeamService } from '../../services/dasTeamService';
-import { TeamDetails } from "../team";
+import { TeamDetails } from "../team/TeamDetails";
 
 const ReferenceTeamsPage = () => {
   const teamService = TeamService.getInstance();
@@ -36,6 +36,7 @@ const ReferenceTeamsPage = () => {
   }, [teams, searchValue]);
 
   async function filterData() {
+    console.log(teams)
     const found = teams
       .filter(t => {
         return (searchValue === "" || t.name.toLowerCase().includes(searchValue))

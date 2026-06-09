@@ -95,6 +95,6 @@ export type Team = Entity & {
     volunteer?: Volunteer[];
     // okr?: OKR[];
     // forecast?: Forecast[];
-    members: Volunteer[];
-    leads: Volunteer[]
+    members?: Volunteer[];
+    leads?: Volunteer[]
 }

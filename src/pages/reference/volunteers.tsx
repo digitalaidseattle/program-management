@@ -121,7 +121,9 @@ const ReferenceVolunteersPage = () => {
           <ListCard
             key={entity.id}
             title={entity.name}
-            avatarImageSrc={entity.pic} />}//profileService.getPicUrl(entity)} />}
+            avatarImageSrc={(entity.pic === "" || !entity.pic) ? " " : entity.pic}
+          />
+        }
         detailRenderer={entity => <ReferenceVolunteerDetails entity={entity} />} />
     </>
   )

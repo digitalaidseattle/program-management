@@ -9,9 +9,7 @@ import { useNavigate } from 'react-router';
 import { ListCard } from '../../components/ListCard';
 import ListDetailPage from '../../components/ListDetailPage';
 import { Team, TeamService } from '../../services/dasTeamService';
-import { TeamDetails } from '../team';
-
-
+import { TeamDetails } from '../team/TeamDetails';
 
 const TeamsPage = () => {
   const teamService = TeamService.getInstance();
