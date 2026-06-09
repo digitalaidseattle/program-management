@@ -9,7 +9,6 @@ import { ReactNode, useEffect, useState } from 'react';
 // material-ui
 import {
   Avatar,
-  AvatarGroup,
   Box,
   Card,
   CardHeader,
@@ -20,11 +19,11 @@ import {
   useTheme
 } from '@mui/material';
 
-import { Map } from '../../map-feature/Map';
-import { Location, LocationService } from '../../map-feature/LocationService';
-import { TeamMemberService } from './teamMemberService';
-import { Configuration as MapConfiguration } from '../../map-feature/Configuration';
 import { Volunteer } from '../../data/types';
+import { Configuration as MapConfiguration } from '../../map-feature/Configuration';
+import { Location, LocationService } from '../../map-feature/LocationService';
+import { Map } from '../../map-feature/Map';
+import { TeamMemberService } from './teamMemberService';
 
 const MAP_HEIGHT = 'calc(100dvh - 140px)';
 
