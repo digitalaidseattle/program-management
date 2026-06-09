@@ -7,7 +7,7 @@ import { Avatar, Box, Card, CardContent, CardHeader, Grid } from "@mui/material"
 import dayjs from "dayjs";
 import { ProfileService } from "../../services/dasProfileService";
 import { Volunteer } from "../../services/dasVolunteerService";
-import { TeamsCard } from "./TeamsCard";
+// import { TeamsCard } from "./TeamsCard";
 // import { DisciplinesCard } from "./DisplinesCard";
 // import { ToolsCard } from "./ToolsCard";
 // import { VenturesCard } from "./VenturesCard";
