@@ -4,28 +4,24 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { CheckOutlined, HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 import {
   Breadcrumbs,
   IconButton,
-  ListItemIcon,
-  MenuItem,
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { NavLink, useParams } from "react-router";
+import { NavLink } from "react-router";
 
 import { EntityListPage } from '../../components/EntityListPage';
 import { ListCard } from '../../components/ListCard';
 import { Team } from '../../data/types';
 import { TeamService } from '../../services/dasTeamService';
-import { MoreButton } from "./MoreButton";
 import { TeamDetails } from "../team";
 
 const ReferenceTeamsPage = () => {
   const teamService = TeamService.getInstance();
 
-  const { id } = useParams<string>();
   const [teams, setTeams] = useState<Team[]>([]);
   const [filtered, setFiltered] = useState<Team[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -34,7 +30,6 @@ const ReferenceTeamsPage = () => {
     teamService.getAll()
       .then(tt => setTeams(tt));
   }, []);
-
 
   useEffect(() => {
     filterData();
@@ -48,7 +43,6 @@ const ReferenceTeamsPage = () => {
       .sort((a, b) => (a.name.localeCompare(b.name)));
     setFiltered(found);
   }
-
 
   return (
     <>
