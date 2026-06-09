@@ -64,6 +64,18 @@ class VentureReportDao extends SupabaseDAO<VentureReport> {
         }
     }
 
+    async findByVentureName(name: string): Promise<VentureReport[]> {
+        const { data, error } = await SupabaseConfiguration.getInstance().getSupabaseClient()
+            .from(this.tableName)
+            .select(DEFAULT_SELECT)
+            .eq("venture_name", name)
+            .order("reporting_date", { ascending: false });
+        if (error) {
+            throw error;
+        }
+        return (data ?? []) as VentureReport[];
+    }
+
     async findByVentureId(ventureId: Identifier): Promise<VentureReport[]> {
         const { data, error } = await SupabaseConfiguration.getInstance().getSupabaseClient()
             .from(this.tableName)

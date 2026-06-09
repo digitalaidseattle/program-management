@@ -17,10 +17,12 @@ const TABLE_ID = "grid-4vzF6VuaPV";
 
 function jason2Entity(json: any): Volunteer {
     const values = json.values;
+    // console.log(values)
     return {
         id: json.id,
         name: CodaDao.removeBackTicks(values["Name"]),
         role: values["Role"] ? values["Role"].name : "",
+        roles: values["Cadre or Contributor"] ? values["Cadre or Contributor"].map((val: string) => CodaDao.removeBackTicks(val)) : [],
         pic: values["Pic"] ? values["Pic"][0].url : "",
         location: CodaDao.removeBackTicks(values["Location"]),
         status: CodaDao.removeBackTicks(values["Status"]),

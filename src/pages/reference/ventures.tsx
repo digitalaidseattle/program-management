@@ -4,95 +4,105 @@
  *  @copyright 2025 Digital Aid Seattle
  *
  */
-import { CheckOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { NavLink } from 'react-router-dom';
+
+import { CheckOutlined, HomeOutlined } from "@ant-design/icons";
 import {
+  Breadcrumbs,
+  Card,
+  CardHeader,
   Divider,
+  IconButton,
   ListItemIcon,
-  MenuItem
+  MenuItem,
+  Typography
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-
-import { ListCard } from '../../components/ListCard';
-import { Venture, VentureService } from '../../services/dasVentureService';
-import { MoreButton } from "./MoreButton";
-
 import { EntityListPage } from '../../components/EntityListPage';
-import { ReferenceVentureDetails } from "../../components/ReferenceVentureDetails";
-import { PartnerService } from "../../services/dasPartnerService";
+import { ListCard } from '../../components/ListCard';
+import { MoreButton } from "./MoreButton";
+import { VentureDao } from "../../data/coda/VentureDao";
+import { Venture } from "../../data/types";
+import { ReferenceVentureDetails } from "../venture/referenceVentureDetails";
+import { VentureService } from "../../services/dasVentureService";
 
 const ReferenceVenturesPage = () => {
-  const ventureService = VentureService.getInstance();
-  const partnerService = PartnerService.getInstance()
 
   const { id } = useParams<string>();
-  const [entities, setEntities] = useState<Venture[]>([]);
-  const [filter, setFilter] = useState<string>('Active');
+
+  const [ventures, setVentures] = useState<Venture[]>([]);
+  const [filtered, setFiltered] = useState<Venture[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>(['Active']);
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  useEffect(() => {
+    VentureDao.getInstance()
+      .getAll()
+      .then(v => setVentures(v));
+  }, []);
 
   useEffect(() => {
     // externally requested record, only getAll guarantees finding the record
     if (id) {
-      setFilter('all');
+      setStatusFilter(['Active', 'Ready for consideration', "Submitted by Partner"]);
     }
   }, []);
 
   useEffect(() => {
-    fetchData()
-  }, [filter]);
+    filterData()
+  }, [ventures, statusFilter, searchValue]);
 
-  async function fetchData() {
-    const found = await filteredData();
-    setEntities(found);
+
+  function filterData() {
+    const found = ventures
+      .filter(v => {
+        return statusFilter.includes(v.status)
+          && (searchValue === "" || v.venture_code.toLowerCase().includes(searchValue))
+      })
+      .sort((a, b) => (a.title.localeCompare(b.title)));
+    setFiltered(found);
   }
 
-  async function filteredData(): Promise<Venture[]> {
-    if (VentureService.STATUSES.includes(filter)) {
-      return await ventureService
-        .findByStatus(filter)
-        .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
-    }
-    return await ventureService
-      .getAll()
-      .then(data => data.sort((a, b) => (a.venture_code.localeCompare(b.venture_code))))
-  }
-
-  function handleFilterChange(newFilter: string) {
-    setFilter(newFilter);
+  function handleStatusChange(newFilter: string) {
+    const updated = statusFilter.includes(newFilter)
+      ? statusFilter.filter(e => e !== newFilter)
+      : [...statusFilter, newFilter];
+    setStatusFilter(updated);
   };
-
   function filterMenu() {
     return <>
-      <MenuItem onClick={() => handleFilterChange('all')}>
-        <ListItemIcon>
-          {filter === 'all' && <CheckOutlined />}
-        </ListItemIcon>
-        Show All
-      </MenuItem>
-      <Divider />
-      {VentureService.STATUSES.map(status => {
-        return <MenuItem
-          key={status}
-          onClick={() => handleFilterChange(`${status}`)}>
+      {VentureService.STATUSES.map(status =>
+        <MenuItem key={status} onClick={() => handleStatusChange(status)}>
           <ListItemIcon>
-            {filter === status && <CheckOutlined />}
+            {statusFilter.includes(status) && <CheckOutlined />}
           </ListItemIcon>
           {status}
         </MenuItem>
-      })}
+      )}
     </>
   }
 
   return (
-    <EntityListPage
-      title={'Ventures'}
-      entities={entities}
-      pageAction={<MoreButton menuItems={filterMenu()} />}
-      listItemRenderer={entity =>
-        <ListCard
-          key={entity.id}
-          title={entity.venture_code}
-          avatarImageSrc={partnerService.getLogoUrl(entity.partner!)} />}
-      detailRenderer={entity => <ReferenceVentureDetails entity={entity} />} />
+    <>
+      <Breadcrumbs aria-label="breadcrumb">
+        <NavLink to="/" ><IconButton size="medium"><HomeOutlined /></IconButton></NavLink>
+        <Typography color="text.primary">Volunteers</Typography>
+      </Breadcrumbs>
+      <EntityListPage
+        title={'Ventures'}
+        entities={filtered}
+        filterBy={searchValue}
+        onFilter={setSearchValue}
+        pageAction={<MoreButton menuItems={filterMenu()} />}
+        listItemRenderer={entity =>
+          <ListCard
+            key={entity.id}
+            title={entity.venture_code}
+            avatarImageSrc={entity.icon}
+          />}
+        detailRenderer={entity => (<ReferenceVentureDetails entity={entity} />)} />
+    </>
   );
 };
 

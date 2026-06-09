@@ -47,7 +47,7 @@ export const TemplateConfig = () => {
                     id: 'maps',
                     title: 'Where in the world is...',
                     type: 'item',
-                    url: '/where',
+                    url: '/volunteers/where',
                     icon: <GlobalOutlined />
                 }]
         } as MenuItem;
@@ -87,6 +87,13 @@ export const TemplateConfig = () => {
         type: 'group',
         children: [
             {
+                id: 'ref-ventures',
+                title: 'Ventures',
+                type: 'item',
+                url: '/ventures',
+                icon: <RocketOutlined />
+            },
+            {
                 id: 'reporting',
                 title: 'Reporting',
                 type: 'item',
@@ -115,41 +122,41 @@ export const TemplateConfig = () => {
                 url: '/volunteers',
                 icon: <UserOutlined />
             },
-            {
-                id: 'ref-teams',
-                title: 'Teams',
-                type: 'item',
-                url: '/teams',
-                icon: <TeamOutlined />
-            },
-            {
-                id: 'ref-partners',
-                title: 'Partners',
-                type: 'item',
-                url: '/partners',
-                icon: <HeartOutlined />
-            },
-            {
-                id: 'ref-tools',
-                title: 'Tools',
-                type: 'item',
-                url: '/tools',
-                icon: <ToolOutlined />
-            },
-            {
-                id: 'ref-disciplines',
-                title: 'Disciplines',
-                type: 'item',
-                url: '/disciplines',
-                icon: <KeyOutlined />
-            },
-            {
-                id: 'ref-roles',
-                title: 'Roles',
-                type: 'item',
-                url: '/roles',
-                icon: <IdcardOutlined />
-            }
+            // {
+            //     id: 'ref-teams',
+            //     title: 'Teams',
+            //     type: 'item',
+            //     url: '/teams',
+            //     icon: <TeamOutlined />
+            // },
+            // {
+            //     id: 'ref-partners',
+            //     title: 'Partners',
+            //     type: 'item',
+            //     url: '/partners',
+            //     icon: <HeartOutlined />
+            // },
+            // {
+            //     id: 'ref-tools',
+            //     title: 'Tools',
+            //     type: 'item',
+            //     url: '/tools',
+            //     icon: <ToolOutlined />
+            // },
+            // {
+            //     id: 'ref-disciplines',
+            //     title: 'Disciplines',
+            //     type: 'item',
+            //     url: '/disciplines',
+            //     icon: <KeyOutlined />
+            // },
+            // {
+            //     id: 'ref-roles',
+            //     title: 'Roles',
+            //     type: 'item',
+            //     url: '/roles',
+            //     icon: <IdcardOutlined />
+            // }
         ]
     }
 
@@ -164,7 +171,8 @@ export const TemplateConfig = () => {
                 type: 'item',
                 url: '/data/volunteers',
                 icon: <UserOutlined />
-            }, {
+            },
+            {
                 id: 'teams',
                 title: 'Teams',
                 type: 'item',
@@ -239,9 +247,9 @@ export const TemplateConfig = () => {
     } as MenuItem;
 
 
-    console.log('disabled menu items', meetings, recruiting, reference, data);
+    console.log('disabled menu items', meetings, recruiting, data);
 
-    const menuItems = [home, ventures,];
+    const menuItems = [home, ventures, reference];
 
     return ({
         appName: 'DAS Program Management',

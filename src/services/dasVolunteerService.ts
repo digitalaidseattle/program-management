@@ -12,8 +12,6 @@ import { Team, Volunteer } from "../data/types";
 
 class VolunteerService {
 
-
-
     private static instance: VolunteerService;
 
     public static getInstance(): VolunteerService {

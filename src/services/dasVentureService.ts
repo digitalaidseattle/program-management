@@ -11,18 +11,9 @@ import { SupabaseEntityService } from "@digitalaidseattle/supabase";
 import { PartnerService } from "./dasPartnerService";
 import { Venture, VentureDAO } from './dasVentureDao';
 
-
-
 class VentureService extends SupabaseEntityService<Venture> {
 
-    static STATUSES = [
-        'Active',
-        'Declined',
-        'Ready for consideration',
-        'Paused',
-        'Delivered',
-        'Submitted by Partner',
-    ];
+    static STATUSES = VentureDAO.STATUSES;
 
     static _instance: VentureService;
 

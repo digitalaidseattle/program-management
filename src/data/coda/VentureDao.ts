@@ -23,8 +23,21 @@ function json2Entity(json: any): Venture {
         id: json.id,
         title: json.name,
         coda_id: json.id,
-        status: CodaDao.removeBackTicks(values["Venture Status"]),  
-        venture_code: CodaDao.removeBackTicks(values["Prospective Venture Code"]),  
+        status: CodaDao.removeBackTicks(values["Venture Status"]),
+        venture_code: CodaDao.removeBackTicks(values["Prospective Venture Code"]),
+        icon: values["Org Icon - For DAS Website"]
+            ? Array.isArray(values["Org Icon - For DAS Website"])
+                ? values["Org Icon - For DAS Website"][0].url
+                : values["Org Icon - For DAS Website"].url
+            : undefined,
+        program_areas: Array.isArray(values["Foci - For DAS Website"])
+            ? values["Foci - For DAS Website"].map((elem: string) => CodaDao.removeBackTicks(elem))
+            : [],
+        painpoint: CodaDao.removeBackTicks(values["Painpoint"]),
+        problem: CodaDao.removeBackTicks(values["Problem - For DAS Website"]),
+        solution: CodaDao.removeBackTicks(values["Solution - For DAS Website"]),
+        impact: CodaDao.removeBackTicks(values["Impact - For DAS Website"]),
+        partner_name: CodaDao.removeBackTicks(values["Org Name"])
     } as Venture
 }
 export class VentureDao extends CodaDao<Venture> {

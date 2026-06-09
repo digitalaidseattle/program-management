@@ -1,5 +1,14 @@
 import { Entity } from "@digitalaidseattle/core";
 
+export const VENTURE_STATUSES: String[] = [
+    "Submitted by Partner",
+    "Ready for consideration",
+    "Active",
+    "Paused",
+    "Declined",
+    "Delivered"
+];
+
 export type Venture = Entity & {
     airtable_id: string
     coda_id?: string;
@@ -13,6 +22,8 @@ export type Venture = Entity & {
     program_areas: string[];
     venture_code: string;
     partner_airtable_id: string[],
+    icon: string;
+    partner_name: string;
     // partner?: Partner;
 }
 
@@ -26,23 +37,24 @@ export type Profile = {
     location: string,
     pic: string
 }
-
 export type VolunteerStatusType =
     "Active" |
-    "Cadre" |
-    "new prospect" |
-    "past" |
-    "taking a break" |
-    "on call" |
-    "rejected" |
-    "Offboarding Cadre" |
+    "Past" |
+    "Taking a break" |
     "Onboarding" |
-    "Board only" |
-    "Contributor" |
-    "Offboarding Contributor";
+    "Offboarding";
+
+export const VolunteerStatusTypes: VolunteerStatusType[] = [
+    'Active',
+    'Past',
+    'Taking a break',
+    'Onboarding',
+    'Offboarding'
+];
 
 export type Volunteer = Profile & {
     role: string,
+    roles: string[],  // Cadre, Contributor, Director
     status: VolunteerStatusType,
     linkedin: string,
     join_date: Date,

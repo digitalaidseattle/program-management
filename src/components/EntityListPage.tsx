@@ -8,7 +8,7 @@ import { CloseCircleOutlined } from "@ant-design/icons";
 import { Entity, PageInfo } from "@digitalaidseattle/core";
 import { Box, Card, CardContent, CardHeader, Grid, IconButton, InputAdornment, OutlinedInput, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ScrollList } from "./ScrollList";
 
 type EntityListPageProps<T extends Entity> = {
@@ -25,6 +25,8 @@ export function EntityListPage<T extends Entity>({
     title, entities = [], pageAction, filterBy, onFilter, listItemRenderer, detailRenderer
 }: EntityListPageProps<T>) {
     const { id } = useParams<string>();
+    const navigate = useNavigate();
+
     const [filterValue, setFilterValue] = useState<string>('');
     const [pageInfo, setPageInfo] = useState<PageInfo<T>>({ rows: [], totalRowCount: 0 });
     const [selectedItem, setSelectedItem] = useState<T>();
@@ -59,7 +61,8 @@ export function EntityListPage<T extends Entity>({
 
     useEffect(() => {
         if (selectedItem) {
-            window.history.pushState({}, '', `/volunteers/${selectedItem.id}`)
+            const root = window.location.pathname.split('/')[1];
+            navigate(`/${root}/${selectedItem.id}`)
         }
     }, [selectedItem]);
 

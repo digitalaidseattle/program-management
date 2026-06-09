@@ -45,6 +45,10 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
         return this.getDao().find(queryModel);
     }
 
+    async findByVentureName(name: string): Promise<VentureReport[]> {
+        return this.getDao().findByVentureName(name);
+    }
+
     async findByVentureId(ventureId: Identifier): Promise<VentureReport[]> {
         return this.getDao().findByVentureId(ventureId);
     }
@@ -55,7 +59,6 @@ class VentureReportService extends SupabaseEntityService<VentureReport> {
 
     async findRecentReports(limit: number): Promise<VentureReport[]> {
         return this.getDao().findRecentReports(limit);
-
     }
 }
 

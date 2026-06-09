@@ -151,7 +151,7 @@ const reference = {
       element: <VentureStatusReportPage />,
     },
     {
-      path: "where",
+      path: "volunteers/where",
       element: <MapPage />,
     }
   ]

@@ -89,7 +89,6 @@
         "latitude": 37.2872,
         "longitude": -121.9549
     },
-    
     {
         "name": "Chicago, Illinois, USA",
         "latitude": 41.8781,
@@ -112,6 +111,11 @@
     },
     {
         "name": "Columbus, OH, United States",
+        "latitude": 39.9625,
+        "longitude": -83.0000
+    },
+    {
+        "name": "Columbus, Ohio, United States",
         "latitude": 39.9625,
         "longitude": -83.0000
     },
@@ -399,6 +403,11 @@
         "name": "Toronto, Ontario, Canada",
         "latitude": 43.651605,
         "longitude": -79.383125
+    },
+    {
+        "name": "Tukwila, WA, United States",
+        "latitude": 47.4783,
+        "longitude": -122.2756
     },
     {
         "name": "Vancouver, BC, Canada",
