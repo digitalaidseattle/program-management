@@ -9,9 +9,11 @@ import { ReactNode, useEffect, useState } from 'react';
 // material-ui
 import {
   Avatar,
+  AvatarGroup,
   Box,
   Card,
   CardHeader,
+  Grid,
   Stack,
   Typography,
   useMediaQuery,
@@ -151,13 +153,20 @@ const VolunteerMap = () => {
 
   function multiVolunteersPopup(volunteers: Volunteer[], location: Location) {
     return (
-      <Stack>
+      <Stack spacing={2}>
         <Typography fontWeight={600}>
           <a target="_new"
             href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=${location.name}`}
           >{location.name}</a>
         </Typography>
-        <Typography>Home of volunteers: {volunteers.map(v => v.name).join(', ')}</Typography>
+        <Grid container>
+          <Stack direction="row"
+            spacing={2}
+            useFlexGap
+            flexWrap="wrap">
+            {volunteers.map(v => <Avatar alt={v.name} src={v.pic} title={v.name} />)}
+          </Stack>
+        </Grid>
       </Stack>
     )
   }
