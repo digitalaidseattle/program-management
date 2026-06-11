@@ -1,13 +1,14 @@
 import { Entity } from "@digitalaidseattle/core";
 
-export const VENTURE_STATUSES: String[] = [
-    "Submitted by Partner",
-    "Ready for consideration",
-    "Active",
-    "Paused",
-    "Declined",
-    "Delivered"
-];
+// FIXME use enum
+export enum VENTURE_STATUSES {
+    SubmittedByPartner = "Submitted by Partner",
+    ReadyForConsideration = "Ready for consideration",
+    Active = "Active",
+    Paused = "Paused",
+    Declined = "Declined",
+    Delivered = "Delivered"
+};
 
 export type Venture = Entity & {
     airtable_id: string
@@ -15,7 +16,7 @@ export type Venture = Entity & {
     partner_id: string | null;
     title: string;
     painpoint: string;
-    status: string;
+    status: VENTURE_STATUSES;
     problem: string;
     solution: string;
     impact: string;
@@ -97,4 +98,27 @@ export type Team = Entity & {
     // forecast?: Forecast[];
     members?: Volunteer[];
     leads?: Volunteer[]
+}
+
+export enum STAFFING_STATUSES {
+    Filled = "Filled",
+    PleaseFill = "Please fill",
+    Concluded = "Concluded"
+};
+export type Staffing = Entity & {
+    venture_id: string;
+    venture_name: string;
+    // team_id: string;
+    // role_id: string;
+    volunteer_id: string;
+    volunteer_name: string;
+    status: string;
+    timing: string;
+    role: string;
+    // level: string;
+    // skills: string;
+    importance: string;
+    // venture?: Venture;
+    // role?: Role;
+    volunteer?: Volunteer;
 }

@@ -59,7 +59,6 @@ const ReferenceTeamsPage = () => {
         listItemRenderer={entity => <ListCard
           key={entity.id}
           title={entity.name} />}
-        // detailRenderer={entity => <Typography>{entity.name}</Typography>}
         detailRenderer={entity => <TeamDetails entity={entity} onChange={() => alert('nrfpt')} />}
       />
     </>

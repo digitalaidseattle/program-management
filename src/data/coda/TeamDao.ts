@@ -16,7 +16,6 @@ const TABLE_ID = "grid-YUAFhqfMkQ";
 
 function jason2Entity(json: any): Team {
     const values = json.values;
-    console.log(json)
     return {
         id: json.id,
         name: json.name,

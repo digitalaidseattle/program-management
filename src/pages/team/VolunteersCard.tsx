@@ -100,7 +100,7 @@ export const VolunteersCard: React.FC<VolunteersCardProps> = ({ entity, onChange
   }
 
   function handleOpen(volunteer_id: string): void {
-    navigate(`/volunteer/${volunteer_id}`)
+    navigate(`/volunteers/${volunteer_id}`)
   }
 
   // function handleAdd(value: string | null | undefined): void {

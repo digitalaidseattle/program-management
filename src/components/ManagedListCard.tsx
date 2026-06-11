@@ -6,7 +6,7 @@
  */
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { SelectItemDialog } from "@digitalaidseattle/mui";
-import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, IconButton, Paper, Stack, Typography } from "@mui/material";
 import { ReactNode, useState } from "react";
 
 export type ManagedListCardProps = {
@@ -49,7 +49,8 @@ export const ManagedListCard: React.FC<ManagedListCardProps> = ({ title, items, 
                 <CardContent >
                     <Stack gap={2} margin={2}>
                         <Grid container gap={2}>
-                            {items.map((item, idx) =>
+                            {(items.length === 0) && <Typography>No matching items.</Typography>}
+                            {(items.length > 0) && items.map((item, idx) =>
                             (<Paper
                                 key={idx}
                                 sx={{

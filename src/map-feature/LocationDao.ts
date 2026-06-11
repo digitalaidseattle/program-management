@@ -16,7 +16,9 @@ export interface LocationDao extends DataAccessObject<Location> {
     getAll(): Promise<Location[]>;
     findByName(name: string): Promise<Location | null>;
 }
-
+/**
+ * The FileLoacationDao is provided as a simple example.
+ */
 class FileLocationDao implements LocationDao {
 
     private static instance: LocationDao;

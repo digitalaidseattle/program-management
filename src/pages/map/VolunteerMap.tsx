@@ -25,7 +25,7 @@ import { Location, LocationService } from '../../map-feature/LocationService';
 import { Map } from '../../map-feature/Map';
 import { TeamMemberService } from './teamMemberService';
 
-const MAP_HEIGHT = 'calc(100dvh - 140px)';
+const MAP_HEIGHT = 'calc(100dvh - 180px)';
 
 function VolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onClick: () => void }) {
   return (

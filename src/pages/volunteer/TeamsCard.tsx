@@ -1,73 +1,68 @@
 
-// material-ui
-import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { ReactNode, useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
+
+// material-ui
+import { MenuItem } from '@mui/material';
+
+import { ConfirmationDialog } from '@digitalaidseattle/mui';
 import { CARD_HEADER_SX } from '.';
 import { ListCard } from '../../components/ListCard';
 import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
 import { Team } from '../../data/types';
-import { TeamService } from '../../services/dasTeamService';
-import { Volunteer, VolunteerService } from '../../services/dasVolunteerService';
+import { useTeams } from '../../hooks/useTeams';
+import { Volunteer } from '../../services/dasVolunteerService';
+
+type TeamMember = Team & {
+  lead: boolean;
+}
 
 export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) => {
-  const teamService = TeamService.getInstance();
-  const volunteerService = VolunteerService.getInstance();
+  const teams = useTeams();
 
-  const [current, setCurrent] = useState<Team[]>([]);
+  const [current, setCurrent] = useState<TeamMember[]>([]);
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [teams, setTeams] = useState<Team[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
 
-  // const navigate = useNavigate();
-
-  useEffect(() => {
-    teamService.getAll()
-      .then(teams => setTeams(teams));
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (entity) {
-      refresh();
+      fetchData();
     }
   }, [entity]);
 
-  function refresh() {
-    volunteerService.findTeams(entity.id)
-      .then((teams) => {
-        setCurrent(teams.sort((t1, t2) => t1.name.localeCompare(t2.name)));
-      })
+  function fetchData() {
+    const teamIds = (entity.teams ?? []).map(t => t.id);
+    const teamLeadIds = (entity.team_lead ?? []).map(t => t.id);
+    setCurrent((teams.data ?? [])
+      .filter(t => teamIds.includes(t.id))
+      .map(t => ({
+        ...t,
+        lead: teamLeadIds.includes(t.id)
+      }))
+      .sort((t1, t2) => t1.name.localeCompare(t2.name)))
   }
 
   useEffect(() => {
-    setCards(createCards(current))
-  }, [teams, current]);
+    setCards(current.map(t => createCard(t)))
+  }, [current]);
 
-  function createCards(teams: Team[]) {
-    return teams
-      .map(team => {
-        return <ListCard
-          key={team.id}
-          title={team.name}
-        // avatarImageSrc={storageService.getUrl(`icons/${t2v.team!.id}`)}
-        // highlightOptions={{
-        //   title: "Team Lead",
-        //   highlight: team.leader ?? false,
-        //   toggleHighlight: () => {
-        //     onChange && toggleVolunteer2TeamLeaderFlag(t2v)
-        //       .then(data => handleChange(data))
-        //   }
-        // }}
-        // menuItems={[
-        //   <MenuItem key={1} onClick={() => handleOpen(team)}> Open</MenuItem >,
-        //   <MenuItem key={2} onClick={() => {
-        //     setSelectedItem(team);
-        //     setOpenConfirmation(true);
-        //   }}>Remove...</MenuItem>
-        // ]}
-        />
-      })
+  function createCard(team: TeamMember) {
+    return <ListCard
+      key={team.id}
+      title={team.name}
+      // avatarImageSrc={storageService.getUrl(`icons/${t2v.team!.id}`)}
+      highlightOptions={{
+        title: "Team Lead",
+        highlight: team.lead ?? false,
+        toggleHighlight: () => { }
+      }}
+      menuItems={[
+        <MenuItem key={1} onClick={() => handleOpen(team)}> Open</MenuItem >,
+      ]}
+    />
   }
 
   // function handleChange(data: any) {
@@ -75,9 +70,9 @@ export const TeamsCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) => {
   //   onChange!(data)
   // }
 
-  // function handleOpen(team: Team): void {
-  //   navigate(`/teams/${team.id}`)
-  // }
+  function handleOpen(team: Team): void {
+    navigate(`/teams/${team.id}`)
+  }
 
   // function handleAdd(selected: string | null | undefined): void {
   //   const team = available.find(t => t.id === selected);
