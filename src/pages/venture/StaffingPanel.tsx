@@ -29,7 +29,7 @@ export const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   const [staffing, setStaffing] = useState<Staffing[]>([]);
   const [filtered, setFiltered] = useState<Staffing[]>([]);
   const [cards, setCards] = useState<ReactNode[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string[]>(['Filled']);
+  const [statusFilter, setStatusFilter] = useState<string[]>(['Filled', 'Please fill']);
 
   useEffect(() => {
     if (entity) {

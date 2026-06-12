@@ -85,7 +85,7 @@ const ReferenceVenturesPage = () => {
     <>
       <Breadcrumbs aria-label="breadcrumb">
         <NavLink to="/" ><IconButton size="medium"><HomeOutlined /></IconButton></NavLink>
-        <Typography color="text.primary">Volunteers</Typography>
+        <Typography color="text.primary">Ventures</Typography>
       </Breadcrumbs>
       <EntityListPage
         title={'Ventures'}
