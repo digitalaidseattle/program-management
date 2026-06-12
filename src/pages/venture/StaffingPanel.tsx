@@ -52,7 +52,6 @@ export const StaffingPanel: React.FC<EntityProps<Venture>> = ({ entity }) => {
   }
 
   async function filterData() {
-    console.log(new Set(staffing.map(s => s.status)))
     setFiltered(staffing.filter(s => statusFilter.includes(s.status)));
   }
 

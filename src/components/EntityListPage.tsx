@@ -75,7 +75,7 @@ export function EntityListPage<T extends Entity>({
             <CardContent sx={{ p: 0 }}>
                 <Grid container>
                     <Grid size={3}>
-                        <Stack sx={{ height: "100vh" }}>
+                        <Stack sx={{ height: "calc(100vh - 200px)" }}>
                             {onFilter && <OutlinedInput
                                 value={filterValue}
                                 onChange={(evt) => onFilter(evt.target.value)}

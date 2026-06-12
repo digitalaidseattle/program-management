@@ -1,19 +1,33 @@
 
-// material-ui
-import { MenuItem, Stack, Typography } from '@mui/material';
+
 import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+
+import { CheckOutlined } from "@ant-design/icons";
+import { ListItemIcon, MenuItem, Stack, Typography } from '@mui/material';
+
 import { CARD_HEADER_SX } from '.';
+import { CardContainer } from '../../components/CardContainer';
 import { ListCard } from '../../components/ListCard';
-import { ManagedListCard } from '../../components/ManagedListCard';
 import { EntityPropsOpt } from '../../components/utils';
 import { StaffingDao } from '../../data/coda/StaffingDao';
-import { Staffing } from '../../data/types';
+import { VentureDao } from '../../data/coda/VentureDao';
+import { Staffing, Venture, VENTURE_STATUSES } from '../../data/types';
 import { Volunteer } from '../../services/dasVolunteerService';
+import { MoreButton } from '../reference/MoreButton';
+
+type VentureStaff = {
+  venture: Venture;
+  staffing: Staffing;
+}
 
 export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) => {
 
+  const [staffing, setStaffing] = useState<VentureStaff[]>([]);
+  const [filtered, setFiltered] = useState<VentureStaff[]>([]);
+
   const [cards, setCards] = useState<ReactNode[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>(['Active']);
 
   const navigate = useNavigate();
 
@@ -23,25 +37,48 @@ export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) =>
     }
   }, [entity]);
 
+  useEffect(() => {
+    filterData();
+  }, [staffing, statusFilter]);
+
+  useEffect(() => {
+    setCards(createCards())
+  }, [filtered]);
+
   async function fetchData() {
-    const staffing = await StaffingDao.getInstance().getAll();
-    const filtered = staffing.filter(s => s.volunteer_id === entity.id);
-    setCards(filtered.map(s => createCard(s)));
+    const staffing = await StaffingDao.getInstance().findByVolunteerId(entity.id);
+    const ventureStaffing: VentureStaff[] = [];
+    for (let staff of staffing) {
+      const venture = await VentureDao.getInstance().getById(staff.venture_id);
+      ventureStaffing.push({ venture: venture!, staffing: staff });
+    }
+    setStaffing(ventureStaffing);
   }
 
-  function createCard(staffing: Staffing) {
+  async function filterData() {
+    setFiltered(staffing.filter(ventureStaff => statusFilter.includes(ventureStaff.venture.status)));
+  }
+
+  function createCards(): ReactNode[] {
+    const vCards = [];
+    for (let vs of filtered) {
+      vCards.push(createCard(vs))
+    }
+    return vCards
+  }
+
+  function createCard(ventureStaff: VentureStaff): ReactNode {
     return <ListCard
-      key={staffing.venture_id}
-      title={staffing.venture_name}
-      // avatarImageSrc={storageService.getUrl(`logos/${staffing.venture!.id}`)}
+      key={ventureStaff.venture.id}
+      title={`${ventureStaff.venture.title} (${ventureStaff.venture.status})`}
+      avatarImageSrc={ventureStaff.venture.icon}
       cardContent={
         <Stack>
-          <Typography fontWeight={600}>{staffing.status} </Typography>
-          <Typography fontWeight={300}>{staffing.role}</Typography>
+          <Typography fontWeight={300}>{ventureStaff.staffing.role}</Typography>
         </Stack>
       }
       menuItems={[
-        <MenuItem key='0' onClick={() => handleOpen(staffing.venture_id)}>Open</MenuItem >,
+        <MenuItem key='0' onClick={() => handleOpen(ventureStaff.venture.id as string)}>Open</MenuItem >,
       ]}
     />
   }
@@ -50,11 +87,32 @@ export const VenturesCard: React.FC<EntityPropsOpt<Volunteer>> = ({ entity }) =>
     navigate(`/ventures/${discipline_id}`)
   }
 
+  function handleStatusChange(newFilter: string) {
+    const updated = statusFilter.includes(newFilter)
+      ? statusFilter.filter(e => e !== newFilter)
+      : [...statusFilter, newFilter];
+    setStatusFilter(updated);
+  };
+
+  function filterMenu() {
+    return <>
+      {Object.values(VENTURE_STATUSES).map((status: VENTURE_STATUSES) =>
+        <MenuItem key={status} onClick={() => handleStatusChange(status)}>
+          <ListItemIcon>
+            {statusFilter.includes(status) && <CheckOutlined />}
+          </ListItemIcon>
+          {status}
+        </MenuItem>
+      )}
+    </>
+  }
+
   return (< >
-    <ManagedListCard
+    <CardContainer
       title='Ventures'
       items={cards}
       headerSx={CARD_HEADER_SX}
+      action={<MoreButton menuItems={filterMenu()} />}
     />
   </>)
 }

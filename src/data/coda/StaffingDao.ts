@@ -7,6 +7,7 @@
  *
  */
 
+import { Identifier } from "@digitalaidseattle/core";
 import { CodaDao } from "../../services/coda/CodaDao";
 import { Staffing } from "../types";
 
@@ -15,6 +16,7 @@ const TABLE_ID = "grid-sync-1054-Table-dynamic-0942f75031c84924c851de026ddc252b6
 
 function jason2Entity(json: any): Staffing {
     const values = json.values;
+    // console.log(values)
     return {
         id: json.id,
         venture_id: values["Prospective ventures"]?.rowId,
@@ -44,4 +46,9 @@ export class StaffingDao extends CodaDao<Staffing> {
         return this.instance;
     }
 
+
+    async findByVolunteerId(id: Identifier): Promise<Staffing[]> {
+        const all = await this.getAll();
+        return all.filter(s => s.volunteer_id === id);
+    }
 }

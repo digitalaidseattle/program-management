@@ -54,7 +54,7 @@ export const InfoCard = ({ entity }: { entity: Volunteer }) => {
             <Grid size={6}>
                 <p>Join Date: {dayjs(entity.join_date).format('MMMM D, YYYY')}</p>
                 <p>Status: {entity.status}</p>
-                <p>LinkedIn: <NavLink to={entity.linkedin} target="_blank">{entity.linkedin}</NavLink></p>
+                <p>LinkedIn: <NavLink to={entity.linkedin.startsWith('https') ? entity.linkedin : `https://${entity.linkedin}`} target="_blank">{entity.linkedin}</NavLink></p>
                 <p>Email: {entity.email}</p>
                 <p>Location: {entity.location}</p>
                 <p>Position: {entity.position}</p>
