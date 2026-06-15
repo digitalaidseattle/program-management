@@ -18,7 +18,6 @@ const TABLE_ID = "grid-4vzF6VuaPV";
 
 function jason2Entity(json: any): Volunteer {
     const values = json.values;
-    // console.log(values)
     return {
         id: json.id,
         name: CodaDao.removeBackTicks(values["Name"]),
@@ -28,6 +27,12 @@ function jason2Entity(json: any): Volunteer {
         location: CodaDao.removeBackTicks(values["Location"]),
         status: CodaDao.removeBackTicks(values["Status"]),
         linkedin: values["Linkedin URL"] ? values["Linkedin URL"].url : "",
+        github: values["Github"]
+            ? (typeof values["Github"] === "object")
+                ? values["Github"].url
+                : CodaDao.removeBackTicks(values["Github"])
+            : undefined,
+        slack_id: CodaDao.removeBackTicks(values["Slack ID"]),
         email: CodaDao.removeBackTicks(values["Personal email"]),
         join_date: new Date(values["Join date"]),
         position: CodaDao.removeBackTicks(values["Position"]),

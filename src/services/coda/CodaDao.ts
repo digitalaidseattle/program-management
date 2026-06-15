@@ -180,7 +180,13 @@ abstract class CodaDao<T extends Entity> implements DataAccessObject<T> {
         return json as T;
     }
 
-
+    async alltables(): Promise<any> {
+        const url = `${this.baseUrl}/${this.documentId}/tables`;
+        const resp = await fetch(encodeURI(url), {
+            headers: { 'Authorization': `Bearer ${this.apiToken}` }
+        });
+        return resp.json();
+    }
 
 }
 

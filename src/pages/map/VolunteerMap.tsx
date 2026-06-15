@@ -13,11 +13,14 @@ import {
   Card,
   CardHeader,
   Grid,
+  IconButton,
   Stack,
   Typography,
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { Volunteer } from '../../data/types';
 import { Configuration as MapConfiguration } from '../../map-feature/Configuration';
@@ -33,13 +36,24 @@ function VolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onClick: 
       <CardHeader
         title={volunteer.name}
         subheader={volunteer.role}
-        avatar={<Avatar alt={volunteer.name} src={volunteer.pic} />} >
+        avatar={<Avatar alt={volunteer.name} src={volunteer.pic} />}
+        action={
+          <IconButton
+            component={NavLink}
+            to={`/volunteers/${volunteer.id}`}
+            aria-label="link to volunteer info"
+            size='small'
+          >
+            <InfoCircleOutlined />
+          </IconButton>}
+      >
       </CardHeader>
     </Card>
   )
 }
 
 function MobileVolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onClick: () => void }) {
+  const navigate = useNavigate();
   return (
     <Card onClick={onClick} sx={{
       height: 180, width: 240,
@@ -50,15 +64,19 @@ function MobileVolunteerCard({ volunteer, onClick }: { volunteer: Volunteer, onC
         justifyContent="flex-end"
         alignItems="flex-start" display="flex"
         height="100%"
-        width="100%" sx={{
+        width="100%"
+        sx={{
           backgroundColor: 'rgba(0,0,0,0.4)',
-        }}>
+        }}
+        onClick={() => navigate(`/volunteers/${volunteer.id}`)}
+      >
         <Typography fontWeight={600} marginLeft="5px" color="white" >
           {volunteer.name}
         </Typography>
         <Typography fontWeight={400} marginLeft="5px" color="white">
           {volunteer.role}
         </Typography>
+
       </Box>
     </Card>
   )
@@ -160,10 +178,17 @@ const VolunteerMap = () => {
         </Typography>
         <Grid container>
           <Stack direction="row"
-            spacing={2}
+            spacing={1}
+            gap={1}
             useFlexGap
             flexWrap="wrap">
-            {volunteers.map(v => <Avatar alt={v.name} src={v.pic} title={v.name} />)}
+            {volunteers.map(v => <IconButton
+              component={NavLink}
+              to={`/volunteers/${v.id}`}
+              sx={{ cursor: "pointer" , padding: 0}}
+              aria-label={`link to ${v.name}`}>
+              <Avatar alt={v.name} src={v.pic} title={v.name} />
+            </IconButton>)}
           </Stack>
         </Grid>
       </Stack>

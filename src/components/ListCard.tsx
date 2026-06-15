@@ -11,6 +11,7 @@ import { useState } from "react";
 
 type ListCardProps = {
     title: React.ReactNode;
+    subheader?: React.ReactNode;
     avatarImageSrc?: string;
     cardStyles?: any;
     cardContent?: React.ReactNode;
@@ -25,6 +26,7 @@ type ListCardProps = {
 
 export const ListCard = ({
     title,
+    subheader,
     avatarImageSrc,
     cardStyles,
     cardContent,
@@ -55,6 +57,7 @@ export const ListCard = ({
         >
             <CardHeader
                 title={title}
+                subheader={subheader}
                 avatar={avatarImageSrc &&
                     <Avatar
                         src={avatarImageSrc}

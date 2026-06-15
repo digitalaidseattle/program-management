@@ -46,7 +46,6 @@ export class StaffingDao extends CodaDao<Staffing> {
         return this.instance;
     }
 
-
     async findByVolunteerId(id: Identifier): Promise<Staffing[]> {
         const all = await this.getAll();
         return all.filter(s => s.volunteer_id === id);
