@@ -23,7 +23,7 @@ function jason2Entity(json: any): Volunteer {
         name: CodaDao.removeBackTicks(values["Name"]),
         role: values["Role"] ? values["Role"].name : "",
         roles: values["Cadre or Contributor"] ? values["Cadre or Contributor"].map((val: string) => CodaDao.removeBackTicks(val)) : [],
-        pic: values["Pic"] ? values["Pic"][0].url : "",
+        pic: Array.isArray(values["Pic"]) ? values["Pic"][0].url : "",
         location: CodaDao.removeBackTicks(values["Location"]),
         status: CodaDao.removeBackTicks(values["Status"]),
         linkedin: values["Linkedin URL"] ? values["Linkedin URL"].url : "",
@@ -43,7 +43,7 @@ function jason2Entity(json: any): Volunteer {
                     name: team_json['name']
                 } as Team)))
             : [],
-        team_lead: (values['Team lead'] !== '')
+        team_lead: (Array.isArray(values['Team lead']))
             ? (values['Team lead']
                 .map((team_json: any) => ({
                     id: team_json['rowId'],
